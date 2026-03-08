@@ -316,20 +316,32 @@ function topThree(obj){
     .slice(0,3)
     .map(([name])=>name);
 }
-
 function computePlanetInputs(dateString,timeString){
-  const seed = (dateString + " " + timeString).replace(/\D/g,"");
+  const match = timeString.match(/(\d{1,2}):(\d{2})/);
+
+  let hour = 0;
+  let minute = 0;
+
+  if(match){
+    hour = Number(match[1]);
+    minute = Number(match[2]);
+  }
+
+  const bucketMinute = Math.round(minute / 5) * 5;
+  const timeBucket = `${hour}:${String(bucketMinute).padStart(2,"0")}`;
+
+  const seed = (dateString + " " + timeBucket).replace(/\D/g,"");
   let n = 0;
 
   for(let i=0;i<seed.length;i++){
     n += Number(seed[i]) * (i + 1);
   }
 
-function pick(offset){
-  const raw = ((Math.sin((n * 0.08) + offset) + 1) / 2);
-  const softened = 0.5 + (raw - 0.5) * 0.22;
-  return softened;
-}
+  function pick(offset){
+    const raw = ((Math.sin((n * 0.08) + offset) + 1) / 2);
+    const softened = 0.5 + (raw - 0.5) * 0.22;
+    return softened;
+  }
 
   return {
     sun: pick(1),
