@@ -512,19 +512,41 @@
 
     function calculateState() {
       // Current prototype profile based on the locked spreadsheet example
-      const inputs = {
-        sun: 0.8,
-        moon: 0.6,
-        mars: 0.7,
-        jupiter: 0.7,
-        uranus: 0.6,
-        neptune: 0.8,
-        pluto: 0.7,
-        saturn: 0.7,
-        venus: 0.5,
-        mercury: 0.5
-      };
+    const dob = document.getElementById("dob").value;
+const tob = document.getElementById("tob").value;
 
+const inputs = computePlanetInputs(dob, tob);
+function computePlanetInputs(dateString, timeString) {
+
+  const dt = new Date(dateString + " " + timeString);
+
+  const bodies = [
+    "Sun",
+    "Moon",
+    "Mars",
+    "Jupiter",
+    "Uranus",
+    "Neptune",
+    "Pluto",
+    "Mercury",
+    "Venus",
+    "Saturn"
+  ];
+
+  const values = {};
+
+  bodies.forEach(body => {
+
+    const pos = Astronomy.HelioVector(body, dt);
+    const mag = Math.sqrt(pos.x*pos.x + pos.y*pos.y + pos.z*pos.z);
+
+    // normalize roughly to 0-1 band
+    values[body.toLowerCase()] = Math.abs(Math.sin(mag));
+
+  });
+
+  return values;
+}
       const result = computeState(inputs);
       render(result);
     }
@@ -536,3 +558,4 @@
   </script>
 </body>
 </html>
+<script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.min.js"></script>
