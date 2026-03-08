@@ -19,9 +19,7 @@
       --violet: #a855f7;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     html, body {
       margin: 0;
@@ -190,6 +188,8 @@
     .fill {
       height: 100%;
       border-radius: 999px;
+      width: 0%;
+      transition: width 0.25s ease;
     }
 
     .green { background: var(--good); }
@@ -234,21 +234,10 @@
     }
 
     @media (max-width: 900px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .stats {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .drivers {
-        grid-template-columns: 1fr;
-      }
-
-      .hero h1 {
-        font-size: 40px;
-      }
+      .grid { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .drivers { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 40px; }
     }
   </style>
 </head>
@@ -278,105 +267,272 @@
           <input id="location" type="text" placeholder="Cuero, TX USA" value="Cuero, TX USA" />
         </div>
 
-        <button type="button">Calculate State</button>
+        <button type="button" id="calculateBtn">Calculate State</button>
 
         <div class="subtext">
-          V1 dashboard shell. This page will next connect to the Lucy.OS spreadsheet-derived engine:
-          load, regulation, capacity, stability index, override modes, and driver ranking.
+          V1 engine demo. This version runs the locked Lucy.OS engine in-browser using the current prototype profile.
+          Next version can replace this with automatic birth-chart parsing.
         </div>
       </div>
 
       <div class="card">
         <div class="panel-title">
           <h2 style="margin:0;">System State</h2>
-          <div class="mode-pill">Pluto Rewrite</div>
+          <div class="mode-pill" id="modePill">Loading...</div>
         </div>
 
         <div class="stats">
           <div class="stat">
             <div class="k">Capacity</div>
-            <div class="v">0.80</div>
+            <div class="v" id="capacityValue">0.00</div>
           </div>
           <div class="stat">
             <div class="k">Stability Index</div>
-            <div class="v">2.36</div>
+            <div class="v" id="stabilityValue">0.00</div>
           </div>
           <div class="stat">
             <div class="k">Primary Driver</div>
-            <div class="v" style="font-size:24px;">Neptune</div>
+            <div class="v" id="driverValue" style="font-size:24px;">—</div>
           </div>
           <div class="stat">
             <div class="k">Top Regulator</div>
-            <div class="v" style="font-size:24px;">Saturn</div>
+            <div class="v" id="regulatorValue" style="font-size:24px;">—</div>
           </div>
         </div>
 
         <div class="bar-group">
           <div class="bar-row">
             <span>Amplified Load</span>
-            <span>4.07</span>
+            <span id="amplifiedLoadText">0.00</span>
           </div>
-          <div class="bar">
-            <div class="fill red" style="width: 81%;"></div>
-          </div>
+          <div class="bar"><div class="fill red" id="amplifiedLoadBar"></div></div>
         </div>
 
         <div class="bar-group">
           <div class="bar-row">
             <span>Regulation</span>
-            <span>1.84</span>
+            <span id="regulationText">0.00</span>
           </div>
-          <div class="bar">
-            <div class="fill blue" style="width: 37%;"></div>
-          </div>
+          <div class="bar"><div class="fill blue" id="regulationBar"></div></div>
         </div>
 
         <div class="bar-group">
           <div class="bar-row">
             <span>Saturn Constraint</span>
-            <span>0.34</span>
+            <span id="saturnText">0.00</span>
           </div>
-          <div class="bar">
-            <div class="fill violet" style="width: 18%;"></div>
-          </div>
+          <div class="bar"><div class="fill violet" id="saturnBar"></div></div>
         </div>
 
         <div class="bar-group">
           <div class="bar-row">
             <span>Effective Load</span>
-            <span>1.88</span>
+            <span id="effectiveLoadText">0.00</span>
           </div>
-          <div class="bar">
-            <div class="fill green" style="width: 47%;"></div>
-          </div>
+          <div class="bar"><div class="fill green" id="effectiveLoadBar"></div></div>
         </div>
 
         <div class="drivers">
           <div class="mini">
             <h3>Top Load Drivers</h3>
-            <ol class="list">
-              <li>Neptune</li>
-              <li>Mars</li>
-              <li>Jupiter</li>
+            <ol class="list" id="driversList">
+              <li>—</li>
+              <li>—</li>
+              <li>—</li>
             </ol>
           </div>
 
           <div class="mini">
             <h3>Flags</h3>
             <ul class="list">
-              <li>Pluto Rewrite: ON</li>
-              <li>Saturn Shutdown: OFF</li>
-              <li>Capacity Used: 236%</li>
+              <li id="plutoFlag">Pluto Rewrite: OFF</li>
+              <li id="saturnFlag">Saturn Shutdown: OFF</li>
+              <li id="capacityUsedFlag">Capacity Used: 0%</li>
             </ul>
           </div>
         </div>
 
-        <div class="footer-note">
-          Current reading: overload pressure normalized against Sun-based capacity, with Jupiter escalation active,
-          Saturn damping active, and Pluto rewrite conditions met.
+        <div class="footer-note" id="readingText">
+          Waiting for engine calculation.
         </div>
       </div>
     </div>
   </div>
+
+  <script>
+    function round2(n) {
+      return Number(n).toFixed(2);
+    }
+
+    function clampPct(value, maxForDisplay) {
+      return Math.max(0, Math.min((value / maxForDisplay) * 100, 100));
+    }
+
+    function argMax(obj) {
+      return Object.entries(obj).sort((a, b) => b[1] - a[1])[0][0];
+    }
+
+    function topThree(obj) {
+      return Object.entries(obj)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([name]) => name);
+    }
+
+    function computeState(inputs) {
+      const rawLoad =
+        inputs.moon +
+        inputs.mars +
+        inputs.jupiter +
+        inputs.uranus +
+        inputs.neptune +
+        inputs.pluto;
+
+      const regulation = inputs.venus + inputs.mercury;
+
+      let amplifiedLoad = rawLoad;
+      if (rawLoad > regulation) {
+        amplifiedLoad =
+          rawLoad *
+          (1 + inputs.jupiter * 0.15 * (1 + Math.max(0, rawLoad - regulation)));
+      }
+
+      const saturnConstraint = inputs.saturn * amplifiedLoad * 0.12;
+      const effectiveLoad = Math.max(amplifiedLoad - regulation - saturnConstraint, 0);
+      const capacity = inputs.sun;
+      const stabilityIndex = effectiveLoad / capacity;
+
+      const plutoRewrite =
+        inputs.pluto >= 0.7 &&
+        stabilityIndex >= 1.4 &&
+        effectiveLoad > regulation;
+
+      const saturnOverride = stabilityIndex >= 2.0;
+
+      let state = "Overload";
+      if (stabilityIndex < 0.85) {
+        state = "Balanced";
+      } else if (stabilityIndex < 1.0) {
+        state = "Strained";
+      }
+
+      let mode = state;
+      if (saturnOverride) {
+        mode = "Saturn Shutdown";
+      } else if (plutoRewrite) {
+        mode = "Pluto Rewrite";
+      }
+
+      const loadDrivers = {
+        Moon: inputs.moon,
+        Mars: inputs.mars,
+        Jupiter: inputs.jupiter,
+        Uranus: inputs.uranus,
+        Neptune: inputs.neptune,
+        Pluto: inputs.pluto
+      };
+
+      const regulators = {
+        Saturn: inputs.saturn,
+        Venus: inputs.venus,
+        Mercury: inputs.mercury
+      };
+
+      return {
+        rawLoad,
+        amplifiedLoad,
+        regulation,
+        saturnConstraint,
+        effectiveLoad,
+        capacity,
+        stabilityIndex,
+        state,
+        mode,
+        plutoRewrite,
+        saturnOverride,
+        primaryDriver: argMax(loadDrivers),
+        topRegulator: argMax(regulators),
+        topDrivers: topThree(loadDrivers),
+        capacityUsedPct: stabilityIndex * 100
+      };
+    }
+
+    function render(result) {
+      document.getElementById("capacityValue").textContent = round2(result.capacity);
+      document.getElementById("stabilityValue").textContent = round2(result.stabilityIndex);
+      document.getElementById("driverValue").textContent = result.primaryDriver;
+      document.getElementById("regulatorValue").textContent = result.topRegulator;
+
+      document.getElementById("amplifiedLoadText").textContent = round2(result.amplifiedLoad);
+      document.getElementById("regulationText").textContent = round2(result.regulation);
+      document.getElementById("saturnText").textContent = round2(result.saturnConstraint);
+      document.getElementById("effectiveLoadText").textContent = round2(result.effectiveLoad);
+
+      document.getElementById("amplifiedLoadBar").style.width = clampPct(result.amplifiedLoad, 5) + "%";
+      document.getElementById("regulationBar").style.width = clampPct(result.regulation, 5) + "%";
+      document.getElementById("saturnBar").style.width = clampPct(result.saturnConstraint, 2) + "%";
+      document.getElementById("effectiveLoadBar").style.width = clampPct(result.effectiveLoad, 5) + "%";
+
+      document.getElementById("modePill").textContent = result.mode;
+      document.getElementById("plutoFlag").textContent = "Pluto Rewrite: " + (result.plutoRewrite ? "ON" : "OFF");
+      document.getElementById("saturnFlag").textContent = "Saturn Shutdown: " + (result.saturnOverride ? "ON" : "OFF");
+      document.getElementById("capacityUsedFlag").textContent = "Capacity Used: " + Math.round(result.capacityUsedPct) + "%";
+
+      const driversHtml = result.topDrivers.map((d) => `<li>${d}</li>`).join("");
+      document.getElementById("driversList").innerHTML = driversHtml;
+
+      document.getElementById("readingText").textContent =
+        `Current reading: ${result.state.toLowerCase()} pressure normalized against Sun-based capacity, ` +
+        `with Jupiter escalation ${result.rawLoad > result.regulation ? "active" : "inactive"}, ` +
+        `Saturn damping active, and Pluto rewrite conditions ${result.plutoRewrite ? "met" : "not met"}.`;
+
+      const pill = document.getElementById("modePill");
+      if (result.mode === "Balanced") {
+        pill.style.background = "rgba(34, 197, 94, 0.15)";
+        pill.style.borderColor = "rgba(34, 197, 94, 0.35)";
+        pill.style.color = "#86efac";
+      } else if (result.mode === "Strained") {
+        pill.style.background = "rgba(250, 204, 21, 0.15)";
+        pill.style.borderColor = "rgba(250, 204, 21, 0.35)";
+        pill.style.color = "#fde047";
+      } else if (result.mode === "Overload") {
+        pill.style.background = "rgba(239, 68, 68, 0.15)";
+        pill.style.borderColor = "rgba(239, 68, 68, 0.35)";
+        pill.style.color = "#fca5a5";
+      } else if (result.mode === "Pluto Rewrite") {
+        pill.style.background = "rgba(168, 85, 247, 0.15)";
+        pill.style.borderColor = "rgba(168, 85, 247, 0.35)";
+        pill.style.color = "#d8b4fe";
+      } else if (result.mode === "Saturn Shutdown") {
+        pill.style.background = "rgba(148, 163, 184, 0.18)";
+        pill.style.borderColor = "rgba(148, 163, 184, 0.35)";
+        pill.style.color = "#e2e8f0";
+      }
+    }
+
+    function calculateState() {
+      // Current prototype profile based on the locked spreadsheet example
+      const inputs = {
+        sun: 0.8,
+        moon: 0.6,
+        mars: 0.7,
+        jupiter: 0.7,
+        uranus: 0.6,
+        neptune: 0.8,
+        pluto: 0.7,
+        saturn: 0.7,
+        venus: 0.5,
+        mercury: 0.5
+      };
+
+      const result = computeState(inputs);
+      render(result);
+    }
+
+    document.getElementById("calculateBtn").addEventListener("click", calculateState);
+
+    // Initial render on load
+    calculateState();
+  </script>
 </body>
 </html>
