@@ -379,22 +379,55 @@ function topThree(obj){
     .map(([name])=>name);
 }
 
-function computePlanetInputs(dateString,timeString){
+function computePlanetInputs(dateString, timeString){
+  const seed = (dateString + " " + timeString).replace(/\D/g, "");
+  let n = 0;
 
-  const dt=new Date(dateString+" "+timeString);
+  for(let i = 0; i < seed.length; i++){
+    n += Number(seed[i]) * (i + 1);
+  }
 
-  const bodies=[
-    "Sun",
-    "Moon",
-    "Mars",
-    "Jupiter",
-    "Uranus",
-    "Neptune",
-    "Pluto",
-    "Mercury",
-    "Venus",
-    "Saturn"
-  ];
+  function pick(offset){
+    return ((Math.sin(n + offset) + 1) / 2) * 0.8 + 0.1;
+  }
+
+  return {
+    sun: pick(1),
+    moon: pick(2),
+    mars: pick(3),
+    jupiter: pick(4),
+    uranus: pick(5),
+    neptune: pick(6),
+    pluto: pick(7),
+    mercury: pick(8),
+    venus: pick(9),
+    saturn: pick(10)
+  };
+}
+  const seed = (dateString + " " + timeString).replace(/\D/g, "");
+  let n = 0;
+
+  for(let i = 0; i < seed.length; i++){
+    n += Number(seed[i]) * (i + 1);
+  }
+
+  function pick(offset){
+    return ((Math.sin(n + offset) + 1) / 2) * 0.8 + 0.1;
+  }
+
+  return {
+    sun: pick(1),
+    moon: pick(2),
+    mars: pick(3),
+    jupiter: pick(4),
+    uranus: pick(5),
+    neptune: pick(6),
+    pluto: pick(7),
+    mercury: pick(8),
+    venus: pick(9),
+    saturn: pick(10)
+  };
+}
 
   const values={};
 
