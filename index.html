@@ -325,9 +325,11 @@ function computePlanetInputs(dateString,timeString){
     n += Number(seed[i]) * (i + 1);
   }
 
-  function pick(offset){
-    return ((Math.sin(n + offset) + 1) / 2) * 0.8 + 0.1;
-  }
+function pick(offset){
+  const raw = ((Math.sin((n * 0.08) + offset) + 1) / 2);
+  const softened = 0.5 + (raw - 0.5) * 0.22;
+  return softened;
+}
 
   return {
     sun: pick(1),
