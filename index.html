@@ -509,13 +509,6 @@
         pill.style.color = "#e2e8f0";
       }
     }
-
-    function calculateState() {
-      // Current prototype profile based on the locked spreadsheet example
-    const dob = document.getElementById("dob").value;
-const tob = document.getElementById("tob").value;
-
-const inputs = computePlanetInputs(dob, tob);
 function computePlanetInputs(dateString, timeString) {
 
   const dt = new Date(dateString + " " + timeString);
@@ -536,17 +529,33 @@ function computePlanetInputs(dateString, timeString) {
   const values = {};
 
   bodies.forEach(body => {
-
     const pos = Astronomy.HelioVector(body, dt);
-    const mag = Math.sqrt(pos.x*pos.x + pos.y*pos.y + pos.z*pos.z);
-
-    // normalize roughly to 0-1 band
+    const mag = Math.sqrt(pos.x * pos.x + pos.y * pos.y + pos.z * pos.z);
     values[body.toLowerCase()] = Math.abs(Math.sin(mag));
-
   });
 
   return values;
 }
+
+function calculateState() {
+
+  const dob = document.getElementById("dob").value;
+  const tob = document.getElementById("tob").value;
+
+  const inputs = computePlanetInputs(dob, tob);
+
+  // rest of the engine
+}
+    function calculateState() {
+      // Current prototype profile based on the locked spreadsheet example
+    const dob = document.getElementById("dob").value;
+const tob = document.getElementById("tob").value;
+
+const inputs = computePlanetInputs(dob, tob);
+
+
+  
+
       const result = computeState(inputs);
       render(result);
     }
