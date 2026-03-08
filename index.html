@@ -1,43 +1,382 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lucy.OS</title>
   <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-2: #1f2937;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --line: #334155;
+      --accent: #38bdf8;
+      --good: #22c55e;
+      --warn: #facc15;
+      --bad: #ef4444;
+      --violet: #a855f7;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     html, body {
       margin: 0;
       padding: 0;
       min-height: 100%;
-      background: #0f172a;
-      color: #ffffff;
+      background: var(--bg);
+      color: var(--text);
       font-family: Arial, sans-serif;
     }
+
     body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
+      padding: 32px 20px 48px;
     }
+
     .wrap {
-      padding: 48px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
-    h1 {
-      font-size: 56px;
-      margin: 0 0 12px 0;
+
+    .hero {
+      text-align: center;
+      margin-bottom: 28px;
     }
-    p {
-      font-size: 20px;
+
+    .hero h1 {
+      margin: 0 0 8px 0;
+      font-size: 48px;
+      letter-spacing: 0.5px;
+    }
+
+    .hero p {
       margin: 0;
-      opacity: 0.85;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    }
+
+    .card h2 {
+      margin: 0 0 16px 0;
+      font-size: 22px;
+    }
+
+    .label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #0b1220;
+      color: var(--text);
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px 14px;
+      border: none;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #001018;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      filter: brightness(1.05);
+    }
+
+    .subtext {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .panel-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .mode-pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(250, 204, 21, 0.15);
+      border: 1px solid rgba(250, 204, 21, 0.35);
+      color: #fde047;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(160px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .stat {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .stat .k {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .stat .v {
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .bar-group {
+      margin-bottom: 16px;
+    }
+
+    .bar-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .bar {
+      height: 12px;
+      width: 100%;
+      border-radius: 999px;
+      background: #0b1220;
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      border-radius: 999px;
+    }
+
+    .green { background: var(--good); }
+    .red { background: var(--bad); }
+    .blue { background: var(--accent); }
+    .violet { background: var(--violet); }
+
+    .drivers {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .mini {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .mini h3 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+    }
+
+    .list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--text);
+    }
+
+    .list li {
+      margin-bottom: 6px;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .drivers {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 40px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>Lucy.OS</h1>
-    <p>Astrology-informed nervous system regulation engine</p>
+    <div class="hero">
+      <h1>Lucy.OS</h1>
+      <p>Astrology-informed nervous system regulation engine</p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Inputs</h2>
+
+        <div class="field">
+          <label class="label" for="dob">Date of Birth</label>
+          <input id="dob" type="text" placeholder="1980-11-21" value="1980-11-21" />
+        </div>
+
+        <div class="field">
+          <label class="label" for="tob">Time of Birth</label>
+          <input id="tob" type="text" placeholder="6:20 AM" value="6:20 AM" />
+        </div>
+
+        <div class="field">
+          <label class="label" for="location">Location</label>
+          <input id="location" type="text" placeholder="Cuero, TX USA" value="Cuero, TX USA" />
+        </div>
+
+        <button type="button">Calculate State</button>
+
+        <div class="subtext">
+          V1 dashboard shell. This page will next connect to the Lucy.OS spreadsheet-derived engine:
+          load, regulation, capacity, stability index, override modes, and driver ranking.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="panel-title">
+          <h2 style="margin:0;">System State</h2>
+          <div class="mode-pill">Pluto Rewrite</div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="k">Capacity</div>
+            <div class="v">0.80</div>
+          </div>
+          <div class="stat">
+            <div class="k">Stability Index</div>
+            <div class="v">2.36</div>
+          </div>
+          <div class="stat">
+            <div class="k">Primary Driver</div>
+            <div class="v" style="font-size:24px;">Neptune</div>
+          </div>
+          <div class="stat">
+            <div class="k">Top Regulator</div>
+            <div class="v" style="font-size:24px;">Saturn</div>
+          </div>
+        </div>
+
+        <div class="bar-group">
+          <div class="bar-row">
+            <span>Amplified Load</span>
+            <span>4.07</span>
+          </div>
+          <div class="bar">
+            <div class="fill red" style="width: 81%;"></div>
+          </div>
+        </div>
+
+        <div class="bar-group">
+          <div class="bar-row">
+            <span>Regulation</span>
+            <span>1.84</span>
+          </div>
+          <div class="bar">
+            <div class="fill blue" style="width: 37%;"></div>
+          </div>
+        </div>
+
+        <div class="bar-group">
+          <div class="bar-row">
+            <span>Saturn Constraint</span>
+            <span>0.34</span>
+          </div>
+          <div class="bar">
+            <div class="fill violet" style="width: 18%;"></div>
+          </div>
+        </div>
+
+        <div class="bar-group">
+          <div class="bar-row">
+            <span>Effective Load</span>
+            <span>1.88</span>
+          </div>
+          <div class="bar">
+            <div class="fill green" style="width: 47%;"></div>
+          </div>
+        </div>
+
+        <div class="drivers">
+          <div class="mini">
+            <h3>Top Load Drivers</h3>
+            <ol class="list">
+              <li>Neptune</li>
+              <li>Mars</li>
+              <li>Jupiter</li>
+            </ol>
+          </div>
+
+          <div class="mini">
+            <h3>Flags</h3>
+            <ul class="list">
+              <li>Pluto Rewrite: ON</li>
+              <li>Saturn Shutdown: OFF</li>
+              <li>Capacity Used: 236%</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-note">
+          Current reading: overload pressure normalized against Sun-based capacity, with Jupiter escalation active,
+          Saturn damping active, and Pluto rewrite conditions met.
+        </div>
+      </div>
+    </div>
   </div>
 </body>
 </html>
-
