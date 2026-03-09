@@ -218,13 +218,14 @@
 
         <label class="label" for="location">Location</label>
         <input id="location" type="text" value="Cuero, TX USA" />
-<label class="label" for="utcOffset">UTC Offset</label>
-<input id="utcOffset" type="number" value="-6" step="0.5" />
+
+        <label class="label" for="utcOffset">UTC Offset</label>
+        <input id="utcOffset" type="number" value="-6" step="0.5" />
+
         <button type="button" onclick="calculateState()">Calculate State</button>
 
         <div class="sub">
-          Clean V1 demo. This version uses a deterministic local generator so the Lucy.OS engine reacts immediately.
-          Later, this can be swapped to real chart parsing without changing the dashboard structure.
+          Lucy.OS uses astronomical ephemeris input to drive the regulation engine.
         </div>
       </div>
 
@@ -318,46 +319,6 @@
         .slice(0, 3)
         .map(([name]) => name);
     }
-
-    function hashString(str){
-      let hash = 2166136261;
-      for(let i = 0; i < str.length; i++){
-        hash ^= str.charCodeAt(i);
-        hash = Math.imul(hash, 16777619);
-      }
-      return Math.abs(hash >>> 0);
-    }
-
-    function parseTimeTo24Hour(timeString){
-      const clean = (timeString || "").trim();
-      const match = clean.match(/(\d{1,2}):(\d{2})\s*([AaPp][Mm])?/);
-
-      let hour = 0;
-      let minute = 0;
-      let ampm = "";
-
-      if(match){
-        hour = Number(match[1]);
-        minute = Number(match[2]);
-        ampm = (match[3] || "").toUpperCase();
-      }
-
-      if(ampm === "PM" && hour < 12){
-        hour += 12;
-      }
-      if(ampm === "AM" && hour === 12){
-        hour = 0;
-      }
-
-      return { hour, minute };
-    }
-
-    function normalizeFromTrig(value, span){
-      const raw01 = (value + 1) / 2;
-      return 0.5 + (raw01 - 0.5) * span;
-    }
-
-
 
     function computeState(inputs){
       const rawLoad =
@@ -489,40 +450,67 @@
       }
     }
 
+    function getStoredSmoothingState(){
+      try{
+        const saved = localStorage.getItem("lucySmoothingState");
+        return saved ? JSON.parse(saved) : null;
+      } catch {
+        return null;
+      }
+    }
 
+    function setStoredSmoothingState(state){
+      try{
+        localStorage.setItem("lucySmoothingState", JSON.stringify(state));
+      } catch {}
+    }
 
+    function smoothInputs(rawInputs, signature){
+      const stored = getStoredSmoothingState();
 
+      if(!stored || stored.signature !== signature){
+        const nextState = {
+          signature,
+          smoothed: { ...rawInputs }
+        };
+        setStoredSmoothingState(nextState);
+        return rawInputs;
+      }
 
+      return stored.smoothed;
+    }
 
-  setPreviousSmoothedInputs(smoothed);
-  return smoothed;
-}
-async function calculateState(){
+    async function calculateState(){
+      const dob = document.getElementById("dob").value;
+      const tob = document.getElementById("tob").value;
+      const location = document.getElementById("location").value;
+      const utcOffset = document.getElementById("utcOffset").value;
 
-  const dob = document.getElementById("dob").value
-  const tob = document.getElementById("tob").value
-  const utcOffset = document.getElementById("utcOffset").value
+      const signature = `${dob}|${tob}|${location}|${utcOffset}`;
 
-  const response = await fetch("/api/chart_inputs", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      dob: dob,
-      tob: tob,
-      utcOffset: utcOffset
-    })
-  })
+      const response = await fetch("/api/chart_inputs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          dob: dob,
+          tob: tob,
+          utcOffset: utcOffset
+        })
+      });
 
-const rawInputs = await response.json()
+      const rawInputs = await response.json();
 
-const inputs = smoothInputs(rawInputs)
+      if(rawInputs.error){
+        alert(rawInputs.error);
+        return;
+      }
 
-const result = computeState(inputs)
-
-render(result)
-}
+      const inputs = smoothInputs(rawInputs, signature);
+      const result = computeState(inputs);
+      render(result);
+    }
 
     window.onload = function(){
       calculateState();
