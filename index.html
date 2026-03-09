@@ -592,7 +592,10 @@ const inputs = smoothInputs(rawInputs, signature);
 // V3A parallel test
 const graphResult = computePlanetaryGraph(inputs);
 console.log("V3A Graph Result:", graphResult);
-const result = computeState(inputs);
+const result = {
+  ...computeState(inputs),
+  ...graphResult
+};
 console.log("V2.5 Result:", result);
 render(result);
     }
