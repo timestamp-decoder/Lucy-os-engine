@@ -488,7 +488,40 @@
         pill.style.color = "#e4ebff";
       }
     }
+let previousSmoothedInputs = null;
 
+const SMOOTHING_ALPHA = {
+  sun: 0.01,
+  moon: 0.05,
+  mercury: 0.02,
+  venus: 0.02,
+  mars: 0.02,
+  jupiter: 0.01,
+  saturn: 0.01,
+  uranus: 0.01,
+  neptune: 0.01,
+  pluto: 0.01
+};
+
+function smoothInputs(rawInputs){
+  if(!previousSmoothedInputs){
+    previousSmoothedInputs = { ...rawInputs };
+    return rawInputs;
+  }
+
+  const smoothed = {};
+
+  for(const key of Object.keys(SMOOTHING_ALPHA)){
+    const alpha = SMOOTHING_ALPHA[key];
+    const raw = rawInputs[key];
+    const prev = previousSmoothedInputs[key];
+
+    smoothed[key] = (raw * alpha) + (prev * (1 - alpha));
+  }
+
+  previousSmoothedInputs = { ...smoothed };
+  return smoothed;
+}
 async function calculateState(){
 
   const dob = document.getElementById("dob").value
@@ -507,11 +540,13 @@ async function calculateState(){
     })
   })
 
-  const inputs = await response.json()
+const rawInputs = await response.json()
 
-  const result = computeState(inputs)
+const inputs = smoothInputs(rawInputs)
 
-  render(result)
+const result = computeState(inputs)
+
+render(result)
 }
 
     window.onload = function(){
