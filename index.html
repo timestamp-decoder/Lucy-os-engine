@@ -488,53 +488,11 @@
         pill.style.color = "#e4ebff";
       }
     }
-let previousSmoothedInputs = null;
 
-const SMOOTHING_ALPHA = {
-  sun: 0.01,
-  moon: 0.05,
-  mercury: 0.02,
-  venus: 0.02,
-  mars: 0.02,
-  jupiter: 0.01,
-  saturn: 0.01,
-  uranus: 0.01,
-  neptune: 0.01,
-  pluto: 0.01
-};
 
-function getPreviousSmoothedInputs(){
-  try {
-    const saved = localStorage.getItem("lucySmoothedInputs");
-    return saved ? JSON.parse(saved) : null;
-  } catch {
-    return null;
-  }
-}
 
-function setPreviousSmoothedInputs(inputs){
-  try {
-    localStorage.setItem("lucySmoothedInputs", JSON.stringify(inputs));
-  } catch {}
-}
 
-function smoothInputs(rawInputs){
-  const previousSmoothedInputs = getPreviousSmoothedInputs();
 
-  if(!previousSmoothedInputs){
-    setPreviousSmoothedInputs(rawInputs);
-    return rawInputs;
-  }
-
-  const smoothed = {};
-
-  for(const key of Object.keys(SMOOTHING_ALPHA)){
-    const alpha = SMOOTHING_ALPHA[key];
-    const raw = rawInputs[key];
-    const prev = previousSmoothedInputs[key];
-
-    smoothed[key] = (raw * alpha) + (prev * (1 - alpha));
-  }
 
   setPreviousSmoothedInputs(smoothed);
   return smoothed;
