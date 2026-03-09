@@ -501,11 +501,12 @@
       });
 
       const rawInputs = await response.json();
+console.log("Lucy Inputs:", rawInputs);
 
-      if(rawInputs.error){
-        alert(rawInputs.error);
-        return;
-      }
+if(rawInputs.error){
+  alert(rawInputs.error);
+  return;
+}
 
       const inputs = smoothInputs(rawInputs, signature);
       const result = computeState(inputs);
