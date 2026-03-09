@@ -218,7 +218,8 @@
 
         <label class="label" for="location">Location</label>
         <input id="location" type="text" value="Cuero, TX USA" />
-
+<label class="label" for="utcOffset">UTC Offset</label>
+<input id="utcOffset" type="number" value="-6" step="0.5" />
         <button type="button" onclick="calculateState()">Calculate State</button>
 
         <div class="sub">
@@ -546,20 +547,30 @@
       }
     }
 
-    function calculateState(){
-      const dob = document.getElementById("dob").value;
-      const tob = document.getElementById("tob").value;
-      const location = document.getElementById("location").value;
+async function calculateState(){
 
-      if(!dob || !tob || !location){
-        alert("Enter date, time, and location");
-        return;
-      }
+  const dob = document.getElementById("dob").value
+  const tob = document.getElementById("tob").value
+  const utcOffset = document.getElementById("utcOffset").value
 
-      const inputs = computePlanetInputs(dob, tob, location);
-      const result = computeState(inputs);
-      render(result);
-    }
+  const response = await fetch("/api/chart_inputs", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      dob: dob,
+      tob: tob,
+      utcOffset: utcOffset
+    })
+  })
+
+  const inputs = await response.json()
+
+  const result = computeState(inputs)
+
+  render(result)
+}
 
     window.onload = function(){
       calculateState();
