@@ -446,6 +446,61 @@ function computePlanetaryGraph(inputs){
     environmentMode
   };
 }
+    function computeTimingLayer(inputs, graphResult, environmentResult){
+  const {
+    moon,
+    mars,
+    mercury,
+    uranus,
+    neptune,
+    pluto
+  } = inputs;
+
+  const spikeTrigger =
+    (mars * 0.35) +
+    (uranus * 0.45);
+
+  const fogDrift =
+    (neptune * 0.40);
+
+  const rewritePressure =
+    (pluto * 0.50) +
+    (environmentResult.environmentalLoad * 0.50);
+
+  const timingPressure =
+    spikeTrigger + fogDrift + rewritePressure;
+
+  let timingMode = "Stable Window";
+
+  if (timingPressure > 0.90){
+    timingMode = "Activation Window";
+  }
+
+  if (timingPressure > 1.10){
+    timingMode = "Rewrite Window";
+  }
+
+  if (timingPressure > 1.30){
+    timingMode = "Threshold Crossing";
+  }
+
+  const timingSupport =
+    mercury * 0.20 +
+    graphResult.regulation * 0.20;
+
+  const adjustedTimingPressure =
+    Math.max(timingPressure - timingSupport, 0);
+
+  return {
+    spikeTrigger,
+    fogDrift,
+    rewritePressure,
+    timingPressure,
+    timingSupport,
+    adjustedTimingPressure,
+    timingMode
+  };
+}
     function computeState(inputs){
       const rawLoad =
         inputs.moon +
@@ -641,10 +696,8 @@ console.log("V3A Graph Result:", graphResult);
       // V3B environment layer test
 const environmentResult = computeEnvironmentLayer(inputs, graphResult);
 console.log("V3B Environment Result:", environmentResult);
-      // V3B environment layer test
-const environmentResult = computeEnvironmentLayer(inputs, graphResult);
-console.log("V3B Environment Result:", environmentResult);
-const result = {
+      
+      const result = {
   ...computeState(inputs),
   ...graphResult
 };
