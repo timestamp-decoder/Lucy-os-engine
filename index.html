@@ -319,11 +319,12 @@
     }
 
     function hashString(str){
-      let hash = 0;
+      let hash = 2166136261;
       for(let i = 0; i < str.length; i++){
-        hash = (hash * 31 + str.charCodeAt(i)) % 1000000007;
+        hash ^= str.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
       }
-      return hash;
+      return Math.abs(hash >>> 0);
     }
 
     function parseTimeTo24Hour(timeString){
@@ -350,46 +351,68 @@
       return { hour, minute };
     }
 
+    function normalizeFromTrig(value, span){
+      const raw01 = (value + 1) / 2;
+      return 0.5 + (raw01 - 0.5) * span;
+    }
+
     function computePlanetInputs(dateString, timeString, locationString){
       const { hour, minute } = parseTimeTo24Hour(timeString);
-
       const bucketMinute = Math.round(minute / 5) * 5;
       const timeBucket = `${hour}:${String(bucketMinute).padStart(2, "0")}`;
 
-      const dateHash = hashString((dateString || "").trim());
-      const timeHash = hashString(timeBucket);
-      const locationHash = hashString((locationString || "").trim().toLowerCase());
+      const dateKey = (dateString || "").trim();
+      const timeKey = timeBucket;
+      const locationKey = (locationString || "").trim().toLowerCase();
 
-      const masterSeed =
-        (dateHash * 1.7) +
-        (timeHash * 2.3) +
-        (locationHash * 3.1);
+      const dateHash = hashString(dateKey);
+      const timeHash = hashString(timeKey);
+      const locationHash = hashString(locationKey);
 
-      function normalizedPlanet(offset, speed, span){
-        const a = Math.sin(masterSeed * 0.000011 * speed + offset);
-        const b = Math.cos(masterSeed * 0.000017 * (speed + 0.37) + offset * 1.91);
-        const c = Math.sin((dateHash + timeHash * 3 + locationHash * 5) * 0.000007 * (speed + 0.73) + offset * 0.63);
+      const dayPart = Number((dateKey.split("-")[2] || "1"));
+      const monthPart = Number((dateKey.split("-")[1] || "1"));
+      const yearPart = Number((dateKey.split("-")[0] || "2000"));
 
-        const mixed = (a * 0.5) + (b * 0.35) + (c * 0.15);
-        const raw01 = (mixed + 1) / 2;
+      const timeValue = (hour * 60) + bucketMinute;
 
-        return 0.5 + (raw01 - 0.5) * span;
+      function makePlanet(offsetA, offsetB, speedA, speedB, span){
+        const phaseA =
+          (dateHash * 0.000013 * speedA) +
+          (timeHash * 0.000021 * (speedA + 0.31)) +
+          (locationHash * 0.000017 * (speedA + 0.73)) +
+          (dayPart * 0.19) +
+          (monthPart * 0.11) +
+          (yearPart * 0.0007) +
+          (timeValue * 0.009 * speedA) +
+          offsetA;
+
+        const phaseB =
+          (dateHash * 0.000009 * (speedB + 0.17)) -
+          (timeHash * 0.000015 * speedB) +
+          (locationHash * 0.000019 * (speedB + 0.41)) +
+          (dayPart * 0.13) -
+          (monthPart * 0.07) +
+          (timeValue * 0.006 * speedB) +
+          offsetB;
+
+        const mixed =
+          (Math.sin(phaseA) * 0.58) +
+          (Math.cos(phaseB) * 0.42);
+
+        return normalizeFromTrig(mixed, span);
       }
 
       return {
-        sun: normalizedPlanet(1.11, 0.7, 0.24),
-        moon: normalizedPlanet(2.22, 5.1, 0.32),
-        mars: normalizedPlanet(3.33, 2.2, 0.30),
-        jupiter: normalizedPlanet(4.44, 1.1, 0.28),
-        uranus: normalizedPlanet(5.55, 1.7, 0.29),
-        neptune: normalizedPlanet(6.66, 0.9, 0.29),
-        pluto: normalizedPlanet(7.77, 0.6, 0.31),
-        mercury: normalizedPlanet(8.88, 4.0, 0.28),
-        venus: normalizedPlanet(9.99, 1.8, 0.26),
-        saturn: normalizedPlanet(10.1, 0.8, 0.26),
-        debugTimeBucket: timeBucket,
-        debugDateHash: dateHash,
-        debugLocationHash: locationHash
+        sun:     makePlanet(0.9,  1.7, 0.45, 0.30, 0.24),
+        moon:    makePlanet(1.8,  2.6, 2.60, 1.80, 0.34),
+        mercury: makePlanet(2.7,  3.9, 2.10, 1.50, 0.30),
+        venus:   makePlanet(3.6,  4.8, 1.20, 0.95, 0.28),
+        mars:    makePlanet(4.5,  5.7, 1.65, 1.25, 0.31),
+        jupiter: makePlanet(5.4,  6.6, 0.72, 0.58, 0.28),
+        saturn:  makePlanet(6.3,  7.5, 0.52, 0.41, 0.26),
+        uranus:  makePlanet(7.2,  8.4, 0.88, 0.63, 0.30),
+        neptune: makePlanet(8.1,  9.3, 0.40, 0.33, 0.30),
+        pluto:   makePlanet(9.0, 10.2, 0.24, 0.19, 0.33)
       };
     }
 
@@ -405,7 +428,6 @@
       const regulation = inputs.venus + inputs.mercury;
 
       let amplifiedLoad = rawLoad;
-
       if(rawLoad > regulation){
         amplifiedLoad =
           rawLoad * (1 + inputs.jupiter * 0.15 * (1 + Math.max(0, rawLoad - regulation)));
@@ -413,7 +435,7 @@
 
       const saturnConstraint = inputs.saturn * amplifiedLoad * 0.12;
       const effectiveLoad = Math.max(amplifiedLoad - regulation - saturnConstraint, 0);
-      const capacity = inputs.sun || 0.01;
+      const capacity = Math.max(inputs.sun, 0.01);
       const stabilityIndex = effectiveLoad / capacity;
 
       const plutoRewrite =
@@ -467,10 +489,7 @@
         primaryDriver: argMax(loadDrivers),
         topRegulator: argMax(regulators),
         topDrivers: topThree(loadDrivers),
-        capacityUsedPct: stabilityIndex * 100,
-        debugTimeBucket: inputs.debugTimeBucket,
-        debugDateHash: inputs.debugDateHash,
-        debugLocationHash: inputs.debugLocationHash
+        capacityUsedPct: stabilityIndex * 100
       };
     }
 
@@ -502,6 +521,7 @@
         `Current reading: ${result.state.toLowerCase()} pressure normalized against Sun-based capacity, with Jupiter escalation ` +
         `${result.rawLoad > result.regulation ? "active" : "inactive"}, Saturn damping active, and Pluto rewrite conditions ` +
         `${result.plutoRewrite ? "met" : "not met"}.`;
+
       const pill = document.getElementById("modePill");
       if(result.mode === "Balanced"){
         pill.style.background = "rgba(103,210,111,.12)";
