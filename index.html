@@ -587,10 +587,14 @@ if(rawInputs.error){
   alert(rawInputs.error);
   return;
 }
+const inputs = smoothInputs(rawInputs, signature);
 
-      const inputs = smoothInputs(rawInputs, signature);
-      const result = computeState(inputs);
-      render(result);
+// V3A parallel test
+const graphResult = computePlanetaryGraph(inputs);
+console.log("V3A Graph Result:", graphResult);
+
+const result = computeState(inputs);
+render(result);
     }
 
     window.onload = function(){
