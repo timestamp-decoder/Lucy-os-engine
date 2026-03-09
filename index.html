@@ -503,9 +503,26 @@ const SMOOTHING_ALPHA = {
   pluto: 0.01
 };
 
+function getPreviousSmoothedInputs(){
+  try {
+    const saved = localStorage.getItem("lucySmoothedInputs");
+    return saved ? JSON.parse(saved) : null;
+  } catch {
+    return null;
+  }
+}
+
+function setPreviousSmoothedInputs(inputs){
+  try {
+    localStorage.setItem("lucySmoothedInputs", JSON.stringify(inputs));
+  } catch {}
+}
+
 function smoothInputs(rawInputs){
+  const previousSmoothedInputs = getPreviousSmoothedInputs();
+
   if(!previousSmoothedInputs){
-    previousSmoothedInputs = { ...rawInputs };
+    setPreviousSmoothedInputs(rawInputs);
     return rawInputs;
   }
 
@@ -519,7 +536,7 @@ function smoothInputs(rawInputs){
     smoothed[key] = (raw * alpha) + (prev * (1 - alpha));
   }
 
-  previousSmoothedInputs = { ...smoothed };
+  setPreviousSmoothedInputs(smoothed);
   return smoothed;
 }
 async function calculateState(){
