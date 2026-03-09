@@ -316,7 +316,7 @@ function topThree(obj){
     .slice(0,3)
     .map(([name])=>name);
 }
-function computePlanetInputs(dateString,timeString){
+function computePlanetInputs(dateString,timeString,locationString){
   const match = timeString.match(/(\d{1,2}):(\d{2})/);
 
   let hour = 0;
@@ -329,13 +329,22 @@ function computePlanetInputs(dateString,timeString){
 
   const bucketMinute = Math.round(minute / 5) * 5;
   const timeBucket = `${hour}:${String(bucketMinute).padStart(2,"0")}`;
+  
+const seed = (dateString + " " + timeBucket + " " + locationString).replace(/\D/g,"");
 
-  const seed = (dateString + " " + timeBucket).replace(/\D/g,"");
-  let n = 0;
+let locationHash = 0;
+for(let i = 0; i < locationString.length; i++){
+  locationHash += locationString.charCodeAt(i) * (i + 1);
+}
 
-  for(let i=0;i<seed.length;i++){
-    n += Number(seed[i]) * (i + 1);
-  }
+let n = 0;
+
+for(let i = 0; i < seed.length; i++){
+  n += Number(seed[i]) * (i + 1);
+}
+
+n += locationHash;
+
 
   function pick(offset){
     const raw = ((Math.sin((n * 0.08) + offset) + 1) / 2);
@@ -491,13 +500,14 @@ function render(result){
 function calculateState(){
   const dob = document.getElementById("dob").value;
   const tob = document.getElementById("tob").value;
+  const location = document.getElementById("location").value;
 
-  if(!dob || !tob){
-    alert("Enter date and time");
+  if(!dob || !tob || !location){
+    alert("Enter date, time, and location");
     return;
   }
 
-  const inputs = computePlanetInputs(dob, tob);
+  const inputs = computePlanetInputs(dob, tob, location);
   const result = computeState(inputs);
   render(result);
 }
