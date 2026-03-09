@@ -357,65 +357,7 @@
       return 0.5 + (raw01 - 0.5) * span;
     }
 
-    function computePlanetInputs(dateString, timeString, locationString){
-      const { hour, minute } = parseTimeTo24Hour(timeString);
-      const bucketMinute = Math.round(minute / 5) * 5;
-      const timeBucket = `${hour}:${String(bucketMinute).padStart(2, "0")}`;
 
-      const dateKey = (dateString || "").trim();
-      const timeKey = timeBucket;
-      const locationKey = (locationString || "").trim().toLowerCase();
-
-      const dateHash = hashString(dateKey);
-      const timeHash = hashString(timeKey);
-      const locationHash = hashString(locationKey);
-
-      const dayPart = Number((dateKey.split("-")[2] || "1"));
-      const monthPart = Number((dateKey.split("-")[1] || "1"));
-      const yearPart = Number((dateKey.split("-")[0] || "2000"));
-
-      const timeValue = (hour * 60) + bucketMinute;
-
-      function makePlanet(offsetA, offsetB, speedA, speedB, span){
-        const phaseA =
-          (dateHash * 0.000013 * speedA) +
-          (timeHash * 0.000021 * (speedA + 0.31)) +
-          (locationHash * 0.000017 * (speedA + 0.73)) +
-          (dayPart * 0.19) +
-          (monthPart * 0.11) +
-          (yearPart * 0.0007) +
-          (timeValue * 0.009 * speedA) +
-          offsetA;
-
-        const phaseB =
-          (dateHash * 0.000009 * (speedB + 0.17)) -
-          (timeHash * 0.000015 * speedB) +
-          (locationHash * 0.000019 * (speedB + 0.41)) +
-          (dayPart * 0.13) -
-          (monthPart * 0.07) +
-          (timeValue * 0.006 * speedB) +
-          offsetB;
-
-        const mixed =
-          (Math.sin(phaseA) * 0.58) +
-          (Math.cos(phaseB) * 0.42);
-
-        return normalizeFromTrig(mixed, span);
-      }
-
-      return {
-        sun:     makePlanet(0.9,  1.7, 0.45, 0.30, 0.24),
-        moon:    makePlanet(1.8,  2.6, 2.60, 1.80, 0.34),
-        mercury: makePlanet(2.7,  3.9, 2.10, 1.50, 0.30),
-        venus:   makePlanet(3.6,  4.8, 1.20, 0.95, 0.28),
-        mars:    makePlanet(4.5,  5.7, 1.65, 1.25, 0.31),
-        jupiter: makePlanet(5.4,  6.6, 0.72, 0.58, 0.28),
-        saturn:  makePlanet(6.3,  7.5, 0.52, 0.41, 0.26),
-        uranus:  makePlanet(7.2,  8.4, 0.88, 0.63, 0.30),
-        neptune: makePlanet(8.1,  9.3, 0.40, 0.33, 0.30),
-        pluto:   makePlanet(9.0, 10.2, 0.24, 0.19, 0.33)
-      };
-    }
 
     function computeState(inputs){
       const rawLoad =
