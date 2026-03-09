@@ -321,13 +321,14 @@
     function hashString(str){
       let hash = 0;
       for(let i = 0; i < str.length; i++){
-        hash += str.charCodeAt(i) * (i + 1);
+        hash = (hash * 31 + str.charCodeAt(i)) % 1000000007;
       }
       return hash;
     }
 
-    function computePlanetInputs(dateString, timeString, locationString){
-      const match = timeString.match(/(\d{1,2}):(\d{2})\s*([AaPp][Mm])?/);
+    function parseTimeTo24Hour(timeString){
+      const clean = (timeString || "").trim();
+      const match = clean.match(/(\d{1,2}):(\d{2})\s*([AaPp][Mm])?/);
 
       let hour = 0;
       let minute = 0;
@@ -346,50 +347,48 @@
         hour = 0;
       }
 
+      return { hour, minute };
+    }
+
+    function computePlanetInputs(dateString, timeString, locationString){
+      const { hour, minute } = parseTimeTo24Hour(timeString);
+
       const bucketMinute = Math.round(minute / 5) * 5;
-      const timeBucket = `${hour}:${String(bucketMinute).padStart(2,"0")}`;
+      const timeBucket = `${hour}:${String(bucketMinute).padStart(2, "0")}`;
 
-      const numericSeed = (dateString + " " + timeBucket).replace(/\D/g,"");
-      const locationHash = hashString(locationString.trim().toLowerCase());
-      const dateHash = hashString(dateString);
+      const dateHash = hashString((dateString || "").trim());
       const timeHash = hashString(timeBucket);
+      const locationHash = hashString((locationString || "").trim().toLowerCase());
 
-      let n = 0;
-      for(let i = 0; i < numericSeed.length; i++){
-        n += Number(numericSeed[i]) * (i + 1);
-      }
+      const masterSeed =
+        (dateHash * 1.7) +
+        (timeHash * 2.3) +
+        (locationHash * 3.1);
 
-      n += dateHash;
-      n += timeHash * 2;
-      n += locationHash * 3;
+      function normalizedPlanet(offset, speed, span){
+        const a = Math.sin(masterSeed * 0.000011 * speed + offset);
+        const b = Math.cos(masterSeed * 0.000017 * (speed + 0.37) + offset * 1.91);
+        const c = Math.sin((dateHash + timeHash * 3 + locationHash * 5) * 0.000007 * (speed + 0.73) + offset * 0.63);
 
-      const locationPhase = (locationHash % 360) * 0.01;
-      const timePhase = (timeHash % 360) * 0.005;
+        const mixed = (a * 0.5) + (b * 0.35) + (c * 0.15);
+        const raw01 = (mixed + 1) / 2;
 
-      function pick(offset, speed, weight){
-        const phase =
-          (n * 0.015 * speed) +
-          locationPhase +
-          timePhase +
-          offset;
-
-        const raw = (Math.sin(phase) + 1) / 2;
-        const softened = 0.5 + (raw - 0.5) * weight;
-        return softened;
+        return 0.5 + (raw01 - 0.5) * span;
       }
 
       return {
-        sun: pick(1.1, 0.80, 0.20),
-        moon: pick(2.2, 1.35, 0.24),
-        mars: pick(3.3, 1.10, 0.23),
-        jupiter: pick(4.4, 0.95, 0.22),
-        uranus: pick(5.5, 1.25, 0.23),
-        neptune: pick(6.6, 1.05, 0.21),
-        pluto: pick(7.7, 0.75, 0.24),
-        mercury: pick(8.8, 1.40, 0.22),
-        venus: pick(9.9, 1.00, 0.21),
-        saturn: pick(10.1, 0.85, 0.20),
+        sun: normalizedPlanet(1.11, 0.7, 0.24),
+        moon: normalizedPlanet(2.22, 5.1, 0.32),
+        mars: normalizedPlanet(3.33, 2.2, 0.30),
+        jupiter: normalizedPlanet(4.44, 1.1, 0.28),
+        uranus: normalizedPlanet(5.55, 1.7, 0.29),
+        neptune: normalizedPlanet(6.66, 0.9, 0.29),
+        pluto: normalizedPlanet(7.77, 0.6, 0.31),
+        mercury: normalizedPlanet(8.88, 4.0, 0.28),
+        venus: normalizedPlanet(9.99, 1.8, 0.26),
+        saturn: normalizedPlanet(10.1, 0.8, 0.26),
         debugTimeBucket: timeBucket,
+        debugDateHash: dateHash,
         debugLocationHash: locationHash
       };
     }
@@ -470,6 +469,7 @@
         topDrivers: topThree(loadDrivers),
         capacityUsedPct: stabilityIndex * 100,
         debugTimeBucket: inputs.debugTimeBucket,
+        debugDateHash: inputs.debugDateHash,
         debugLocationHash: inputs.debugLocationHash
       };
     }
@@ -501,8 +501,7 @@
       document.getElementById("readingText").textContent =
         `Current reading: ${result.state.toLowerCase()} pressure normalized against Sun-based capacity, with Jupiter escalation ` +
         `${result.rawLoad > result.regulation ? "active" : "inactive"}, Saturn damping active, and Pluto rewrite conditions ` +
-        `${result.plutoRewrite ? "met" : "not met"}. Debug time bucket: ${result.debugTimeBucket}. Debug location hash: ${result.debugLocationHash}.`;
-
+        `${result.plutoRewrite ? "met" : "not met"}.`;
       const pill = document.getElementById("modePill");
       if(result.mode === "Balanced"){
         pill.style.background = "rgba(103,210,111,.12)";
