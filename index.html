@@ -319,7 +319,87 @@
         .slice(0, 3)
         .map(([name]) => name);
     }
+function computePlanetaryGraph(inputs){
 
+  const {
+    sun, moon, mercury, venus,
+    mars, jupiter, saturn,
+    uranus, neptune, pluto
+  } = inputs;
+
+  const jupiterAmp = 0.15;
+  const fogFactor = 0.10;
+  const spikeFactor = 0.12;
+  const saturnFactor = 0.25;
+
+  const saturnGate = 1.05;
+  const saturnActivation = 0.65;
+
+  // STEP A — Base Load
+  const baseLoad =
+    moon*0.60 +
+    mars*0.50 +
+    jupiter*0.80 +
+    uranus*0.70 +
+    neptune*0.70 +
+    pluto*1.10;
+
+  // STEP B — Amplification
+  const amplifiedLoad =
+    baseLoad * (1 + jupiter * jupiterAmp);
+
+  // STEP C — Regulation
+  const regulation =
+    mercury*0.40 +
+    venus*0.40;
+
+  // STEP D — Distortion
+  const distortion =
+    neptune*fogFactor +
+    uranus*spikeFactor;
+
+  // STEP E — Saturn Constraint
+  const saturnConstraint =
+    Math.max(0, amplifiedLoad - 1.0) *
+    saturnFactor *
+    saturn;
+
+  // STEP F — Effective Load
+  const effectiveLoad =
+    amplifiedLoad +
+    distortion -
+    regulation -
+    saturnConstraint;
+
+  // STEP G — Capacity
+  const capacity = sun;
+
+  // STEP H — Strain
+  const strain =
+    effectiveLoad / Math.max(capacity, 0.01);
+
+  let mode = "Normal";
+
+  if (strain > saturnGate && saturn > saturnActivation){
+    mode = "Saturn Shutdown";
+  }
+
+  if (strain > 1.15 && pluto > 0.75){
+    mode = "Pluto Rewrite";
+  }
+
+  return {
+    baseLoad,
+    amplifiedLoad,
+    regulation,
+    distortion,
+    saturnConstraint,
+    effectiveLoad,
+    capacity,
+    strain,
+    mode
+  };
+}
     function computeState(inputs){
       const rawLoad =
         inputs.moon +
