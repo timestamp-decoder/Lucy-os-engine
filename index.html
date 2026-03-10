@@ -701,7 +701,9 @@ const timingResult = computeTimingLayer(inputs, graphResult, environmentResult);
 console.log("V3C Timing Result:", timingResult);
       const result = {
   ...computeState(inputs),
-  ...graphResult
+  ...graphResult,
+  ...environmentResult,
+  ...timingResult
 };
 console.log("V2.5 Result:", result);
 render(result);
