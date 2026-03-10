@@ -275,56 +275,31 @@
         </div>
 
         <div class="bottom">
+          <div class="mini">
+            <h3>Top Load Drivers</h3>
+            <ol id="driversList">
+              <li>—</li>
+              <li>—</li>
+              <li>—</li>
+            </ol>
+          </div>
 
-  <div class="mini">
-    <h3>Top Load Drivers</h3>
-    <ol id="driversList">
-      <li>—</li>
-      <li>—</li>
-      <li>—</li>
-    </ol>
-  </div>
-<div class="mini">
-  <h3>Environment</h3>
-  <ul>
-    <li id="environmentLoadText">Environmental Load: 0.00</li>
-    <li id="environmentModeText">Environment Mode: Neutral</li>
-  </ul>
-</div>
+          <div class="mini">
+            <h3>Environment</h3>
+            <ul>
+              <li id="environmentLoadText">Environmental Load: 0.00</li>
+              <li id="environmentModeText">Environment Mode: Neutral</li>
+            </ul>
+          </div>
 
-<div class="mini">
-  <h3>Timing</h3>
-  <ul>
-    <li id="timingPressureText">Timing Pressure: 0.00</li>
-    <li id="timingModeText">Timing Mode: Stable Window</li>
-  </ul>
-</div>
-  <div class="mini">
-    <h3>Flags</h3>
-    <ul>
-      <li id="plutoFlag">Pluto Rewrite: OFF</li>
-      <li id="saturnFlag">Saturn Shutdown: OFF</li>
-      <li id="capacityUsedFlag">Capacity Used: 0%</li>
-    </ul>
-  </div>
+          <div class="mini">
+            <h3>Timing</h3>
+            <ul>
+              <li id="timingPressureText">Timing Pressure: 0.00</li>
+              <li id="timingModeText">Timing Mode: Stable Window</li>
+            </ul>
+          </div>
 
-  <div class="mini">
-    <h3>Environment</h3>
-    <ul>
-      <li id="environmentLoadText">Environmental Load: 0.00</li>
-      <li id="environmentModeText">Environment Mode: Neutral</li>
-    </ul>
-  </div>
-
-  <div class="mini">
-    <h3>Timing</h3>
-    <ul>
-      <li id="timingPressureText">Timing Pressure: 0.00</li>
-      <li id="timingModeText">Timing Mode: Stable Window</li>
-    </ul>
-  </div>
-
-</div>
           <div class="mini">
             <h3>Flags</h3>
             <ul>
@@ -361,188 +336,182 @@
         .slice(0, 3)
         .map(([name]) => name);
     }
-function computePlanetaryGraph(inputs){
 
-  const {
-    sun, moon, mercury, venus,
-    mars, jupiter, saturn,
-    uranus, neptune, pluto
-  } = inputs;
+    function computePlanetaryGraph(inputs){
+      const {
+        sun, moon, mercury, venus,
+        mars, jupiter, saturn,
+        uranus, neptune, pluto
+      } = inputs;
 
-  const jupiterAmp = 0.15;
-  const fogFactor = 0.10;
-  const spikeFactor = 0.12;
-  const saturnFactor = 0.25;
+      const jupiterAmp = 0.15;
+      const fogFactor = 0.10;
+      const spikeFactor = 0.12;
+      const saturnFactor = 0.25;
 
-  const saturnGate = 1.05;
-  const saturnActivation = 0.65;
+      const saturnGate = 1.05;
+      const saturnActivation = 0.65;
 
-  // STEP A — Base Load
-  const baseLoad =
-    moon*0.60 +
-    mars*0.50 +
-    jupiter*0.80 +
-    uranus*0.70 +
-    neptune*0.70 +
-    pluto*1.10;
+      const baseLoad =
+        moon * 0.60 +
+        mars * 0.50 +
+        jupiter * 0.80 +
+        uranus * 0.70 +
+        neptune * 0.70 +
+        pluto * 1.10;
 
-  // STEP B — Amplification
-  const amplifiedLoad =
-    baseLoad * (1 + jupiter * jupiterAmp);
+      const amplifiedLoad =
+        baseLoad * (1 + jupiter * jupiterAmp);
 
-  // STEP C — Regulation
-  const regulation =
-    mercury*0.40 +
-    venus*0.40;
+      const regulation =
+        mercury * 0.40 +
+        venus * 0.40;
 
-  // STEP D — Distortion
-  const distortion =
-    neptune*fogFactor +
-    uranus*spikeFactor;
+      const distortion =
+        neptune * fogFactor +
+        uranus * spikeFactor;
 
-  // STEP E — Saturn Constraint
-  const saturnConstraint =
-    Math.max(0, amplifiedLoad - 1.0) *
-    saturnFactor *
-    saturn;
+      const saturnConstraint =
+        Math.max(0, amplifiedLoad - 1.0) *
+        saturnFactor *
+        saturn;
 
-  // STEP F — Effective Load
-  const effectiveLoad =
-    amplifiedLoad +
-    distortion -
-    regulation -
-    saturnConstraint;
+      const effectiveLoad =
+        amplifiedLoad +
+        distortion -
+        regulation -
+        saturnConstraint;
 
-  // STEP G — Capacity
-  const capacity = sun;
+      const capacity = sun;
 
-  // STEP H — Strain
-  const strain =
-    effectiveLoad / Math.max(capacity, 0.01);
+      const strain =
+        effectiveLoad / Math.max(capacity, 0.01);
 
-  let mode = "Normal";
+      let mode = "Normal";
 
-  if (strain > saturnGate && saturn > saturnActivation){
-    mode = "Saturn Shutdown";
-  }
+      if (strain > saturnGate && saturn > saturnActivation){
+        mode = "Saturn Shutdown";
+      }
 
-  if (strain > 1.15 && pluto > 0.75){
-    mode = "Pluto Rewrite";
-  }
+      if (strain > 1.15 && pluto > 0.75){
+        mode = "Pluto Rewrite";
+      }
 
-  return {
-    baseLoad,
-    amplifiedLoad,
-    regulation,
-    distortion,
-    saturnConstraint,
-    effectiveLoad,
-    capacity,
-    strain,
-    mode
-  };
-}
+      return {
+        baseLoad,
+        amplifiedLoad,
+        regulation,
+        distortion,
+        saturnConstraint,
+        effectiveLoad,
+        capacity,
+        strain,
+        mode
+      };
+    }
+
     function computeEnvironmentLayer(inputs, graphResult){
-  const {
-    jupiter,
-    saturn,
-    uranus,
-    neptune,
-    pluto
-  } = inputs;
+      const {
+        jupiter,
+        saturn,
+        uranus,
+        neptune,
+        pluto
+      } = inputs;
 
-  const transitPressure =
-    (jupiter * 0.08) +
-    (uranus * 0.10) +
-    (neptune * 0.10) +
-    (pluto * 0.12);
+      const transitPressure =
+        (jupiter * 0.08) +
+        (uranus * 0.10) +
+        (neptune * 0.10) +
+        (pluto * 0.12);
 
-  const containmentSupport =
-    saturn * 0.08;
+      const containmentSupport =
+        saturn * 0.08;
 
-  const environmentalLoad =
-    Math.max(transitPressure - containmentSupport, 0);
+      const environmentalLoad =
+        Math.max(transitPressure - containmentSupport, 0);
 
-  const adjustedEffectiveLoad =
-    graphResult.effectiveLoad + environmentalLoad;
+      const adjustedEffectiveLoad =
+        graphResult.effectiveLoad + environmentalLoad;
 
-  const adjustedStrain =
-    adjustedEffectiveLoad / Math.max(graphResult.capacity, 0.01);
+      const adjustedStrain =
+        adjustedEffectiveLoad / Math.max(graphResult.capacity, 0.01);
 
-  let environmentMode = "Neutral";
+      let environmentMode = "Neutral";
 
-  if (adjustedStrain > 1.05){
-    environmentMode = "Pressurized";
-  }
+      if (adjustedStrain > 1.05){
+        environmentMode = "Pressurized";
+      }
 
-  if (adjustedStrain > 1.25){
-    environmentMode = "High Pressure";
-  }
+      if (adjustedStrain > 1.25){
+        environmentMode = "High Pressure";
+      }
 
-  return {
-    transitPressure,
-    containmentSupport,
-    environmentalLoad,
-    adjustedEffectiveLoad,
-    adjustedStrain,
-    environmentMode
-  };
-}
+      return {
+        transitPressure,
+        containmentSupport,
+        environmentalLoad,
+        adjustedEffectiveLoad,
+        adjustedStrain,
+        environmentMode
+      };
+    }
+
     function computeTimingLayer(inputs, graphResult, environmentResult){
-  const {
-    moon,
-    mars,
-    mercury,
-    uranus,
-    neptune,
-    pluto
-  } = inputs;
+      const {
+        mars,
+        mercury,
+        uranus,
+        neptune,
+        pluto
+      } = inputs;
 
-  const spikeTrigger =
-    (mars * 0.35) +
-    (uranus * 0.45);
+      const spikeTrigger =
+        (mars * 0.35) +
+        (uranus * 0.45);
 
-  const fogDrift =
-    (neptune * 0.40);
+      const fogDrift =
+        (neptune * 0.40);
 
-  const rewritePressure =
-    (pluto * 0.50) +
-    (environmentResult.environmentalLoad * 0.50);
+      const rewritePressure =
+        (pluto * 0.50) +
+        (environmentResult.environmentalLoad * 0.50);
 
-  const timingPressure =
-    spikeTrigger + fogDrift + rewritePressure;
+      const timingPressure =
+        spikeTrigger + fogDrift + rewritePressure;
 
-  let timingMode = "Stable Window";
+      let timingMode = "Stable Window";
 
-  if (timingPressure > 0.90){
-    timingMode = "Activation Window";
-  }
+      if (timingPressure > 0.90){
+        timingMode = "Activation Window";
+      }
 
-  if (timingPressure > 1.10){
-    timingMode = "Rewrite Window";
-  }
+      if (timingPressure > 1.10){
+        timingMode = "Rewrite Window";
+      }
 
-  if (timingPressure > 1.30){
-    timingMode = "Threshold Crossing";
-  }
+      if (timingPressure > 1.30){
+        timingMode = "Threshold Crossing";
+      }
 
-  const timingSupport =
-    mercury * 0.20 +
-    graphResult.regulation * 0.20;
+      const timingSupport =
+        mercury * 0.20 +
+        graphResult.regulation * 0.20;
 
-  const adjustedTimingPressure =
-    Math.max(timingPressure - timingSupport, 0);
+      const adjustedTimingPressure =
+        Math.max(timingPressure - timingSupport, 0);
 
-  return {
-    spikeTrigger,
-    fogDrift,
-    rewritePressure,
-    timingPressure,
-    timingSupport,
-    adjustedTimingPressure,
-    timingMode
-  };
-}
+      return {
+        spikeTrigger,
+        fogDrift,
+        rewritePressure,
+        timingPressure,
+        timingSupport,
+        adjustedTimingPressure,
+        timingMode
+      };
+    }
+
     function computeState(inputs){
       const rawLoad =
         inputs.moon +
@@ -640,16 +609,19 @@ function computePlanetaryGraph(inputs){
       document.getElementById("plutoFlag").textContent = "Pluto Rewrite: " + (result.plutoRewrite ? "ON" : "OFF");
       document.getElementById("saturnFlag").textContent = "Saturn Shutdown: " + (result.saturnOverride ? "ON" : "OFF");
       document.getElementById("capacityUsedFlag").textContent = "Capacity Used: " + Math.round(result.capacityUsedPct) + "%";
-document.getElementById("environmentLoadText").textContent =
-  "Environmental Load: " + round2(result.environmentalLoad ?? 0);
 
-document.getElementById("environmentModeText").textContent =
-  "Environment Mode: " + (result.environmentMode ?? "Neutral");
+      document.getElementById("environmentLoadText").textContent =
+        "Environmental Load: " + round2(result.environmentalLoad ?? 0);
 
-document.getElementById("timingPressureText").textContent =
-  "Timing Pressure: " + round2(result.timingPressure ?? 0);
+      document.getElementById("environmentModeText").textContent =
+        "Environment Mode: " + (result.environmentMode ?? "Neutral");
 
-document.getElementById("timingModeText").textContent ="Timing Mode: " + ((result.timingPressure ?? 0) > 0.9 ? "Activation Window" : "Stable Window");
+      document.getElementById("timingPressureText").textContent =
+        "Timing Pressure: " + round2(result.timingPressure ?? 0);
+
+      document.getElementById("timingModeText").textContent =
+        "Timing Mode: " + ((result.timingPressure ?? 0) > 0.9 ? "Activation Window" : "Stable Window");
+
       document.getElementById("driversList").innerHTML =
         result.topDrivers.map(d => `<li>${d}</li>`).join("");
 
@@ -733,31 +705,33 @@ document.getElementById("timingModeText").textContent ="Timing Mode: " + ((resul
       });
 
       const rawInputs = await response.json();
-console.log("Lucy Inputs:", rawInputs);
+      console.log("Lucy Inputs:", rawInputs);
 
-if(rawInputs.error){
-  alert(rawInputs.error);
-  return;
-}
-const inputs = smoothInputs(rawInputs, signature);
+      if(rawInputs.error){
+        alert(rawInputs.error);
+        return;
+      }
 
-// V3A parallel test
-const graphResult = computePlanetaryGraph(inputs);
-console.log("V3A Graph Result:", graphResult);
-      // V3B environment layer test
-const environmentResult = computeEnvironmentLayer(inputs, graphResult);
-console.log("V3B Environment Result:", environmentResult);
-      // V3C timing layer test
-const timingResult = computeTimingLayer(inputs, graphResult, environmentResult);
-console.log("V3C Timing Result:", timingResult);
+      const inputs = smoothInputs(rawInputs, signature);
+
+      const graphResult = computePlanetaryGraph(inputs);
+      console.log("V3A Graph Result:", graphResult);
+
+      const environmentResult = computeEnvironmentLayer(inputs, graphResult);
+      console.log("V3B Environment Result:", environmentResult);
+
+      const timingResult = computeTimingLayer(inputs, graphResult, environmentResult);
+      console.log("V3C Timing Result:", timingResult);
+
       const result = {
-  ...computeState(inputs),
-  ...graphResult,
-  ...environmentResult,
-  ...timingResult
-};
-console.log("V2.5 Result:", result);
-render(result);
+        ...computeState(inputs),
+        ...graphResult,
+        ...environmentResult,
+        ...timingResult
+      };
+
+      console.log("V2.5 Result:", result);
+      render(result);
     }
 
     window.onload = function(){
