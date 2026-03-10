@@ -696,7 +696,9 @@ console.log("V3A Graph Result:", graphResult);
       // V3B environment layer test
 const environmentResult = computeEnvironmentLayer(inputs, graphResult);
 console.log("V3B Environment Result:", environmentResult);
-      
+      // V3C timing layer test
+const timingResult = computeTimingLayer(inputs, graphResult, environmentResult);
+console.log("V3C Timing Result:", timingResult);
       const result = {
   ...computeState(inputs),
   ...graphResult
