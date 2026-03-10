@@ -620,7 +620,7 @@
         "Timing Pressure: " + round2(result.timingPressure ?? 0);
 
       document.getElementById("timingModeText").textContent =
-        "Timing Mode: " + ((result.timingPressure ?? 0) > 0.9 ? "Activation Window" : "Stable Window");
+        "Timing Mode: " + (result.timingMode ?? "Stable Window");
 
       document.getElementById("driversList").innerHTML =
         result.topDrivers.map(d => `<li>${d}</li>`).join("");
@@ -687,10 +687,9 @@
     async function calculateState(){
       const dob = document.getElementById("dob").value;
       const tob = document.getElementById("tob").value;
-      const location = document.getElementById("location").value;
       const utcOffset = document.getElementById("utcOffset").value;
 
-      const signature = `${dob}|${tob}|${location}|${utcOffset}`;
+      const signature = `${dob}|${tob}|${utcOffset}`;
 
       const response = await fetch("/api/chart_inputs", {
         method: "POST",
