@@ -15,14 +15,14 @@ PLANETS = {
     "saturn": swe.SATURN,
     "uranus": swe.URANUS,
     "neptune": swe.NEPTUNE,
-    "pluto": swe.PLUTO
+    "pluto": swe.PLUTO,
 }
 
 FLAGS = swe.FLG_SWIEPH | swe.FLG_SPEED
 
 
 def normalize_longitude(lon):
-    return lon / 360.0
+    return (lon % 360.0) / 360.0
 
 
 def parse_time_12h(time_str):
@@ -38,18 +38,17 @@ def to_julian_day_utc(dob, tob, utc_offset_hours):
         date.month,
         date.day,
         time.hour,
-        time.minute
+        time.minute,
     )
 
     utc_dt = local_dt - timedelta(hours=utc_offset_hours)
-
     hour_decimal = utc_dt.hour + (utc_dt.minute / 60.0)
 
     jd_ut = swe.julday(
         utc_dt.year,
         utc_dt.month,
         utc_dt.day,
-        hour_decimal
+        hour_decimal,
     )
 
     return jd_ut
@@ -57,7 +56,6 @@ def to_julian_day_utc(dob, tob, utc_offset_hours):
 
 def compute_chart_inputs(dob, tob, utc_offset_hours):
     jd_ut = to_julian_day_utc(dob, tob, utc_offset_hours)
-
     result = {}
 
     for name, body in PLANETS.items():
@@ -72,16 +70,16 @@ def compute_transit_inputs():
     now_utc = datetime.utcnow()
 
     hour_decimal = (
-        now_utc.hour +
-        (now_utc.minute / 60.0) +
-        (now_utc.second / 3600.0)
+        now_utc.hour
+        + (now_utc.minute / 60.0)
+        + (now_utc.second / 3600.0)
     )
 
     jd_ut = swe.julday(
         now_utc.year,
         now_utc.month,
         now_utc.day,
-        hour_decimal
+        hour_decimal,
     )
 
     result = {}
@@ -120,7 +118,6 @@ class handler(BaseHTTPRequestHandler):
             utc_offset = payload.get("utcOffset", None)
 
             if mode == "natal":
-
                 if not dob or not tob or utc_offset in (None, ""):
                     self._set_headers(400)
                     self.wfile.write(json.dumps({
@@ -129,15 +126,9 @@ class handler(BaseHTTPRequestHandler):
                     return
 
                 utc_offset = float(utc_offset)
-
-                result = compute_chart_inputs(
-                    dob,
-                    tob,
-                    utc_offset
-                )
+                result = compute_chart_inputs(dob, tob, utc_offset)
 
             elif mode == "transit":
-
                 result = compute_transit_inputs()
 
             else:
@@ -148,9 +139,7 @@ class handler(BaseHTTPRequestHandler):
                 return
 
             self._set_headers(200)
-            self.wfile.write(
-                json.dumps(result).encode("utf-8")
-            )
+            self.wfile.write(json.dumps(result).encode("utf-8"))
 
         except Exception as e:
             self._set_headers(500)
