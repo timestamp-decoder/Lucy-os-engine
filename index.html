@@ -647,10 +647,9 @@ document.getElementById("environmentModeText").textContent =
   "Environment Mode: " + (result.environmentMode ?? "Neutral");
 
 document.getElementById("timingPressureText").textContent =
-  "Timing Pressure: " + round2(result.spikeTrigger ?? 0);
+  "Timing Pressure: " + round2(result.timingPressure ?? 0);
 
-document.getElementById("timingModeText").textContent =
-  "Timing Mode: " + ((result.spikeTrigger ?? 0) > 0.6 ? "Activation Window" : "Stable Window");
+document.getElementById("timingModeText").textContent ="Timing Mode: " + ((result.timingPressure ?? 0) > 0.9 ? "Activation Window" : "Stable Window");
       document.getElementById("driversList").innerHTML =
         result.topDrivers.map(d => `<li>${d}</li>`).join("");
 
