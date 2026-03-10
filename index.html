@@ -640,7 +640,17 @@ function computePlanetaryGraph(inputs){
       document.getElementById("plutoFlag").textContent = "Pluto Rewrite: " + (result.plutoRewrite ? "ON" : "OFF");
       document.getElementById("saturnFlag").textContent = "Saturn Shutdown: " + (result.saturnOverride ? "ON" : "OFF");
       document.getElementById("capacityUsedFlag").textContent = "Capacity Used: " + Math.round(result.capacityUsedPct) + "%";
+document.getElementById("environmentLoadText").textContent =
+  "Environmental Load: " + round2(result.environmentalLoad ?? 0);
 
+document.getElementById("environmentModeText").textContent =
+  "Environment Mode: " + (result.environmentMode ?? "Neutral");
+
+document.getElementById("timingPressureText").textContent =
+  "Timing Pressure: " + round2(result.spikeTrigger ?? 0);
+
+document.getElementById("timingModeText").textContent =
+  "Timing Mode: " + ((result.spikeTrigger ?? 0) > 0.6 ? "Activation Window" : "Stable Window");
       document.getElementById("driversList").innerHTML =
         result.topDrivers.map(d => `<li>${d}</li>`).join("");
 
