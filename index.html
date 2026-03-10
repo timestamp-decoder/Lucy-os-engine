@@ -512,6 +512,40 @@
       };
     }
 
+    function computeModeDetection(graphResult, environmentResult, timingResult){
+      const { strain, mode: graphMode } = graphResult;
+      const { environmentMode } = environmentResult;
+      const { timingMode } = timingResult;
+
+      let finalMode = "Active";
+
+      if (graphMode === "Pluto Rewrite"){
+        finalMode = "Pluto Rewrite";
+      } else if (graphMode === "Saturn Shutdown"){
+        finalMode = "Saturn Shutdown";
+      } else if (timingMode === "Threshold Crossing"){
+        finalMode = "Threshold Crossing";
+      } else if (timingMode === "Rewrite Window"){
+        finalMode = "Rewrite Window";
+      } else if (timingMode === "Activation Window"){
+        finalMode = "Activation Window";
+      } else if (environmentMode === "High Pressure"){
+        finalMode = "High Pressure";
+      } else if (environmentMode === "Pressurized"){
+        finalMode = "Pressurized";
+      } else if (strain < 0.85){
+        finalMode = "Balanced";
+      } else if (strain < 1.0){
+        finalMode = "Strained";
+      } else {
+        finalMode = "Overload";
+      }
+
+      return {
+        finalMode
+      };
+    }
+
     function computeState(inputs){
       const rawLoad =
         inputs.moon +
@@ -605,7 +639,7 @@
       document.getElementById("saturnBar").style.width = clampPct(result.saturnConstraint, 1) + "%";
       document.getElementById("effectiveLoadBar").style.width = clampPct(result.effectiveLoad, 5) + "%";
 
-      document.getElementById("modePill").textContent = result.mode;
+      document.getElementById("modePill").textContent = result.finalMode ?? result.mode;
       document.getElementById("plutoFlag").textContent = "Pluto Rewrite: " + (result.plutoRewrite ? "ON" : "OFF");
       document.getElementById("saturnFlag").textContent = "Saturn Shutdown: " + (result.saturnOverride ? "ON" : "OFF");
       document.getElementById("capacityUsedFlag").textContent = "Capacity Used: " + Math.round(result.capacityUsedPct) + "%";
@@ -631,26 +665,32 @@
         `${result.plutoRewrite ? "met" : "not met"}.`;
 
       const pill = document.getElementById("modePill");
-      if(result.mode === "Balanced"){
+      const displayMode = result.finalMode ?? result.mode;
+
+      if(displayMode === "Balanced"){
         pill.style.background = "rgba(103,210,111,.12)";
         pill.style.borderColor = "#4f8f57";
         pill.style.color = "#98f2a0";
-      } else if(result.mode === "Strained"){
+      } else if(displayMode === "Strained" || displayMode === "Pressurized"){
         pill.style.background = "rgba(216,184,76,.12)";
         pill.style.borderColor = "#6a5a1a";
         pill.style.color = "#f3db80";
-      } else if(result.mode === "Overload"){
+      } else if(displayMode === "Overload" || displayMode === "Activation Window" || displayMode === "High Pressure"){
         pill.style.background = "rgba(255,102,102,.12)";
         pill.style.borderColor = "#7d3838";
         pill.style.color = "#ff9c9c";
-      } else if(result.mode === "Pluto Rewrite"){
+      } else if(displayMode === "Rewrite Window" || displayMode === "Threshold Crossing" || displayMode === "Pluto Rewrite"){
         pill.style.background = "rgba(176,108,255,.12)";
         pill.style.borderColor = "#6d46a3";
         pill.style.color = "#d8b5ff";
-      } else if(result.mode === "Saturn Shutdown"){
+      } else if(displayMode === "Saturn Shutdown"){
         pill.style.background = "rgba(180,190,210,.14)";
         pill.style.borderColor = "#5b667d";
         pill.style.color = "#e4ebff";
+      } else {
+        pill.style.background = "rgba(216,184,76,.12)";
+        pill.style.borderColor = "#6a5a1a";
+        pill.style.color = "#f3db80";
       }
     }
 
@@ -722,11 +762,15 @@
       const timingResult = computeTimingLayer(inputs, graphResult, environmentResult);
       console.log("V3C Timing Result:", timingResult);
 
+      const modeResult = computeModeDetection(graphResult, environmentResult, timingResult);
+      console.log("V3D Mode Result:", modeResult);
+
       const result = {
         ...computeState(inputs),
         ...graphResult,
         ...environmentResult,
-        ...timingResult
+        ...timingResult,
+        ...modeResult
       };
 
       console.log("V2.5 Result:", result);
