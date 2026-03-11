@@ -266,6 +266,30 @@
         </div>
 
         <div class="bar-group">
+          <div class="bar-row">
+            <span>System Stability</span>
+            <span id="stabilityGaugeText">0%</span>
+          </div>
+          <div class="bar"><div class="fill blue" id="stabilityGauge"></div></div>
+        </div>
+
+        <div class="mini" style="margin-top:18px;">
+          <h3>Planetary Inputs</h3>
+          <ul id="planetInputs">
+            <li>Sun —</li>
+            <li>Moon —</li>
+            <li>Mercury —</li>
+            <li>Venus —</li>
+            <li>Mars —</li>
+            <li>Jupiter —</li>
+            <li>Saturn —</li>
+            <li>Uranus —</li>
+            <li>Neptune —</li>
+            <li>Pluto —</li>
+          </ul>
+        </div>
+
+        <div class="bar-group">
           <div class="bar-row"><span>Amplified Load</span><span id="amplifiedLoadText">0.00</span></div>
           <div class="bar"><div class="fill red" id="amplifiedLoadBar"></div></div>
         </div>
@@ -647,7 +671,17 @@
       document.getElementById("saturnBar").style.width = clampPct(result.saturnConstraint, 1) + "%";
       document.getElementById("effectiveLoadBar").style.width = clampPct(result.effectiveLoad, 5) + "%";
 
-      document.getElementById("modePill").textContent = result.finalMode ?? result.mode;
+      const stabilityPct = Math.max(0, Math.min(100, (1 / Math.max(result.stabilityIndex, 0.01)) * 100));
+      document.getElementById("stabilityGauge").style.width = stabilityPct + "%";
+      document.getElementById("stabilityGaugeText").textContent = Math.round(stabilityPct) + "%";
+
+      const modeSelect = document.getElementById("modeSelect").value;
+      if(modeSelect === "transit"){
+        document.getElementById("modePill").textContent = "Astrology Weather";
+      } else {
+        document.getElementById("modePill").textContent = result.finalMode ?? result.mode;
+      }
+
       document.getElementById("plutoFlag").textContent = "Pluto Rewrite: " + (result.plutoRewrite ? "ON" : "OFF");
       document.getElementById("saturnFlag").textContent = "Saturn Shutdown: " + (result.saturnOverride ? "ON" : "OFF");
       document.getElementById("capacityUsedFlag").textContent = "Capacity Used: " + Math.round(result.capacityUsedPct) + "%";
@@ -667,13 +701,22 @@
       document.getElementById("driversList").innerHTML =
         result.topDrivers.map(d => `<li>${d}</li>`).join("");
 
+      const inputsList = document.getElementById("planetInputs");
+      if(inputsList && result.inputs){
+        const entries = Object.entries(result.inputs);
+        inputsList.innerHTML = entries.map(
+          ([planet, value]) =>
+            `<li>${planet.charAt(0).toUpperCase() + planet.slice(1)} ${round2(value)}</li>`
+        ).join("");
+      }
+
       document.getElementById("readingText").textContent =
         `Current reading: ${result.state.toLowerCase()} pressure normalized against Sun-based capacity, with Jupiter escalation ` +
         `${result.rawLoad > result.regulation ? "active" : "inactive"}, Saturn damping active, and Pluto rewrite conditions ` +
         `${result.plutoRewrite ? "met" : "not met"}.`;
 
       const pill = document.getElementById("modePill");
-      const displayMode = result.finalMode ?? result.mode;
+      const displayMode = modeSelect === "transit" ? "Astrology Weather" : (result.finalMode ?? result.mode);
 
       if(displayMode === "Balanced"){
         pill.style.background = "rgba(103,210,111,.12)";
@@ -687,7 +730,7 @@
         pill.style.background = "rgba(255,102,102,.12)";
         pill.style.borderColor = "#7d3838";
         pill.style.color = "#ff9c9c";
-      } else if(displayMode === "Rewrite Window" || displayMode === "Threshold Crossing" || displayMode === "Pluto Rewrite"){
+      } else if(displayMode === "Rewrite Window" || displayMode === "Threshold Crossing" || displayMode === "Pluto Rewrite" || displayMode === "Astrology Weather"){
         pill.style.background = "rgba(176,108,255,.12)";
         pill.style.borderColor = "#6d46a3";
         pill.style.color = "#d8b5ff";
@@ -800,6 +843,7 @@
       console.log("V3D Mode Result:", modeResult);
 
       const result = {
+        inputs: inputs,
         ...computeState(inputs),
         ...graphResult,
         ...environmentResult,
