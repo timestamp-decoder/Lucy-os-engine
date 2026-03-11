@@ -67,7 +67,7 @@
       margin:0 0 8px;
       display:block;
     }
-    input, select{
+    input{
       width:100%;
       background:#071022;
       color:var(--text);
@@ -192,9 +192,6 @@
       font-size:14px;
       line-height:1.45;
     }
-    .hidden{
-      display:none;
-    }
     @media (max-width: 980px){
       .grid{grid-template-columns:1fr}
       .bottom{grid-template-columns:1fr}
@@ -213,29 +210,21 @@
       <div class="card">
         <h2>Inputs</h2>
 
-        <label class="label" for="modeSelect">Mode</label>
-        <select id="modeSelect">
-          <option value="natal" selected>Natal Chart</option>
-          <option value="transit">Astrology Weather</option>
-        </select>
+        <label class="label" for="dob">Date of Birth</label>
+        <input id="dob" type="text" value="1980-11-21" />
 
-        <div id="natalFields">
-          <label class="label" for="dob">Date of Birth</label>
-          <input id="dob" type="text" value="1980-11-21" />
+        <label class="label" for="tob">Time of Birth</label>
+        <input id="tob" type="text" value="6:20 AM" />
 
-          <label class="label" for="tob">Time of Birth</label>
-          <input id="tob" type="text" value="6:20 AM" />
+        <label class="label" for="location">Location</label>
+        <input id="location" type="text" value="Cuero, TX USA" />
 
-          <label class="label" for="location">Location</label>
-          <input id="location" type="text" value="Cuero, TX USA" />
-
-          <label class="label" for="utcOffset">UTC Offset</label>
-          <input id="utcOffset" type="number" value="-6" step="0.5" />
-        </div>
+        <label class="label" for="utcOffset">UTC Offset</label>
+        <input id="utcOffset" type="number" value="-6" step="0.5" />
 
         <button type="button" onclick="calculateState()">Calculate State</button>
 
-        <div class="sub" id="modeDescription">
+        <div class="sub">
           Lucy.OS uses astronomical ephemeris input to drive the regulation engine.
         </div>
       </div>
@@ -263,30 +252,6 @@
             <div class="k">TOP REGULATOR</div>
             <div class="v small" id="regulatorValue">—</div>
           </div>
-        </div>
-
-        <div class="bar-group">
-          <div class="bar-row">
-            <span>System Stability</span>
-            <span id="stabilityGaugeText">0%</span>
-          </div>
-          <div class="bar"><div class="fill blue" id="stabilityGauge"></div></div>
-        </div>
-
-        <div class="mini" style="margin-top:18px;">
-          <h3 id="rawChartTitle">Natal Planet Values</h3>
-          <ul id="planetInputs">
-            <li>Sun —</li>
-            <li>Moon —</li>
-            <li>Mercury —</li>
-            <li>Venus —</li>
-            <li>Mars —</li>
-            <li>Jupiter —</li>
-            <li>Saturn —</li>
-            <li>Uranus —</li>
-            <li>Neptune —</li>
-            <li>Pluto —</li>
-          </ul>
         </div>
 
         <div class="bar-group">
@@ -411,22 +376,24 @@
         saturnFactor *
         saturn;
 
-      const effectiveLoad =
-        Math.max(amplifiedLoad + distortion - regulation - saturnConstraint, 0);
+      const effectiveLoad = Math.max(
+        amplifiedLoad + distortion - regulation - saturnConstraint,
+        0
+      );
 
       const capacity = sun;
 
       const strain =
         effectiveLoad / Math.max(capacity, 0.01);
 
-      let mode = "Normal";
+      let graphMode = "Normal";
 
       if (strain > saturnGate && saturn > saturnActivation){
-        mode = "Saturn Shutdown";
+        graphMode = "Saturn Shutdown";
       }
 
       if (strain > 1.15 && pluto > 0.75){
-        mode = "Pluto Rewrite";
+        graphMode = "Pluto Rewrite";
       }
 
       return {
@@ -438,7 +405,7 @@
         effectiveLoad,
         capacity,
         strain,
-        mode
+        graphMode
       };
     }
 
@@ -545,7 +512,7 @@
     }
 
     function computeModeDetection(graphResult, environmentResult, timingResult){
-      const { strain, mode: graphMode } = graphResult;
+      const { strain, graphMode } = graphResult;
       const { environmentMode } = environmentResult;
       const { timingMode } = timingResult;
 
@@ -578,49 +545,7 @@
       };
     }
 
-    function computeState(inputs){
-      const rawLoad =
-        inputs.moon +
-        inputs.mars +
-        inputs.jupiter +
-        inputs.uranus +
-        inputs.neptune +
-        inputs.pluto;
-
-      const regulation = inputs.venus + inputs.mercury;
-
-      let amplifiedLoad = rawLoad;
-      if(rawLoad > regulation){
-        amplifiedLoad =
-          rawLoad * (1 + inputs.jupiter * 0.15 * (1 + Math.max(0, rawLoad - regulation)));
-      }
-
-      const saturnConstraint = inputs.saturn * amplifiedLoad * 0.12;
-      const effectiveLoad = Math.max(amplifiedLoad - regulation - saturnConstraint, 0);
-      const capacity = Math.max(inputs.sun, 0.01);
-      const stabilityIndex = effectiveLoad / capacity;
-
-      const plutoRewrite =
-        inputs.pluto >= 0.7 &&
-        stabilityIndex >= 1.4 &&
-        effectiveLoad > regulation;
-
-      const saturnOverride = stabilityIndex >= 2.0;
-
-      let state = "Overload";
-      if(stabilityIndex < 0.85){
-        state = "Balanced";
-      } else if(stabilityIndex < 1.0){
-        state = "Strained";
-      }
-
-      let mode = state;
-      if(saturnOverride){
-        mode = "Saturn Shutdown";
-      } else if(plutoRewrite){
-        mode = "Pluto Rewrite";
-      }
-
+    function computeDiagnostics(inputs, graphResult, environmentResult, timingResult, modeResult){
       const loadDrivers = {
         Moon: inputs.moon,
         Mars: inputs.mars,
@@ -637,27 +562,18 @@
       };
 
       return {
-        rawLoad,
-        amplifiedLoad,
-        regulation,
-        saturnConstraint,
-        effectiveLoad,
-        capacity,
-        stabilityIndex,
-        state,
-        mode,
-        plutoRewrite,
-        saturnOverride,
         primaryDriver: argMax(loadDrivers),
         topRegulator: argMax(regulators),
         topDrivers: topThree(loadDrivers),
-        capacityUsedPct: stabilityIndex * 100
+        capacityUsedPct: graphResult.strain * 100,
+        plutoRewrite: modeResult.finalMode === "Pluto Rewrite",
+        saturnOverride: modeResult.finalMode === "Saturn Shutdown"
       };
     }
 
     function render(result){
       document.getElementById("capacityValue").textContent = round2(result.capacity);
-      document.getElementById("stabilityValue").textContent = round2(result.stabilityIndex);
+      document.getElementById("stabilityValue").textContent = round2(result.strain);
       document.getElementById("driverValue").textContent = result.primaryDriver;
       document.getElementById("regulatorValue").textContent = result.topRegulator;
 
@@ -671,21 +587,7 @@
       document.getElementById("saturnBar").style.width = clampPct(result.saturnConstraint, 1) + "%";
       document.getElementById("effectiveLoadBar").style.width = clampPct(result.effectiveLoad, 5) + "%";
 
-      const stabilityPct = Math.max(0, Math.min(100, (1 / Math.max(result.stabilityIndex, 0.01)) * 100));
-      document.getElementById("stabilityGauge").style.width = stabilityPct + "%";
-      document.getElementById("stabilityGaugeText").textContent = Math.round(stabilityPct) + "%";
-
-      const modeSelect = document.getElementById("modeSelect").value;
-      const rawChartTitle = document.getElementById("rawChartTitle");
-
-      if(modeSelect === "transit"){
-        document.getElementById("modePill").textContent = "Astrology Weather";
-        rawChartTitle.textContent = "Transit Planet Values";
-      } else {
-        document.getElementById("modePill").textContent = result.finalMode ?? result.mode;
-        rawChartTitle.textContent = "Natal Planet Values";
-      }
-
+      document.getElementById("modePill").textContent = result.finalMode;
       document.getElementById("plutoFlag").textContent = "Pluto Rewrite: " + (result.plutoRewrite ? "ON" : "OFF");
       document.getElementById("saturnFlag").textContent = "Saturn Shutdown: " + (result.saturnOverride ? "ON" : "OFF");
       document.getElementById("capacityUsedFlag").textContent = "Capacity Used: " + Math.round(result.capacityUsedPct) + "%";
@@ -705,22 +607,13 @@
       document.getElementById("driversList").innerHTML =
         result.topDrivers.map(d => `<li>${d}</li>`).join("");
 
-      const inputsList = document.getElementById("planetInputs");
-      if(inputsList && result.inputs){
-        const entries = Object.entries(result.inputs);
-        inputsList.innerHTML = entries.map(
-          ([planet, value]) =>
-            `<li>${planet.charAt(0).toUpperCase() + planet.slice(1)} ${round2(value)}</li>`
-        ).join("");
-      }
-
       document.getElementById("readingText").textContent =
-        `Current reading: ${result.state.toLowerCase()} pressure normalized against Sun-based capacity, with Jupiter escalation ` +
-        `${result.rawLoad > result.regulation ? "active" : "inactive"}, Saturn damping active, and Pluto rewrite conditions ` +
-        `${result.plutoRewrite ? "met" : "not met"}.`;
+        `Current reading: ${result.finalMode.toLowerCase()} condition with strain ${round2(result.strain)}, ` +
+        `effective load ${round2(result.effectiveLoad)}, regulation ${round2(result.regulation)}, ` +
+        `environment ${round2(result.environmentalLoad ?? 0)}, and timing pressure ${round2(result.timingPressure ?? 0)}.`;
 
       const pill = document.getElementById("modePill");
-      const displayMode = modeSelect === "transit" ? "Astrology Weather" : (result.finalMode ?? result.mode);
+      const displayMode = result.finalMode;
 
       if(displayMode === "Balanced"){
         pill.style.background = "rgba(103,210,111,.12)";
@@ -734,7 +627,7 @@
         pill.style.background = "rgba(255,102,102,.12)";
         pill.style.borderColor = "#7d3838";
         pill.style.color = "#ff9c9c";
-      } else if(displayMode === "Rewrite Window" || displayMode === "Threshold Crossing" || displayMode === "Pluto Rewrite" || displayMode === "Astrology Weather"){
+      } else if(displayMode === "Rewrite Window" || displayMode === "Threshold Crossing" || displayMode === "Pluto Rewrite"){
         pill.style.background = "rgba(176,108,255,.12)";
         pill.style.borderColor = "#6d46a3";
         pill.style.color = "#d8b5ff";
@@ -767,6 +660,19 @@
     function smoothInputs(rawInputs, signature){
       const stored = getStoredSmoothingState();
 
+      const alphas = {
+        sun: 0.01,
+        moon: 0.05,
+        mercury: 0.02,
+        venus: 0.02,
+        mars: 0.02,
+        jupiter: 0.01,
+        saturn: 0.01,
+        uranus: 0.01,
+        neptune: 0.01,
+        pluto: 0.01
+      };
+
       if(!stored || stored.signature !== signature){
         const nextState = {
           signature,
@@ -776,52 +682,41 @@
         return rawInputs;
       }
 
-      return stored.smoothed;
-    }
+      const prev = stored.smoothed || {};
+      const smoothed = {};
 
-    function updateModeUI(){
-      const mode = document.getElementById("modeSelect").value;
-      const natalFields = document.getElementById("natalFields");
-      const modeDescription = document.getElementById("modeDescription");
-
-      if(mode === "natal"){
-        natalFields.classList.remove("hidden");
-        modeDescription.textContent =
-          "Lucy.OS uses natal chart inputs to drive the regulation engine baseline.";
-      } else {
-        natalFields.classList.add("hidden");
-        modeDescription.textContent =
-          "Lucy.OS uses current astronomical transits to drive the regulation engine weather mode.";
+      for(const key of Object.keys(rawInputs)){
+        const alpha = alphas[key] ?? 0.02;
+        const raw = rawInputs[key];
+        const prior = prev[key] ?? raw;
+        smoothed[key] = (raw * alpha) + (prior * (1 - alpha));
       }
+
+      setStoredSmoothingState({
+        signature,
+        smoothed
+      });
+
+      return smoothed;
     }
 
     async function calculateState(){
-      const mode = document.getElementById("modeSelect").value;
       const dob = document.getElementById("dob").value;
       const tob = document.getElementById("tob").value;
       const utcOffset = document.getElementById("utcOffset").value;
 
-      const signature = mode === "natal"
-        ? `${mode}|${dob}|${tob}|${utcOffset}`
-        : `${mode}`;
-
-      const requestBody = mode === "natal"
-        ? {
-            mode: "natal",
-            dob: dob,
-            tob: tob,
-            utcOffset: utcOffset
-          }
-        : {
-            mode: "transit"
-          };
+      const signature = `${dob}|${tob}|${utcOffset}`;
 
       const response = await fetch("/api/chart_inputs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify({
+          dob: dob,
+          tob: tob,
+          utcOffset: utcOffset
+        })
       });
 
       const rawInputs = await response.json();
@@ -846,22 +741,28 @@
       const modeResult = computeModeDetection(graphResult, environmentResult, timingResult);
       console.log("V3D Mode Result:", modeResult);
 
+      const diagnostics = computeDiagnostics(
+        inputs,
+        graphResult,
+        environmentResult,
+        timingResult,
+        modeResult
+      );
+
       const result = {
-        inputs: inputs,
-        ...computeState(inputs),
+        inputs,
         ...graphResult,
         ...environmentResult,
         ...timingResult,
-        ...modeResult
+        ...modeResult,
+        ...diagnostics
       };
 
-      console.log("V2.5 Result:", result);
+      console.log("Lucy Result:", result);
       render(result);
     }
 
     window.onload = function(){
-      document.getElementById("modeSelect").addEventListener("change", updateModeUI);
-      updateModeUI();
       calculateState();
     };
   </script>
