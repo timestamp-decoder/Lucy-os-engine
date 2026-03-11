@@ -335,6 +335,10 @@
           <h3>Interpretation</h3>
           <div class="interp-grid">
             <div class="interp-item">
+              <div class="k">LOAD PROFILE</div>
+              <div class="text" id="loadProfileText">—</div>
+            </div>
+            <div class="interp-item">
               <div class="k">STATE SUMMARY</div>
               <div class="text" id="stateSummaryText">—</div>
             </div>
@@ -386,6 +390,30 @@
         .sort((a, b) => b[1] - a[1])
         .slice(0, 3)
         .map(([name]) => name);
+    }
+
+    function getLoadBand(effectiveLoad){
+      if(effectiveLoad < 0.75){
+        return "Light";
+      } else if(effectiveLoad < 1.50){
+        return "Moderate";
+      } else if(effectiveLoad < 2.25){
+        return "Heavy";
+      }
+      return "Saturated";
+    }
+
+    function getStrainBand(strain){
+      if(strain < 0.60){
+        return "Low";
+      } else if(strain < 0.85){
+        return "Moderate";
+      } else if(strain < 1.50){
+        return "High";
+      } else if(strain < 2.25){
+        return "Severe";
+      }
+      return "Extreme";
     }
 
     function computePlanetaryGraph(inputs){
@@ -618,7 +646,9 @@
         topDrivers: topThree(loadDrivers),
         capacityUsedPct: graphResult.strain * 100,
         plutoRewrite: modeResult.finalMode === "Pluto Rewrite",
-        saturnOverride: modeResult.finalMode === "Saturn Shutdown"
+        saturnOverride: modeResult.finalMode === "Saturn Shutdown",
+        loadBand: getLoadBand(graphResult.effectiveLoad),
+        strainBand: getStrainBand(graphResult.strain)
       };
     }
 
@@ -653,15 +683,6 @@
         stateSummary = "Constraint response is active and the system is downshifting.";
       } else if(result.finalMode === "Pluto Rewrite"){
         stateSummary = "Rewrite condition is active and normal pacing is overridden.";
-      }
-
-      let strainMeaning = "Strain is low";
-      if(result.strain >= 1.0){
-        strainMeaning = "Strain is high";
-      } else if(result.strain >= 0.85){
-        strainMeaning = "Strain is elevated";
-      } else if(result.strain >= 0.60){
-        strainMeaning = "Strain is moderate";
       }
 
       let activationMeaning = "Activation is low";
@@ -728,12 +749,16 @@
       }
 
       const systemBehavior =
-        `${activationMeaning}, ${strainMeaning}, ${fogMeaning}, and ${volatilityMeaning}.`;
+        `${activationMeaning}, ${result.strainBand.toLowerCase()} strain, ${fogMeaning}, and ${volatilityMeaning}.`;
+
+      const loadProfile =
+        `${result.loadBand} load under ${result.strainBand.toLowerCase()} strain.`;
 
       const driverSignature =
         driverMap[result.primaryDriver] ?? "Current load is being shaped by multiple comparable drivers.";
 
       return {
+        loadProfile,
         stateSummary,
         systemBehavior,
         pacingDirective,
@@ -782,6 +807,7 @@
 
       const interpretation = interpretState(result);
 
+      document.getElementById("loadProfileText").textContent = interpretation.loadProfile;
       document.getElementById("stateSummaryText").textContent = interpretation.stateSummary;
       document.getElementById("pacingDirectiveText").textContent = interpretation.pacingDirective;
       document.getElementById("systemBehaviorText").textContent = interpretation.systemBehavior;
@@ -791,7 +817,7 @@
         `${interpretation.volatilityStatus}. ${interpretation.dampingStatus}`;
 
       document.getElementById("readingText").textContent =
-        `${interpretation.stateSummary} ${interpretation.pacingDirective}`;
+        `${interpretation.loadProfile} ${interpretation.stateSummary} ${interpretation.pacingDirective}`;
 
       const pill = document.getElementById("modePill");
       const displayMode = result.finalMode;
