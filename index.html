@@ -274,7 +274,7 @@
         </div>
 
         <div class="mini" style="margin-top:18px;">
-          <h3>Planetary Inputs</h3>
+          <h3 id="rawChartTitle">Natal Planet Values</h3>
           <ul id="planetInputs">
             <li>Sun —</li>
             <li>Moon —</li>
@@ -676,10 +676,14 @@
       document.getElementById("stabilityGaugeText").textContent = Math.round(stabilityPct) + "%";
 
       const modeSelect = document.getElementById("modeSelect").value;
+      const rawChartTitle = document.getElementById("rawChartTitle");
+
       if(modeSelect === "transit"){
         document.getElementById("modePill").textContent = "Astrology Weather";
+        rawChartTitle.textContent = "Transit Planet Values";
       } else {
         document.getElementById("modePill").textContent = result.finalMode ?? result.mode;
+        rawChartTitle.textContent = "Natal Planet Values";
       }
 
       document.getElementById("plutoFlag").textContent = "Pluto Rewrite: " + (result.plutoRewrite ? "ON" : "OFF");
