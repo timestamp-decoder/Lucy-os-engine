@@ -634,23 +634,23 @@
 
       let stateSummary = "System is active.";
       if(result.finalMode === "Balanced"){
-        stateSummary = "System is regulated and operating within stable range.";
+        stateSummary = "System is regulated and within stable operating range.";
       } else if(result.finalMode === "Strained"){
-        stateSummary = "System is pressured and nearing overload.";
+        stateSummary = "System is under pressure and approaching overload.";
       } else if(result.finalMode === "Overload"){
-        stateSummary = "System load is exceeding comfortable operating range.";
+        stateSummary = "System load is above comfortable operating range.";
       } else if(result.finalMode === "Pressurized"){
-        stateSummary = "System is carrying added environmental pressure.";
+        stateSummary = "System is carrying moderate external pressure.";
       } else if(result.finalMode === "High Pressure"){
-        stateSummary = "System is under strong environmental load.";
+        stateSummary = "System is under strong external pressure.";
       } else if(result.finalMode === "Activation Window"){
-        stateSummary = "System is mobilized with elevated activation pressure.";
+        stateSummary = "System is mobilized and running hot.";
       } else if(result.finalMode === "Rewrite Window"){
-        stateSummary = "System is entering a rewrite-oriented pressure window.";
+        stateSummary = "System is in a rewrite window with elevated restructuring pressure.";
       } else if(result.finalMode === "Threshold Crossing"){
-        stateSummary = "System is crossing a threshold and may shift state quickly.";
+        stateSummary = "System is crossing a threshold and may change state quickly.";
       } else if(result.finalMode === "Saturn Shutdown"){
-        stateSummary = "Constraint response is active to reduce overload.";
+        stateSummary = "Constraint response is active and the system is downshifting.";
       } else if(result.finalMode === "Pluto Rewrite"){
         stateSummary = "Rewrite condition is active and normal pacing is overridden.";
       }
