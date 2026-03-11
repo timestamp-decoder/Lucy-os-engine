@@ -67,7 +67,7 @@
       margin:0 0 8px;
       display:block;
     }
-    input{
+    input, select{
       width:100%;
       background:#071022;
       color:var(--text);
@@ -192,6 +192,9 @@
       font-size:14px;
       line-height:1.45;
     }
+    .hidden{
+      display:none;
+    }
     @media (max-width: 980px){
       .grid{grid-template-columns:1fr}
       .bottom{grid-template-columns:1fr}
@@ -210,21 +213,29 @@
       <div class="card">
         <h2>Inputs</h2>
 
-        <label class="label" for="dob">Date of Birth</label>
-        <input id="dob" type="text" value="1980-11-21" />
+        <label class="label" for="modeSelect">Mode</label>
+        <select id="modeSelect">
+          <option value="natal" selected>Natal Chart</option>
+          <option value="transit">Astrology Weather</option>
+        </select>
 
-        <label class="label" for="tob">Time of Birth</label>
-        <input id="tob" type="text" value="6:20 AM" />
+        <div id="natalFields">
+          <label class="label" for="dob">Date of Birth</label>
+          <input id="dob" type="text" value="1980-11-21" />
 
-        <label class="label" for="location">Location</label>
-        <input id="location" type="text" value="Cuero, TX USA" />
+          <label class="label" for="tob">Time of Birth</label>
+          <input id="tob" type="text" value="6:20 AM" />
 
-        <label class="label" for="utcOffset">UTC Offset</label>
-        <input id="utcOffset" type="number" value="-6" step="0.5" />
+          <label class="label" for="location">Location</label>
+          <input id="location" type="text" value="Cuero, TX USA" />
+
+          <label class="label" for="utcOffset">UTC Offset</label>
+          <input id="utcOffset" type="number" value="-6" step="0.5" />
+        </div>
 
         <button type="button" onclick="calculateState()">Calculate State</button>
 
-        <div class="sub">
+        <div class="sub" id="modeDescription">
           Lucy.OS uses astronomical ephemeris input to drive the regulation engine.
         </div>
       </div>
@@ -377,10 +388,7 @@
         saturn;
 
       const effectiveLoad =
-        amplifiedLoad +
-        distortion -
-        regulation -
-        saturnConstraint;
+        Math.max(amplifiedLoad + distortion - regulation - saturnConstraint, 0);
 
       const capacity = sun;
 
@@ -724,23 +732,49 @@
       return stored.smoothed;
     }
 
+    function updateModeUI(){
+      const mode = document.getElementById("modeSelect").value;
+      const natalFields = document.getElementById("natalFields");
+      const modeDescription = document.getElementById("modeDescription");
+
+      if(mode === "natal"){
+        natalFields.classList.remove("hidden");
+        modeDescription.textContent =
+          "Lucy.OS uses natal chart inputs to drive the regulation engine baseline.";
+      } else {
+        natalFields.classList.add("hidden");
+        modeDescription.textContent =
+          "Lucy.OS uses current astronomical transits to drive the regulation engine weather mode.";
+      }
+    }
+
     async function calculateState(){
+      const mode = document.getElementById("modeSelect").value;
       const dob = document.getElementById("dob").value;
       const tob = document.getElementById("tob").value;
       const utcOffset = document.getElementById("utcOffset").value;
 
-      const signature = `${dob}|${tob}|${utcOffset}`;
+      const signature = mode === "natal"
+        ? `${mode}|${dob}|${tob}|${utcOffset}`
+        : `${mode}`;
+
+      const requestBody = mode === "natal"
+        ? {
+            mode: "natal",
+            dob: dob,
+            tob: tob,
+            utcOffset: utcOffset
+          }
+        : {
+            mode: "transit"
+          };
 
       const response = await fetch("/api/chart_inputs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          dob: dob,
-          tob: tob,
-          utcOffset: utcOffset
-        })
+        body: JSON.stringify(requestBody)
       });
 
       const rawInputs = await response.json();
@@ -778,6 +812,8 @@
     }
 
     window.onload = function(){
+      document.getElementById("modeSelect").addEventListener("change", updateModeUI);
+      updateModeUI();
       calculateState();
     };
   </script>
