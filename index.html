@@ -116,7 +116,7 @@
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:14px;
-      margin-bottom:20px;
+      margin-bottom:16px;
     }
     .stat{
       border:1px solid var(--line);
@@ -136,6 +136,23 @@
     }
     .v.small{
       font-size:22px;
+    }
+    .band-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:20px;
+    }
+    .band-pill{
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:8px 12px;
+      background:rgba(255,255,255,.03);
+      font-size:13px;
+      color:var(--text);
+    }
+    .band-pill strong{
+      font-weight:800;
     }
     .bar-group{
       margin:18px 0;
@@ -273,6 +290,11 @@
             <div class="k">TOP REGULATOR</div>
             <div class="v small" id="regulatorValue">—</div>
           </div>
+        </div>
+
+        <div class="band-row">
+          <div class="band-pill">Load Band: <strong id="loadBandPill">—</strong></div>
+          <div class="band-pill">Strain Band: <strong id="strainBandPill">—</strong></div>
         </div>
 
         <div class="bar-group">
@@ -774,6 +796,9 @@
       document.getElementById("stabilityValue").textContent = round2(result.strain);
       document.getElementById("driverValue").textContent = result.primaryDriver;
       document.getElementById("regulatorValue").textContent = result.topRegulator;
+
+      document.getElementById("loadBandPill").textContent = result.loadBand;
+      document.getElementById("strainBandPill").textContent = result.strainBand;
 
       document.getElementById("amplifiedLoadText").textContent = round2(result.amplifiedLoad);
       document.getElementById("regulationText").textContent = round2(result.regulation);
