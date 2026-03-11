@@ -655,34 +655,34 @@
         stateSummary = "Rewrite condition is active and normal pacing is overridden.";
       }
 
-      let strainMeaning = "strain is low";
+      let strainMeaning = "Strain is low";
       if(result.strain >= 1.0){
-        strainMeaning = "strain is high";
+        strainMeaning = "Strain is high";
       } else if(result.strain >= 0.85){
-        strainMeaning = "strain is elevated";
+        strainMeaning = "Strain is elevated";
       } else if(result.strain >= 0.60){
-        strainMeaning = "strain is moderate";
+        strainMeaning = "Strain is moderate";
       }
 
-      let activationMeaning = "activation is low";
+      let activationMeaning = "Activation is low";
       if(result.spikeTrigger >= 0.75){
-        activationMeaning = "activation is high";
+        activationMeaning = "Activation is high";
       } else if(result.spikeTrigger >= 0.45){
-        activationMeaning = "activation is moderate";
+        activationMeaning = "Activation is moderate";
       }
 
-      let fogMeaning = "clarity is relatively intact";
+      let fogMeaning = "Clarity is relatively intact";
       if(result.fogDrift >= 0.35){
-        fogMeaning = "clarity is reduced by diffusion";
+        fogMeaning = "Clarity is reduced by diffusion";
       } else if(result.fogDrift >= 0.18){
-        fogMeaning = "some diffusion is present";
+        fogMeaning = "Some diffusion is present";
       }
 
-      let volatilityMeaning = "volatility is low";
+      let volatilityMeaning = "Volatility is low";
       if(result.spikeTrigger >= 0.80 || result.environmentMode === "High Pressure"){
-        volatilityMeaning = "volatility is elevated";
+        volatilityMeaning = "Volatility is elevated";
       } else if(result.spikeTrigger >= 0.50 || result.environmentMode === "Pressurized"){
-        volatilityMeaning = "volatility is moderate";
+        volatilityMeaning = "Volatility is moderate";
       }
 
       let regulationStatus = "Regulation is keeping pace with current load.";
@@ -706,7 +706,7 @@
 
       let pacingDirective = "Maintain normal pacing.";
       if(result.finalMode === "Balanced"){
-        pacingDirective = "Maintain steady pacing and use the stable window for clear decisions.";
+        pacingDirective = "Maintain steady pacing and use this stable window for clear decisions.";
       } else if(result.finalMode === "Strained"){
         pacingDirective = "Reduce stimulation slightly and slow decision speed.";
       } else if(result.finalMode === "Overload"){
@@ -722,7 +722,7 @@
       } else if(result.finalMode === "Threshold Crossing"){
         pacingDirective = "Move slowly, reduce stimulation, and avoid irreversible choices.";
       } else if(result.finalMode === "Saturn Shutdown"){
-        pacingDirective = "Honor constraints, reduce output, and let the system downshift.";
+        pacingDirective = "Honor constraints, reduce output, and allow the system to downshift.";
       } else if(result.finalMode === "Pluto Rewrite"){
         pacingDirective = "Minimize pressure, avoid overcontrol, and allow restructuring to complete.";
       }
