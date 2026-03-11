@@ -18,38 +18,46 @@
       --violet:#b06cff;
       --gold:#d8b84c;
     }
+
     *{box-sizing:border-box}
+
     body{
       margin:0;
       font-family:Arial,sans-serif;
       background:var(--bg);
       color:var(--text);
     }
+
     .wrap{
       max-width:1280px;
       margin:0 auto;
       padding:28px;
     }
+
     .hero{
       text-align:center;
       margin-bottom:26px;
     }
+
     .hero h1{
       margin:0;
       font-size:64px;
       font-weight:800;
       letter-spacing:.5px;
     }
+
     .hero p{
       margin:10px 0 0;
       color:var(--muted);
       font-size:18px;
     }
+
     .grid{
       display:grid;
       grid-template-columns:420px 1fr;
       gap:24px;
     }
+
     .card{
       background:linear-gradient(180deg,var(--panel),var(--panel2));
       border:1px solid var(--line);
@@ -57,16 +65,19 @@
       padding:24px;
       box-shadow:0 10px 28px rgba(0,0,0,.25);
     }
+
     h2{
       margin:0 0 22px;
       font-size:24px;
     }
+
     .label{
       font-size:14px;
       color:var(--muted);
       margin:0 0 8px;
       display:block;
     }
+
     input{
       width:100%;
       background:#071022;
@@ -78,6 +89,7 @@
       margin-bottom:18px;
       outline:none;
     }
+
     button{
       width:100%;
       border:none;
@@ -90,12 +102,14 @@
       cursor:pointer;
       margin-top:4px;
     }
+
     .sub{
       margin-top:18px;
       color:var(--muted);
       line-height:1.45;
       font-size:14px;
     }
+
     .state-head{
       display:flex;
       justify-content:space-between;
@@ -103,6 +117,7 @@
       gap:16px;
       margin-bottom:18px;
     }
+
     .pill{
       padding:10px 16px;
       border-radius:999px;
@@ -112,51 +127,74 @@
       font-weight:700;
       white-space:nowrap;
     }
+
     .stats{
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:14px;
       margin-bottom:16px;
     }
+
     .stat{
       border:1px solid var(--line);
       border-radius:18px;
       padding:18px;
       background:rgba(255,255,255,.02);
     }
+
     .k{
       color:var(--muted);
       font-size:12px;
       letter-spacing:.08em;
       margin-bottom:8px;
+      text-transform:uppercase;
     }
+
     .v{
       font-size:30px;
       font-weight:800;
     }
+
     .v.small{
       font-size:22px;
     }
+
     .band-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
       margin-bottom:20px;
     }
+
     .band-pill{
       border:1px solid var(--line);
-      border-radius:999px;
-      padding:8px 12px;
-      background:rgba(255,255,255,.03);
-      font-size:13px;
+      border-radius:16px;
+      padding:12px 14px;
+      background:rgba(255,255,255,.035);
+      font-size:14px;
       color:var(--text);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
     }
+
+    .band-pill span{
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
     .band-pill strong{
       font-weight:800;
+      font-size:15px;
     }
+
     .bar-group{
       margin:18px 0;
     }
+
     .bar-row{
       display:flex;
       justify-content:space-between;
@@ -164,6 +202,7 @@
       margin-bottom:8px;
       font-size:15px;
     }
+
     .bar{
       width:100%;
       height:14px;
@@ -172,67 +211,80 @@
       border:1px solid var(--line);
       overflow:hidden;
     }
+
     .fill{
       height:100%;
       width:0%;
       border-radius:999px;
       transition:width .25s ease;
     }
+
     .red{background:var(--red)}
     .blue{background:var(--blue)}
     .violet{background:var(--violet)}
     .green{background:var(--green)}
+
     .bottom{
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:18px;
       margin-top:22px;
     }
+
     .mini{
       border:1px solid var(--line);
       border-radius:18px;
       padding:18px;
       background:rgba(255,255,255,.02);
     }
+
     .mini h3{
       margin:0 0 12px;
       font-size:18px;
     }
+
     .mini ol,.mini ul{
       margin:0;
       padding-left:24px;
       line-height:1.6;
     }
+
     .foot{
       margin-top:18px;
       color:var(--muted);
       font-size:14px;
       line-height:1.55;
     }
+
     .interp-grid{
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:14px;
       margin-top:18px;
     }
+
     .interp-item{
       border:1px solid var(--line);
       border-radius:16px;
       padding:14px;
       background:rgba(255,255,255,.02);
     }
+
     .interp-item .k{
       margin-bottom:6px;
     }
+
     .interp-item .text{
       font-size:15px;
       line-height:1.5;
       color:var(--text);
     }
+
     @media (max-width: 980px){
       .grid{grid-template-columns:1fr}
       .bottom{grid-template-columns:1fr}
       .interp-grid{grid-template-columns:1fr}
+      .band-row{grid-template-columns:1fr}
       .hero h1{font-size:48px}
     }
   </style>
@@ -275,26 +327,32 @@
 
         <div class="stats">
           <div class="stat">
-            <div class="k">CAPACITY</div>
+            <div class="k">Capacity</div>
             <div class="v" id="capacityValue">0.00</div>
           </div>
           <div class="stat">
-            <div class="k">STRAIN</div>
+            <div class="k">Strain</div>
             <div class="v" id="stabilityValue">0.00</div>
           </div>
           <div class="stat">
-            <div class="k">PRIMARY DRIVER</div>
+            <div class="k">Primary Driver</div>
             <div class="v small" id="driverValue">—</div>
           </div>
           <div class="stat">
-            <div class="k">TOP REGULATOR</div>
+            <div class="k">Top Regulator</div>
             <div class="v small" id="regulatorValue">—</div>
           </div>
         </div>
 
         <div class="band-row">
-          <div class="band-pill">Load Band: <strong id="loadBandPill">—</strong></div>
-          <div class="band-pill">Strain Band: <strong id="strainBandPill">—</strong></div>
+          <div class="band-pill">
+            <span>Load Band</span>
+            <strong id="loadBandPill">—</strong>
+          </div>
+          <div class="band-pill">
+            <span>Strain Band</span>
+            <strong id="strainBandPill">—</strong>
+          </div>
         </div>
 
         <div class="bar-group">
@@ -357,31 +415,31 @@
           <h3>Interpretation</h3>
           <div class="interp-grid">
             <div class="interp-item">
-              <div class="k">LOAD PROFILE</div>
+              <div class="k">Load Profile</div>
               <div class="text" id="loadProfileText">—</div>
             </div>
             <div class="interp-item">
-              <div class="k">STATE SUMMARY</div>
+              <div class="k">State Summary</div>
               <div class="text" id="stateSummaryText">—</div>
             </div>
             <div class="interp-item">
-              <div class="k">RECOMMENDED PACING</div>
+              <div class="k">Recommended Pacing</div>
               <div class="text" id="pacingDirectiveText">—</div>
             </div>
             <div class="interp-item">
-              <div class="k">SYSTEM BEHAVIOR</div>
+              <div class="k">System Behavior</div>
               <div class="text" id="systemBehaviorText">—</div>
             </div>
             <div class="interp-item">
-              <div class="k">DRIVER MEANING</div>
+              <div class="k">Driver Meaning</div>
               <div class="text" id="driverSignatureText">—</div>
             </div>
             <div class="interp-item">
-              <div class="k">REGULATION STATUS</div>
+              <div class="k">Regulation Status</div>
               <div class="text" id="regulationStatusText">—</div>
             </div>
             <div class="interp-item">
-              <div class="k">VOLATILITY / DAMPING</div>
+              <div class="k">Volatility / Damping</div>
               <div class="text" id="volatilityDampingText">—</div>
             </div>
           </div>
@@ -415,26 +473,17 @@
     }
 
     function getLoadBand(effectiveLoad){
-      if(effectiveLoad < 0.75){
-        return "Light";
-      } else if(effectiveLoad < 1.50){
-        return "Moderate";
-      } else if(effectiveLoad < 2.25){
-        return "Heavy";
-      }
+      if(effectiveLoad < 0.75) return "Light";
+      if(effectiveLoad < 1.50) return "Moderate";
+      if(effectiveLoad < 2.25) return "Heavy";
       return "Saturated";
     }
 
     function getStrainBand(strain){
-      if(strain < 0.60){
-        return "Low";
-      } else if(strain < 0.85){
-        return "Moderate";
-      } else if(strain < 1.50){
-        return "High";
-      } else if(strain < 2.25){
-        return "Severe";
-      }
+      if(strain < 0.60) return "Low";
+      if(strain < 0.85) return "Moderate";
+      if(strain < 1.50) return "High";
+      if(strain < 2.25) return "Severe";
       return "Extreme";
     }
 
@@ -483,7 +532,6 @@
       );
 
       const capacity = sun;
-
       const strain =
         effectiveLoad / Math.max(capacity, 0.01);
 
@@ -511,13 +559,7 @@
     }
 
     function computeEnvironmentLayer(inputs, graphResult){
-      const {
-        jupiter,
-        saturn,
-        uranus,
-        neptune,
-        pluto
-      } = inputs;
+      const { jupiter, saturn, uranus, neptune, pluto } = inputs;
 
       const transitPressure =
         (jupiter * 0.08) +
@@ -525,8 +567,7 @@
         (neptune * 0.10) +
         (pluto * 0.12);
 
-      const containmentSupport =
-        saturn * 0.08;
+      const containmentSupport = saturn * 0.08;
 
       const environmentalLoad =
         Math.max(transitPressure - containmentSupport, 0);
@@ -558,20 +599,13 @@
     }
 
     function computeTimingLayer(inputs, graphResult, environmentResult){
-      const {
-        mars,
-        mercury,
-        uranus,
-        neptune,
-        pluto
-      } = inputs;
+      const { mars, mercury, uranus, neptune, pluto } = inputs;
 
       const spikeTrigger =
         (mars * 0.35) +
         (uranus * 0.45);
 
-      const fogDrift =
-        (neptune * 0.40);
+      const fogDrift = neptune * 0.40;
 
       const rewritePressure =
         (pluto * 0.50) +
@@ -641,9 +675,7 @@
         finalMode = "Overload";
       }
 
-      return {
-        finalMode
-      };
+      return { finalMode };
     }
 
     function computeDiagnostics(inputs, graphResult, environmentResult, timingResult, modeResult){
@@ -791,6 +823,36 @@
       };
     }
 
+    function applyModePillStyle(displayMode){
+      const pill = document.getElementById("modePill");
+
+      if(displayMode === "Balanced"){
+        pill.style.background = "rgba(103,210,111,.12)";
+        pill.style.borderColor = "#4f8f57";
+        pill.style.color = "#98f2a0";
+      } else if(displayMode === "Strained" || displayMode === "Pressurized"){
+        pill.style.background = "rgba(216,184,76,.12)";
+        pill.style.borderColor = "#6a5a1a";
+        pill.style.color = "#f3db80";
+      } else if(displayMode === "Overload" || displayMode === "Activation Window" || displayMode === "High Pressure"){
+        pill.style.background = "rgba(255,102,102,.12)";
+        pill.style.borderColor = "#7d3838";
+        pill.style.color = "#ff9c9c";
+      } else if(displayMode === "Rewrite Window" || displayMode === "Threshold Crossing" || displayMode === "Pluto Rewrite"){
+        pill.style.background = "rgba(176,108,255,.12)";
+        pill.style.borderColor = "#6d46a3";
+        pill.style.color = "#d8b5ff";
+      } else if(displayMode === "Saturn Shutdown"){
+        pill.style.background = "rgba(180,190,210,.14)";
+        pill.style.borderColor = "#5b667d";
+        pill.style.color = "#e4ebff";
+      } else {
+        pill.style.background = "rgba(216,184,76,.12)";
+        pill.style.borderColor = "#6a5a1a";
+        pill.style.color = "#f3db80";
+      }
+    }
+
     function render(result){
       document.getElementById("capacityValue").textContent = round2(result.capacity);
       document.getElementById("stabilityValue").textContent = round2(result.strain);
@@ -844,34 +906,7 @@
       document.getElementById("readingText").textContent =
         `${interpretation.loadProfile} ${interpretation.stateSummary} ${interpretation.pacingDirective}`;
 
-      const pill = document.getElementById("modePill");
-      const displayMode = result.finalMode;
-
-      if(displayMode === "Balanced"){
-        pill.style.background = "rgba(103,210,111,.12)";
-        pill.style.borderColor = "#4f8f57";
-        pill.style.color = "#98f2a0";
-      } else if(displayMode === "Strained" || displayMode === "Pressurized"){
-        pill.style.background = "rgba(216,184,76,.12)";
-        pill.style.borderColor = "#6a5a1a";
-        pill.style.color = "#f3db80";
-      } else if(displayMode === "Overload" || displayMode === "Activation Window" || displayMode === "High Pressure"){
-        pill.style.background = "rgba(255,102,102,.12)";
-        pill.style.borderColor = "#7d3838";
-        pill.style.color = "#ff9c9c";
-      } else if(displayMode === "Rewrite Window" || displayMode === "Threshold Crossing" || displayMode === "Pluto Rewrite"){
-        pill.style.background = "rgba(176,108,255,.12)";
-        pill.style.borderColor = "#6d46a3";
-        pill.style.color = "#d8b5ff";
-      } else if(displayMode === "Saturn Shutdown"){
-        pill.style.background = "rgba(180,190,210,.14)";
-        pill.style.borderColor = "#5b667d";
-        pill.style.color = "#e4ebff";
-      } else {
-        pill.style.background = "rgba(216,184,76,.12)";
-        pill.style.borderColor = "#6a5a1a";
-        pill.style.color = "#f3db80";
-      }
+      applyModePillStyle(result.finalMode);
     }
 
     function getStoredSmoothingState(){
