@@ -441,7 +441,7 @@
               <div class="text" id="driverSignatureText">—</div>
             </div>
             <div class="interp-item">
-              <div class="k">Regulation Status</div>
+              <div class="k">Regulation Band</div>
               <div class="text" id="regulationStatusText">—</div>
             </div>
             <div class="interp-item">
@@ -467,6 +467,45 @@
   </div>
 
   <script>
+    const SEMANTIC_TEXT = {
+      loadProfile: {
+        Low: "Light load, well within capacity.",
+        Moderate: "Manageable load with measurable strain.",
+        High: "Heavy load with sustained strain.",
+        Extreme: "Heavy load under extreme strain."
+      },
+      systemBehavior: {
+        Low: "Activation is light and stable.",
+        Moderate: "Activation is present with mild fluctuation.",
+        High: "Activation is elevated with noticeable volatility.",
+        Extreme: "Activation is elevated with sharp volatility and diffusion."
+      },
+      regulationBand: {
+        Low: "Regulation is strong and buffering load effectively.",
+        Moderate: "Regulation is present and partially buffering load.",
+        High: "Regulation is strained and inconsistently buffering load.",
+        Extreme: "Regulation is minimal and not containing load."
+      },
+      volatilityDamping: {
+        Low: "Volatility is low; damping is strong.",
+        Moderate: "Volatility is present; damping is moderate.",
+        High: "Volatility is elevated; damping is light.",
+        Extreme: "Volatility is sharp; damping is minimal."
+      },
+      stateMode: {
+        Stable: "System is steady with low rewrite pressure.",
+        Transition: "System is adjusting with moderate rewrite pressure.",
+        Rewrite: "System is in a rewrite window with elevated rewrite pressure.",
+        Overload: "System is under extreme rewrite pressure; pacing is critical."
+      },
+      pacingDirective: {
+        Low: "Normal pacing is fine; maintain current rhythm.",
+        Moderate: "Slow input slightly; prioritize clarity and simplicity.",
+        High: "Reduce input; move deliberately and avoid forcing outcomes.",
+        Extreme: "Minimize input; prioritize reflection and avoid closure pressure."
+      }
+    };
+
     function round2(n){
       return Number(n).toFixed(2);
     }
@@ -498,6 +537,82 @@
       if(strain < 0.85) return "Moderate";
       if(strain < 1.50) return "High";
       if(strain < 2.25) return "Severe";
+      return "Extreme";
+    }
+
+    function loadLevelFromBands(loadBand, strainBand){
+      if(loadBand === "Light" && (strainBand === "Low" || strainBand === "Moderate")) return "Low";
+      if(loadBand === "Moderate" || strainBand === "Moderate") return "Moderate";
+      if(loadBand === "Heavy" || strainBand === "High" || strainBand === "Severe") return "High";
+      return "Extreme";
+    }
+
+    function behaviorLevelFromSignals(result){
+      const volatilityScore =
+        result.spikeTrigger +
+        result.fogDrift +
+        result.environmentalLoad;
+
+      if(volatilityScore < 0.55) return "Low";
+      if(volatilityScore < 0.95) return "Moderate";
+      if(volatilityScore < 1.35) return "High";
+      return "Extreme";
+    }
+
+    function regulationLevel(result){
+      const ratio = result.regulation / Math.max(result.effectiveLoad, 0.01);
+
+      if(ratio >= 0.60) return "Low";
+      if(ratio >= 0.35) return "Moderate";
+      if(ratio >= 0.18) return "High";
+      return "Extreme";
+    }
+
+    function volatilityLevel(result){
+      const volatilityScore =
+        result.spikeTrigger +
+        result.fogDrift +
+        (result.environmentMode === "Pressurized" ? 0.20 : 0) +
+        (result.environmentMode === "High Pressure" ? 0.35 : 0);
+
+      const dampingScore = result.saturnConstraint;
+
+      if(volatilityScore < 0.55 && dampingScore >= 0.35) return "Low";
+      if(volatilityScore < 0.95) return "Moderate";
+      if(volatilityScore < 1.35 || dampingScore >= 0.15) return "High";
+      return "Extreme";
+    }
+
+    function semanticStateMode(result){
+      if(result.finalMode === "Balanced") return "Stable";
+      if(
+        result.finalMode === "Strained" ||
+        result.finalMode === "Pressurized" ||
+        result.finalMode === "Activation Window"
+      ){
+        return "Transition";
+      }
+      if(
+        result.finalMode === "Rewrite Window" ||
+        result.finalMode === "Threshold Crossing" ||
+        result.finalMode === "Pluto Rewrite"
+      ){
+        return "Rewrite";
+      }
+      if(
+        result.finalMode === "Overload" ||
+        result.finalMode === "High Pressure" ||
+        result.finalMode === "Saturn Shutdown"
+      ){
+        return "Overload";
+      }
+      return "Transition";
+    }
+
+    function pacingLevelFromStateMode(stateMode){
+      if(stateMode === "Stable") return "Low";
+      if(stateMode === "Transition") return "Moderate";
+      if(stateMode === "Rewrite") return "High";
       return "Extreme";
     }
 
@@ -747,138 +862,53 @@
         Pluto: "Rewrite pressure is dominant and the system is under deep restructuring force."
       };
 
-      let stateSummary = "System is active.";
-      if(result.finalMode === "Balanced"){
-        stateSummary = "System is regulated and within stable operating range.";
-      } else if(result.finalMode === "Strained"){
-        stateSummary = "System is under pressure and approaching overload.";
-      } else if(result.finalMode === "Overload"){
-        stateSummary = "System load is above comfortable operating range.";
-      } else if(result.finalMode === "Pressurized"){
-        stateSummary = "System is carrying moderate external pressure.";
-      } else if(result.finalMode === "High Pressure"){
-        stateSummary = "System is under strong external pressure.";
-      } else if(result.finalMode === "Activation Window"){
-        stateSummary = "System is mobilized and running hot.";
-      } else if(result.finalMode === "Rewrite Window"){
-        stateSummary = "System is in a rewrite window with elevated restructuring pressure.";
-      } else if(result.finalMode === "Threshold Crossing"){
-        stateSummary = "System is crossing a threshold and may change state quickly.";
-      } else if(result.finalMode === "Saturn Shutdown"){
-        stateSummary = "Constraint response is active and the system is downshifting.";
-      } else if(result.finalMode === "Pluto Rewrite"){
-        stateSummary = "Rewrite condition is active and normal pacing is overridden.";
-      }
+      const loadSemantic = loadLevelFromBands(result.loadBand, result.strainBand);
+      const behaviorSemantic = behaviorLevelFromSignals(result);
+      const regulationSemantic = regulationLevel(result);
+      const volatilitySemantic = volatilityLevel(result);
+      const stateModeSemantic = semanticStateMode(result);
+      const pacingSemantic = pacingLevelFromStateMode(stateModeSemantic);
 
-      let activationMeaning = "Activation is low";
-      if(result.spikeTrigger >= 0.75){
-        activationMeaning = "Activation is high";
-      } else if(result.spikeTrigger >= 0.45){
-        activationMeaning = "Activation is moderate";
-      }
-
-      let fogMeaning = "Clarity is relatively intact";
-      if(result.fogDrift >= 0.35){
-        fogMeaning = "Clarity is reduced by diffusion";
-      } else if(result.fogDrift >= 0.18){
-        fogMeaning = "Some diffusion is present";
-      }
-
-      let volatilityMeaning = "Volatility is low";
-      if(result.spikeTrigger >= 0.80 || result.environmentMode === "High Pressure"){
-        volatilityMeaning = "Volatility is elevated";
-      } else if(result.spikeTrigger >= 0.50 || result.environmentMode === "Pressurized"){
-        volatilityMeaning = "Volatility is moderate";
-      }
-
-      let regulationStatus = "Regulation is keeping pace with current load.";
-      if(result.regulation < 0.25){
-        regulationStatus = "Regulation is light and may not fully buffer current load.";
-      } else if(result.regulation < 0.50){
-        regulationStatus = "Regulation is present but only moderately buffering load.";
-      }
-
-      if(result.finalMode === "Saturn Shutdown" || result.finalMode === "Pluto Rewrite"){
-        regulationStatus = "Normal regulation is being superseded by higher-order constraint or rewrite conditions.";
-      }
-
-      let dampingStatus = "Damping is light.";
-      if(result.saturnConstraint >= 0.25){
-        dampingStatus = "Damping is moderate.";
-      }
-      if(result.saturnConstraint >= 0.50){
-        dampingStatus = "Damping is strong.";
-      }
-
-      let pacingDirective = "Maintain normal pacing.";
-      if(result.finalMode === "Balanced"){
-        pacingDirective = "Maintain steady pacing and use this stable window for clear decisions.";
-      } else if(result.finalMode === "Strained"){
-        pacingDirective = "Reduce stimulation slightly and slow decision speed.";
-      } else if(result.finalMode === "Overload"){
-        pacingDirective = "Lower input load, reduce stimulation, and avoid unnecessary commitments.";
-      } else if(result.finalMode === "Pressurized"){
-        pacingDirective = "Account for external pressure and leave extra recovery margin.";
-      } else if(result.finalMode === "High Pressure"){
-        pacingDirective = "Protect bandwidth, reduce nonessential demand, and stay conservative.";
-      } else if(result.finalMode === "Activation Window"){
-        pacingDirective = "Use movement and directed action, but avoid impulsive decisions.";
-      } else if(result.finalMode === "Rewrite Window"){
-        pacingDirective = "Prioritize reflection, simplify input, and avoid forcing closure too quickly.";
-      } else if(result.finalMode === "Threshold Crossing"){
-        pacingDirective = "Move slowly, reduce stimulation, and avoid irreversible choices.";
-      } else if(result.finalMode === "Saturn Shutdown"){
-        pacingDirective = "Honor constraints, reduce output, and allow the system to downshift.";
-      } else if(result.finalMode === "Pluto Rewrite"){
-        pacingDirective = "Minimize pressure, avoid overcontrol, and allow restructuring to complete.";
-      }
+      const loadProfile = SEMANTIC_TEXT.loadProfile[loadSemantic];
+      const systemBehavior = SEMANTIC_TEXT.systemBehavior[behaviorSemantic];
+      const regulationStatus = SEMANTIC_TEXT.regulationBand[regulationSemantic];
+      const volatilityDamping = SEMANTIC_TEXT.volatilityDamping[volatilitySemantic];
+      const stateSummary = SEMANTIC_TEXT.stateMode[stateModeSemantic];
+      const pacingDirective = SEMANTIC_TEXT.pacingDirective[pacingSemantic];
 
       let decisionGuidance = "Routine decisions are acceptable.";
-      if(result.finalMode === "Balanced"){
+      if(stateModeSemantic === "Stable"){
         decisionGuidance = "Good window for clear practical decisions and structured action.";
-      } else if(result.finalMode === "Strained"){
-        decisionGuidance = "Prefer smaller decisions. Delay emotionally loaded choices if possible.";
-      } else if(result.finalMode === "Overload"){
-        decisionGuidance = "Avoid major commitments. Make only necessary low-risk decisions.";
-      } else if(result.finalMode === "Pressurized"){
-        decisionGuidance = "Keep decisions conservative and leave margin for external variables.";
-      } else if(result.finalMode === "High Pressure"){
-        decisionGuidance = "Postpone major decisions unless truly time-sensitive.";
-      } else if(result.finalMode === "Activation Window"){
-        decisionGuidance = "Good for directed action, not ideal for impulsive or high-stakes choices.";
-      } else if(result.finalMode === "Rewrite Window"){
+      } else if(stateModeSemantic === "Transition"){
+        decisionGuidance = "Prefer smaller decisions and reduce unnecessary complexity.";
+      } else if(stateModeSemantic === "Rewrite"){
         decisionGuidance = "Best for observation, reflection, journaling, and pattern review.";
-      } else if(result.finalMode === "Threshold Crossing"){
-        decisionGuidance = "Do not make irreversible choices until state stabilizes.";
-      } else if(result.finalMode === "Saturn Shutdown"){
-        decisionGuidance = "Reduce commitments and operate inside minimal necessary structure.";
-      } else if(result.finalMode === "Pluto Rewrite"){
-        decisionGuidance = "Avoid forcing outcomes. Let deeper restructuring settle first.";
+      } else if(stateModeSemantic === "Overload"){
+        decisionGuidance = "Avoid major commitments and postpone irreversible choices if possible.";
       }
-
-      const systemBehavior =
-        `${activationMeaning}, strain is ${result.strainBand.toLowerCase()}, ${fogMeaning.toLowerCase()}, and ${volatilityMeaning.toLowerCase()}.`;
-
-      const loadProfile =
-        `${result.loadBand} load under ${result.strainBand.toLowerCase()} strain.`;
 
       const driverSignature =
         driverMap[result.primaryDriver] ?? "Current load is being shaped by multiple comparable drivers.";
 
       const osSummary =
-        `${result.loadBand} / ${result.strainBand} / ${result.finalMode}`;
+        `${loadSemantic} load / ${regulationSemantic} regulation / ${stateModeSemantic} mode`;
 
       return {
         loadProfile,
         stateSummary,
-        systemBehavior,
         pacingDirective,
+        systemBehavior,
         driverSignature,
         regulationStatus,
-        volatilityStatus: volatilityMeaning,
-        dampingStatus,
+        volatilityDamping,
         decisionGuidance,
-        osSummary
+        osSummary,
+        loadSemantic,
+        behaviorSemantic,
+        regulationSemantic,
+        volatilitySemantic,
+        stateModeSemantic,
+        pacingSemantic
       };
     }
 
@@ -984,8 +1014,7 @@
       document.getElementById("systemBehaviorText").textContent = interpretation.systemBehavior;
       document.getElementById("driverSignatureText").textContent = interpretation.driverSignature;
       document.getElementById("regulationStatusText").textContent = interpretation.regulationStatus;
-      document.getElementById("volatilityDampingText").textContent =
-        `${interpretation.volatilityStatus}. ${interpretation.dampingStatus}`;
+      document.getElementById("volatilityDampingText").textContent = interpretation.volatilityDamping;
       document.getElementById("decisionGuidanceText").textContent = interpretation.decisionGuidance;
       document.getElementById("osSummaryText").textContent = interpretation.osSummary;
 
