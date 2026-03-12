@@ -130,6 +130,49 @@
       font-size:14px;
     }
 
+    .meta-box{
+      margin-top:18px;
+      padding:12px 14px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:rgba(255,255,255,.025);
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    .meta-title{
+      color:var(--text);
+      font-weight:700;
+      margin-bottom:6px;
+    }
+
+    .debug-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .debug-item{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      background:rgba(255,255,255,.02);
+      font-size:13px;
+      color:var(--muted);
+      min-width:0;
+    }
+
+    .debug-item strong{
+      display:block;
+      color:var(--text);
+      margin-bottom:4px;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
     .state-head{
       display:flex;
       justify-content:space-between;
@@ -321,6 +364,7 @@
       font-size:15px;
       line-height:1.5;
       color:var(--text);
+      overflow-wrap:anywhere;
     }
 
     .interp-item.full{
@@ -333,6 +377,7 @@
       .interp-grid{grid-template-columns:1fr}
       .interp-item.full{grid-column:auto}
       .band-row{grid-template-columns:1fr}
+      .debug-grid{grid-template-columns:1fr}
       .hero h1{font-size:48px}
       .state-head{align-items:flex-start; flex-direction:column}
     }
@@ -365,6 +410,30 @@
 
         <div class="sub" id="inputSubtext">
           Lucy.OS uses astronomical ephemeris input to drive the regulation engine.
+        </div>
+
+        <div class="meta-box">
+          <div class="meta-title">Ephemeris Status</div>
+          <div id="ephemerisStatus">Waiting for calculation.</div>
+        </div>
+
+        <div class="debug-grid">
+          <div class="debug-item">
+            <strong>Source</strong>
+            <span id="debugSource">—</span>
+          </div>
+          <div class="debug-item">
+            <strong>Mode</strong>
+            <span id="debugMode">—</span>
+          </div>
+          <div class="debug-item">
+            <strong>UTC Datetime</strong>
+            <span id="debugUtc">—</span>
+          </div>
+          <div class="debug-item">
+            <strong>Julian Day</strong>
+            <span id="debugJd">—</span>
+          </div>
         </div>
       </div>
 
@@ -507,6 +576,11 @@
   </div>
 
   <script>
+    const PLANET_KEYS = [
+      "sun","moon","mercury","venus","mars",
+      "jupiter","saturn","uranus","neptune","pluto"
+    ];
+
     const SEMANTIC_TEXT = {
       loadProfile: {
         Low: "Light load, well within capacity.",
@@ -704,7 +778,6 @@
       );
 
       const capacity = sun;
-
       const strain = effectiveLoad / Math.max(capacity, 0.01);
 
       let graphMode = "Normal";
@@ -740,14 +813,11 @@
         (pluto * 0.12);
 
       const containmentSupport = saturn * 0.08;
-
       const environmentalLoad = Math.max(transitPressure - containmentSupport, 0);
-
       const adjustedEffectiveLoad = graphResult.effectiveLoad + environmentalLoad;
       const adjustedStrain = adjustedEffectiveLoad / Math.max(graphResult.capacity, 0.01);
 
       let environmentMode = "Neutral";
-
       if (adjustedStrain > 1.05) environmentMode = "Pressurized";
       if (adjustedStrain > 1.25) environmentMode = "High Pressure";
 
@@ -773,7 +843,6 @@
       const timingPressure = spikeTrigger + fogDrift + rewritePressure;
 
       let timingMode = "Stable Window";
-
       if (timingPressure > 0.90) timingMode = "Activation Window";
       if (timingPressure > 1.10) timingMode = "Rewrite Window";
       if (timingPressure > 1.30) timingMode = "Threshold Crossing";
@@ -970,218 +1039,200 @@
       }
     }
 
-    function setLoadingState(isLoading){
-      const btn = document.getElementById("calculateBtn");
-      btn.disabled = isLoading;
-      btn.textContent = isLoading ? "Calculating..." : "Calculate State";
-    }
+    function updateEphemerisMeta(meta){
+      document.getElementById("debugSource").textContent = meta?.source ?? "—";
+      document.getElementById("debugMode").textContent = meta?.mode ?? "—";
+      document.getElementById("debugUtc").textContent = meta?.utc_datetime ?? "—";
+      document.getElementById("debugJd").textContent = meta?.jd_ut ?? "—";
 
-    function render(result){
-      const interpretation = interpretState(result);
-
-      document.getElementById("capacityValue").textContent = round2(result.capacity);
-      document.getElementById("stabilityValue").textContent = round2(result.strain);
-      document.getElementById("driverValue").textContent = result.primaryDriver;
-      document.getElementById("regulatorValue").textContent = result.topRegulator;
-
-      document.getElementById("loadBandPill").textContent = interpretation.loadSemantic;
-      document.getElementById("regulationBandPill").textContent = interpretation.regulationSemantic;
-      document.getElementById("modeBandPill").textContent = interpretation.stateModeSemantic;
-
-      document.getElementById("amplifiedLoadText").textContent = round2(result.amplifiedLoad);
-      document.getElementById("regulationText").textContent = round2(result.regulation);
-      document.getElementById("saturnText").textContent = round2(result.saturnConstraint);
-      document.getElementById("effectiveLoadText").textContent = round2(result.effectiveLoad);
-
-      document.getElementById("amplifiedLoadBar").style.width = clampPct(result.amplifiedLoad, 6) + "%";
-      document.getElementById("regulationBar").style.width = clampPct(result.regulation, 2) + "%";
-      document.getElementById("saturnBar").style.width = clampPct(result.saturnConstraint, 1) + "%";
-      document.getElementById("effectiveLoadBar").style.width = clampPct(result.effectiveLoad, 5) + "%";
-
-      document.getElementById("modePill").textContent = result.finalMode;
-      document.getElementById("plutoFlag").textContent = "Pluto Rewrite: " + (result.plutoRewrite ? "ON" : "OFF");
-      document.getElementById("saturnFlag").textContent = "Saturn Shutdown: " + (result.saturnOverride ? "ON" : "OFF");
-      document.getElementById("capacityUsedFlag").textContent = "Capacity Used: " + Math.round(result.capacityUsedPct) + "%";
-
-      document.getElementById("environmentLoadText").textContent =
-        "Environmental Load: " + round2(result.environmentalLoad ?? 0);
-
-      document.getElementById("environmentModeText").textContent =
-        "Environment Mode: " + (result.environmentMode ?? "Neutral");
-
-      document.getElementById("timingPressureText").textContent =
-        "Timing Pressure: " + round2(result.timingPressure ?? 0);
-
-      document.getElementById("timingModeText").textContent =
-        "Timing Mode: " + (result.timingMode ?? "Stable Window");
-
-      document.getElementById("driversList").innerHTML =
-        result.topDrivers.map(d => `<li>${d}</li>`).join("");
-
-      document.getElementById("loadProfileText").textContent = interpretation.loadProfile;
-      document.getElementById("stateSummaryText").textContent = interpretation.stateSummary;
-      document.getElementById("pacingDirectiveText").textContent = interpretation.pacingDirective;
-      document.getElementById("systemBehaviorText").textContent = interpretation.systemBehavior;
-      document.getElementById("driverSignatureText").textContent = interpretation.driverSignature;
-      document.getElementById("regulationStatusText").textContent = interpretation.regulationStatus;
-      document.getElementById("volatilityDampingText").textContent = interpretation.volatilityDamping;
-      document.getElementById("decisionGuidanceText").textContent = interpretation.decisionGuidance;
-      document.getElementById("osSummaryText").textContent = interpretation.osSummary;
-
-      document.getElementById("readingText").textContent =
-        `Summary: ${interpretation.osSummary}. ${interpretation.pacingDirective}`;
-
-      applyModePillStyle(result.finalMode);
-
-      const environmentChip = document.getElementById("environmentModeChip");
-      const timingChip = document.getElementById("timingModeChip");
-
-      environmentChip.textContent = result.environmentMode ?? "Neutral";
-      timingChip.textContent = result.timingMode ?? "Stable Window";
-
-      applyChipStyle(environmentChip, result.environmentMode ?? "Neutral");
-      applyChipStyle(timingChip, result.timingMode ?? "Stable Window");
-    }
-
-    function getStoredSmoothingState(){
-      try{
-        const saved = localStorage.getItem("lucySmoothingState");
-        return saved ? JSON.parse(saved) : null;
-      } catch {
-        return null;
+      let status = "No metadata returned.";
+      if (meta?.source){
+        status = `${meta.source} connected`;
+        if (meta?.mode) status += ` · ${meta.mode} mode`;
+        if (meta?.utc_datetime) status += ` · ${meta.utc_datetime} UTC`;
       }
+      document.getElementById("ephemerisStatus").textContent = status;
     }
 
-    function setStoredSmoothingState(state){
-      try{
-        localStorage.setItem("lucySmoothingState", JSON.stringify(state));
-      } catch {}
+    function setBar(id, value, max){
+      document.getElementById(id).style.width = `${clampPct(value, max)}%`;
     }
 
-    function smoothInputs(rawInputs, signature){
-      const stored = getStoredSmoothingState();
-
-      const alphas = {
-        sun: 0.01,
-        moon: 0.05,
-        mercury: 0.02,
-        venus: 0.02,
-        mars: 0.02,
-        jupiter: 0.01,
-        saturn: 0.01,
-        uranus: 0.01,
-        neptune: 0.01,
-        pluto: 0.01
+    function fallbackPlanetInputs(){
+      return {
+        sun: 0.62,
+        moon: 0.48,
+        mercury: 0.56,
+        venus: 0.58,
+        mars: 0.44,
+        jupiter: 0.52,
+        saturn: 0.61,
+        uranus: 0.39,
+        neptune: 0.47,
+        pluto: 0.42,
+        _meta: {
+          source: "Fallback",
+          mode: "demo",
+          utc_datetime: "n/a",
+          jd_ut: "n/a"
+        }
       };
-
-      if (!stored || stored.signature !== signature){
-        const nextState = {
-          signature,
-          smoothed: { ...rawInputs }
-        };
-        setStoredSmoothingState(nextState);
-        return rawInputs;
-      }
-
-      const prev = stored.smoothed || {};
-      const smoothed = {};
-
-      for (const key of Object.keys(rawInputs)){
-        const alpha = alphas[key] ?? 0.02;
-        const raw = rawInputs[key];
-        const prior = prev[key] ?? raw;
-        smoothed[key] = (raw * alpha) + (prior * (1 - alpha));
-      }
-
-      setStoredSmoothingState({
-        signature,
-        smoothed
-      });
-
-      return smoothed;
     }
 
-    async function calculateState(){
+    async function fetchPlanetInputs(){
       const dob = document.getElementById("dob").value.trim();
       const tob = document.getElementById("tob").value.trim();
       const location = document.getElementById("location").value.trim();
-      const utcOffset = document.getElementById("utcOffset").value.trim();
+      const utcOffset = parseFloat(document.getElementById("utcOffset").value);
 
-      const signature = `${dob}|${tob}|${location}|${utcOffset}`;
+      const response = await fetch("/api/chart_inputs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          mode: "natal",
+          dob,
+          tob,
+          location,
+          utcOffset
+        })
+      });
 
-      setLoadingState(true);
+      if (!response.ok){
+        const errorText = await response.text();
+        throw new Error(`API ${response.status}: ${errorText}`);
+      }
 
-      try{
-        const response = await fetch("/api/chart_inputs", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            dob,
-            tob,
-            location,
-            utcOffset
-          })
-        });
+      const data = await response.json();
 
-        if (!response.ok){
-          throw new Error(`API request failed: ${response.status}`);
+      for (const key of PLANET_KEYS){
+        if (typeof data[key] !== "number"){
+          throw new Error(`Missing planet input: ${key}`);
+        }
+      }
+
+      return data;
+    }
+
+    async function calculateState(){
+      const button = document.getElementById("calculateBtn");
+      button.disabled = true;
+      button.textContent = "Calculating...";
+
+      try {
+        let inputs;
+
+        try {
+          inputs = await fetchPlanetInputs();
+        } catch (apiError) {
+          console.warn("API fetch failed, using fallback:", apiError);
+          inputs = fallbackPlanetInputs();
+          document.getElementById("ephemerisStatus").textContent =
+            `API unavailable — using fallback demo inputs (${apiError.message})`;
         }
 
-        const rawInputs = await response.json();
-        console.log("Lucy Inputs:", rawInputs);
+        updateEphemerisMeta(inputs._meta || null);
 
-        if (rawInputs.error){
-          throw new Error(rawInputs.error);
-        }
-
-        const inputs = smoothInputs(rawInputs, signature);
-
-        const graphResult = computePlanetaryGraph(inputs);
-        console.log("V3A Graph Result:", graphResult);
-
-        const environmentResult = computeEnvironmentLayer(inputs, graphResult);
-        console.log("V3B Environment Result:", environmentResult);
-
-        const timingResult = computeTimingLayer(inputs, graphResult, environmentResult);
-        console.log("V3C Timing Result:", timingResult);
-
-        const modeResult = computeModeDetection(graphResult, environmentResult, timingResult);
-        console.log("V3D Mode Result:", modeResult);
-
-        const diagnostics = computeDiagnostics(
-          inputs,
-          graphResult,
-          environmentResult,
-          timingResult,
-          modeResult
-        );
+        const graph = computePlanetaryGraph(inputs);
+        const env = computeEnvironmentLayer(inputs, graph);
+        const timing = computeTimingLayer(inputs, graph, env);
+        const mode = computeModeDetection(graph, env, timing);
+        const diag = computeDiagnostics(inputs, graph, env, timing, mode);
 
         const result = {
-          inputs,
-          ...graphResult,
-          ...environmentResult,
-          ...timingResult,
-          ...modeResult,
-          ...diagnostics
+          ...graph,
+          ...env,
+          ...timing,
+          ...mode,
+          ...diag
         };
 
-        console.log("Lucy Result:", result);
-        render(result);
-      } catch (error){
-        console.error("Lucy.OS error:", error);
+        const interp = interpretState(result);
+
+        document.getElementById("capacityValue").textContent = round2(result.capacity);
+        document.getElementById("stabilityValue").textContent = round2(result.strain);
+        document.getElementById("driverValue").textContent = result.primaryDriver;
+        document.getElementById("regulatorValue").textContent = result.topRegulator;
+
+        document.getElementById("loadBandPill").textContent = result.loadBand;
+        document.getElementById("regulationBandPill").textContent = interp.regulationSemantic;
+        document.getElementById("modeBandPill").textContent = result.finalMode;
+
+        document.getElementById("amplifiedLoadText").textContent = round2(result.amplifiedLoad);
+        document.getElementById("regulationText").textContent = round2(result.regulation);
+        document.getElementById("saturnText").textContent = round2(result.saturnConstraint);
+        document.getElementById("effectiveLoadText").textContent = round2(result.effectiveLoad);
+
+        setBar("amplifiedLoadBar", result.amplifiedLoad, 3.0);
+        setBar("regulationBar", result.regulation, 1.5);
+        setBar("saturnBar", result.saturnConstraint, 1.0);
+        setBar("effectiveLoadBar", result.effectiveLoad, 3.0);
+
+        const driversList = document.getElementById("driversList");
+        driversList.innerHTML = "";
+        result.topDrivers.forEach(name => {
+          const li = document.createElement("li");
+          li.textContent = name;
+          driversList.appendChild(li);
+        });
+
+        document.getElementById("environmentLoadText").textContent =
+          `Environmental Load: ${round2(result.environmentalLoad)}`;
+        document.getElementById("environmentModeText").textContent =
+          `Environment Mode: ${result.environmentMode}`;
+        document.getElementById("timingPressureText").textContent =
+          `Timing Pressure: ${round2(result.timingPressure)}`;
+        document.getElementById("timingModeText").textContent =
+          `Timing Mode: ${result.timingMode}`;
+
+        const envChip = document.getElementById("environmentModeChip");
+        envChip.textContent = result.environmentMode;
+        applyChipStyle(envChip, result.environmentMode);
+
+        const timingChip = document.getElementById("timingModeChip");
+        timingChip.textContent = result.timingMode;
+        applyChipStyle(timingChip, result.timingMode);
+
+        document.getElementById("plutoFlag").textContent =
+          `Pluto Rewrite: ${result.plutoRewrite ? "ON" : "OFF"}`;
+        document.getElementById("saturnFlag").textContent =
+          `Saturn Shutdown: ${result.saturnOverride ? "ON" : "OFF"}`;
+        document.getElementById("capacityUsedFlag").textContent =
+          `Capacity Used: ${Math.round(result.capacityUsedPct)}%`;
+
+        document.getElementById("loadProfileText").textContent = interp.loadProfile;
+        document.getElementById("stateSummaryText").textContent = interp.stateSummary;
+        document.getElementById("pacingDirectiveText").textContent = interp.pacingDirective;
+        document.getElementById("systemBehaviorText").textContent = interp.systemBehavior;
+        document.getElementById("driverSignatureText").textContent = interp.driverSignature;
+        document.getElementById("regulationStatusText").textContent = interp.regulationStatus;
+        document.getElementById("volatilityDampingText").textContent = interp.volatilityDamping;
+        document.getElementById("decisionGuidanceText").textContent = interp.decisionGuidance;
+        document.getElementById("osSummaryText").textContent = interp.osSummary;
+
+        document.getElementById("modePill").textContent = result.finalMode;
+        applyModePillStyle(result.finalMode);
+
         document.getElementById("readingText").textContent =
-          `Error: ${error.message}`;
-        alert(`Lucy.OS error: ${error.message}`);
+          `State: ${result.finalMode}. ${interp.stateSummary} ${interp.pacingDirective}`;
+      } catch (err) {
+        console.error(err);
+        document.getElementById("modePill").textContent = "Error";
+        applyModePillStyle("Overload");
+        document.getElementById("readingText").textContent =
+          `Engine error: ${err.message}`;
+        document.getElementById("ephemerisStatus").textContent =
+          `Calculation failed: ${err.message}`;
       } finally {
-        setLoadingState(false);
+        button.disabled = false;
+        button.textContent = "Calculate State";
       }
     }
 
-    window.onload = function(){
+    window.addEventListener("DOMContentLoaded", () => {
       calculateState();
-    };
+    });
   </script>
 </body>
 </html>
