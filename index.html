@@ -23,7 +23,7 @@
 
     body{
       margin:0;
-      font-family:Arial,sans-serif;
+      font-family:Arial, sans-serif;
       background:var(--bg);
       color:var(--text);
     }
@@ -91,6 +91,11 @@
       outline:none;
     }
 
+    input:focus{
+      border-color:#4767a8;
+      box-shadow:0 0 0 2px rgba(103,193,255,.10);
+    }
+
     button{
       width:100%;
       border:none;
@@ -102,6 +107,20 @@
       color:#08203b;
       cursor:pointer;
       margin-top:4px;
+      transition:opacity .2s ease, transform .1s ease;
+    }
+
+    button:hover:not(:disabled){
+      opacity:.95;
+    }
+
+    button:active:not(:disabled){
+      transform:translateY(1px);
+    }
+
+    button:disabled{
+      opacity:.7;
+      cursor:wait;
     }
 
     .sub{
@@ -127,6 +146,7 @@
       color:#f3db80;
       font-weight:700;
       white-space:nowrap;
+      flex-shrink:0;
     }
 
     .stats{
@@ -141,6 +161,7 @@
       border-radius:18px;
       padding:18px;
       background:rgba(255,255,255,.02);
+      min-width:0;
     }
 
     .k{
@@ -154,6 +175,7 @@
     .v{
       font-size:30px;
       font-weight:800;
+      overflow-wrap:anywhere;
     }
 
     .v.small{
@@ -181,9 +203,20 @@
       min-width:0;
     }
 
+    .band-pill span{
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
     .band-pill strong{
       font-weight:800;
       text-align:right;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      flex-shrink:0;
+      max-width:55%;
     }
 
     .bar-group{
@@ -231,6 +264,7 @@
       border-radius:18px;
       padding:18px;
       background:rgba(255,255,255,.02);
+      min-width:0;
     }
 
     .mini h3{
@@ -254,6 +288,7 @@
       font-size:13px;
       font-weight:700;
       margin-top:8px;
+      max-width:100%;
     }
 
     .foot{
@@ -275,6 +310,7 @@
       border-radius:16px;
       padding:14px;
       background:rgba(255,255,255,.02);
+      min-width:0;
     }
 
     .interp-item .k{
@@ -298,6 +334,7 @@
       .interp-item.full{grid-column:auto}
       .band-row{grid-template-columns:1fr}
       .hero h1{font-size:48px}
+      .state-head{align-items:flex-start; flex-direction:column}
     }
   </style>
 </head>
@@ -324,9 +361,9 @@
         <label class="label" for="utcOffset">UTC Offset</label>
         <input id="utcOffset" type="number" value="-6" step="0.5" />
 
-        <button type="button" onclick="calculateState()">Calculate State</button>
+        <button id="calculateBtn" type="button" onclick="calculateState()">Calculate State</button>
 
-        <div class="sub">
+        <div class="sub" id="inputSubtext">
           Lucy.OS uses astronomical ephemeris input to drive the regulation engine.
         </div>
       </div>
@@ -357,9 +394,9 @@
         </div>
 
         <div class="band-row">
-          <div class="band-pill">Load State <strong id="loadBandPill">—</strong></div>
-          <div class="band-pill">Containment <strong id="regulationBandPill">—</strong></div>
-          <div class="band-pill">Mode <strong id="modeBandPill">—</strong></div>
+          <div class="band-pill"><span>Load State</span><strong id="loadBandPill">—</strong></div>
+          <div class="band-pill"><span>Containment</span><strong id="regulationBandPill">—</strong></div>
+          <div class="band-pill"><span>Mode</span><strong id="modeBandPill">—</strong></div>
         </div>
 
         <div class="bar-group">
@@ -529,24 +566,24 @@
     }
 
     function getLoadBand(effectiveLoad){
-      if(effectiveLoad < 0.75) return "Light";
-      if(effectiveLoad < 1.50) return "Moderate";
-      if(effectiveLoad < 2.25) return "Heavy";
+      if (effectiveLoad < 0.75) return "Light";
+      if (effectiveLoad < 1.50) return "Moderate";
+      if (effectiveLoad < 2.25) return "Heavy";
       return "Saturated";
     }
 
     function getStrainBand(strain){
-      if(strain < 0.60) return "Low";
-      if(strain < 0.85) return "Moderate";
-      if(strain < 1.50) return "High";
-      if(strain < 2.25) return "Severe";
+      if (strain < 0.60) return "Low";
+      if (strain < 0.85) return "Moderate";
+      if (strain < 1.50) return "High";
+      if (strain < 2.25) return "Severe";
       return "Extreme";
     }
 
     function loadLevelFromBands(loadBand, strainBand){
-      if(loadBand === "Light" && (strainBand === "Low" || strainBand === "Moderate")) return "Low";
-      if(loadBand === "Moderate" || strainBand === "Moderate") return "Moderate";
-      if(loadBand === "Heavy" || strainBand === "High" || strainBand === "Severe") return "High";
+      if (loadBand === "Light" && (strainBand === "Low" || strainBand === "Moderate")) return "Low";
+      if (loadBand === "Moderate" || strainBand === "Moderate") return "Moderate";
+      if (loadBand === "Heavy" || strainBand === "High" || strainBand === "Severe") return "High";
       return "Extreme";
     }
 
@@ -556,18 +593,18 @@
         result.fogDrift +
         result.environmentalLoad;
 
-      if(volatilityScore < 0.55) return "Low";
-      if(volatilityScore < 0.95) return "Moderate";
-      if(volatilityScore < 1.35) return "High";
+      if (volatilityScore < 0.55) return "Low";
+      if (volatilityScore < 0.95) return "Moderate";
+      if (volatilityScore < 1.35) return "High";
       return "Extreme";
     }
 
     function regulationLevel(result){
       const ratio = result.regulation / Math.max(result.effectiveLoad, 0.01);
 
-      if(ratio >= 0.60) return "Low";
-      if(ratio >= 0.35) return "Moderate";
-      if(ratio >= 0.18) return "High";
+      if (ratio >= 0.60) return "Low";
+      if (ratio >= 0.35) return "Moderate";
+      if (ratio >= 0.18) return "High";
       return "Extreme";
     }
 
@@ -580,16 +617,16 @@
 
       const dampingScore = result.saturnConstraint;
 
-      if(volatilityScore < 0.55 && dampingScore >= 0.35) return "Low";
-      if(volatilityScore < 0.95) return "Moderate";
-      if(volatilityScore < 1.35 || dampingScore >= 0.15) return "High";
+      if (volatilityScore < 0.55 && dampingScore >= 0.35) return "Low";
+      if (volatilityScore < 0.95) return "Moderate";
+      if (volatilityScore < 1.35 || dampingScore >= 0.15) return "High";
       return "Extreme";
     }
 
     function semanticStateMode(result){
-      if(result.finalMode === "Balanced") return "Stable";
+      if (result.finalMode === "Balanced") return "Stable";
 
-      if(
+      if (
         result.finalMode === "Strained" ||
         result.finalMode === "Pressurized" ||
         result.finalMode === "Activation Window"
@@ -597,7 +634,7 @@
         return "Transition";
       }
 
-      if(
+      if (
         result.finalMode === "Rewrite Window" ||
         result.finalMode === "Threshold Crossing" ||
         result.finalMode === "Pluto Rewrite"
@@ -605,7 +642,7 @@
         return "Rewrite";
       }
 
-      if(
+      if (
         result.finalMode === "Overload" ||
         result.finalMode === "High Pressure" ||
         result.finalMode === "Saturn Shutdown"
@@ -617,9 +654,9 @@
     }
 
     function pacingLevelFromStateMode(stateMode){
-      if(stateMode === "Stable") return "Low";
-      if(stateMode === "Transition") return "Moderate";
-      if(stateMode === "Rewrite") return "High";
+      if (stateMode === "Stable") return "Low";
+      if (stateMode === "Transition") return "Moderate";
+      if (stateMode === "Rewrite") return "High";
       return "Extreme";
     }
 
@@ -646,8 +683,7 @@
         neptune * 0.70 +
         pluto * 1.10;
 
-      const amplifiedLoad =
-        baseLoad * (1 + jupiter * jupiterAmp);
+      const amplifiedLoad = baseLoad * (1 + jupiter * jupiterAmp);
 
       const regulation =
         mercury * 0.40 +
@@ -669,8 +705,7 @@
 
       const capacity = sun;
 
-      const strain =
-        effectiveLoad / Math.max(capacity, 0.01);
+      const strain = effectiveLoad / Math.max(capacity, 0.01);
 
       let graphMode = "Normal";
 
@@ -696,13 +731,7 @@
     }
 
     function computeEnvironmentLayer(inputs, graphResult){
-      const {
-        jupiter,
-        saturn,
-        uranus,
-        neptune,
-        pluto
-      } = inputs;
+      const { jupiter, saturn, uranus, neptune, pluto } = inputs;
 
       const transitPressure =
         (jupiter * 0.08) +
@@ -710,27 +739,17 @@
         (neptune * 0.10) +
         (pluto * 0.12);
 
-      const containmentSupport =
-        saturn * 0.08;
+      const containmentSupport = saturn * 0.08;
 
-      const environmentalLoad =
-        Math.max(transitPressure - containmentSupport, 0);
+      const environmentalLoad = Math.max(transitPressure - containmentSupport, 0);
 
-      const adjustedEffectiveLoad =
-        graphResult.effectiveLoad + environmentalLoad;
-
-      const adjustedStrain =
-        adjustedEffectiveLoad / Math.max(graphResult.capacity, 0.01);
+      const adjustedEffectiveLoad = graphResult.effectiveLoad + environmentalLoad;
+      const adjustedStrain = adjustedEffectiveLoad / Math.max(graphResult.capacity, 0.01);
 
       let environmentMode = "Neutral";
 
-      if (adjustedStrain > 1.05){
-        environmentMode = "Pressurized";
-      }
-
-      if (adjustedStrain > 1.25){
-        environmentMode = "High Pressure";
-      }
+      if (adjustedStrain > 1.05) environmentMode = "Pressurized";
+      if (adjustedStrain > 1.25) environmentMode = "High Pressure";
 
       return {
         transitPressure,
@@ -743,48 +762,27 @@
     }
 
     function computeTimingLayer(inputs, graphResult, environmentResult){
-      const {
-        mars,
-        mercury,
-        uranus,
-        neptune,
-        pluto
-      } = inputs;
+      const { mars, mercury, uranus, neptune, pluto } = inputs;
 
-      const spikeTrigger =
-        (mars * 0.35) +
-        (uranus * 0.45);
-
-      const fogDrift =
-        (neptune * 0.40);
-
+      const spikeTrigger = (mars * 0.35) + (uranus * 0.45);
+      const fogDrift = neptune * 0.40;
       const rewritePressure =
         (pluto * 0.50) +
         (environmentResult.environmentalLoad * 0.50);
 
-      const timingPressure =
-        spikeTrigger + fogDrift + rewritePressure;
+      const timingPressure = spikeTrigger + fogDrift + rewritePressure;
 
       let timingMode = "Stable Window";
 
-      if (timingPressure > 0.90){
-        timingMode = "Activation Window";
-      }
-
-      if (timingPressure > 1.10){
-        timingMode = "Rewrite Window";
-      }
-
-      if (timingPressure > 1.30){
-        timingMode = "Threshold Crossing";
-      }
+      if (timingPressure > 0.90) timingMode = "Activation Window";
+      if (timingPressure > 1.10) timingMode = "Rewrite Window";
+      if (timingPressure > 1.30) timingMode = "Threshold Crossing";
 
       const timingSupport =
         mercury * 0.20 +
         graphResult.regulation * 0.20;
 
-      const adjustedTimingPressure =
-        Math.max(timingPressure - timingSupport, 0);
+      const adjustedTimingPressure = Math.max(timingPressure - timingSupport, 0);
 
       return {
         spikeTrigger,
@@ -826,9 +824,7 @@
         finalMode = "Overload";
       }
 
-      return {
-        finalMode
-      };
+      return { finalMode };
     }
 
     function computeDiagnostics(inputs, graphResult, environmentResult, timingResult, modeResult){
@@ -884,18 +880,19 @@
       const pacingDirective = SEMANTIC_TEXT.pacingDirective[pacingSemantic];
 
       let decisionGuidance = "Routine decisions are acceptable.";
-      if(stateModeSemantic === "Stable"){
+      if (stateModeSemantic === "Stable"){
         decisionGuidance = "Good window for clear practical decisions and structured action.";
-      } else if(stateModeSemantic === "Transition"){
+      } else if (stateModeSemantic === "Transition"){
         decisionGuidance = "Prefer smaller decisions and reduce unnecessary complexity.";
-      } else if(stateModeSemantic === "Rewrite"){
+      } else if (stateModeSemantic === "Rewrite"){
         decisionGuidance = "Best for observation, reflection, journaling, and pattern review.";
-      } else if(stateModeSemantic === "Overload"){
+      } else if (stateModeSemantic === "Overload"){
         decisionGuidance = "Avoid major commitments and postpone irreversible choices if possible.";
       }
 
       const driverSignature =
-        driverMap[result.primaryDriver] ?? "Current load is being shaped by multiple comparable drivers.";
+        driverMap[result.primaryDriver] ??
+        "Current load is being shaped by multiple comparable drivers.";
 
       const osSummary =
         `${loadSemantic} load / ${regulationSemantic} containment / ${stateModeSemantic} mode`;
@@ -922,23 +919,23 @@
     function applyModePillStyle(displayMode){
       const pill = document.getElementById("modePill");
 
-      if(displayMode === "Balanced"){
+      if (displayMode === "Balanced"){
         pill.style.background = "rgba(103,210,111,.12)";
         pill.style.borderColor = "#4f8f57";
         pill.style.color = "#98f2a0";
-      } else if(displayMode === "Strained" || displayMode === "Pressurized"){
+      } else if (displayMode === "Strained" || displayMode === "Pressurized"){
         pill.style.background = "rgba(216,184,76,.12)";
         pill.style.borderColor = "#6a5a1a";
         pill.style.color = "#f3db80";
-      } else if(displayMode === "Overload" || displayMode === "Activation Window" || displayMode === "High Pressure"){
+      } else if (displayMode === "Overload" || displayMode === "Activation Window" || displayMode === "High Pressure"){
         pill.style.background = "rgba(255,102,102,.12)";
         pill.style.borderColor = "#7d3838";
         pill.style.color = "#ff9c9c";
-      } else if(displayMode === "Rewrite Window" || displayMode === "Threshold Crossing" || displayMode === "Pluto Rewrite"){
+      } else if (displayMode === "Rewrite Window" || displayMode === "Threshold Crossing" || displayMode === "Pluto Rewrite"){
         pill.style.background = "rgba(176,108,255,.12)";
         pill.style.borderColor = "#6d46a3";
         pill.style.color = "#d8b5ff";
-      } else if(displayMode === "Saturn Shutdown"){
+      } else if (displayMode === "Saturn Shutdown"){
         pill.style.background = "rgba(180,190,210,.14)";
         pill.style.borderColor = "#5b667d";
         pill.style.color = "#e4ebff";
@@ -950,19 +947,19 @@
     }
 
     function applyChipStyle(el, mode){
-      if(mode === "Neutral" || mode === "Stable Window"){
+      if (mode === "Neutral" || mode === "Stable Window"){
         el.style.background = "rgba(103,210,111,.10)";
         el.style.borderColor = "#4f8f57";
         el.style.color = "#98f2a0";
-      } else if(mode === "Pressurized" || mode === "Activation Window"){
+      } else if (mode === "Pressurized" || mode === "Activation Window"){
         el.style.background = "rgba(216,184,76,.12)";
         el.style.borderColor = "#6a5a1a";
         el.style.color = "#f3db80";
-      } else if(mode === "High Pressure" || mode === "Threshold Crossing"){
+      } else if (mode === "High Pressure" || mode === "Threshold Crossing"){
         el.style.background = "rgba(255,102,102,.12)";
         el.style.borderColor = "#7d3838";
         el.style.color = "#ff9c9c";
-      } else if(mode === "Rewrite Window"){
+      } else if (mode === "Rewrite Window"){
         el.style.background = "rgba(176,108,255,.12)";
         el.style.borderColor = "#6d46a3";
         el.style.color = "#d8b5ff";
@@ -973,13 +970,19 @@
       }
     }
 
+    function setLoadingState(isLoading){
+      const btn = document.getElementById("calculateBtn");
+      btn.disabled = isLoading;
+      btn.textContent = isLoading ? "Calculating..." : "Calculate State";
+    }
+
     function render(result){
+      const interpretation = interpretState(result);
+
       document.getElementById("capacityValue").textContent = round2(result.capacity);
       document.getElementById("stabilityValue").textContent = round2(result.strain);
       document.getElementById("driverValue").textContent = result.primaryDriver;
       document.getElementById("regulatorValue").textContent = result.topRegulator;
-
-      const interpretation = interpretState(result);
 
       document.getElementById("loadBandPill").textContent = interpretation.loadSemantic;
       document.getElementById("regulationBandPill").textContent = interpretation.regulationSemantic;
@@ -1071,7 +1074,7 @@
         pluto: 0.01
       };
 
-      if(!stored || stored.signature !== signature){
+      if (!stored || stored.signature !== signature){
         const nextState = {
           signature,
           smoothed: { ...rawInputs }
@@ -1083,7 +1086,7 @@
       const prev = stored.smoothed || {};
       const smoothed = {};
 
-      for(const key of Object.keys(rawInputs)){
+      for (const key of Object.keys(rawInputs)){
         const alpha = alphas[key] ?? 0.02;
         const raw = rawInputs[key];
         const prior = prev[key] ?? raw;
@@ -1099,65 +1102,81 @@
     }
 
     async function calculateState(){
-      const dob = document.getElementById("dob").value;
-      const tob = document.getElementById("tob").value;
-      const utcOffset = document.getElementById("utcOffset").value;
+      const dob = document.getElementById("dob").value.trim();
+      const tob = document.getElementById("tob").value.trim();
+      const location = document.getElementById("location").value.trim();
+      const utcOffset = document.getElementById("utcOffset").value.trim();
 
-      const signature = `${dob}|${tob}|${utcOffset}`;
+      const signature = `${dob}|${tob}|${location}|${utcOffset}`;
 
-      const response = await fetch("/api/chart_inputs", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          dob: dob,
-          tob: tob,
-          utcOffset: utcOffset
-        })
-      });
+      setLoadingState(true);
 
-      const rawInputs = await response.json();
-      console.log("Lucy Inputs:", rawInputs);
+      try{
+        const response = await fetch("/api/chart_inputs", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            dob,
+            tob,
+            location,
+            utcOffset
+          })
+        });
 
-      if(rawInputs.error){
-        alert(rawInputs.error);
-        return;
+        if (!response.ok){
+          throw new Error(`API request failed: ${response.status}`);
+        }
+
+        const rawInputs = await response.json();
+        console.log("Lucy Inputs:", rawInputs);
+
+        if (rawInputs.error){
+          throw new Error(rawInputs.error);
+        }
+
+        const inputs = smoothInputs(rawInputs, signature);
+
+        const graphResult = computePlanetaryGraph(inputs);
+        console.log("V3A Graph Result:", graphResult);
+
+        const environmentResult = computeEnvironmentLayer(inputs, graphResult);
+        console.log("V3B Environment Result:", environmentResult);
+
+        const timingResult = computeTimingLayer(inputs, graphResult, environmentResult);
+        console.log("V3C Timing Result:", timingResult);
+
+        const modeResult = computeModeDetection(graphResult, environmentResult, timingResult);
+        console.log("V3D Mode Result:", modeResult);
+
+        const diagnostics = computeDiagnostics(
+          inputs,
+          graphResult,
+          environmentResult,
+          timingResult,
+          modeResult
+        );
+
+        const result = {
+          inputs,
+          ...graphResult,
+          ...environmentResult,
+          ...timingResult,
+          ...modeResult,
+          ...diagnostics
+        };
+
+        console.log("Lucy Result:", result);
+        render(result);
+      } catch (error){
+        console.error("Lucy.OS error:", error);
+        document.getElementById("readingText").textContent =
+          `Error: ${error.message}`;
+        alert(`Lucy.OS error: ${error.message}`);
+      } finally {
+        setLoadingState(false);
       }
-
-      const inputs = smoothInputs(rawInputs, signature);
-
-      const graphResult = computePlanetaryGraph(inputs);
-      console.log("V3A Graph Result:", graphResult);
-
-      const environmentResult = computeEnvironmentLayer(inputs, graphResult);
-      console.log("V3B Environment Result:", environmentResult);
-
-      const timingResult = computeTimingLayer(inputs, graphResult, environmentResult);
-      console.log("V3C Timing Result:", timingResult);
-
-      const modeResult = computeModeDetection(graphResult, environmentResult, timingResult);
-      console.log("V3D Mode Result:", modeResult);
-
-      const diagnostics = computeDiagnostics(
-        inputs,
-        graphResult,
-        environmentResult,
-        timingResult,
-        modeResult
-      );
-
-      const result = {
-        inputs,
-        ...graphResult,
-        ...environmentResult,
-        ...timingResult,
-        ...modeResult,
-        ...diagnostics
-      };
-
-      console.log("Lucy Result:", result);
-      render(result);
     }
 
     window.onload = function(){
