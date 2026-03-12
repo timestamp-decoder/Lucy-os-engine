@@ -161,34 +161,26 @@
 
     .band-row{
       display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
       margin-bottom:20px;
     }
 
     .band-pill{
       border:1px solid var(--line);
-      border-radius:16px;
-      padding:12px 14px;
-      background:rgba(255,255,255,.035);
-      font-size:14px;
+      border-radius:999px;
+      padding:8px 12px;
+      background:rgba(255,255,255,.03);
+      font-size:13px;
       color:var(--text);
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:10px;
-    }
-
-    .band-pill span{
-      color:var(--muted);
-      font-size:12px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
+      gap:8px;
     }
 
     .band-pill strong{
       font-weight:800;
-      font-size:15px;
     }
 
     .bar-group{
@@ -249,6 +241,18 @@
       line-height:1.6;
     }
 
+    .mode-chip{
+      display:inline-flex;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      font-size:13px;
+      font-weight:700;
+      margin-top:6px;
+    }
+
     .foot{
       margin-top:18px;
       color:var(--muted);
@@ -280,10 +284,15 @@
       color:var(--text);
     }
 
+    .interp-item.full{
+      grid-column:1 / -1;
+    }
+
     @media (max-width: 980px){
       .grid{grid-template-columns:1fr}
       .bottom{grid-template-columns:1fr}
       .interp-grid{grid-template-columns:1fr}
+      .interp-item.full{grid-column:auto}
       .band-row{grid-template-columns:1fr}
       .hero h1{font-size:48px}
     }
@@ -345,14 +354,9 @@
         </div>
 
         <div class="band-row">
-          <div class="band-pill">
-            <span>Load Band</span>
-            <strong id="loadBandPill">—</strong>
-          </div>
-          <div class="band-pill">
-            <span>Strain Band</span>
-            <strong id="strainBandPill">—</strong>
-          </div>
+          <div class="band-pill">Load Band <strong id="loadBandPill">—</strong></div>
+          <div class="band-pill">Strain Band <strong id="strainBandPill">—</strong></div>
+          <div class="band-pill">Mode <strong id="modeBandPill">—</strong></div>
         </div>
 
         <div class="bar-group">
@@ -391,6 +395,7 @@
               <li id="environmentLoadText">Environmental Load: 0.00</li>
               <li id="environmentModeText">Environment Mode: Neutral</li>
             </ul>
+            <div class="mode-chip" id="environmentModeChip">Neutral</div>
           </div>
 
           <div class="mini">
@@ -399,6 +404,7 @@
               <li id="timingPressureText">Timing Pressure: 0.00</li>
               <li id="timingModeText">Timing Mode: Stable Window</li>
             </ul>
+            <div class="mode-chip" id="timingModeChip">Stable Window</div>
           </div>
 
           <div class="mini">
@@ -441,6 +447,14 @@
             <div class="interp-item">
               <div class="k">Volatility / Damping</div>
               <div class="text" id="volatilityDampingText">—</div>
+            </div>
+            <div class="interp-item">
+              <div class="k">Decision Guidance</div>
+              <div class="text" id="decisionGuidanceText">—</div>
+            </div>
+            <div class="interp-item full">
+              <div class="k">OS Summary</div>
+              <div class="text" id="osSummaryText">—</div>
             </div>
           </div>
         </div>
@@ -532,6 +546,7 @@
       );
 
       const capacity = sun;
+
       const strain =
         effectiveLoad / Math.max(capacity, 0.01);
 
@@ -559,7 +574,13 @@
     }
 
     function computeEnvironmentLayer(inputs, graphResult){
-      const { jupiter, saturn, uranus, neptune, pluto } = inputs;
+      const {
+        jupiter,
+        saturn,
+        uranus,
+        neptune,
+        pluto
+      } = inputs;
 
       const transitPressure =
         (jupiter * 0.08) +
@@ -567,7 +588,8 @@
         (neptune * 0.10) +
         (pluto * 0.12);
 
-      const containmentSupport = saturn * 0.08;
+      const containmentSupport =
+        saturn * 0.08;
 
       const environmentalLoad =
         Math.max(transitPressure - containmentSupport, 0);
@@ -599,13 +621,20 @@
     }
 
     function computeTimingLayer(inputs, graphResult, environmentResult){
-      const { mars, mercury, uranus, neptune, pluto } = inputs;
+      const {
+        mars,
+        mercury,
+        uranus,
+        neptune,
+        pluto
+      } = inputs;
 
       const spikeTrigger =
         (mars * 0.35) +
         (uranus * 0.45);
 
-      const fogDrift = neptune * 0.40;
+      const fogDrift =
+        (neptune * 0.40);
 
       const rewritePressure =
         (pluto * 0.50) +
@@ -675,7 +704,9 @@
         finalMode = "Overload";
       }
 
-      return { finalMode };
+      return {
+        finalMode
+      };
     }
 
     function computeDiagnostics(inputs, graphResult, environmentResult, timingResult, modeResult){
@@ -802,6 +833,29 @@
         pacingDirective = "Minimize pressure, avoid overcontrol, and allow restructuring to complete.";
       }
 
+      let decisionGuidance = "Routine decisions are acceptable.";
+      if(result.finalMode === "Balanced"){
+        decisionGuidance = "Good window for clear practical decisions and structured action.";
+      } else if(result.finalMode === "Strained"){
+        decisionGuidance = "Prefer smaller decisions. Delay emotionally loaded choices if possible.";
+      } else if(result.finalMode === "Overload"){
+        decisionGuidance = "Avoid major commitments. Make only necessary low-risk decisions.";
+      } else if(result.finalMode === "Pressurized"){
+        decisionGuidance = "Keep decisions conservative and leave margin for external variables.";
+      } else if(result.finalMode === "High Pressure"){
+        decisionGuidance = "Postpone major decisions unless truly time-sensitive.";
+      } else if(result.finalMode === "Activation Window"){
+        decisionGuidance = "Good for directed action, not ideal for impulsive or high-stakes choices.";
+      } else if(result.finalMode === "Rewrite Window"){
+        decisionGuidance = "Best for observation, reflection, journaling, and pattern review.";
+      } else if(result.finalMode === "Threshold Crossing"){
+        decisionGuidance = "Do not make irreversible choices until state stabilizes.";
+      } else if(result.finalMode === "Saturn Shutdown"){
+        decisionGuidance = "Reduce commitments and operate inside minimal necessary structure.";
+      } else if(result.finalMode === "Pluto Rewrite"){
+        decisionGuidance = "Avoid forcing outcomes. Let deeper restructuring settle first.";
+      }
+
       const systemBehavior =
         `${activationMeaning}, strain is ${result.strainBand.toLowerCase()}, ${fogMeaning.toLowerCase()}, and ${volatilityMeaning.toLowerCase()}.`;
 
@@ -811,6 +865,9 @@
       const driverSignature =
         driverMap[result.primaryDriver] ?? "Current load is being shaped by multiple comparable drivers.";
 
+      const osSummary =
+        `${result.loadBand} / ${result.strainBand} / ${result.finalMode}`;
+
       return {
         loadProfile,
         stateSummary,
@@ -819,7 +876,9 @@
         driverSignature,
         regulationStatus,
         volatilityStatus: volatilityMeaning,
-        dampingStatus
+        dampingStatus,
+        decisionGuidance,
+        osSummary
       };
     }
 
@@ -853,6 +912,30 @@
       }
     }
 
+    function applyChipStyle(el, mode){
+      if(mode === "Neutral" || mode === "Stable Window"){
+        el.style.background = "rgba(103,210,111,.10)";
+        el.style.borderColor = "#4f8f57";
+        el.style.color = "#98f2a0";
+      } else if(mode === "Pressurized" || mode === "Activation Window"){
+        el.style.background = "rgba(216,184,76,.12)";
+        el.style.borderColor = "#6a5a1a";
+        el.style.color = "#f3db80";
+      } else if(mode === "High Pressure" || mode === "Threshold Crossing"){
+        el.style.background = "rgba(255,102,102,.12)";
+        el.style.borderColor = "#7d3838";
+        el.style.color = "#ff9c9c";
+      } else if(mode === "Rewrite Window"){
+        el.style.background = "rgba(176,108,255,.12)";
+        el.style.borderColor = "#6d46a3";
+        el.style.color = "#d8b5ff";
+      } else {
+        el.style.background = "rgba(255,255,255,.04)";
+        el.style.borderColor = "#2a3c69";
+        el.style.color = "#f4f7ff";
+      }
+    }
+
     function render(result){
       document.getElementById("capacityValue").textContent = round2(result.capacity);
       document.getElementById("stabilityValue").textContent = round2(result.strain);
@@ -861,6 +944,7 @@
 
       document.getElementById("loadBandPill").textContent = result.loadBand;
       document.getElementById("strainBandPill").textContent = result.strainBand;
+      document.getElementById("modeBandPill").textContent = result.finalMode;
 
       document.getElementById("amplifiedLoadText").textContent = round2(result.amplifiedLoad);
       document.getElementById("regulationText").textContent = round2(result.regulation);
@@ -902,11 +986,22 @@
       document.getElementById("regulationStatusText").textContent = interpretation.regulationStatus;
       document.getElementById("volatilityDampingText").textContent =
         `${interpretation.volatilityStatus}. ${interpretation.dampingStatus}`;
+      document.getElementById("decisionGuidanceText").textContent = interpretation.decisionGuidance;
+      document.getElementById("osSummaryText").textContent = interpretation.osSummary;
 
       document.getElementById("readingText").textContent =
-        `${interpretation.loadProfile} ${interpretation.stateSummary} ${interpretation.pacingDirective}`;
+        `Summary: ${interpretation.osSummary}.`;
 
       applyModePillStyle(result.finalMode);
+
+      const environmentChip = document.getElementById("environmentModeChip");
+      const timingChip = document.getElementById("timingModeChip");
+
+      environmentChip.textContent = result.environmentMode ?? "Neutral";
+      timingChip.textContent = result.timingMode ?? "Stable Window";
+
+      applyChipStyle(environmentChip, result.environmentMode ?? "Neutral");
+      applyChipStyle(timingChip, result.timingMode ?? "Stable Window");
     }
 
     function getStoredSmoothingState(){
