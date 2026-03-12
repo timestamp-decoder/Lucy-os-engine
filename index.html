@@ -354,9 +354,9 @@
         </div>
 
         <div class="band-row">
-          <div class="band-pill">Load Band <strong id="loadBandPill">—</strong></div>
-          <div class="band-pill">Strain Band <strong id="strainBandPill">—</strong></div>
-          <div class="band-pill">Mode <strong id="modeBandPill">—</strong></div>
+          <div class="band-pill">Load State <strong id="loadStatePill">—</strong></div>
+          <div class="band-pill">Regulation State <strong id="regulationStatePill">—</strong></div>
+          <div class="band-pill">Mode <strong id="modeStatePill">—</strong></div>
         </div>
 
         <div class="bar-group">
@@ -972,10 +972,6 @@
       document.getElementById("driverValue").textContent = result.primaryDriver;
       document.getElementById("regulatorValue").textContent = result.topRegulator;
 
-      document.getElementById("loadBandPill").textContent = result.loadBand;
-      document.getElementById("strainBandPill").textContent = result.strainBand;
-      document.getElementById("modeBandPill").textContent = result.finalMode;
-
       document.getElementById("amplifiedLoadText").textContent = round2(result.amplifiedLoad);
       document.getElementById("regulationText").textContent = round2(result.regulation);
       document.getElementById("saturnText").textContent = round2(result.saturnConstraint);
@@ -1008,6 +1004,10 @@
 
       const interpretation = interpretState(result);
 
+      document.getElementById("loadStatePill").textContent = interpretation.loadSemantic;
+      document.getElementById("regulationStatePill").textContent = interpretation.regulationSemantic;
+      document.getElementById("modeStatePill").textContent = interpretation.stateModeSemantic;
+
       document.getElementById("loadProfileText").textContent = interpretation.loadProfile;
       document.getElementById("stateSummaryText").textContent = interpretation.stateSummary;
       document.getElementById("pacingDirectiveText").textContent = interpretation.pacingDirective;
@@ -1019,7 +1019,7 @@
       document.getElementById("osSummaryText").textContent = interpretation.osSummary;
 
       document.getElementById("readingText").textContent =
-        `Summary: ${interpretation.osSummary}.`;
+        `Summary: ${interpretation.osSummary}. ${interpretation.pacingDirective}`;
 
       applyModePillStyle(result.finalMode);
 
