@@ -17,6 +17,7 @@
       --green:#67d26f;
       --violet:#b06cff;
       --gold:#d8b84c;
+      --amber:#f3db80;
     }
 
     *{box-sizing:border-box}
@@ -56,6 +57,7 @@
       display:grid;
       grid-template-columns:420px 1fr;
       gap:24px;
+      align-items:start;
     }
 
     .card{
@@ -116,6 +118,7 @@
       align-items:center;
       gap:16px;
       margin-bottom:18px;
+      flex-wrap:wrap;
     }
 
     .pill{
@@ -161,7 +164,7 @@
 
     .band-row{
       display:grid;
-      grid-template-columns:1fr 1fr 1fr;
+      grid-template-columns:1fr 1fr 1fr 1fr;
       gap:10px;
       margin-bottom:20px;
     }
@@ -177,6 +180,14 @@
       align-items:center;
       justify-content:space-between;
       gap:8px;
+      min-width:0;
+    }
+
+    .band-pill span,
+    .band-pill strong{
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
     .band-pill strong{
@@ -288,6 +299,10 @@
       grid-column:1 / -1;
     }
 
+    @media (max-width: 1100px){
+      .band-row{grid-template-columns:1fr 1fr}
+    }
+
     @media (max-width: 980px){
       .grid{grid-template-columns:1fr}
       .bottom{grid-template-columns:1fr}
@@ -295,6 +310,7 @@
       .interp-item.full{grid-column:auto}
       .band-row{grid-template-columns:1fr}
       .hero h1{font-size:48px}
+      .stats{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -354,9 +370,10 @@
         </div>
 
         <div class="band-row">
-          <div class="band-pill">Load Band <strong id="loadBandPill">—</strong></div>
-          <div class="band-pill">Strain Band <strong id="strainBandPill">—</strong></div>
-          <div class="band-pill">Mode <strong id="modeBandPill">—</strong></div>
+          <div class="band-pill"><span>Load</span> <strong id="loadBandPill">—</strong></div>
+          <div class="band-pill"><span>Strain</span> <strong id="strainBandPill">—</strong></div>
+          <div class="band-pill"><span>Containment</span> <strong id="containmentBandPill">—</strong></div>
+          <div class="band-pill"><span>Mode</span> <strong id="modeBandPill">—</strong></div>
         </div>
 
         <div class="bar-group">
@@ -441,7 +458,7 @@
               <div class="text" id="driverSignatureText">—</div>
             </div>
             <div class="interp-item">
-              <div class="k">Regulation Band</div>
+              <div class="k">Containment Status</div>
               <div class="text" id="regulationStatusText">—</div>
             </div>
             <div class="interp-item">
@@ -480,11 +497,11 @@
         High: "Activation is elevated with noticeable volatility.",
         Extreme: "Activation is elevated with sharp volatility and diffusion."
       },
-      regulationBand: {
-        Low: "Regulation is strong and buffering load effectively.",
-        Moderate: "Regulation is present and partially buffering load.",
-        High: "Regulation is strained and inconsistently buffering load.",
-        Extreme: "Regulation is minimal and not containing load."
+      containmentBand: {
+        Strong: "Containment is strong and buffering load effectively.",
+        Partial: "Containment is present and partially buffering load.",
+        Strained: "Containment is active but inconsistently buffering load.",
+        Minimal: "Containment is minimal and not sufficiently containing load."
       },
       volatilityDamping: {
         Low: "Volatility is low; damping is strong.",
@@ -540,6 +557,15 @@
       return "Extreme";
     }
 
+    function getContainmentBand(result){
+      const ratio = result.regulation / Math.max(result.adjustedEffectiveLoad || result.effectiveLoad, 0.01);
+
+      if(ratio >= 0.60) return "Strong";
+      if(ratio >= 0.35) return "Partial";
+      if(ratio >= 0.18) return "Strained";
+      return "Minimal";
+    }
+
     function loadLevelFromBands(loadBand, strainBand){
       if(loadBand === "Light" && (strainBand === "Low" || strainBand === "Moderate")) return "Low";
       if(loadBand === "Moderate" || strainBand === "Moderate") return "Moderate";
@@ -559,13 +585,13 @@
       return "Extreme";
     }
 
-    function regulationLevel(result){
-      const ratio = result.regulation / Math.max(result.effectiveLoad, 0.01);
+    function containmentLevel(result){
+      const ratio = result.regulation / Math.max(result.adjustedEffectiveLoad || result.effectiveLoad, 0.01);
 
-      if(ratio >= 0.60) return "Low";
-      if(ratio >= 0.35) return "Moderate";
-      if(ratio >= 0.18) return "High";
-      return "Extreme";
+      if(ratio >= 0.60) return "Strong";
+      if(ratio >= 0.35) return "Partial";
+      if(ratio >= 0.18) return "Strained";
+      return "Minimal";
     }
 
     function volatilityLevel(result){
@@ -844,11 +870,15 @@
         primaryDriver: argMax(loadDrivers),
         topRegulator: argMax(regulators),
         topDrivers: topThree(loadDrivers),
-        capacityUsedPct: graphResult.strain * 100,
+        capacityUsedPct: environmentResult.adjustedStrain * 100,
         plutoRewrite: modeResult.finalMode === "Pluto Rewrite",
         saturnOverride: modeResult.finalMode === "Saturn Shutdown",
-        loadBand: getLoadBand(graphResult.effectiveLoad),
-        strainBand: getStrainBand(graphResult.strain)
+        loadBand: getLoadBand(environmentResult.adjustedEffectiveLoad),
+        strainBand: getStrainBand(environmentResult.adjustedStrain),
+        containmentBand: getContainmentBand({
+          regulation: graphResult.regulation,
+          adjustedEffectiveLoad: environmentResult.adjustedEffectiveLoad
+        })
       };
     }
 
@@ -864,14 +894,14 @@
 
       const loadSemantic = loadLevelFromBands(result.loadBand, result.strainBand);
       const behaviorSemantic = behaviorLevelFromSignals(result);
-      const regulationSemantic = regulationLevel(result);
+      const containmentSemantic = containmentLevel(result);
       const volatilitySemantic = volatilityLevel(result);
       const stateModeSemantic = semanticStateMode(result);
       const pacingSemantic = pacingLevelFromStateMode(stateModeSemantic);
 
       const loadProfile = SEMANTIC_TEXT.loadProfile[loadSemantic];
       const systemBehavior = SEMANTIC_TEXT.systemBehavior[behaviorSemantic];
-      const regulationStatus = SEMANTIC_TEXT.regulationBand[regulationSemantic];
+      const regulationStatus = SEMANTIC_TEXT.containmentBand[containmentSemantic];
       const volatilityDamping = SEMANTIC_TEXT.volatilityDamping[volatilitySemantic];
       const stateSummary = SEMANTIC_TEXT.stateMode[stateModeSemantic];
       const pacingDirective = SEMANTIC_TEXT.pacingDirective[pacingSemantic];
@@ -891,7 +921,7 @@
         driverMap[result.primaryDriver] ?? "Current load is being shaped by multiple comparable drivers.";
 
       const osSummary =
-        `${loadSemantic} load / ${regulationSemantic} regulation / ${stateModeSemantic} mode`;
+        `${loadSemantic} load / ${containmentSemantic} containment / ${stateModeSemantic} mode`;
 
       return {
         loadProfile,
@@ -905,7 +935,7 @@
         osSummary,
         loadSemantic,
         behaviorSemantic,
-        regulationSemantic,
+        containmentSemantic,
         volatilitySemantic,
         stateModeSemantic,
         pacingSemantic
@@ -968,23 +998,24 @@
 
     function render(result){
       document.getElementById("capacityValue").textContent = round2(result.capacity);
-      document.getElementById("stabilityValue").textContent = round2(result.strain);
+      document.getElementById("stabilityValue").textContent = round2(result.adjustedStrain);
       document.getElementById("driverValue").textContent = result.primaryDriver;
       document.getElementById("regulatorValue").textContent = result.topRegulator;
 
       document.getElementById("loadBandPill").textContent = result.loadBand;
       document.getElementById("strainBandPill").textContent = result.strainBand;
+      document.getElementById("containmentBandPill").textContent = result.containmentBand;
       document.getElementById("modeBandPill").textContent = result.finalMode;
 
       document.getElementById("amplifiedLoadText").textContent = round2(result.amplifiedLoad);
       document.getElementById("regulationText").textContent = round2(result.regulation);
       document.getElementById("saturnText").textContent = round2(result.saturnConstraint);
-      document.getElementById("effectiveLoadText").textContent = round2(result.effectiveLoad);
+      document.getElementById("effectiveLoadText").textContent = round2(result.adjustedEffectiveLoad);
 
       document.getElementById("amplifiedLoadBar").style.width = clampPct(result.amplifiedLoad, 6) + "%";
       document.getElementById("regulationBar").style.width = clampPct(result.regulation, 2) + "%";
       document.getElementById("saturnBar").style.width = clampPct(result.saturnConstraint, 1) + "%";
-      document.getElementById("effectiveLoadBar").style.width = clampPct(result.effectiveLoad, 5) + "%";
+      document.getElementById("effectiveLoadBar").style.width = clampPct(result.adjustedEffectiveLoad, 5) + "%";
 
       document.getElementById("modePill").textContent = result.finalMode;
       document.getElementById("plutoFlag").textContent = "Pluto Rewrite: " + (result.plutoRewrite ? "ON" : "OFF");
@@ -1092,65 +1123,77 @@
     }
 
     async function calculateState(){
-      const dob = document.getElementById("dob").value;
-      const tob = document.getElementById("tob").value;
+      const dob = document.getElementById("dob").value.trim();
+      const tob = document.getElementById("tob").value.trim();
+      const location = document.getElementById("location").value.trim();
       const utcOffset = document.getElementById("utcOffset").value;
 
-      const signature = `${dob}|${tob}|${utcOffset}`;
+      const signature = `${dob}|${tob}|${location}|${utcOffset}`;
 
-      const response = await fetch("/api/chart_inputs", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          dob: dob,
-          tob: tob,
-          utcOffset: utcOffset
-        })
-      });
+      try{
+        const response = await fetch("/api/chart_inputs", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            dob,
+            tob,
+            location,
+            utcOffset
+          })
+        });
 
-      const rawInputs = await response.json();
-      console.log("Lucy Inputs:", rawInputs);
+        if(!response.ok){
+          throw new Error(`HTTP ${response.status}`);
+        }
 
-      if(rawInputs.error){
-        alert(rawInputs.error);
-        return;
+        const rawInputs = await response.json();
+        console.log("Lucy Inputs:", rawInputs);
+
+        if(rawInputs.error){
+          alert(rawInputs.error);
+          return;
+        }
+
+        const inputs = smoothInputs(rawInputs, signature);
+
+        const graphResult = computePlanetaryGraph(inputs);
+        console.log("V3A Graph Result:", graphResult);
+
+        const environmentResult = computeEnvironmentLayer(inputs, graphResult);
+        console.log("V3B Environment Result:", environmentResult);
+
+        const timingResult = computeTimingLayer(inputs, graphResult, environmentResult);
+        console.log("V3C Timing Result:", timingResult);
+
+        const modeResult = computeModeDetection(graphResult, environmentResult, timingResult);
+        console.log("V3D Mode Result:", modeResult);
+
+        const diagnostics = computeDiagnostics(
+          inputs,
+          graphResult,
+          environmentResult,
+          timingResult,
+          modeResult
+        );
+
+        const result = {
+          inputs,
+          ...graphResult,
+          ...environmentResult,
+          ...timingResult,
+          ...modeResult,
+          ...diagnostics
+        };
+
+        console.log("Lucy Result:", result);
+        render(result);
+
+      } catch(err){
+        console.error("Lucy.OS fetch error:", err);
+        alert("Unable to fetch chart inputs. Check your /api/chart_inputs route.");
       }
-
-      const inputs = smoothInputs(rawInputs, signature);
-
-      const graphResult = computePlanetaryGraph(inputs);
-      console.log("V3A Graph Result:", graphResult);
-
-      const environmentResult = computeEnvironmentLayer(inputs, graphResult);
-      console.log("V3B Environment Result:", environmentResult);
-
-      const timingResult = computeTimingLayer(inputs, graphResult, environmentResult);
-      console.log("V3C Timing Result:", timingResult);
-
-      const modeResult = computeModeDetection(graphResult, environmentResult, timingResult);
-      console.log("V3D Mode Result:", modeResult);
-
-      const diagnostics = computeDiagnostics(
-        inputs,
-        graphResult,
-        environmentResult,
-        timingResult,
-        modeResult
-      );
-
-      const result = {
-        inputs,
-        ...graphResult,
-        ...environmentResult,
-        ...timingResult,
-        ...modeResult,
-        ...diagnostics
-      };
-
-      console.log("Lucy Result:", result);
-      render(result);
     }
 
     window.onload = function(){
