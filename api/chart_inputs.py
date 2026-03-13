@@ -1,9 +1,14 @@
 from http.server import BaseHTTPRequestHandler
 import json
+import os
 import re
-from datetime import datetime, timedelta, timezone
+from dataclasses import dataclass, asdict
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 import swisseph as swe
+import urllib.parse
+import urllib.request
 
 
 PLANETS = {
@@ -22,120 +27,58 @@ PLANETS = {
 FLAGS = swe.FLG_SWIEPH | swe.FLG_SPEED
 HOUSE_SYSTEM = b"P"  # Placidus
 
+GOOGLE_GEOCODE_API_KEY = os.getenv("GOOGLE_GEOCODE_API_KEY", "")
+GOOGLE_TIMEZONE_API_KEY = os.getenv("GOOGLE_TIMEZONE_API_KEY", "")
 
-LOCATION_MAP = {
-    "CUERO, TX USA": {
-        "label": "Cuero, TX USA",
-        "lat": 29.0938,
-        "lon": -97.2892,
-        "utcOffset": -6,
-    },
-    "AMARILLO, TX USA": {
-        "label": "Amarillo, TX USA",
-        "lat": 35.2220,
-        "lon": -101.8313,
-        "utcOffset": -6,
-    },
-    "SAN ANTONIO, TX USA": {
-        "label": "San Antonio, TX USA",
-        "lat": 29.4241,
-        "lon": -98.4936,
-        "utcOffset": -6,
-    },
-    "AUSTIN, TX USA": {
-        "label": "Austin, TX USA",
-        "lat": 30.2672,
-        "lon": -97.7431,
-        "utcOffset": -6,
-    },
-    "HOUSTON, TX USA": {
-        "label": "Houston, TX USA",
-        "lat": 29.7604,
-        "lon": -95.3698,
-        "utcOffset": -6,
-    },
-    "DALLAS, TX USA": {
-        "label": "Dallas, TX USA",
-        "lat": 32.7767,
-        "lon": -96.7970,
-        "utcOffset": -6,
-    },
-    "CHICAGO, IL USA": {
-        "label": "Chicago, IL USA",
-        "lat": 41.8781,
-        "lon": -87.6298,
-        "utcOffset": -6,
-    },
-    "PHOENIX, AZ USA": {
-        "label": "Phoenix, AZ USA",
-        "lat": 33.4484,
-        "lon": -112.0740,
-        "utcOffset": -7,
-    },
-    "LOS ANGELES, CA USA": {
-        "label": "Los Angeles, CA USA",
-        "lat": 34.0522,
-        "lon": -118.2437,
-        "utcOffset": -8,
-    },
-    "NEW YORK, NY USA": {
-        "label": "New York, NY USA",
-        "lat": 40.7128,
-        "lon": -74.0060,
-        "utcOffset": -5,
-    },
-    "MIAMI, FL USA": {
-        "label": "Miami, FL USA",
-        "lat": 25.7617,
-        "lon": -80.1918,
-        "utcOffset": -5,
-    },
-    "DENVER, CO USA": {
-        "label": "Denver, CO USA",
-        "lat": 39.7392,
-        "lon": -104.9903,
-        "utcOffset": -7,
-    },
-    "SEATTLE, WA USA": {
-        "label": "Seattle, WA USA",
-        "lat": 47.6062,
-        "lon": -122.3321,
-        "utcOffset": -8,
-    },
-    "ATLANTA, GA USA": {
-        "label": "Atlanta, GA USA",
-        "lat": 33.7490,
-        "lon": -84.3880,
-        "utcOffset": -5,
-    },
-    "NASHVILLE, TN USA": {
-        "label": "Nashville, TN USA",
-        "lat": 36.1627,
-        "lon": -86.7816,
-        "utcOffset": -6,
-    },
-}
 
+# ---------- Data models ----------
+
+@dataclass
+class ResolvedLocation:
+    location_input: str
+    location_resolved: str
+    lat: float
+    lon: float
+    timezone_name: str | None = None
+    utc_offset_at_birth: float | None = None
+
+
+@dataclass
+class ResolvedBirthContext:
+    dob: str
+    time_input: str
+    ampm: str
+    location_input: str
+    location_resolved: str
+    lat: float
+    lon: float
+    timezone_name: str
+    utc_offset_at_birth: float
+    local_datetime_resolved: str
+    utc_datetime: str
+
+
+# ---------- Utility ----------
 
 def normalize_longitude(lon: float) -> float:
     return (lon % 360.0) / 360.0
 
 
-def normalize_tob_with_ampm(tob: str, ampm: str | None = None) -> str:
-    tob = str(tob or "").strip()
+def normalize_tob_with_ampm(time_str: str, ampm: str | None = None) -> str:
+    time_str = str(time_str or "").strip()
     ampm = str(ampm or "").strip().upper()
 
-    if not tob:
-        raise ValueError("Time of birth is required")
+    if not time_str:
+        raise ValueError("Time of birth is required.")
 
-    upper_tob = tob.upper()
-    if "AM" in upper_tob or "PM" in upper_tob:
-        return tob
+    upper = time_str.upper()
+    if "AM" in upper or "PM" in upper:
+        return time_str
 
     if ampm in ("AM", "PM"):
-        return f"{tob} {ampm}"
+        return f"{time_str} {ampm}"
 
-    return tob
+    return time_str
 
 
 def parse_time_flexible(time_str: str) -> datetime:
@@ -143,12 +86,12 @@ def parse_time_flexible(time_str: str) -> datetime:
     cleaned = re.sub(r"\s+", " ", cleaned)
 
     formats = [
-        "%I:%M %p",  # 6:20 AM
-        "%I:%M%p",   # 6:20AM
-        "%I %p",     # 6 AM
-        "%I%p",      # 6AM
-        "%H:%M",     # 18:20
-        "%H",        # 18
+        "%I:%M %p",
+        "%I:%M%p",
+        "%I %p",
+        "%I%p",
+        "%H:%M",
+        "%H",
     ]
 
     for fmt in formats:
@@ -157,94 +100,152 @@ def parse_time_flexible(time_str: str) -> datetime:
         except ValueError:
             continue
 
-    raise ValueError(
-        "Time of birth must look like 6:20 AM, 10:55 PM, or 18:20"
-    )
+    raise ValueError("Time must look like 6:20 AM, 10:55 PM, or 18:20.")
 
 
-def resolve_location(location_text: str, fallback_utc_offset: float | None):
-    raw = str(location_text or "").strip()
-    key = raw.upper()
-
-    if key in LOCATION_MAP:
-        loc = LOCATION_MAP[key].copy()
-        return {
-            "input": raw,
-            "resolved": loc["label"],
-            "lat": loc["lat"],
-            "lon": loc["lon"],
-            "utcOffset": float(loc["utcOffset"]),
-            "matched": True,
+def http_get_json(url: str) -> dict:
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "Lucy.OS/1.0"
         }
-
-    return {
-        "input": raw,
-        "resolved": raw,
-        "lat": None,
-        "lon": None,
-        "utcOffset": float(fallback_utc_offset) if fallback_utc_offset is not None else None,
-        "matched": False,
-    }
+    )
+    with urllib.request.urlopen(req, timeout=15) as resp:
+        return json.loads(resp.read().decode("utf-8"))
 
 
-def to_utc_datetime(dob: str, tob: str, utc_offset_hours: float) -> datetime:
-    date = datetime.strptime(dob, "%Y-%m-%d")
-    time_obj = parse_time_flexible(tob)
+# ---------- External resolution ----------
+# Google Geocoding + Google Time Zone are used here because they give
+# global location and timezone handling with timestamp-aware timezone lookup.
+# Docs:
+# - https://developers.google.com/maps/documentation/timezone/overview
+# - https://developers.google.com/maps/documentation/timezone/requests-timezone
 
-    local_dt = datetime(
-        date.year,
-        date.month,
-        date.day,
-        time_obj.hour,
-        time_obj.minute,
-        tzinfo=timezone(timedelta(hours=utc_offset_hours)),
+def geocode_location_google(location_text: str) -> ResolvedLocation:
+    if not GOOGLE_GEOCODE_API_KEY:
+        raise RuntimeError("Missing GOOGLE_GEOCODE_API_KEY")
+
+    query = urllib.parse.quote(location_text)
+    url = (
+        "https://maps.googleapis.com/maps/api/geocode/json"
+        f"?address={query}&key={GOOGLE_GEOCODE_API_KEY}"
+    )
+    data = http_get_json(url)
+
+    if data.get("status") != "OK" or not data.get("results"):
+        raise ValueError(f"Could not geocode location: {location_text}")
+
+    first = data["results"][0]
+    geom = first["geometry"]["location"]
+
+    return ResolvedLocation(
+        location_input=location_text,
+        location_resolved=first["formatted_address"],
+        lat=float(geom["lat"]),
+        lon=float(geom["lng"]),
     )
 
-    return local_dt.astimezone(timezone.utc)
+
+def resolve_timezone_google(lat: float, lon: float, birth_utc_timestamp: int) -> tuple[str, float]:
+    if not GOOGLE_TIMEZONE_API_KEY:
+        raise RuntimeError("Missing GOOGLE_TIMEZONE_API_KEY")
+
+    url = (
+        "https://maps.googleapis.com/maps/api/timezone/json"
+        f"?location={lat},{lon}&timestamp={birth_utc_timestamp}&key={GOOGLE_TIMEZONE_API_KEY}"
+    )
+    data = http_get_json(url)
+
+    if data.get("status") != "OK":
+        raise ValueError("Could not resolve timezone for location/timestamp")
+
+    timezone_name = data["timeZoneId"]
+    raw_offset = float(data.get("rawOffset", 0))
+    dst_offset = float(data.get("dstOffset", 0))
+    total_hours = (raw_offset + dst_offset) / 3600.0
+
+    return timezone_name, total_hours
 
 
-def to_local_datetime_string(dob: str, tob: str) -> str:
-    date = datetime.strptime(dob, "%Y-%m-%d")
-    time_obj = parse_time_flexible(tob)
+# ---------- Birth context resolution ----------
 
-    local_dt = datetime(
-        date.year,
-        date.month,
-        date.day,
-        time_obj.hour,
-        time_obj.minute,
+def resolve_birth_context(
+    dob: str,
+    time_input: str,
+    ampm: str,
+    location_text: str,
+    utc_offset_override: float | None = None,
+) -> ResolvedBirthContext:
+    normalized_time = normalize_tob_with_ampm(time_input, ampm)
+    parsed_time = parse_time_flexible(normalized_time)
+
+    # First geocode location
+    loc = geocode_location_google(location_text)
+
+    # Build a naive local datetime candidate
+    local_naive = datetime.strptime(dob, "%Y-%m-%d").replace(
+        hour=parsed_time.hour,
+        minute=parsed_time.minute,
+        second=0,
+        microsecond=0,
     )
 
-    return local_dt.strftime("%Y-%m-%d %I:%M %p")
+    if utc_offset_override is not None:
+        # Advanced/manual override path
+        offset_seconds = int(utc_offset_override * 3600)
+        utc_dt = (local_naive - timedelta(seconds=offset_seconds)).replace(tzinfo=timezone.utc)
+        timezone_name = "Manual/Override"
+        utc_offset_at_birth = float(utc_offset_override)
+        local_resolved_str = local_naive.strftime("%Y-%m-%d %I:%M %p")
+    else:
+        # Timestamp-aware timezone lookup path
+        # Use a rough UTC guess first for the timezone API timestamp requirement
+        rough_utc = local_naive.replace(tzinfo=timezone.utc)
+        rough_ts = int(rough_utc.timestamp())
+
+        timezone_name, utc_offset_at_birth = resolve_timezone_google(
+            loc.lat, loc.lon, rough_ts
+        )
+
+        zinfo = ZoneInfo(timezone_name)
+        local_zoned = local_naive.replace(tzinfo=zinfo)
+        utc_dt = local_zoned.astimezone(timezone.utc)
+        local_resolved_str = local_zoned.strftime("%Y-%m-%d %I:%M %p")
+
+    return ResolvedBirthContext(
+        dob=dob,
+        time_input=time_input,
+        ampm=ampm,
+        location_input=location_text,
+        location_resolved=loc.location_resolved,
+        lat=loc.lat,
+        lon=loc.lon,
+        timezone_name=timezone_name,
+        utc_offset_at_birth=utc_offset_at_birth,
+        local_datetime_resolved=local_resolved_str,
+        utc_datetime=utc_dt.isoformat(),
+    )
 
 
-def to_julian_day_utc(dob: str, tob: str, utc_offset_hours: float):
-    utc_dt = to_utc_datetime(dob, tob, utc_offset_hours)
+# ---------- Swiss Ephemeris ----------
 
+def utc_datetime_to_jd(utc_dt: datetime) -> float:
     hour_decimal = (
         utc_dt.hour
         + (utc_dt.minute / 60.0)
         + (utc_dt.second / 3600.0)
     )
-
-    jd_ut = swe.julday(
+    return swe.julday(
         utc_dt.year,
         utc_dt.month,
         utc_dt.day,
         hour_decimal,
     )
 
-    return jd_ut, utc_dt
 
-
-def compute_angles_and_houses(jd_ut: float, lat: float | None, lon: float | None):
-    if lat is None or lon is None:
-        return None, []
-
+def compute_angles_and_houses(jd_ut: float, lat: float, lon: float):
     cusps, ascmc = swe.houses(jd_ut, lat, lon, HOUSE_SYSTEM)
 
-    # swe.houses returns:
-    # cusps[1..12], ascmc[0]=Asc, ascmc[1]=MC
     asc = float(ascmc[0] % 360.0)
     mc = float(ascmc[1] % 360.0)
     desc = float((asc + 180.0) % 360.0)
@@ -252,26 +253,18 @@ def compute_angles_and_houses(jd_ut: float, lat: float | None, lon: float | None
 
     houses = [float(cusps[i] % 360.0) for i in range(1, 13)]
 
-    angles = {
+    return {
         "asc": asc,
         "mc": mc,
         "desc": desc,
         "ic": ic,
-    }
-
-    return angles, houses
+    }, houses
 
 
-def compute_chart_inputs(
-    dob: str,
-    tob: str,
-    utc_offset_hours: float,
-    location: str | None = None,
-):
-    resolved_location = resolve_location(location, utc_offset_hours)
-    effective_utc_offset = resolved_location["utcOffset"]
+def compute_chart_from_birth_context(ctx: ResolvedBirthContext) -> dict:
+    utc_dt = datetime.fromisoformat(ctx.utc_datetime)
+    jd_ut = utc_datetime_to_jd(utc_dt)
 
-    jd_ut, utc_dt = to_julian_day_utc(dob, tob, effective_utc_offset)
     result = {}
     longitudes_deg = {}
 
@@ -281,53 +274,31 @@ def compute_chart_inputs(
         longitudes_deg[name] = lon
         result[name] = normalize_longitude(lon)
 
-    angles, houses = compute_angles_and_houses(
-        jd_ut,
-        resolved_location["lat"],
-        resolved_location["lon"],
-    )
+    angles, houses = compute_angles_and_houses(jd_ut, ctx.lat, ctx.lon)
 
     result["_longitudesDeg"] = longitudes_deg
     result["angles"] = angles
     result["houses"] = houses
-
     result["_meta"] = {
         "source": "Swiss Ephemeris",
         "mode": "natal",
-        "utc_datetime": utc_dt.isoformat(),
+        "location_input": ctx.location_input,
+        "location_resolved": ctx.location_resolved,
+        "lat": ctx.lat,
+        "lon": ctx.lon,
+        "timezone_name": ctx.timezone_name,
+        "utc_offset_at_birth": ctx.utc_offset_at_birth,
+        "local_time_resolved": ctx.local_datetime_resolved,
+        "utc_datetime": ctx.utc_datetime,
         "jd_ut": round(jd_ut, 6),
-        "location": resolved_location["input"],
-        "location_resolved": resolved_location["resolved"],
-        "local_time_resolved": to_local_datetime_string(dob, tob),
-        "utc_offset": effective_utc_offset,
-        "lat": resolved_location["lat"],
-        "lon": resolved_location["lon"],
-        "location_matched": resolved_location["matched"],
-        "note": (
-            "Location-aware natal geometry active."
-            if resolved_location["lat"] is not None and resolved_location["lon"] is not None
-            else "Location text accepted, but no lat/lon match found; houses/angles unavailable."
-        ),
     }
 
     return result
 
 
-def compute_transit_inputs():
+def compute_transit_inputs() -> dict:
     now_utc = datetime.now(timezone.utc)
-
-    hour_decimal = (
-        now_utc.hour
-        + (now_utc.minute / 60.0)
-        + (now_utc.second / 3600.0)
-    )
-
-    jd_ut = swe.julday(
-        now_utc.year,
-        now_utc.month,
-        now_utc.day,
-        hour_decimal,
-    )
+    jd_ut = utc_datetime_to_jd(now_utc)
 
     result = {}
     longitudes_deg = {}
@@ -341,7 +312,6 @@ def compute_transit_inputs():
     result["_longitudesDeg"] = longitudes_deg
     result["angles"] = None
     result["houses"] = []
-
     result["_meta"] = {
         "source": "Swiss Ephemeris",
         "mode": "transit",
@@ -352,14 +322,16 @@ def compute_transit_inputs():
     return result
 
 
+# ---------- HTTP handler ----------
+
 class handler(BaseHTTPRequestHandler):
     def _set_headers(self, status_code=200):
-      self.send_response(status_code)
-      self.send_header("Content-Type", "application/json")
-      self.send_header("Access-Control-Allow-Origin", "*")
-      self.send_header("Access-Control-Allow-Headers", "*")
-      self.send_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-      self.end_headers()
+        self.send_response(status_code)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Headers", "*")
+        self.send_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+        self.end_headers()
 
     def do_OPTIONS(self):
         self._set_headers(204)
@@ -381,56 +353,40 @@ class handler(BaseHTTPRequestHandler):
             payload = json.loads(raw_body or "{}")
 
             mode = str(payload.get("mode", "natal")).strip().lower()
-            dob = str(payload.get("dob", "")).strip()
 
-            # Support both old and new payload keys
-            tob = str(
-                payload.get("time24")
-                or payload.get("tob")
-                or payload.get("time")
-                or ""
-            ).strip()
-
-            ampm = str(payload.get("ampm", "")).strip().upper()
-            location = str(
-                payload.get("locationText")
-                or payload.get("location")
-                or ""
-            ).strip()
-
-            utc_offset = payload.get("utcOffset", None)
-
-            if mode == "natal":
-                if not dob or not tob or utc_offset in (None, ""):
-                    self._set_headers(400)
-                    self.wfile.write(
-                        json.dumps({
-                            "error": "dob, tob/time24, and utcOffset are required"
-                        }).encode("utf-8")
-                    )
-                    return
-
-                utc_offset = float(utc_offset)
-                normalized_tob = normalize_tob_with_ampm(tob, ampm)
-
-                result = compute_chart_inputs(
-                    dob=dob,
-                    tob=normalized_tob,
-                    utc_offset_hours=utc_offset,
-                    location=location,
-                )
-
-            elif mode == "transit":
+            if mode == "transit":
                 result = compute_transit_inputs()
+                self._set_headers(200)
+                self.wfile.write(json.dumps(result).encode("utf-8"))
+                return
 
-            else:
+            dob = str(payload.get("dob", "")).strip()
+            time_input = str(payload.get("time") or payload.get("tob") or "").strip()
+            ampm = str(payload.get("ampm", "")).strip().upper()
+            location_text = str(payload.get("locationText") or payload.get("location") or "").strip()
+
+            utc_override_raw = payload.get("utcOffsetOverride", None)
+            utc_override = None
+            if utc_override_raw not in (None, "", "null"):
+                utc_override = float(utc_override_raw)
+
+            if not dob or not time_input or not location_text:
                 self._set_headers(400)
                 self.wfile.write(
                     json.dumps({
-                        "error": "mode must be 'natal' or 'transit'"
+                        "error": "dob, time/tob, ampm, and locationText/location are required"
                     }).encode("utf-8")
                 )
                 return
+
+            ctx = resolve_birth_context(
+                dob=dob,
+                time_input=time_input,
+                ampm=ampm,
+                location_text=location_text,
+                utc_offset_override=utc_override,
+            )
+            result = compute_chart_from_birth_context(ctx)
 
             self._set_headers(200)
             self.wfile.write(json.dumps(result).encode("utf-8"))
