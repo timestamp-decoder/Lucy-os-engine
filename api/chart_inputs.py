@@ -20,6 +20,101 @@ PLANETS = {
 }
 
 FLAGS = swe.FLG_SWIEPH | swe.FLG_SPEED
+HOUSE_SYSTEM = b"P"  # Placidus
+
+
+LOCATION_MAP = {
+    "CUERO, TX USA": {
+        "label": "Cuero, TX USA",
+        "lat": 29.0938,
+        "lon": -97.2892,
+        "utcOffset": -6,
+    },
+    "AMARILLO, TX USA": {
+        "label": "Amarillo, TX USA",
+        "lat": 35.2220,
+        "lon": -101.8313,
+        "utcOffset": -6,
+    },
+    "SAN ANTONIO, TX USA": {
+        "label": "San Antonio, TX USA",
+        "lat": 29.4241,
+        "lon": -98.4936,
+        "utcOffset": -6,
+    },
+    "AUSTIN, TX USA": {
+        "label": "Austin, TX USA",
+        "lat": 30.2672,
+        "lon": -97.7431,
+        "utcOffset": -6,
+    },
+    "HOUSTON, TX USA": {
+        "label": "Houston, TX USA",
+        "lat": 29.7604,
+        "lon": -95.3698,
+        "utcOffset": -6,
+    },
+    "DALLAS, TX USA": {
+        "label": "Dallas, TX USA",
+        "lat": 32.7767,
+        "lon": -96.7970,
+        "utcOffset": -6,
+    },
+    "CHICAGO, IL USA": {
+        "label": "Chicago, IL USA",
+        "lat": 41.8781,
+        "lon": -87.6298,
+        "utcOffset": -6,
+    },
+    "PHOENIX, AZ USA": {
+        "label": "Phoenix, AZ USA",
+        "lat": 33.4484,
+        "lon": -112.0740,
+        "utcOffset": -7,
+    },
+    "LOS ANGELES, CA USA": {
+        "label": "Los Angeles, CA USA",
+        "lat": 34.0522,
+        "lon": -118.2437,
+        "utcOffset": -8,
+    },
+    "NEW YORK, NY USA": {
+        "label": "New York, NY USA",
+        "lat": 40.7128,
+        "lon": -74.0060,
+        "utcOffset": -5,
+    },
+    "MIAMI, FL USA": {
+        "label": "Miami, FL USA",
+        "lat": 25.7617,
+        "lon": -80.1918,
+        "utcOffset": -5,
+    },
+    "DENVER, CO USA": {
+        "label": "Denver, CO USA",
+        "lat": 39.7392,
+        "lon": -104.9903,
+        "utcOffset": -7,
+    },
+    "SEATTLE, WA USA": {
+        "label": "Seattle, WA USA",
+        "lat": 47.6062,
+        "lon": -122.3321,
+        "utcOffset": -8,
+    },
+    "ATLANTA, GA USA": {
+        "label": "Atlanta, GA USA",
+        "lat": 33.7490,
+        "lon": -84.3880,
+        "utcOffset": -5,
+    },
+    "NASHVILLE, TN USA": {
+        "label": "Nashville, TN USA",
+        "lat": 36.1627,
+        "lon": -86.7816,
+        "utcOffset": -6,
+    },
+}
 
 
 def normalize_longitude(lon: float) -> float:
@@ -27,31 +122,19 @@ def normalize_longitude(lon: float) -> float:
 
 
 def normalize_tob_with_ampm(tob: str, ampm: str | None = None) -> str:
-    """
-    Accepts:
-      - tob='6:20', ampm='AM'
-      - tob='6:20', ampm='PM'
-      - tob='18:20', ampm=None
-      - tob='6:20 AM', ampm=None
-
-    Returns a normalized string suitable for parse_time_flexible().
-    """
     tob = str(tob or "").strip()
     ampm = str(ampm or "").strip().upper()
 
     if not tob:
         raise ValueError("Time of birth is required")
 
-    # If tob already contains AM/PM, trust it.
     upper_tob = tob.upper()
     if "AM" in upper_tob or "PM" in upper_tob:
         return tob
 
-    # If ampm is supplied separately, append it.
     if ampm in ("AM", "PM"):
         return f"{tob} {ampm}"
 
-    # Otherwise assume tob is already 24-hour style or flexible enough for parser.
     return tob
 
 
@@ -79,6 +162,31 @@ def parse_time_flexible(time_str: str) -> datetime:
     )
 
 
+def resolve_location(location_text: str, fallback_utc_offset: float | None):
+    raw = str(location_text or "").strip()
+    key = raw.upper()
+
+    if key in LOCATION_MAP:
+        loc = LOCATION_MAP[key].copy()
+        return {
+            "input": raw,
+            "resolved": loc["label"],
+            "lat": loc["lat"],
+            "lon": loc["lon"],
+            "utcOffset": float(loc["utcOffset"]),
+            "matched": True,
+        }
+
+    return {
+        "input": raw,
+        "resolved": raw,
+        "lat": None,
+        "lon": None,
+        "utcOffset": float(fallback_utc_offset) if fallback_utc_offset is not None else None,
+        "matched": False,
+    }
+
+
 def to_utc_datetime(dob: str, tob: str, utc_offset_hours: float) -> datetime:
     date = datetime.strptime(dob, "%Y-%m-%d")
     time_obj = parse_time_flexible(tob)
@@ -93,6 +201,21 @@ def to_utc_datetime(dob: str, tob: str, utc_offset_hours: float) -> datetime:
     )
 
     return local_dt.astimezone(timezone.utc)
+
+
+def to_local_datetime_string(dob: str, tob: str) -> str:
+    date = datetime.strptime(dob, "%Y-%m-%d")
+    time_obj = parse_time_flexible(tob)
+
+    local_dt = datetime(
+        date.year,
+        date.month,
+        date.day,
+        time_obj.hour,
+        time_obj.minute,
+    )
+
+    return local_dt.strftime("%Y-%m-%d %I:%M %p")
 
 
 def to_julian_day_utc(dob: str, tob: str, utc_offset_hours: float):
@@ -114,28 +237,77 @@ def to_julian_day_utc(dob: str, tob: str, utc_offset_hours: float):
     return jd_ut, utc_dt
 
 
+def compute_angles_and_houses(jd_ut: float, lat: float | None, lon: float | None):
+    if lat is None or lon is None:
+        return None, []
+
+    cusps, ascmc = swe.houses(jd_ut, lat, lon, HOUSE_SYSTEM)
+
+    # swe.houses returns:
+    # cusps[1..12], ascmc[0]=Asc, ascmc[1]=MC
+    asc = float(ascmc[0] % 360.0)
+    mc = float(ascmc[1] % 360.0)
+    desc = float((asc + 180.0) % 360.0)
+    ic = float((mc + 180.0) % 360.0)
+
+    houses = [float(cusps[i] % 360.0) for i in range(1, 13)]
+
+    angles = {
+        "asc": asc,
+        "mc": mc,
+        "desc": desc,
+        "ic": ic,
+    }
+
+    return angles, houses
+
+
 def compute_chart_inputs(
     dob: str,
     tob: str,
     utc_offset_hours: float,
     location: str | None = None,
 ):
-    jd_ut, utc_dt = to_julian_day_utc(dob, tob, utc_offset_hours)
+    resolved_location = resolve_location(location, utc_offset_hours)
+    effective_utc_offset = resolved_location["utcOffset"]
+
+    jd_ut, utc_dt = to_julian_day_utc(dob, tob, effective_utc_offset)
     result = {}
+    longitudes_deg = {}
 
     for name, body in PLANETS.items():
         xx, _ = swe.calc_ut(jd_ut, body, FLAGS)
-        lon = xx[0]
+        lon = float(xx[0] % 360.0)
+        longitudes_deg[name] = lon
         result[name] = normalize_longitude(lon)
+
+    angles, houses = compute_angles_and_houses(
+        jd_ut,
+        resolved_location["lat"],
+        resolved_location["lon"],
+    )
+
+    result["_longitudesDeg"] = longitudes_deg
+    result["angles"] = angles
+    result["houses"] = houses
 
     result["_meta"] = {
         "source": "Swiss Ephemeris",
         "mode": "natal",
         "utc_datetime": utc_dt.isoformat(),
         "jd_ut": round(jd_ut, 6),
-        "location": location or "",
-        "utc_offset": utc_offset_hours,
-        "note": "Location is currently metadata only; chart is driven by dob, tob, and utcOffset."
+        "location": resolved_location["input"],
+        "location_resolved": resolved_location["resolved"],
+        "local_time_resolved": to_local_datetime_string(dob, tob),
+        "utc_offset": effective_utc_offset,
+        "lat": resolved_location["lat"],
+        "lon": resolved_location["lon"],
+        "location_matched": resolved_location["matched"],
+        "note": (
+            "Location-aware natal geometry active."
+            if resolved_location["lat"] is not None and resolved_location["lon"] is not None
+            else "Location text accepted, but no lat/lon match found; houses/angles unavailable."
+        ),
     }
 
     return result
@@ -158,11 +330,17 @@ def compute_transit_inputs():
     )
 
     result = {}
+    longitudes_deg = {}
 
     for name, body in PLANETS.items():
         xx, _ = swe.calc_ut(jd_ut, body, FLAGS)
-        lon = xx[0]
+        lon = float(xx[0] % 360.0)
+        longitudes_deg[name] = lon
         result[name] = normalize_longitude(lon)
+
+    result["_longitudesDeg"] = longitudes_deg
+    result["angles"] = None
+    result["houses"] = []
 
     result["_meta"] = {
         "source": "Swiss Ephemeris",
@@ -176,12 +354,12 @@ def compute_transit_inputs():
 
 class handler(BaseHTTPRequestHandler):
     def _set_headers(self, status_code=200):
-        self.send_response(status_code)
-        self.send_header("Content-Type", "application/json")
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Headers", "*")
-        self.send_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-        self.end_headers()
+      self.send_response(status_code)
+      self.send_header("Content-Type", "application/json")
+      self.send_header("Access-Control-Allow-Origin", "*")
+      self.send_header("Access-Control-Allow-Headers", "*")
+      self.send_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+      self.end_headers()
 
     def do_OPTIONS(self):
         self._set_headers(204)
@@ -204,9 +382,22 @@ class handler(BaseHTTPRequestHandler):
 
             mode = str(payload.get("mode", "natal")).strip().lower()
             dob = str(payload.get("dob", "")).strip()
-            tob = str(payload.get("tob", "")).strip()
+
+            # Support both old and new payload keys
+            tob = str(
+                payload.get("time24")
+                or payload.get("tob")
+                or payload.get("time")
+                or ""
+            ).strip()
+
             ampm = str(payload.get("ampm", "")).strip().upper()
-            location = str(payload.get("location", "")).strip()
+            location = str(
+                payload.get("locationText")
+                or payload.get("location")
+                or ""
+            ).strip()
+
             utc_offset = payload.get("utcOffset", None)
 
             if mode == "natal":
@@ -214,7 +405,7 @@ class handler(BaseHTTPRequestHandler):
                     self._set_headers(400)
                     self.wfile.write(
                         json.dumps({
-                            "error": "dob, tob, and utcOffset are required"
+                            "error": "dob, tob/time24, and utcOffset are required"
                         }).encode("utf-8")
                     )
                     return
