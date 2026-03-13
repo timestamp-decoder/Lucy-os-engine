@@ -29,7 +29,7 @@
     }
 
     .wrap{
-      max-width:1280px;
+      max-width:1360px;
       margin:0 auto;
       padding:28px;
     }
@@ -418,6 +418,39 @@
       color:var(--text);
     }
 
+    .angles-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .angles-item{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      background:rgba(255,255,255,.02);
+      font-size:13px;
+      color:var(--muted);
+      min-width:0;
+    }
+
+    .angles-item strong{
+      display:block;
+      color:var(--text);
+      margin-bottom:4px;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .house-preview{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.6;
+      word-break:break-word;
+    }
+
     @media (max-width: 980px){
       .grid{grid-template-columns:1fr}
       .bottom{grid-template-columns:1fr}
@@ -426,6 +459,7 @@
       .band-row{grid-template-columns:1fr}
       .debug-grid{grid-template-columns:1fr}
       .forecast-grid{grid-template-columns:1fr}
+      .angles-grid{grid-template-columns:1fr}
       .hero h1{font-size:48px}
       .state-head{align-items:flex-start; flex-direction:column}
       .time-row{grid-template-columns:1fr}
@@ -469,7 +503,7 @@
         <button id="calculateBtn" type="button">Calculate State</button>
 
         <div class="sub" id="inputSubtext">
-          Lucy.OS uses astronomical ephemeris input to drive the regulation engine.
+          Lucy.OS uses birth date, birth time, and location-aware ephemeris inputs to drive the regulation engine.
         </div>
 
         <div class="meta-box">
@@ -494,6 +528,24 @@
             <strong>Julian Day</strong>
             <span id="debugJd">—</span>
           </div>
+          <div class="debug-item">
+            <strong>Resolved Place</strong>
+            <span id="debugResolvedLocation">—</span>
+          </div>
+          <div class="debug-item">
+            <strong>Lat / Lon</strong>
+            <span id="debugLatLon">—</span>
+          </div>
+        </div>
+
+        <div class="mini" style="margin-top:18px;">
+          <h3>Resolved Input</h3>
+          <ul>
+            <li id="resolvedInputTimeText">Birth Time: —</li>
+            <li id="resolvedInputUtcText">UTC Datetime: —</li>
+            <li id="resolvedInputLocationText">Resolved Location: —</li>
+            <li id="resolvedInputOffsetText">UTC Offset: —</li>
+          </ul>
         </div>
       </div>
 
@@ -583,6 +635,33 @@
               <li id="saturnFlag">Saturn Shutdown: OFF</li>
               <li id="capacityUsedFlag">Strain Ratio: 0.00x</li>
             </ul>
+          </div>
+
+          <div class="mini">
+            <h3>Angles</h3>
+            <div class="angles-grid">
+              <div class="angles-item">
+                <strong>Asc</strong>
+                <span id="angleAscText">—</span>
+              </div>
+              <div class="angles-item">
+                <strong>MC</strong>
+                <span id="angleMcText">—</span>
+              </div>
+              <div class="angles-item">
+                <strong>Desc</strong>
+                <span id="angleDescText">—</span>
+              </div>
+              <div class="angles-item">
+                <strong>IC</strong>
+                <span id="angleIcText">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mini">
+            <h3>Houses</h3>
+            <div class="house-preview" id="housesPreviewText">No house data returned.</div>
           </div>
         </div>
 
@@ -858,12 +937,45 @@
       return "Extreme";
     }
 
+    function shortestAngularDistance(a, b){
+      let d = Math.abs((a % 360) - (b % 360));
+      if (d > 180) d = 360 - d;
+      return d;
+    }
+
+    function angularBoost(planetLonDeg, angles){
+      if (!angles) return 1.0;
+
+      const angleList = [angles.asc, angles.mc, angles.desc, angles.ic]
+        .filter(v => typeof v === "number" && Number.isFinite(v));
+
+      if (!angleList.length) return 1.0;
+
+      let minDist = Infinity;
+      for (const angle of angleList){
+        const d = shortestAngularDistance(planetLonDeg, angle);
+        if (d < minDist) minDist = d;
+      }
+
+      if (minDist <= 8) return 1.18;
+      if (minDist <= 15) return 1.10;
+      if (minDist <= 25) return 1.05;
+      return 1.0;
+    }
+
     function computePlanetaryGraph(inputs){
       const {
         sun, moon, mercury, venus,
         mars, jupiter, saturn,
-        uranus, neptune, pluto
+        uranus, neptune, pluto,
+        _longitudesDeg,
+        _angles
       } = inputs;
+
+      const moonBoost = angularBoost(_longitudesDeg?.moon ?? 0, _angles);
+      const marsBoost = angularBoost(_longitudesDeg?.mars ?? 0, _angles);
+      const saturnBoost = angularBoost(_longitudesDeg?.saturn ?? 0, _angles);
+      const plutoBoost = angularBoost(_longitudesDeg?.pluto ?? 0, _angles);
 
       const jupiterAmp = 0.15;
       const fogFactor = 0.10;
@@ -874,18 +986,18 @@
       const saturnActivation = 0.65;
 
       const baseLoad =
-        moon * 0.60 +
-        mars * 0.50 +
-        jupiter * 0.80 +
-        uranus * 0.70 +
-        neptune * 0.70 +
-        pluto * 1.10;
+        (moon * moonBoost * 0.60) +
+        (mars * marsBoost * 0.50) +
+        (jupiter * 0.80) +
+        (uranus * 0.70) +
+        (neptune * 0.70) +
+        (pluto * plutoBoost * 1.10);
 
       const amplifiedLoad = baseLoad * (1 + jupiter * jupiterAmp);
 
       const regulation =
-        mercury * 0.40 +
-        venus * 0.40;
+        (mercury * 0.40) +
+        (venus * 0.40);
 
       const distortion =
         neptune * fogFactor +
@@ -894,7 +1006,7 @@
       const saturnConstraint =
         Math.max(0, amplifiedLoad - 1.0) *
         saturnFactor *
-        saturn;
+        (saturn * saturnBoost);
 
       const effectiveLoad = Math.max(
         amplifiedLoad + distortion - regulation - saturnConstraint,
@@ -1210,19 +1322,66 @@
       }
     }
 
+    function formatAngle(value){
+      if (typeof value !== "number" || !Number.isFinite(value)) return "—";
+      return `${value.toFixed(2)}°`;
+    }
+
+    function formatLatLon(meta){
+      const lat = meta?.lat;
+      const lon = meta?.lon;
+      if (typeof lat !== "number" || typeof lon !== "number") return "—";
+      return `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+    }
+
     function updateEphemerisMeta(meta){
       document.getElementById("debugSource").textContent = meta?.source ?? "—";
       document.getElementById("debugMode").textContent = meta?.mode ?? "—";
       document.getElementById("debugUtc").textContent = meta?.utc_datetime ?? "—";
       document.getElementById("debugJd").textContent = meta?.jd_ut ?? "—";
+      document.getElementById("debugResolvedLocation").textContent =
+        meta?.location_resolved || meta?.location || "—";
+      document.getElementById("debugLatLon").textContent = formatLatLon(meta);
+
+      document.getElementById("resolvedInputTimeText").textContent =
+        `Birth Time: ${meta?.local_time_resolved || "—"}`;
+      document.getElementById("resolvedInputUtcText").textContent =
+        `UTC Datetime: ${meta?.utc_datetime || "—"}`;
+      document.getElementById("resolvedInputLocationText").textContent =
+        `Resolved Location: ${meta?.location_resolved || meta?.location || "—"}`;
+      document.getElementById("resolvedInputOffsetText").textContent =
+        `UTC Offset: ${meta?.utc_offset ?? "—"}`;
 
       let status = "No metadata returned.";
       if (meta?.source){
         status = `${meta.source} connected`;
         if (meta?.mode) status += ` · ${meta.mode} mode`;
         if (meta?.utc_datetime) status += ` · ${meta.utc_datetime} UTC`;
+        if (meta?.location_resolved || meta?.location) status += ` · ${meta.location_resolved || meta.location}`;
       }
       document.getElementById("ephemerisStatus").textContent = status;
+    }
+
+    function updateGeometryPanels(data){
+      const angles = data?.angles || {};
+      const houses = Array.isArray(data?.houses) ? data.houses : [];
+
+      document.getElementById("angleAscText").textContent = formatAngle(angles.asc);
+      document.getElementById("angleMcText").textContent = formatAngle(angles.mc);
+      document.getElementById("angleDescText").textContent = formatAngle(angles.desc);
+      document.getElementById("angleIcText").textContent = formatAngle(angles.ic);
+
+      if (!houses.length){
+        document.getElementById("housesPreviewText").textContent = "No house data returned.";
+        return;
+      }
+
+      const preview = houses
+        .slice(0, 12)
+        .map((deg, idx) => `H${idx + 1}: ${formatAngle(deg)}`)
+        .join(" · ");
+
+      document.getElementById("housesPreviewText").textContent = preview;
     }
 
     function setBar(id, value, max){
@@ -1241,11 +1400,29 @@
         uranus: 0.39,
         neptune: 0.47,
         pluto: 0.42,
+        _longitudesDeg: {
+          sun: 223.2,
+          moon: 101.5,
+          mercury: 214.7,
+          venus: 208.3,
+          mars: 178.2,
+          jupiter: 195.1,
+          saturn: 182.4,
+          uranus: 240.0,
+          neptune: 265.0,
+          pluto: 208.0
+        },
+        angles: null,
+        houses: [],
         _meta: {
           source: "Fallback",
           mode: "demo",
           utc_datetime: "n/a",
-          jd_ut: "n/a"
+          jd_ut: "n/a",
+          location: "n/a",
+          location_resolved: "n/a",
+          local_time_resolved: "n/a",
+          utc_offset: "n/a"
         }
       };
     }
@@ -1286,8 +1463,11 @@
           mode: "natal",
           dob: currentInputs.dob,
           tob: currentInputs.tob,
+          time: currentInputs.tobRaw,
+          time24: currentInputs.tob,
           ampm: currentInputs.ampm,
           location: currentInputs.location,
+          locationText: currentInputs.location,
           utcOffset: currentInputs.utcOffset
         })
       });
@@ -1327,6 +1507,9 @@
         }
 
         updateEphemerisMeta(inputs._meta || null);
+        updateGeometryPanels(inputs);
+
+        inputs._angles = inputs.angles || null;
 
         const graph = computePlanetaryGraph(inputs);
         const env = computeEnvironmentLayer(inputs, graph);
@@ -1426,6 +1609,7 @@
           `Engine error: ${err.message}`;
         document.getElementById("ephemerisStatus").textContent =
           `Calculation failed: ${err.message}`;
+        updateGeometryPanels(null);
       } finally {
         button.disabled = false;
         button.textContent = "Calculate State";
