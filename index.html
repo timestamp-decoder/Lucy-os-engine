@@ -79,7 +79,7 @@
       display:block;
     }
 
-    input{
+    input, select{
       width:100%;
       background:#071022;
       color:var(--text);
@@ -91,9 +91,15 @@
       outline:none;
     }
 
-    input:focus{
+    input:focus, select:focus{
       border-color:#4767a8;
       box-shadow:0 0 0 2px rgba(103,193,255,.10);
+    }
+
+    .time-row{
+      display:grid;
+      grid-template-columns:1fr 140px;
+      gap:12px;
     }
 
     button{
@@ -190,6 +196,9 @@
       font-weight:700;
       white-space:nowrap;
       flex-shrink:0;
+      max-width:100%;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
     .stats{
@@ -332,6 +341,9 @@
       font-weight:700;
       margin-top:8px;
       max-width:100%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
     }
 
     .foot{
@@ -371,6 +383,41 @@
       grid-column:1 / -1;
     }
 
+    .forecast-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:14px;
+      margin-top:18px;
+    }
+
+    .forecast-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:rgba(255,255,255,.02);
+      min-width:0;
+    }
+
+    .forecast-title{
+      font-size:14px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:8px;
+    }
+
+    .forecast-state{
+      font-size:18px;
+      font-weight:800;
+      margin-bottom:8px;
+    }
+
+    .forecast-text{
+      font-size:14px;
+      line-height:1.5;
+      color:var(--text);
+    }
+
     @media (max-width: 980px){
       .grid{grid-template-columns:1fr}
       .bottom{grid-template-columns:1fr}
@@ -378,8 +425,10 @@
       .interp-item.full{grid-column:auto}
       .band-row{grid-template-columns:1fr}
       .debug-grid{grid-template-columns:1fr}
+      .forecast-grid{grid-template-columns:1fr}
       .hero h1{font-size:48px}
       .state-head{align-items:flex-start; flex-direction:column}
+      .time-row{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -397,8 +446,19 @@
         <label class="label" for="dob">Date of Birth</label>
         <input id="dob" type="text" value="1980-11-21" />
 
-        <label class="label" for="tob">Time of Birth</label>
-        <input id="tob" type="text" value="6:20 AM" />
+        <div class="time-row">
+          <div>
+            <label class="label" for="tob">Time of Birth</label>
+            <input id="tob" type="text" value="6:20" />
+          </div>
+          <div>
+            <label class="label" for="ampm">AM / PM</label>
+            <select id="ampm">
+              <option value="AM" selected>AM</option>
+              <option value="PM">PM</option>
+            </select>
+          </div>
+        </div>
 
         <label class="label" for="location">Location</label>
         <input id="location" type="text" value="Cuero, TX USA" />
@@ -406,7 +466,7 @@
         <label class="label" for="utcOffset">UTC Offset</label>
         <input id="utcOffset" type="number" value="-6" step="0.5" />
 
-        <button id="calculateBtn" type="button" onclick="calculateState()">Calculate State</button>
+        <button id="calculateBtn" type="button">Calculate State</button>
 
         <div class="sub" id="inputSubtext">
           Lucy.OS uses astronomical ephemeris input to drive the regulation engine.
@@ -521,7 +581,7 @@
             <ul>
               <li id="plutoFlag">Pluto Rewrite: OFF</li>
               <li id="saturnFlag">Saturn Shutdown: OFF</li>
-              <li id="capacityUsedFlag">Capacity Used: 0%</li>
+              <li id="capacityUsedFlag">Strain Ratio: 0.00x</li>
             </ul>
           </div>
         </div>
@@ -546,11 +606,11 @@
               <div class="text" id="systemBehaviorText">—</div>
             </div>
             <div class="interp-item">
-              <div class="k">Driver Meaning</div>
+              <div class="k">Primary Driver</div>
               <div class="text" id="driverSignatureText">—</div>
             </div>
             <div class="interp-item">
-              <div class="k">Containment Status</div>
+              <div class="k">Containment</div>
               <div class="text" id="regulationStatusText">—</div>
             </div>
             <div class="interp-item">
@@ -564,6 +624,27 @@
             <div class="interp-item full">
               <div class="k">OS Summary</div>
               <div class="text" id="osSummaryText">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mini" style="margin-top:18px;">
+          <h3>Forecast</h3>
+          <div class="forecast-grid">
+            <div class="forecast-card">
+              <div class="forecast-title">Now</div>
+              <div class="forecast-state" id="forecastNowState">—</div>
+              <div class="forecast-text" id="forecastNowText">—</div>
+            </div>
+            <div class="forecast-card">
+              <div class="forecast-title">+6 Hours</div>
+              <div class="forecast-state" id="forecast6State">—</div>
+              <div class="forecast-text" id="forecast6Text">—</div>
+            </div>
+            <div class="forecast-card">
+              <div class="forecast-title">Tomorrow</div>
+              <div class="forecast-state" id="forecastTomorrowState">—</div>
+              <div class="forecast-text" id="forecastTomorrowText">—</div>
             </div>
           </div>
         </div>
@@ -597,7 +678,7 @@
       regulationBand: {
         Low: "Containment is strong and buffering load effectively.",
         Moderate: "Containment is present and partially buffering load.",
-        High: "Containment is strained and inconsistently buffering load.",
+        High: "Containment is strained and buffering inconsistently.",
         Extreme: "Containment is minimal and not containing load."
       },
       volatilityDamping: {
@@ -609,14 +690,14 @@
       stateMode: {
         Stable: "System is steady with low rewrite pressure.",
         Transition: "System is adjusting with moderate rewrite pressure.",
-        Rewrite: "System is in a rewrite window with elevated rewrite pressure.",
+        Rewrite: "Rewrite window with elevated pressure.",
         Overload: "System is under extreme rewrite pressure; pacing is critical."
       },
       pacingDirective: {
         Low: "Normal pacing is fine; maintain current rhythm.",
         Moderate: "Slow input slightly; prioritize clarity and simplicity.",
-        High: "Reduce input; move deliberately and avoid forcing outcomes.",
-        Extreme: "Minimize input; prioritize reflection and avoid closure pressure."
+        High: "Reduce input. Move deliberately. Avoid forcing outcomes.",
+        Extreme: "Minimize input. Prioritize reflection and avoid closure pressure."
       }
     };
 
@@ -637,6 +718,49 @@
         .sort((a, b) => b[1] - a[1])
         .slice(0, 3)
         .map(([name]) => name);
+    }
+
+    function normalizeModeLabel(mode){
+      if (mode === "Rewrite Window") return "Rewrite";
+      if (mode === "Threshold Crossing") return "Threshold";
+      if (mode === "Activation Window") return "Activated";
+      if (mode === "High Pressure") return "High Pressure";
+      if (mode === "Pluto Rewrite") return "Pluto Rewrite";
+      if (mode === "Saturn Shutdown") return "Shutdown";
+      return mode;
+    }
+
+    function convertTo24Hour(timeStr, ampm) {
+      const cleaned = timeStr.trim();
+      const parts = cleaned.split(":");
+
+      if (parts.length !== 2) {
+        throw new Error("Time must be in H:MM format.");
+      }
+
+      const rawHour = Number(parts[0]);
+      const rawMinute = Number(parts[1]);
+
+      if (!Number.isFinite(rawHour) || !Number.isFinite(rawMinute)) {
+        throw new Error("Invalid time value.");
+      }
+
+      if (rawHour < 1 || rawHour > 12 || rawMinute < 0 || rawMinute > 59) {
+        throw new Error("Time must be between 1:00 and 12:59.");
+      }
+
+      let hour = rawHour;
+      const minute = rawMinute;
+
+      if (ampm === "AM") {
+        if (hour === 12) hour = 0;
+      } else if (ampm === "PM") {
+        if (hour !== 12) hour += 12;
+      } else {
+        throw new Error("AM/PM value is invalid.");
+      }
+
+      return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
     }
 
     function getLoadBand(effectiveLoad){
@@ -926,12 +1050,12 @@
 
     function interpretState(result){
       const driverMap = {
-        Moon: "Emotional load is contributing most to the current system state.",
-        Mars: "Activation pressure is driving output and increasing readiness or agitation.",
-        Jupiter: "Amplification is enlarging current conditions and increasing system gain.",
+        Moon: "Emotional load is contributing most to the current state.",
+        Mars: "Activation pressure is driving output and raising reactivity.",
+        Jupiter: "Amplification is enlarging current conditions and increasing gain.",
         Uranus: "Volatility is increasing unpredictability and spike potential.",
         Neptune: "Diffusion is softening clarity and increasing fog or drift.",
-        Pluto: "Rewrite pressure is dominant and the system is under deep restructuring force."
+        Pluto: "Rewrite pressure is dominant and the system is under restructuring force."
       };
 
       const loadSemantic = loadLevelFromBands(result.loadBand, result.strainBand);
@@ -954,7 +1078,7 @@
       } else if (stateModeSemantic === "Transition"){
         decisionGuidance = "Prefer smaller decisions and reduce unnecessary complexity.";
       } else if (stateModeSemantic === "Rewrite"){
-        decisionGuidance = "Best for observation, reflection, journaling, and pattern review.";
+        decisionGuidance = "Best for reflection, review, and low-pressure decisions.";
       } else if (stateModeSemantic === "Overload"){
         decisionGuidance = "Avoid major commitments and postpone irreversible choices if possible.";
       }
@@ -964,7 +1088,7 @@
         "Current load is being shaped by multiple comparable drivers.";
 
       const osSummary =
-        `${loadSemantic} load / ${regulationSemantic} containment / ${stateModeSemantic} mode`;
+        `${loadSemantic} Load · ${regulationSemantic} Containment · ${stateModeSemantic} Mode`;
 
       return {
         loadProfile,
@@ -982,6 +1106,53 @@
         volatilitySemantic,
         stateModeSemantic,
         pacingSemantic
+      };
+    }
+
+    function buildForecast(result, interp){
+      const nowState = normalizeModeLabel(result.finalMode);
+
+      let plus6State = "Mobilized";
+      let plus6Text = "Stimulation rises slightly. Best for focused effort over emotional decisions.";
+
+      let tomorrowState = "Mixed";
+      let tomorrowText = "Moderate load with variable containment. Keep plans flexible and avoid overcommitting.";
+
+      if (interp.stateModeSemantic === "Stable") {
+        plus6State = "Steady";
+        plus6Text = "Conditions remain usable. Good for ordinary activity and structured work.";
+        tomorrowState = "Clear";
+        tomorrowText = "Baseline remains favorable if pacing stays clean.";
+      } else if (interp.stateModeSemantic === "Transition") {
+        plus6State = "Mobilized";
+        plus6Text = "Energy remains usable, but simplify inputs and avoid stacking demands.";
+        tomorrowState = "Mixed";
+        tomorrowText = "Moderate load continues. Prioritize clarity over speed.";
+      } else if (interp.stateModeSemantic === "Rewrite") {
+        plus6State = "Activated";
+        plus6Text = "Pressure stays elevated. Better for reflection and contained effort than big decisions.";
+        tomorrowState = "Mixed";
+        tomorrowText = "Rewrite pressure may ease slightly if input stays simple and pacing stays deliberate.";
+      } else if (interp.stateModeSemantic === "Overload") {
+        plus6State = "Pressured";
+        plus6Text = "System remains hot. Reduce input and avoid forcing outcomes.";
+        tomorrowState = "Recovery";
+        tomorrowText = "Conditions improve only if demand is lowered and pacing is kept conservative.";
+      }
+
+      return {
+        now: {
+          state: nowState,
+          text: `${interp.stateSummary} ${interp.pacingDirective}`
+        },
+        plus6: {
+          state: plus6State,
+          text: plus6Text
+        },
+        tomorrow: {
+          state: tomorrowState,
+          text: tomorrowText
+        }
       };
     }
 
@@ -1079,11 +1250,32 @@
       };
     }
 
-    async function fetchPlanetInputs(){
+    function getCurrentInputs(){
       const dob = document.getElementById("dob").value.trim();
-      const tob = document.getElementById("tob").value.trim();
+      const tobRaw = document.getElementById("tob").value.trim();
+      const ampm = document.getElementById("ampm").value.trim().toUpperCase();
       const location = document.getElementById("location").value.trim();
       const utcOffset = parseFloat(document.getElementById("utcOffset").value);
+
+      if (!dob) throw new Error("Date of birth is required.");
+      if (!tobRaw) throw new Error("Time of birth is required.");
+      if (!location) throw new Error("Location is required.");
+      if (!Number.isFinite(utcOffset)) throw new Error("UTC offset is invalid.");
+
+      const tob = convertTo24Hour(tobRaw, ampm);
+
+      return {
+        dob,
+        tobRaw,
+        ampm,
+        tob,
+        location,
+        utcOffset
+      };
+    }
+
+    async function fetchPlanetInputs(currentInputs){
+      console.log("Lucy.OS payload:", currentInputs);
 
       const response = await fetch("/api/chart_inputs", {
         method: "POST",
@@ -1092,10 +1284,11 @@
         },
         body: JSON.stringify({
           mode: "natal",
-          dob,
-          tob,
-          location,
-          utcOffset
+          dob: currentInputs.dob,
+          tob: currentInputs.tob,
+          ampm: currentInputs.ampm,
+          location: currentInputs.location,
+          utcOffset: currentInputs.utcOffset
         })
       });
 
@@ -1121,10 +1314,11 @@
       button.textContent = "Calculating...";
 
       try {
+        const currentInputs = getCurrentInputs();
         let inputs;
 
         try {
-          inputs = await fetchPlanetInputs();
+          inputs = await fetchPlanetInputs(currentInputs);
         } catch (apiError) {
           console.warn("API fetch failed, using fallback:", apiError);
           inputs = fallbackPlanetInputs();
@@ -1149,6 +1343,7 @@
         };
 
         const interp = interpretState(result);
+        const forecast = buildForecast(result, interp);
 
         document.getElementById("capacityValue").textContent = round2(result.capacity);
         document.getElementById("stabilityValue").textContent = round2(result.strain);
@@ -1157,7 +1352,7 @@
 
         document.getElementById("loadBandPill").textContent = result.loadBand;
         document.getElementById("regulationBandPill").textContent = interp.regulationSemantic;
-        document.getElementById("modeBandPill").textContent = result.finalMode;
+        document.getElementById("modeBandPill").textContent = normalizeModeLabel(result.finalMode);
 
         document.getElementById("amplifiedLoadText").textContent = round2(result.amplifiedLoad);
         document.getElementById("regulationText").textContent = round2(result.regulation);
@@ -1184,14 +1379,14 @@
         document.getElementById("timingPressureText").textContent =
           `Timing Pressure: ${round2(result.timingPressure)}`;
         document.getElementById("timingModeText").textContent =
-          `Timing Mode: ${result.timingMode}`;
+          `Timing Mode: ${normalizeModeLabel(result.timingMode)}`;
 
         const envChip = document.getElementById("environmentModeChip");
         envChip.textContent = result.environmentMode;
         applyChipStyle(envChip, result.environmentMode);
 
         const timingChip = document.getElementById("timingModeChip");
-        timingChip.textContent = result.timingMode;
+        timingChip.textContent = normalizeModeLabel(result.timingMode);
         applyChipStyle(timingChip, result.timingMode);
 
         document.getElementById("plutoFlag").textContent =
@@ -1199,7 +1394,7 @@
         document.getElementById("saturnFlag").textContent =
           `Saturn Shutdown: ${result.saturnOverride ? "ON" : "OFF"}`;
         document.getElementById("capacityUsedFlag").textContent =
-          `Capacity Used: ${Math.round(result.capacityUsedPct)}%`;
+          `Strain Ratio: ${round2(result.strain)}x`;
 
         document.getElementById("loadProfileText").textContent = interp.loadProfile;
         document.getElementById("stateSummaryText").textContent = interp.stateSummary;
@@ -1211,11 +1406,18 @@
         document.getElementById("decisionGuidanceText").textContent = interp.decisionGuidance;
         document.getElementById("osSummaryText").textContent = interp.osSummary;
 
-        document.getElementById("modePill").textContent = result.finalMode;
+        document.getElementById("forecastNowState").textContent = forecast.now.state;
+        document.getElementById("forecastNowText").textContent = forecast.now.text;
+        document.getElementById("forecast6State").textContent = forecast.plus6.state;
+        document.getElementById("forecast6Text").textContent = forecast.plus6.text;
+        document.getElementById("forecastTomorrowState").textContent = forecast.tomorrow.state;
+        document.getElementById("forecastTomorrowText").textContent = forecast.tomorrow.text;
+
+        document.getElementById("modePill").textContent = normalizeModeLabel(result.finalMode);
         applyModePillStyle(result.finalMode);
 
         document.getElementById("readingText").textContent =
-          `State: ${result.finalMode}. ${interp.stateSummary} ${interp.pacingDirective}`;
+          `State: ${normalizeModeLabel(result.finalMode)}. ${interp.stateSummary} ${interp.pacingDirective}`;
       } catch (err) {
         console.error(err);
         document.getElementById("modePill").textContent = "Error";
@@ -1231,6 +1433,7 @@
     }
 
     window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("calculateBtn").addEventListener("click", calculateState);
       calculateState();
     });
   </script>
