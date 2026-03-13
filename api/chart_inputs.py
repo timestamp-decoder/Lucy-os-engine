@@ -26,6 +26,35 @@ def normalize_longitude(lon: float) -> float:
     return (lon % 360.0) / 360.0
 
 
+def normalize_tob_with_ampm(tob: str, ampm: str | None = None) -> str:
+    """
+    Accepts:
+      - tob='6:20', ampm='AM'
+      - tob='6:20', ampm='PM'
+      - tob='18:20', ampm=None
+      - tob='6:20 AM', ampm=None
+
+    Returns a normalized string suitable for parse_time_flexible().
+    """
+    tob = str(tob or "").strip()
+    ampm = str(ampm or "").strip().upper()
+
+    if not tob:
+        raise ValueError("Time of birth is required")
+
+    # If tob already contains AM/PM, trust it.
+    upper_tob = tob.upper()
+    if "AM" in upper_tob or "PM" in upper_tob:
+        return tob
+
+    # If ampm is supplied separately, append it.
+    if ampm in ("AM", "PM"):
+        return f"{tob} {ampm}"
+
+    # Otherwise assume tob is already 24-hour style or flexible enough for parser.
+    return tob
+
+
 def parse_time_flexible(time_str: str) -> datetime:
     cleaned = time_str.strip().upper().replace(".", "")
     cleaned = re.sub(r"\s+", " ", cleaned)
@@ -85,7 +114,12 @@ def to_julian_day_utc(dob: str, tob: str, utc_offset_hours: float):
     return jd_ut, utc_dt
 
 
-def compute_chart_inputs(dob: str, tob: str, utc_offset_hours: float):
+def compute_chart_inputs(
+    dob: str,
+    tob: str,
+    utc_offset_hours: float,
+    location: str | None = None,
+):
     jd_ut, utc_dt = to_julian_day_utc(dob, tob, utc_offset_hours)
     result = {}
 
@@ -99,6 +133,9 @@ def compute_chart_inputs(dob: str, tob: str, utc_offset_hours: float):
         "mode": "natal",
         "utc_datetime": utc_dt.isoformat(),
         "jd_ut": round(jd_ut, 6),
+        "location": location or "",
+        "utc_offset": utc_offset_hours,
+        "note": "Location is currently metadata only; chart is driven by dob, tob, and utcOffset."
     }
 
     return result
@@ -168,6 +205,8 @@ class handler(BaseHTTPRequestHandler):
             mode = str(payload.get("mode", "natal")).strip().lower()
             dob = str(payload.get("dob", "")).strip()
             tob = str(payload.get("tob", "")).strip()
+            ampm = str(payload.get("ampm", "")).strip().upper()
+            location = str(payload.get("location", "")).strip()
             utc_offset = payload.get("utcOffset", None)
 
             if mode == "natal":
@@ -181,7 +220,14 @@ class handler(BaseHTTPRequestHandler):
                     return
 
                 utc_offset = float(utc_offset)
-                result = compute_chart_inputs(dob, tob, utc_offset)
+                normalized_tob = normalize_tob_with_ampm(tob, ampm)
+
+                result = compute_chart_inputs(
+                    dob=dob,
+                    tob=normalized_tob,
+                    utc_offset_hours=utc_offset,
+                    location=location,
+                )
 
             elif mode == "transit":
                 result = compute_transit_inputs()
