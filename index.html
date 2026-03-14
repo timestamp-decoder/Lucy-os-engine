@@ -737,714 +737,110 @@
   </div>
 
   <script>
-    const PLANET_KEYS = [
+        const PLANET_KEYS = [
       "sun","moon","mercury","venus","mars",
       "jupiter","saturn","uranus","neptune","pluto"
     ];
 
-    const SEMANTIC_TEXT = {
-      loadProfile: {
-        Low: "Light load, well within capacity.",
-        Moderate: "Manageable load with measurable strain.",
-        High: "Heavy load with sustained strain.",
-        Extreme: "Heavy load under extreme strain."
-      },
-      systemBehavior: {
-        Low: "Activation is light and stable.",
-        Moderate: "Activation is present with mild fluctuation.",
-        High: "Activation is elevated with noticeable volatility.",
-        Extreme: "Activation is elevated with sharp volatility and diffusion."
-      },
-      regulationBand: {
-        Low: "Containment is strong and buffering load effectively.",
-        Moderate: "Containment is present and partially buffering load.",
-        High: "Containment is strained and buffering inconsistently.",
-        Extreme: "Containment is minimal and not containing load."
-      },
-      volatilityDamping: {
-        Low: "Volatility is low; damping is strong.",
-        Moderate: "Volatility is present; damping is moderate.",
-        High: "Volatility is elevated; damping is light.",
-        Extreme: "Volatility is sharp; damping is minimal."
-      },
-      stateMode: {
-        Stable: "System is steady with low rewrite pressure.",
-        Transition: "System is adjusting with moderate rewrite pressure.",
-        Rewrite: "Rewrite window with elevated pressure.",
-        Overload: "System is under extreme rewrite pressure; pacing is critical."
-      },
-      pacingDirective: {
-        Low: "Normal pacing is fine; maintain current rhythm.",
-        Moderate: "Slow input slightly; prioritize clarity and simplicity.",
-        High: "Reduce input. Move deliberately. Avoid forcing outcomes.",
-        Extreme: "Minimize input. Prioritize reflection and avoid closure pressure."
-      }
+    const PLANET_LABELS = {
+      sun: "Sun",
+      moon: "Moon",
+      mercury: "Mercury",
+      venus: "Venus",
+      mars: "Mars",
+      jupiter: "Jupiter",
+      saturn: "Saturn",
+      uranus: "Uranus",
+      neptune: "Neptune",
+      pluto: "Pluto"
     };
 
-    function round2(n){
-      return Number(n).toFixed(2);
+    const STATE_LABELS = {
+      regulated: "Regulated Baseline",
+      active: "Mobilized State",
+      strained: "Threshold Strain",
+      overload: "Overload State",
+      collapse: "Collapse / Rewrite"
+    };
+
+    function clamp(n, min, max){
+      return Math.min(Math.max(n, min), max);
     }
 
-    function clampPct(value, max){
-      return Math.max(0, Math.min((value / max) * 100, 100));
+    function fmt(n, digits = 2){
+      return Number(n).toFixed(digits);
     }
 
-    function argMax(obj){
-      return Object.entries(obj).sort((a, b) => b[1] - a[1])[0][0];
+    function degFmt(n){
+      return `${fmt(n, 2)}°`;
     }
 
-    function topThree(obj){
-      return Object.entries(obj)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 3)
-        .map(([name]) => name);
+    function setBar(id, value, max = 1.6){
+      const pct = clamp((value / max) * 100, 0, 100);
+      document.getElementById(id).style.width = `${pct}%`;
     }
 
-    function normalizeModeLabel(mode){
-      if (mode === "Rewrite Window") return "Rewrite";
-      if (mode === "Threshold Crossing") return "Threshold";
-      if (mode === "Activation Window") return "Activated";
-      if (mode === "High Pressure") return "High Pressure";
-      if (mode === "Pluto Rewrite") return "Pluto Rewrite";
-      if (mode === "Saturn Shutdown") return "Shutdown";
-      return mode;
+    function toTitleCase(str){
+      return String(str || "")
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, c => c.toUpperCase());
     }
 
-    function getLoadBand(effectiveLoad){
-      if (effectiveLoad < 0.75) return "Light";
-      if (effectiveLoad < 1.50) return "Moderate";
-      if (effectiveLoad < 2.25) return "Heavy";
-      return "Saturated";
+    function loadBand(value){
+      if (value < 0.35) return "Low";
+      if (value < 0.65) return "Moderate";
+      if (value < 0.95) return "Elevated";
+      return "High";
     }
 
-    function getStrainBand(strain){
-      if (strain < 0.60) return "Low";
-      if (strain < 0.85) return "Moderate";
-      if (strain < 1.50) return "High";
-      if (strain < 2.25) return "Severe";
-      return "Extreme";
+    function regulationBand(value){
+      if (value < 0.20) return "Thin";
+      if (value < 0.45) return "Present";
+      if (value < 0.70) return "Strong";
+      return "Heavy";
     }
 
-    function loadLevelFromBands(loadBand, strainBand){
-      if (loadBand === "Light" && (strainBand === "Low" || strainBand === "Moderate")) return "Low";
-      if (loadBand === "Moderate" || strainBand === "Moderate") return "Moderate";
-      if (loadBand === "Heavy" || strainBand === "High" || strainBand === "Severe") return "High";
-      return "Extreme";
+    function modeFromStrain(strain, plutoOverride){
+      if (plutoOverride) return "collapse";
+      if (strain < 0.60) return "regulated";
+      if (strain < 0.85) return "active";
+      if (strain < 1.00) return "strained";
+      return "overload";
     }
 
-    function behaviorLevelFromSignals(result){
-      const volatilityScore =
-        result.spikeTrigger +
-        result.fogDrift +
-        result.environmentalLoad;
-
-      if (volatilityScore < 0.55) return "Low";
-      if (volatilityScore < 0.95) return "Moderate";
-      if (volatilityScore < 1.35) return "High";
-      return "Extreme";
+    function dominantSorted(mapObj){
+      return Object.entries(mapObj)
+        .sort((a,b)=>b[1]-a[1]);
     }
 
-    function regulationLevel(result){
-      const ratio = result.regulation / Math.max(result.finalEffectiveLoad, 0.01);
-
-      if (ratio >= 0.60) return "Low";
-      if (ratio >= 0.35) return "Moderate";
-      if (ratio >= 0.18) return "High";
-      return "Extreme";
-    }
-
-    function volatilityLevel(result){
-      const volatilityScore =
-        result.spikeTrigger +
-        result.fogDrift +
-        (result.environmentMode === "Pressurized" ? 0.20 : 0) +
-        (result.environmentMode === "High Pressure" ? 0.35 : 0);
-
-      const dampingScore = result.saturnConstraint;
-
-      if (volatilityScore < 0.55 && dampingScore >= 0.35) return "Low";
-      if (volatilityScore < 0.95) return "Moderate";
-      if (volatilityScore < 1.35 || dampingScore >= 0.15) return "High";
-      return "Extreme";
-    }
-
-    function semanticStateMode(result){
-      if (result.finalMode === "Balanced") return "Stable";
-
-      if (
-        result.finalMode === "Strained" ||
-        result.finalMode === "Pressurized" ||
-        result.finalMode === "Activation Window"
-      ){
-        return "Transition";
-      }
-
-      if (
-        result.finalMode === "Rewrite Window" ||
-        result.finalMode === "Threshold Crossing" ||
-        result.finalMode === "Pluto Rewrite"
-      ){
-        return "Rewrite";
-      }
-
-      if (
-        result.finalMode === "Overload" ||
-        result.finalMode === "High Pressure" ||
-        result.finalMode === "Saturn Shutdown"
-      ){
-        return "Overload";
-      }
-
-      return "Transition";
-    }
-
-    function pacingLevelFromStateMode(stateMode){
-      if (stateMode === "Stable") return "Low";
-      if (stateMode === "Transition") return "Moderate";
-      if (stateMode === "Rewrite") return "High";
-      return "Extreme";
-    }
-
-    function shortestAngularDistance(a, b){
-      let d = Math.abs((a % 360) - (b % 360));
-      if (d > 180) d = 360 - d;
-      return d;
-    }
-
-    function angularBoost(planetLonDeg, angles){
-      if (!angles) return 1.0;
-
-      const angleList = [angles.asc, angles.mc, angles.desc, angles.ic]
-        .filter(v => typeof v === "number" && Number.isFinite(v));
-
-      if (!angleList.length) return 1.0;
-
-      let minDist = Infinity;
-      for (const angle of angleList){
-        const d = shortestAngularDistance(planetLonDeg, angle);
-        if (d < minDist) minDist = d;
-      }
-
-      if (minDist <= 8) return 1.18;
-      if (minDist <= 15) return 1.10;
-      if (minDist <= 25) return 1.05;
-      return 1.0;
-    }
-
-    function computePlanetaryGraph(inputs){
-      const {
-        sun, moon, mercury, venus,
-        mars, jupiter, saturn,
-        uranus, neptune, pluto,
-        _longitudesDeg,
-        _angles
-      } = inputs;
-
-      const moonBoost = angularBoost(_longitudesDeg?.moon ?? 0, _angles);
-      const marsBoost = angularBoost(_longitudesDeg?.mars ?? 0, _angles);
-      const saturnBoost = angularBoost(_longitudesDeg?.saturn ?? 0, _angles);
-      const plutoBoost = angularBoost(_longitudesDeg?.pluto ?? 0, _angles);
-
-      const jupiterAmp = 0.15;
-      const fogFactor = 0.10;
-      const spikeFactor = 0.12;
-      const saturnFactor = 0.25;
-
-      const saturnGate = 1.05;
-      const saturnActivation = 0.65;
-
-      const baseLoad =
-        (moon * moonBoost * 0.60) +
-        (mars * marsBoost * 0.50) +
-        (jupiter * 0.80) +
-        (uranus * 0.70) +
-        (neptune * 0.70) +
-        (pluto * plutoBoost * 1.10);
-
-      const amplifiedLoad = baseLoad * (1 + jupiter * jupiterAmp);
-
-      const regulation =
-        (mercury * 0.40) +
-        (venus * 0.40);
-
-      const distortion =
-        neptune * fogFactor +
-        uranus * spikeFactor;
-
-      const saturnConstraint =
-        Math.max(0, amplifiedLoad - 1.0) *
-        saturnFactor *
-        (saturn * saturnBoost);
-
-      const effectiveLoad = Math.max(
-        amplifiedLoad + distortion - regulation - saturnConstraint,
-        0
-      );
-
-      const capacity = sun;
-      const strain = effectiveLoad / Math.max(capacity, 0.01);
-
-      let graphMode = "Normal";
-
-      if (strain > saturnGate && saturn > saturnActivation){
-        graphMode = "Saturn Shutdown";
-      }
-
-      if (strain > 1.15 && pluto > 0.75){
-        graphMode = "Pluto Rewrite";
-      }
-
-      return {
-        baseLoad,
-        amplifiedLoad,
-        regulation,
-        distortion,
-        saturnConstraint,
-        effectiveLoad,
-        capacity,
-        strain,
-        graphMode
-      };
-    }
-
-    function computeEnvironmentLayer(inputs, graphResult){
-      const { jupiter, saturn, uranus, neptune, pluto } = inputs;
-
-      const transitPressure =
-        (jupiter * 0.08) +
-        (uranus * 0.10) +
-        (neptune * 0.10) +
-        (pluto * 0.12);
-
-      const containmentSupport = saturn * 0.08;
-      const environmentalLoad = Math.max(transitPressure - containmentSupport, 0);
-      const adjustedEffectiveLoad = graphResult.effectiveLoad + environmentalLoad;
-      const adjustedStrain = adjustedEffectiveLoad / Math.max(graphResult.capacity, 0.01);
-
-      let environmentMode = "Neutral";
-      if (adjustedStrain > 1.05) environmentMode = "Pressurized";
-      if (adjustedStrain > 1.25) environmentMode = "High Pressure";
-
-      return {
-        transitPressure,
-        containmentSupport,
-        environmentalLoad,
-        adjustedEffectiveLoad,
-        adjustedStrain,
-        environmentMode
-      };
-    }
-
-    function computeTimingLayer(inputs, graphResult, environmentResult){
-      const { mars, mercury, uranus, neptune, pluto } = inputs;
-
-      const spikeTrigger = (mars * 0.35) + (uranus * 0.45);
-      const fogDrift = neptune * 0.40;
-      const rewritePressure =
-        (pluto * 0.50) +
-        (environmentResult.environmentalLoad * 0.50);
-
-      const timingPressure = spikeTrigger + fogDrift + rewritePressure;
-
-      let timingMode = "Stable Window";
-      if (timingPressure > 0.90) timingMode = "Activation Window";
-      if (timingPressure > 1.10) timingMode = "Rewrite Window";
-      if (timingPressure > 1.30) timingMode = "Threshold Crossing";
-
-      const timingSupport =
-        mercury * 0.20 +
-        graphResult.regulation * 0.20;
-
-      const adjustedTimingPressure = Math.max(timingPressure - timingSupport, 0);
-
-      return {
-        spikeTrigger,
-        fogDrift,
-        rewritePressure,
-        timingPressure,
-        timingSupport,
-        adjustedTimingPressure,
-        timingMode
-      };
-    }
-
-    function computeModeDetection(graphResult, environmentResult, timingResult){
-      const { strain, graphMode } = graphResult;
-      const { environmentMode } = environmentResult;
-      const { timingMode } = timingResult;
-
-      let finalMode = "Active";
-
-      if (graphMode === "Pluto Rewrite"){
-        finalMode = "Pluto Rewrite";
-      } else if (graphMode === "Saturn Shutdown"){
-        finalMode = "Saturn Shutdown";
-      } else if (timingMode === "Threshold Crossing"){
-        finalMode = "Threshold Crossing";
-      } else if (timingMode === "Rewrite Window"){
-        finalMode = "Rewrite Window";
-      } else if (timingMode === "Activation Window"){
-        finalMode = "Activation Window";
-      } else if (environmentMode === "High Pressure"){
-        finalMode = "High Pressure";
-      } else if (environmentMode === "Pressurized"){
-        finalMode = "Pressurized";
-      } else if (strain < 0.85){
-        finalMode = "Balanced";
-      } else if (strain < 1.0){
-        finalMode = "Strained";
-      } else {
-        finalMode = "Overload";
-      }
-
-      return { finalMode };
-    }
-
-    function computeDiagnostics(inputs, graphResult, environmentResult, timingResult, modeResult){
-      const loadDrivers = {
-        Moon: inputs.moon,
-        Mars: inputs.mars,
-        Jupiter: inputs.jupiter,
-        Uranus: inputs.uranus,
-        Neptune: inputs.neptune,
-        Pluto: inputs.pluto
-      };
-
-      const regulators = {
-        Saturn: inputs.saturn,
-        Venus: inputs.venus,
-        Mercury: inputs.mercury
-      };
-
-      const finalEffectiveLoad = environmentResult.adjustedEffectiveLoad;
-      const finalStrain = environmentResult.adjustedStrain;
-
-      return {
-        primaryDriver: argMax(loadDrivers),
-        topRegulator: argMax(regulators),
-        topDrivers: topThree(loadDrivers),
-        capacityUsedPct: finalStrain * 100,
-        plutoRewrite: modeResult.finalMode === "Pluto Rewrite",
-        saturnOverride: modeResult.finalMode === "Saturn Shutdown",
-        loadBand: getLoadBand(finalEffectiveLoad),
-        strainBand: getStrainBand(finalStrain),
-        finalEffectiveLoad,
-        finalStrain
-      };
-    }
-
-    function interpretState(result){
-      const driverMap = {
-        Moon: "Emotional load is contributing most to the current state.",
-        Mars: "Activation pressure is driving output and raising reactivity.",
-        Jupiter: "Amplification is enlarging current conditions and increasing gain.",
-        Uranus: "Volatility is increasing unpredictability and spike potential.",
-        Neptune: "Diffusion is softening clarity and increasing fog or drift.",
-        Pluto: "Rewrite pressure is dominant and the system is under restructuring force."
-      };
-
-      const loadSemantic = loadLevelFromBands(result.loadBand, result.strainBand);
-      const behaviorSemantic = behaviorLevelFromSignals(result);
-      const regulationSemantic = regulationLevel(result);
-      const volatilitySemantic = volatilityLevel(result);
-      const stateModeSemantic = semanticStateMode(result);
-      const pacingSemantic = pacingLevelFromStateMode(stateModeSemantic);
-
-      const loadProfile = SEMANTIC_TEXT.loadProfile[loadSemantic];
-      const systemBehavior = SEMANTIC_TEXT.systemBehavior[behaviorSemantic];
-      const regulationStatus = SEMANTIC_TEXT.regulationBand[regulationSemantic];
-      const volatilityDamping = SEMANTIC_TEXT.volatilityDamping[volatilitySemantic];
-      const stateSummary = SEMANTIC_TEXT.stateMode[stateModeSemantic];
-      const pacingDirective = SEMANTIC_TEXT.pacingDirective[pacingSemantic];
-
-      let decisionGuidance = "Routine decisions are acceptable.";
-      if (stateModeSemantic === "Stable"){
-        decisionGuidance = "Good window for clear practical decisions and structured action.";
-      } else if (stateModeSemantic === "Transition"){
-        decisionGuidance = "Prefer smaller decisions and reduce unnecessary complexity.";
-      } else if (stateModeSemantic === "Rewrite"){
-        decisionGuidance = "Best for reflection, review, and low-pressure decisions.";
-      } else if (stateModeSemantic === "Overload"){
-        decisionGuidance = "Avoid major commitments and postpone irreversible choices if possible.";
-      }
-
-      const driverSignature =
-        driverMap[result.primaryDriver] ??
-        "Current load is being shaped by multiple comparable drivers.";
-
-      const osSummary =
-        `${loadSemantic} Load · ${regulationSemantic} Containment · ${stateModeSemantic} Mode`;
-
-      return {
-        loadProfile,
-        stateSummary,
-        pacingDirective,
-        systemBehavior,
-        driverSignature,
-        regulationStatus,
-        volatilityDamping,
-        decisionGuidance,
-        osSummary,
-        loadSemantic,
-        behaviorSemantic,
-        regulationSemantic,
-        volatilitySemantic,
-        stateModeSemantic,
-        pacingSemantic
-      };
-    }
-
-    function buildForecast(result, interp){
-      const nowState = normalizeModeLabel(result.finalMode);
-
-      let plus6State = "Mobilized";
-      let plus6Text = "Stimulation rises slightly. Best for focused effort over emotional decisions.";
-
-      let tomorrowState = "Mixed";
-      let tomorrowText = "Moderate load with variable containment. Keep plans flexible and avoid overcommitting.";
-
-      if (interp.stateModeSemantic === "Stable") {
-        plus6State = "Steady";
-        plus6Text = "Conditions remain usable. Good for ordinary activity and structured work.";
-        tomorrowState = "Clear";
-        tomorrowText = "Baseline remains favorable if pacing stays clean.";
-      } else if (interp.stateModeSemantic === "Transition") {
-        plus6State = "Mobilized";
-        plus6Text = "Energy remains usable, but simplify inputs and avoid stacking demands.";
-        tomorrowState = "Mixed";
-        tomorrowText = "Moderate load continues. Prioritize clarity over speed.";
-      } else if (interp.stateModeSemantic === "Rewrite") {
-        plus6State = "Activated";
-        plus6Text = "Pressure stays elevated. Better for reflection and contained effort than big decisions.";
-        tomorrowState = "Mixed";
-        tomorrowText = "Rewrite pressure may ease slightly if input stays simple and pacing stays deliberate.";
-      } else if (interp.stateModeSemantic === "Overload") {
-        plus6State = "Pressured";
-        plus6Text = "System remains hot. Reduce input and avoid forcing outcomes.";
-        tomorrowState = "Recovery";
-        tomorrowText = "Conditions improve only if demand is lowered and pacing is kept conservative.";
-      }
-
-      return {
-        now: {
-          state: nowState,
-          text: `${interp.stateSummary} ${interp.pacingDirective}`
-        },
-        plus6: {
-          state: plus6State,
-          text: plus6Text
-        },
-        tomorrow: {
-          state: tomorrowState,
-          text: tomorrowText
-        }
-      };
-    }
-
-    function applyModePillStyle(displayMode){
-      const pill = document.getElementById("modePill");
-
-      if (displayMode === "Balanced"){
-        pill.style.background = "rgba(103,210,111,.12)";
-        pill.style.borderColor = "#4f8f57";
-        pill.style.color = "#98f2a0";
-      } else if (displayMode === "Strained" || displayMode === "Pressurized"){
-        pill.style.background = "rgba(216,184,76,.12)";
-        pill.style.borderColor = "#6a5a1a";
-        pill.style.color = "#f3db80";
-      } else if (displayMode === "Overload" || displayMode === "Activation Window" || displayMode === "High Pressure"){
-        pill.style.background = "rgba(255,102,102,.12)";
-        pill.style.borderColor = "#7d3838";
-        pill.style.color = "#ff9c9c";
-      } else if (displayMode === "Rewrite Window" || displayMode === "Threshold Crossing" || displayMode === "Pluto Rewrite"){
-        pill.style.background = "rgba(176,108,255,.12)";
-        pill.style.borderColor = "#6d46a3";
-        pill.style.color = "#d8b5ff";
-      } else if (displayMode === "Saturn Shutdown"){
-        pill.style.background = "rgba(180,190,210,.14)";
-        pill.style.borderColor = "#5b667d";
-        pill.style.color = "#e4ebff";
-      } else {
-        pill.style.background = "rgba(216,184,76,.12)";
-        pill.style.borderColor = "#6a5a1a";
-        pill.style.color = "#f3db80";
-      }
-    }
-
-    function applyChipStyle(el, mode){
-      if (mode === "Neutral" || mode === "Stable Window"){
-        el.style.background = "rgba(103,210,111,.10)";
-        el.style.borderColor = "#4f8f57";
-        el.style.color = "#98f2a0";
-      } else if (mode === "Pressurized" || mode === "Activation Window"){
-        el.style.background = "rgba(216,184,76,.12)";
-        el.style.borderColor = "#6a5a1a";
-        el.style.color = "#f3db80";
-      } else if (mode === "High Pressure" || mode === "Threshold Crossing"){
-        el.style.background = "rgba(255,102,102,.12)";
-        el.style.borderColor = "#7d3838";
-        el.style.color = "#ff9c9c";
-      } else if (mode === "Rewrite Window"){
-        el.style.background = "rgba(176,108,255,.12)";
-        el.style.borderColor = "#6d46a3";
-        el.style.color = "#d8b5ff";
-      } else {
-        el.style.background = "rgba(255,255,255,.04)";
-        el.style.borderColor = "#2a3c69";
-        el.style.color = "#f4f7ff";
-      }
-    }
-
-    function formatAngle(value){
-      if (typeof value !== "number" || !Number.isFinite(value)) return "—";
-      return `${value.toFixed(2)}°`;
-    }
-
-    function formatLatLon(meta){
-      const lat = meta?.lat;
-      const lon = meta?.lon;
-      if (typeof lat !== "number" || typeof lon !== "number") return "—";
-      return `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
-    }
-
-    function formatOffsetHours(value){
-      if (value === null || value === undefined || value === "n/a") return "—";
-      const num = Number(value);
-      if (!Number.isFinite(num)) return String(value);
-      return `${num >= 0 ? "+" : ""}${num.toFixed(2)}`;
-    }
-
-    function updateEphemerisMeta(meta){
-      document.getElementById("debugSource").textContent = meta?.source ?? "—";
-      document.getElementById("debugMode").textContent = meta?.mode ?? "—";
-      document.getElementById("debugUtc").textContent = meta?.utc_datetime ?? "—";
-      document.getElementById("debugJd").textContent = meta?.jd_ut ?? "—";
-      document.getElementById("debugResolvedLocation").textContent =
-        meta?.location_resolved || meta?.location || "—";
-      document.getElementById("debugLatLon").textContent = formatLatLon(meta);
-
-      document.getElementById("resolvedInputTimeText").textContent =
-        `Birth Time: ${meta?.local_time_resolved || "—"}`;
-      document.getElementById("resolvedInputUtcText").textContent =
-        `UTC Datetime: ${meta?.utc_datetime || "—"}`;
-      document.getElementById("resolvedInputLocationText").textContent =
-        `Resolved Location: ${meta?.location_resolved || meta?.location || "—"}`;
-      document.getElementById("resolvedInputOffsetText").textContent =
-        `UTC Offset: ${formatOffsetHours(meta?.utc_offset)}`;
-      document.getElementById("resolvedInputTimezoneText").textContent =
-        `Timezone: ${meta?.timezone_name || "—"}`;
-
-      let status = "No metadata returned.";
-      if (meta?.source){
-        status = `${meta.source} connected`;
-        if (meta?.mode) status += ` · ${meta.mode} mode`;
-        if (meta?.timezone_name) status += ` · ${meta.timezone_name}`;
-        if (meta?.utc_datetime) status += ` · ${meta.utc_datetime} UTC`;
-        if (meta?.location_resolved || meta?.location) {
-          status += ` · ${meta?.location_resolved || meta?.location}`;
-        }
-      }
-      document.getElementById("ephemerisStatus").textContent = status;
-    }
-
-    function updateGeometryPanels(data){
-      const angles = data?.angles || {};
-      const houses = Array.isArray(data?.houses) ? data.houses : [];
-
-      document.getElementById("angleAscText").textContent = formatAngle(angles.asc);
-      document.getElementById("angleMcText").textContent = formatAngle(angles.mc);
-      document.getElementById("angleDescText").textContent = formatAngle(angles.desc);
-      document.getElementById("angleIcText").textContent = formatAngle(angles.ic);
-
-      if (!houses.length){
-        document.getElementById("housesPreviewText").textContent = "No house data returned.";
-        return;
-      }
-
-      const preview = houses
-        .slice(0, 12)
-        .map((deg, idx) => `H${idx + 1}: ${formatAngle(deg)}`)
-        .join(" · ");
-
-      document.getElementById("housesPreviewText").textContent = preview;
-    }
-
-    function setBar(id, value, max){
-      document.getElementById(id).style.width = `${clampPct(value, max)}%`;
+    function topNLabels(entries, n = 3){
+      return entries.slice(0, n).map(([k,v]) => ({
+        key: k,
+        label: PLANET_LABELS[k] || toTitleCase(k),
+        value: v
+      }));
     }
 
     function fallbackPlanetInputs(){
       return {
-        sun: 0.62,
-        moon: 0.48,
-        mercury: 0.56,
-        venus: 0.58,
-        mars: 0.44,
-        jupiter: 0.52,
-        saturn: 0.61,
-        uranus: 0.39,
-        neptune: 0.47,
-        pluto: 0.42,
-        _longitudesDeg: {
-          sun: 223.2,
-          moon: 101.5,
-          mercury: 214.7,
-          venus: 208.3,
-          mars: 178.2,
-          jupiter: 195.1,
-          saturn: 182.4,
-          uranus: 240.0,
-          neptune: 265.0,
-          pluto: 208.0
-        },
-        angles: null,
-        houses: [],
-        _meta: {
-          source: "Fallback",
-          mode: "demo",
-          utc_datetime: "n/a",
-          jd_ut: "n/a",
-          location: "n/a",
-          location_resolved: "n/a",
-          local_time_resolved: "n/a",
-          utc_offset: "n/a",
-          timezone_name: "n/a"
+        sun:0.89,
+        moon:0.31,
+        mercury:0.58,
+        venus:0.42,
+        mars:0.67,
+        jupiter:0.51,
+        saturn:0.63,
+        uranus:0.44,
+        neptune:0.37,
+        pluto:0.22,
+        _meta:{
+          source:"Fallback / Demo",
+          mode:"natal"
         }
-      };
-    }
-
-    function getCurrentInputs(){
-      const dob = document.getElementById("dob").value.trim();
-      const tobRaw = document.getElementById("tob").value.trim();
-      const ampm = document.getElementById("ampm").value.trim().toUpperCase();
-      const location = document.getElementById("location").value.trim();
-      const utcOffsetRaw = document.getElementById("utcOffset").value.trim();
-
-      if (!dob) throw new Error("Date of birth is required.");
-      if (!tobRaw) throw new Error("Time of birth is required.");
-      if (!location) throw new Error("Location is required.");
-
-      let utcOffsetOverride = null;
-      if (utcOffsetRaw !== "") {
-        const parsed = parseFloat(utcOffsetRaw);
-        if (!Number.isFinite(parsed)) {
-          throw new Error("UTC offset override is invalid.");
-        }
-        utcOffsetOverride = parsed;
-      }
-
-      return {
-        dob,
-        tobRaw,
-        ampm,
-        location,
-        utcOffsetOverride
       };
     }
 
     async function fetchPlanetInputs(currentInputs){
-      console.log("Lucy.OS payload:", currentInputs);
-
       const payload = {
         mode: "natal",
         dob: currentInputs.dob,
@@ -1456,6 +852,8 @@
       if (currentInputs.utcOffsetOverride !== null) {
         payload.utcOffsetOverride = currentInputs.utcOffsetOverride;
       }
+
+      console.log("Lucy.OS payload:", payload);
 
       const response = await fetch("/api/chart_inputs", {
         method: "POST",
@@ -1481,138 +879,471 @@
       return data;
     }
 
+    function computeEnvironmentLayer(inputs){
+      const volatility = inputs.uranus * 0.55;
+      const diffusion = inputs.neptune * 0.45;
+      const amplification = inputs.jupiter * 0.35;
+      const environmentalLoad = volatility + diffusion + amplification;
+
+      let environmentMode = "Neutral";
+      if (environmentalLoad >= 0.95) environmentMode = "Storm Front";
+      else if (environmentalLoad >= 0.70) environmentMode = "Charged";
+      else if (environmentalLoad >= 0.40) environmentMode = "Active";
+
+      return {
+        volatility,
+        diffusion,
+        amplification,
+        environmentalLoad,
+        environmentMode
+      };
+    }
+
+    function computeTimingLayer(inputs){
+      const activation = inputs.mars * 0.55;
+      const volatility = inputs.uranus * 0.30;
+      const timingPressure = activation + volatility;
+
+      let timingMode = "Stable Window";
+      if (timingPressure >= 0.95) timingMode = "Hot Window";
+      else if (timingPressure >= 0.65) timingMode = "Accelerated";
+      else if (timingPressure >= 0.35) timingMode = "Open";
+
+      return {
+        activation,
+        timingPressure,
+        timingMode
+      };
+    }
+
+    function computeForecast(engine){
+      const nowState = engine.modeLabel;
+      const nowText = engine.interpretation.stateSummary;
+
+      const sixHourState =
+        engine.strain < 0.65 ? "Open Window" :
+        engine.strain < 0.95 ? "Manage Pace" :
+        "Reduce Load";
+
+      const sixHourText =
+        engine.strain < 0.65
+          ? "Good window for focused output, moderate movement, and decisions with structure."
+          : engine.strain < 0.95
+          ? "Useful momentum if pacing is deliberate. Avoid stacking new demands."
+          : "High pressure period. Favor containment, sequencing, and recovery over expansion.";
+
+      const tomorrowState =
+        engine.plutoOverride ? "Recovery / Reset" :
+        engine.strain < 0.75 ? "Likely Stable" :
+        engine.strain < 1.00 ? "Needs Structure" :
+        "Needs Recovery";
+
+      const tomorrowText =
+        engine.plutoOverride
+          ? "Treat tomorrow as a reset cycle. Minimize symbolic overload and return to basics."
+          : engine.strain < 0.75
+          ? "Likely favorable for steady work if sleep and pacing are protected."
+          : engine.strain < 1.00
+          ? "Tomorrow improves if you reduce load tonight and avoid reactive escalation."
+          : "Tomorrow depends on downshifting now. Containment tonight changes the next cycle.";
+
+      return {
+        now: { state: nowState, text: nowText },
+        plus6: { state: sixHourState, text: sixHourText },
+        tomorrow: { state: tomorrowState, text: tomorrowText }
+      };
+    }
+
+    function interpretState(engine){
+      let stateSummary = "";
+      let recommendedPacing = "";
+      let nervousSystemBehavior = "";
+      let dominantDriverMeaning = "";
+      let regulationStatus = "";
+      let volatilityDamping = "";
+      let decisionGuidance = "";
+      let osSummary = "";
+      let loadProfile = "";
+
+      const driver = PLANET_LABELS[engine.primaryDriver] || engine.primaryDriver;
+      const regulator = PLANET_LABELS[engine.topRegulator] || engine.topRegulator;
+
+      if (engine.mode === "regulated"){
+        stateSummary = "System is in a regulated baseline. Load is present but remains within contained bandwidth.";
+        recommendedPacing = "Proceed normally. Prioritize structured action, moderate output, and stable sequencing.";
+        nervousSystemBehavior = "Coherent, available, and capable of sustained engagement without excess strain.";
+        decisionGuidance = "Good window for planning, communication, and clean execution. Avoid unnecessary complexity.";
+      } else if (engine.mode === "active"){
+        stateSummary = "System is mobilized. Energy is elevated, but still manageable with deliberate pacing.";
+        recommendedPacing = "Use momentum carefully. Focus on one or two important tasks instead of branching.";
+        nervousSystemBehavior = "More activation, faster signal processing, and a greater pull toward action or response.";
+        decisionGuidance = "Good for progress, but only if you preserve structure. Avoid stacking emotional and logistical load.";
+      } else if (engine.mode === "strained"){
+        stateSummary = "System is approaching threshold strain. Capacity is still functioning, but bandwidth is narrowing.";
+        recommendedPacing = "Reduce optional load. Slow decisions, shorten loops, and favor containment over expansion.";
+        nervousSystemBehavior = "Attention narrows, friction rises, and signal becomes easier to over-interpret.";
+        decisionGuidance = "Delay nonessential commitments. Protect sleep, pacing, and environmental simplicity.";
+      } else if (engine.mode === "overload"){
+        stateSummary = "System is in overload. Demand is exceeding clean containment and governor pressure is active.";
+        recommendedPacing = "Downshift immediately. Reduce stimulation, reduce obligations, and restore structure first.";
+        nervousSystemBehavior = "Compressed bandwidth, reactive bias, reduced flexibility, and elevated strain on regulation.";
+        decisionGuidance = "Do not escalate. Avoid major relational, financial, or identity-level decisions until load drops.";
+      } else {
+        stateSummary = "System is in collapse / rewrite conditions. Pluto override or severe strain is dominating.";
+        recommendedPacing = "Emergency simplification. Stop expansion, stabilize body and environment, and return to basic routines.";
+        nervousSystemBehavior = "Signal integrity is compromised. Perception and meaning-making may become unstable or discontinuous.";
+        decisionGuidance = "Do not trust intensity as truth. Delay major actions and prioritize regulation, rest, and external structure.";
+      }
+
+      dominantDriverMeaning = `${driver} is the primary pressure source right now, shaping the system’s current load signature.`;
+      regulationStatus = `${regulator} is the strongest active regulator, providing the clearest available containment against current pressure.`;
+      volatilityDamping = `Volatility is ${loadBand(engine.volatility)} while damping is ${regulationBand(engine.damping)}. This determines how quickly pressure converts into strain.`;
+
+      if (engine.amplifiedLoad < 0.55){
+        loadProfile = "Low-load profile. The system is relatively open and less compressed.";
+      } else if (engine.amplifiedLoad < 0.95){
+        loadProfile = "Moderate-load profile. The system is engaged, with manageable signal density.";
+      } else if (engine.amplifiedLoad < 1.25){
+        loadProfile = "High-load profile. The system is carrying significant pressure and needs stronger containment.";
+      } else {
+        loadProfile = "Saturated-load profile. Pressure is high enough to compress flexibility and narrow perception.";
+      }
+
+      osSummary = `Lucy.OS reads this as ${STATE_LABELS[engine.mode].toLowerCase()} with ${driver} driving load and ${regulator} carrying the strongest containment function.`;
+
+      return {
+        stateSummary,
+        recommendedPacing,
+        nervousSystemBehavior,
+        dominantDriverMeaning,
+        regulationStatus,
+        volatilityDamping,
+        decisionGuidance,
+        osSummary,
+        loadProfile
+      };
+    }
+
+    function computeLucyState(inputs){
+      const nodeValues = {
+        sun: clamp(inputs.sun, 0, 1),
+        moon: clamp(inputs.moon, 0, 1),
+        mercury: clamp(inputs.mercury, 0, 1),
+        venus: clamp(inputs.venus, 0, 1),
+        mars: clamp(inputs.mars, 0, 1),
+        jupiter: clamp(inputs.jupiter, 0, 1),
+        saturn: clamp(inputs.saturn, 0, 1),
+        uranus: clamp(inputs.uranus, 0, 1),
+        neptune: clamp(inputs.neptune, 0, 1),
+        pluto: clamp(inputs.pluto, 0, 1)
+      };
+
+      const driverMap = {
+        moon: nodeValues.moon * 0.60,
+        mars: nodeValues.mars * 0.75,
+        jupiter: nodeValues.jupiter * 0.55,
+        uranus: nodeValues.uranus * 0.70,
+        neptune: nodeValues.neptune * 0.50,
+        pluto: nodeValues.pluto * 0.45
+      };
+
+      const regulatorMap = {
+        saturn: nodeValues.saturn * 0.65,
+        venus: nodeValues.venus * 0.55,
+        mercury: nodeValues.mercury * 0.35
+      };
+
+      const baseLoad = Object.values(driverMap).reduce((a,b)=>a+b,0);
+      const jupiterAmplifier = 1 + (nodeValues.jupiter * 0.25);
+      const amplifiedLoad = baseLoad * jupiterAmplifier;
+
+      const regulation = Object.values(regulatorMap).reduce((a,b)=>a+b,0);
+      const saturnFactor = 0.28;
+      const overloadAmount = Math.max(amplifiedLoad - 1.0, 0);
+      const saturnConstraint = clamp(overloadAmount * saturnFactor, 0, 0.35);
+
+      const effectiveLoad = Math.max(amplifiedLoad - regulation - saturnConstraint, 0);
+      const capacity = clamp(0.70 + (nodeValues.sun * 0.90), 0.50, 1.60);
+      const strain = effectiveLoad / capacity;
+
+      const plutoOverride = nodeValues.pluto >= 0.92 && strain >= 0.95;
+      const saturnShutdown = saturnConstraint >= 0.25 && strain >= 1.0;
+
+      const environment = computeEnvironmentLayer(nodeValues);
+      const timing = computeTimingLayer(nodeValues);
+
+      const sortedDrivers = dominantSorted(driverMap);
+      const sortedRegulators = dominantSorted(regulatorMap);
+
+      const primaryDriver = sortedDrivers[0][0];
+      const topRegulator = sortedRegulators[0][0];
+
+      const mode = modeFromStrain(strain, plutoOverride);
+      const modeLabel = STATE_LABELS[mode];
+            const interpretation = interpretState({
+        mode,
+        modeLabel,
+        strain,
+        amplifiedLoad,
+        regulation,
+        saturnConstraint,
+        effectiveLoad,
+        capacity,
+        primaryDriver,
+        topRegulator,
+        volatility: environment.volatility,
+        damping: regulation,
+        plutoOverride
+      });
+
+      const forecast = computeForecast({
+        mode,
+        modeLabel,
+        strain,
+        amplifiedLoad,
+        regulation,
+        saturnConstraint,
+        effectiveLoad,
+        capacity,
+        primaryDriver,
+        topRegulator,
+        volatility: environment.volatility,
+        damping: regulation,
+        plutoOverride,
+        interpretation
+      });
+
+      return {
+        nodeValues,
+        driverMap,
+        regulatorMap,
+        baseLoad,
+        amplifiedLoad,
+        regulation,
+        saturnConstraint,
+        effectiveLoad,
+        capacity,
+        strain,
+        plutoOverride,
+        saturnShutdown,
+        environment,
+        timing,
+        primaryDriver,
+        topRegulator,
+        topDrivers: topNLabels(sortedDrivers, 3),
+        topRegulators: topNLabels(sortedRegulators, 3),
+        mode,
+        modeLabel,
+        interpretation,
+        forecast,
+        meta: inputs._meta || {},
+        angles: inputs.angles || null,
+        houses: Array.isArray(inputs.houses) ? inputs.houses : []
+      };
+    }
+
+    function updateResolvedInput(meta){
+      document.getElementById("resolvedInputTimeText").textContent =
+        `Birth Time: ${meta.local_time_resolved || "—"}`;
+
+      document.getElementById("resolvedInputUtcText").textContent =
+        `UTC Datetime: ${meta.utc_datetime || "—"}`;
+
+      document.getElementById("resolvedInputLocationText").textContent =
+        `Resolved Location: ${meta.location_resolved || meta.location || "—"}`;
+
+      document.getElementById("resolvedInputOffsetText").textContent =
+        `UTC Offset: ${
+          typeof meta.utc_offset_at_birth === "number"
+            ? `${fmt(meta.utc_offset_at_birth)} hours`
+            : "—"
+        }`;
+
+      document.getElementById("resolvedInputTimezoneText").textContent =
+        `Timezone: ${meta.timezone_label || meta.timezone_name || "—"}`;
+    }
+
+    function updateDebugMeta(meta){
+      document.getElementById("debugSource").textContent = meta.source || "—";
+      document.getElementById("debugMode").textContent = meta.mode || "—";
+      document.getElementById("debugUtc").textContent = meta.utc_datetime || "—";
+      document.getElementById("debugJd").textContent =
+        meta.jd_ut !== undefined ? String(meta.jd_ut) : "—";
+      document.getElementById("debugResolvedLocation").textContent =
+        meta.location_resolved || meta.location || "—";
+
+      if (typeof meta.lat === "number" && typeof meta.lon === "number"){
+        document.getElementById("debugLatLon").textContent =
+          `${fmt(meta.lat, 4)}, ${fmt(meta.lon, 4)}`;
+      } else {
+        document.getElementById("debugLatLon").textContent = "—";
+      }
+
+      updateResolvedInput(meta);
+    }
+
+    function updateAnglesAndHouses(engine){
+      const angles = engine.angles;
+
+      document.getElementById("angleAscText").textContent =
+        angles && typeof angles.asc === "number" ? degFmt(angles.asc) : "—";
+      document.getElementById("angleMcText").textContent =
+        angles && typeof angles.mc === "number" ? degFmt(angles.mc) : "—";
+      document.getElementById("angleDescText").textContent =
+        angles && typeof angles.desc === "number" ? degFmt(angles.desc) : "—";
+      document.getElementById("angleIcText").textContent =
+        angles && typeof angles.ic === "number" ? degFmt(angles.ic) : "—";
+
+      const houses = engine.houses || [];
+      if (!houses.length){
+        document.getElementById("housesPreviewText").textContent = "No house data returned.";
+        return;
+      }
+
+      const preview = houses
+        .slice(0, 12)
+        .map((deg, idx) => `H${idx + 1}: ${degFmt(deg)}`)
+        .join(" • ");
+
+      document.getElementById("housesPreviewText").textContent = preview;
+    }
+
+    function renderState(engine){
+      document.getElementById("modePill").textContent = engine.modeLabel;
+      document.getElementById("capacityValue").textContent = fmt(engine.capacity);
+      document.getElementById("stabilityValue").textContent = fmt(engine.strain);
+      document.getElementById("driverValue").textContent = PLANET_LABELS[engine.primaryDriver];
+      document.getElementById("regulatorValue").textContent = PLANET_LABELS[engine.topRegulator];
+
+      document.getElementById("loadBandPill").textContent = loadBand(engine.amplifiedLoad);
+      document.getElementById("regulationBandPill").textContent = regulationBand(engine.regulation);
+      document.getElementById("modeBandPill").textContent = engine.modeLabel;
+
+      document.getElementById("amplifiedLoadText").textContent = fmt(engine.amplifiedLoad);
+      document.getElementById("regulationText").textContent = fmt(engine.regulation);
+      document.getElementById("saturnText").textContent = fmt(engine.saturnConstraint);
+      document.getElementById("effectiveLoadText").textContent = fmt(engine.effectiveLoad);
+
+      setBar("amplifiedLoadBar", engine.amplifiedLoad);
+      setBar("regulationBar", engine.regulation);
+      setBar("saturnBar", engine.saturnConstraint, 0.35);
+      setBar("effectiveLoadBar", engine.effectiveLoad);
+
+      const driversList = document.getElementById("driversList");
+      driversList.innerHTML = "";
+      engine.topDrivers.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = `${item.label} — ${fmt(item.value)}`;
+        driversList.appendChild(li);
+      });
+
+      document.getElementById("environmentLoadText").textContent =
+        `Environmental Load: ${fmt(engine.environment.environmentalLoad)}`;
+      document.getElementById("environmentModeText").textContent =
+        `Environment Mode: ${engine.environment.environmentMode}`;
+      document.getElementById("environmentModeChip").textContent =
+        engine.environment.environmentMode;
+
+      document.getElementById("timingPressureText").textContent =
+        `Timing Pressure: ${fmt(engine.timing.timingPressure)}`;
+      document.getElementById("timingModeText").textContent =
+        `Timing Mode: ${engine.timing.timingMode}`;
+      document.getElementById("timingModeChip").textContent =
+        engine.timing.timingMode;
+
+      document.getElementById("plutoFlag").textContent =
+        `Pluto Rewrite: ${engine.plutoOverride ? "ON" : "OFF"}`;
+      document.getElementById("saturnFlag").textContent =
+        `Saturn Shutdown: ${engine.saturnShutdown ? "ON" : "OFF"}`;
+      document.getElementById("capacityUsedFlag").textContent =
+        `Strain Ratio: ${fmt(engine.strain)}x`;
+
+      updateAnglesAndHouses(engine);
+
+      document.getElementById("loadProfileText").textContent = engine.interpretation.loadProfile;
+      document.getElementById("stateSummaryText").textContent = engine.interpretation.stateSummary;
+      document.getElementById("pacingDirectiveText").textContent = engine.interpretation.recommendedPacing;
+      document.getElementById("systemBehaviorText").textContent = engine.interpretation.nervousSystemBehavior;
+      document.getElementById("driverSignatureText").textContent = engine.interpretation.dominantDriverMeaning;
+      document.getElementById("regulationStatusText").textContent = engine.interpretation.regulationStatus;
+      document.getElementById("volatilityDampingText").textContent = engine.interpretation.volatilityDamping;
+      document.getElementById("decisionGuidanceText").textContent = engine.interpretation.decisionGuidance;
+      document.getElementById("osSummaryText").textContent = engine.interpretation.osSummary;
+
+      document.getElementById("forecastNowState").textContent = engine.forecast.now.state;
+      document.getElementById("forecastNowText").textContent = engine.forecast.now.text;
+      document.getElementById("forecast6State").textContent = engine.forecast.plus6.state;
+      document.getElementById("forecast6Text").textContent = engine.forecast.plus6.text;
+      document.getElementById("forecastTomorrowState").textContent = engine.forecast.tomorrow.state;
+      document.getElementById("forecastTomorrowText").textContent = engine.forecast.tomorrow.text;
+
+      document.getElementById("readingText").textContent =
+        `${engine.interpretation.stateSummary} ${engine.interpretation.recommendedPacing}`;
+    }
+
     async function calculateState(){
       const button = document.getElementById("calculateBtn");
-      button.disabled = true;
-      button.textContent = "Calculating...";
 
       try {
-        const currentInputs = getCurrentInputs();
-        let inputs;
+        button.disabled = true;
+        button.textContent = "Calculating...";
 
-        try {
-          inputs = await fetchPlanetInputs(currentInputs);
-        } catch (apiError) {
-          console.warn("API fetch failed, using fallback:", apiError);
-          inputs = fallbackPlanetInputs();
-          document.getElementById("ephemerisStatus").textContent =
-            `API unavailable — using fallback demo inputs (${apiError.message})`;
-        }
+        document.getElementById("ephemerisStatus").textContent = "Resolving birth data and calculating chart...";
 
-        updateEphemerisMeta(inputs._meta || null);
-        updateGeometryPanels(inputs);
+        const dob = document.getElementById("dob").value.trim();
+        const tobRaw = document.getElementById("tob").value.trim();
+        const ampm = document.getElementById("ampm").value.trim();
+        const location = document.getElementById("location").value.trim();
+        const utcOffsetRaw = document.getElementById("utcOffset").value.trim();
 
-        inputs._angles = inputs.angles || null;
-
-        const graph = computePlanetaryGraph(inputs);
-        const env = computeEnvironmentLayer(inputs, graph);
-        const timing = computeTimingLayer(inputs, graph, env);
-        const mode = computeModeDetection(graph, env, timing);
-        const diag = computeDiagnostics(inputs, graph, env, timing, mode);
-
-        const result = {
-          ...graph,
-          ...env,
-          ...timing,
-          ...mode,
-          ...diag
+        const currentInputs = {
+          dob,
+          tobRaw,
+          ampm,
+          location,
+          utcOffsetOverride: utcOffsetRaw === "" ? null : Number(utcOffsetRaw)
         };
 
-        const interp = interpretState(result);
-        const forecast = buildForecast(result, interp);
+        if (!currentInputs.dob){
+          throw new Error("Date of birth is required.");
+        }
+        if (!currentInputs.tobRaw){
+          throw new Error("Time of birth is required.");
+        }
+        if (!currentInputs.location){
+          throw new Error("Birth location is required.");
+        }
+        if (utcOffsetRaw !== "" && Number.isNaN(currentInputs.utcOffsetOverride)){
+          throw new Error("UTC offset override must be a valid number.");
+        }
 
-        document.getElementById("capacityValue").textContent = round2(result.capacity);
-        document.getElementById("stabilityValue").textContent = round2(result.finalStrain);
-        document.getElementById("driverValue").textContent = result.primaryDriver;
-        document.getElementById("regulatorValue").textContent = result.topRegulator;
+        const inputs = await fetchPlanetInputs(currentInputs);
+        const engine = computeLucyState(inputs);
 
-        document.getElementById("loadBandPill").textContent = result.loadBand;
-        document.getElementById("regulationBandPill").textContent = interp.regulationSemantic;
-        document.getElementById("modeBandPill").textContent = normalizeModeLabel(result.finalMode);
+        renderState(engine);
+        updateDebugMeta(engine.meta);
 
-        document.getElementById("amplifiedLoadText").textContent = round2(result.amplifiedLoad);
-        document.getElementById("regulationText").textContent = round2(result.regulation);
-        document.getElementById("saturnText").textContent = round2(result.saturnConstraint);
-        document.getElementById("effectiveLoadText").textContent = round2(result.finalEffectiveLoad);
+        const sourceText = engine.meta.source || "Unknown";
+        const modeText = engine.meta.mode || "natal";
+        const locationText = engine.meta.location_resolved || engine.meta.location || currentInputs.location;
+        const utcText = engine.meta.utc_datetime || "—";
 
-        setBar("amplifiedLoadBar", result.amplifiedLoad, 3.0);
-        setBar("regulationBar", result.regulation, 1.5);
-        setBar("saturnBar", result.saturnConstraint, 1.0);
-        setBar("effectiveLoadBar", result.finalEffectiveLoad, 3.0);
-
-        const driversList = document.getElementById("driversList");
-        driversList.innerHTML = "";
-        result.topDrivers.forEach(name => {
-          const li = document.createElement("li");
-          li.textContent = name;
-          driversList.appendChild(li);
-        });
-
-        document.getElementById("environmentLoadText").textContent =
-          `Environmental Load: ${round2(result.environmentalLoad)}`;
-        document.getElementById("environmentModeText").textContent =
-          `Environment Mode: ${result.environmentMode}`;
-        document.getElementById("timingPressureText").textContent =
-          `Timing Pressure: ${round2(result.timingPressure)}`;
-        document.getElementById("timingModeText").textContent =
-          `Timing Mode: ${normalizeModeLabel(result.timingMode)}`;
-
-        const envChip = document.getElementById("environmentModeChip");
-        envChip.textContent = result.environmentMode;
-        applyChipStyle(envChip, result.environmentMode);
-
-        const timingChip = document.getElementById("timingModeChip");
-        timingChip.textContent = normalizeModeLabel(result.timingMode);
-        applyChipStyle(timingChip, result.timingMode);
-
-        document.getElementById("plutoFlag").textContent =
-          `Pluto Rewrite: ${result.plutoRewrite ? "ON" : "OFF"}`;
-        document.getElementById("saturnFlag").textContent =
-          `Saturn Shutdown: ${result.saturnOverride ? "ON" : "OFF"}`;
-        document.getElementById("capacityUsedFlag").textContent =
-          `Strain Ratio: ${round2(result.finalStrain)}x`;
-
-        document.getElementById("loadProfileText").textContent = interp.loadProfile;
-        document.getElementById("stateSummaryText").textContent = interp.stateSummary;
-        document.getElementById("pacingDirectiveText").textContent = interp.pacingDirective;
-        document.getElementById("systemBehaviorText").textContent = interp.systemBehavior;
-        document.getElementById("driverSignatureText").textContent = interp.driverSignature;
-        document.getElementById("regulationStatusText").textContent = interp.regulationStatus;
-        document.getElementById("volatilityDampingText").textContent = interp.volatilityDamping;
-        document.getElementById("decisionGuidanceText").textContent = interp.decisionGuidance;
-        document.getElementById("osSummaryText").textContent = interp.osSummary;
-
-        document.getElementById("forecastNowState").textContent = forecast.now.state;
-        document.getElementById("forecastNowText").textContent = forecast.now.text;
-        document.getElementById("forecast6State").textContent = forecast.plus6.state;
-        document.getElementById("forecast6Text").textContent = forecast.plus6.text;
-        document.getElementById("forecastTomorrowState").textContent = forecast.tomorrow.state;
-        document.getElementById("forecastTomorrowText").textContent = forecast.tomorrow.text;
-
-        document.getElementById("modePill").textContent = normalizeModeLabel(result.finalMode);
-        applyModePillStyle(result.finalMode);
-
-        document.getElementById("readingText").textContent =
-          `State: ${normalizeModeLabel(result.finalMode)}. ${interp.stateSummary} ${interp.pacingDirective}`;
-      } catch (err) {
-        console.error(err);
-        document.getElementById("modePill").textContent = "Error";
-        applyModePillStyle("Overload");
-        document.getElementById("readingText").textContent =
-          `Engine error: ${err.message}`;
         document.getElementById("ephemerisStatus").textContent =
-          `Calculation failed: ${err.message}`;
-        updateGeometryPanels(null);
+          `Live API active (${sourceText} • ${modeText}) • ${locationText} • ${utcText}`;
+      } catch (error) {
+        console.error(error);
+        document.getElementById("ephemerisStatus").textContent = `Error: ${error.message}`;
+        document.getElementById("readingText").textContent =
+          `Calculation failed: ${error.message}`;
       } finally {
         button.disabled = false;
         button.textContent = "Calculate State";
       }
     }
 
-    window.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("calculateBtn").addEventListener("click", calculateState);
-      calculateState();
-    });
+    document.getElementById("calculateBtn").addEventListener("click", calculateState);
+
+    calculateState();
   </script>
 </body>
 </html>
