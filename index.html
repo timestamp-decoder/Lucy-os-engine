@@ -809,35 +809,70 @@
     }
 
     function dominantSorted(mapObj){
-      return Object.entries(mapObj)
-        .sort((a,b)=>b[1]-a[1]);
+      return Object.entries(mapObj).sort((a, b) => b[1] - a[1]);
     }
 
     function topNLabels(entries, n = 3){
-      return entries.slice(0, n).map(([k,v]) => ({
+      return entries.slice(0, n).map(([k, v]) => ({
         key: k,
         label: PLANET_LABELS[k] || toTitleCase(k),
         value: v
       }));
     }
 
-    function fallbackPlanetInputs(){
-      return {
-        sun:0.89,
-        moon:0.31,
-        mercury:0.58,
-        venus:0.42,
-        mars:0.67,
-        jupiter:0.51,
-        saturn:0.63,
-        uranus:0.44,
-        neptune:0.37,
-        pluto:0.22,
-        _meta:{
-          source:"Fallback / Demo",
-          mode:"natal"
-        }
-      };
+    function styleModePill(mode){
+      const pill = document.getElementById("modePill");
+      if (!pill) return;
+
+      if (mode === "regulated"){
+        pill.style.background = "rgba(103,210,111,.12)";
+        pill.style.borderColor = "#4f8f57";
+        pill.style.color = "#98f2a0";
+      } else if (mode === "active"){
+        pill.style.background = "rgba(103,193,255,.12)";
+        pill.style.borderColor = "#4767a8";
+        pill.style.color = "#9ad7ff";
+      } else if (mode === "strained"){
+        pill.style.background = "rgba(216,184,76,.12)";
+        pill.style.borderColor = "#6a5a1a";
+        pill.style.color = "#f3db80";
+      } else if (mode === "overload"){
+        pill.style.background = "rgba(255,102,102,.12)";
+        pill.style.borderColor = "#7d3838";
+        pill.style.color = "#ff9c9c";
+      } else {
+        pill.style.background = "rgba(176,108,255,.12)";
+        pill.style.borderColor = "#6d46a3";
+        pill.style.color = "#d8b5ff";
+      }
+    }
+
+    function styleChip(el, modeText){
+      if (!el) return;
+
+      const text = String(modeText || "").toLowerCase();
+
+      if (text.includes("neutral") || text.includes("stable")){
+        el.style.background = "rgba(103,210,111,.10)";
+        el.style.borderColor = "#4f8f57";
+        el.style.color = "#98f2a0";
+      } else if (text.includes("open") || text.includes("active") || text.includes("charged") || text.includes("accelerated")){
+        el.style.background = "rgba(103,193,255,.10)";
+        el.style.borderColor = "#4767a8";
+        el.style.color = "#9ad7ff";
+      } else if (text.includes("storm") || text.includes("strained") || text.includes("hot")){
+        el.style.background = "rgba(216,184,76,.12)";
+        el.style.borderColor = "#6a5a1a";
+        el.style.color = "#f3db80";
+      } else if (text.includes("overload") || text.includes("collapse")){
+        el.style.background = "rgba(255,102,102,.12)";
+        el.style.borderColor = "#7d3838";
+        el.style.color = "#ff9c9c";
+      } else {
+        el.style.background = "rgba(255,255,255,.04)";
+        el.style.borderColor = "#2a3c69";
+        el.style.color = "#f4f7ff";
+      }
     }
 
     async function fetchPlanetInputs(currentInputs){
@@ -1053,11 +1088,11 @@
         mercury: nodeValues.mercury * 0.35
       };
 
-      const baseLoad = Object.values(driverMap).reduce((a,b)=>a+b,0);
+      const baseLoad = Object.values(driverMap).reduce((a, b) => a + b, 0);
       const jupiterAmplifier = 1 + (nodeValues.jupiter * 0.25);
       const amplifiedLoad = baseLoad * jupiterAmplifier;
 
-      const regulation = Object.values(regulatorMap).reduce((a,b)=>a+b,0);
+      const regulation = Object.values(regulatorMap).reduce((a, b) => a + b, 0);
       const saturnFactor = 0.28;
       const overloadAmount = Math.max(amplifiedLoad - 1.0, 0);
       const saturnConstraint = clamp(overloadAmount * saturnFactor, 0, 0.35);
@@ -1210,6 +1245,8 @@
 
     function renderState(engine){
       document.getElementById("modePill").textContent = engine.modeLabel;
+      styleModePill(engine.mode);
+
       document.getElementById("capacityValue").textContent = fmt(engine.capacity);
       document.getElementById("stabilityValue").textContent = fmt(engine.strain);
       document.getElementById("driverValue").textContent = PLANET_LABELS[engine.primaryDriver];
@@ -1241,15 +1278,19 @@
         `Environmental Load: ${fmt(engine.environment.environmentalLoad)}`;
       document.getElementById("environmentModeText").textContent =
         `Environment Mode: ${engine.environment.environmentMode}`;
-      document.getElementById("environmentModeChip").textContent =
-        engine.environment.environmentMode;
+
+      const environmentModeChip = document.getElementById("environmentModeChip");
+      environmentModeChip.textContent = engine.environment.environmentMode;
+      styleChip(environmentModeChip, engine.environment.environmentMode);
 
       document.getElementById("timingPressureText").textContent =
         `Timing Pressure: ${fmt(engine.timing.timingPressure)}`;
       document.getElementById("timingModeText").textContent =
         `Timing Mode: ${engine.timing.timingMode}`;
-      document.getElementById("timingModeChip").textContent =
-        engine.timing.timingMode;
+
+      const timingModeChip = document.getElementById("timingModeChip");
+      timingModeChip.textContent = engine.timing.timingMode;
+      styleChip(timingModeChip, engine.timing.timingMode);
 
       document.getElementById("plutoFlag").textContent =
         `Pluto Rewrite: ${engine.plutoOverride ? "ON" : "OFF"}`;
@@ -1288,7 +1329,8 @@
         button.disabled = true;
         button.textContent = "Calculating...";
 
-        document.getElementById("ephemerisStatus").textContent = "Resolving birth data and calculating chart...";
+        document.getElementById("ephemerisStatus").textContent =
+          "Resolving birth data and calculating chart...";
 
         const dob = document.getElementById("dob").value.trim();
         const tobRaw = document.getElementById("tob").value.trim();
@@ -1325,14 +1367,20 @@
 
         const sourceText = engine.meta.source || "Unknown";
         const modeText = engine.meta.mode || "natal";
-        const locationText = engine.meta.location_resolved || engine.meta.location || currentInputs.location;
+        const locationText =
+          engine.meta.location_resolved || engine.meta.location || currentInputs.location;
         const utcText = engine.meta.utc_datetime || "—";
 
         document.getElementById("ephemerisStatus").textContent =
           `Live API active (${sourceText} • ${modeText}) • ${locationText} • ${utcText}`;
       } catch (error) {
         console.error(error);
-        document.getElementById("ephemerisStatus").textContent = `Error: ${error.message}`;
+
+        document.getElementById("modePill").textContent = "Error";
+        styleModePill("overload");
+
+        document.getElementById("ephemerisStatus").textContent =
+          `Error: ${error.message}`;
         document.getElementById("readingText").textContent =
           `Calculation failed: ${error.message}`;
       } finally {
@@ -1342,7 +1390,6 @@
     }
 
     document.getElementById("calculateBtn").addEventListener("click", calculateState);
-
     calculateState();
   </script>
 </body>
