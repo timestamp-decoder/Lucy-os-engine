@@ -26,8 +26,14 @@ PLANETS = {
 FLAGS = swe.FLG_SWIEPH | swe.FLG_SPEED
 HOUSE_SYSTEM = b"P"
 
-GOOGLE_GEOCODE_API_KEY = os.getenv("GOOGLE_GEOCODE_API_KEY", "")
-GOOGLE_TIMEZONE_API_KEY = os.getenv("GOOGLE_TIMEZONE_API_KEY", "")
+# Accept either separate keys or one shared Google Maps key
+GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY", "").strip()
+GOOGLE_GEOCODE_API_KEY = (
+    os.getenv("GOOGLE_GEOCODE_API_KEY", "").strip() or GOOGLE_MAPS_API_KEY
+)
+GOOGLE_TIMEZONE_API_KEY = (
+    os.getenv("GOOGLE_TIMEZONE_API_KEY", "").strip() or GOOGLE_MAPS_API_KEY
+)
 
 
 def normalize_longitude(lon: float) -> float:
@@ -39,7 +45,7 @@ def normalize_tob_with_ampm(tob: str, ampm: str | None = None) -> str:
     ampm = str(ampm or "").strip().upper()
 
     if not tob:
-        raise ValueError("Time of birth is required")
+        raise ValueError("Time of birth is required.")
 
     upper_tob = tob.upper()
     if "AM" in upper_tob or "PM" in upper_tob:
@@ -52,8 +58,11 @@ def normalize_tob_with_ampm(tob: str, ampm: str | None = None) -> str:
 
 
 def parse_time_flexible(time_str: str) -> datetime:
-    cleaned = time_str.strip().upper().replace(".", "")
+    cleaned = str(time_str or "").strip().upper().replace(".", "")
     cleaned = re.sub(r"\s+", " ", cleaned)
+
+    if not cleaned:
+        raise ValueError("Time of birth is required.")
 
     formats = [
         "%I:%M %p",
@@ -70,7 +79,23 @@ def parse_time_flexible(time_str: str) -> datetime:
         except ValueError:
             continue
 
-    raise ValueError("Time of birth must look like 6:20 AM, 10:55 PM, or 18:20")
+    raise ValueError("Time of birth must look like 6:20 AM, 10:55 PM, or 18:20.")
+
+
+def parse_date_strict(dob: str) -> datetime:
+    try:
+        return datetime.strptime(str(dob).strip(), "%Y-%m-%d")
+    except ValueError:
+        raise ValueError("Date of birth must be in YYYY-MM-DD format.")
+
+
+def safe_float(value, field_name: str):
+    if value in (None, "", "null"):
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        raise ValueError(f"{field_name} must be a valid number.")
 
 
 def http_get_json(url: str) -> dict:
@@ -86,7 +111,13 @@ def http_get_json(url: str) -> dict:
 
 def geocode_birth_place(location_text: str) -> dict:
     if not GOOGLE_GEOCODE_API_KEY:
-        raise RuntimeError("Missing GOOGLE_GEOCODE_API_KEY in environment")
+        raise RuntimeError(
+            "Missing Google API key. Set GOOGLE_MAPS_API_KEY or GOOGLE_GEOCODE_API_KEY."
+        )
+
+    location_text = str(location_text or "").strip()
+    if not location_text:
+        raise ValueError("Birth location is required.")
 
     params = urlencode({
         "address": location_text,
@@ -115,18 +146,24 @@ def geocode_birth_place(location_text: str) -> dict:
 
 def get_historical_timezone(lat: float, lon: float, timestamp: int) -> dict:
     if not GOOGLE_TIMEZONE_API_KEY:
-        raise RuntimeError("Missing GOOGLE_TIMEZONE_API_KEY in environment")
+        raise RuntimeError(
+            "Missing Google API key. Set GOOGLE_MAPS_API_KEY or GOOGLE_TIMEZONE_API_KEY."
+        )
 
     params = urlencode({
         "location": f"{lat},{lon}",
-        "timestamp": str(timestamp),
+        "timestamp": str(int(timestamp)),
         "key": GOOGLE_TIMEZONE_API_KEY,
     })
     url = f"https://maps.googleapis.com/maps/api/timezone/json?{params}"
     data = http_get_json(url)
 
     if data.get("status") != "OK":
-        error_message = data.get("errorMessage", "Unknown timezone error")
+        error_message = (
+            data.get("errorMessage")
+            or data.get("error_message")
+            or "Unknown timezone error"
+        )
         raise ValueError(
             f"Could not resolve timezone for coordinates {lat},{lon} | "
             f"status={data.get('status')} | error={error_message}"
@@ -144,16 +181,11 @@ def get_historical_timezone(lat: float, lon: float, timestamp: int) -> dict:
     }
 
 
-def resolve_local_and_utc_birth(
-    dob: str,
-    tob_normalized: str,
-    location_text: str,
-    utc_offset_override: float | None = None,
-) -> dict:
-    date_part = datetime.strptime(dob, "%Y-%m-%d")
+def build_local_naive_datetime(dob: str, tob_normalized: str) -> datetime:
+    date_part = parse_date_strict(dob)
     time_part = parse_time_flexible(tob_normalized)
 
-    local_naive = datetime(
+    return datetime(
         date_part.year,
         date_part.month,
         date_part.day,
@@ -163,6 +195,14 @@ def resolve_local_and_utc_birth(
         0,
     )
 
+
+def resolve_local_and_utc_birth(
+    dob: str,
+    tob_normalized: str,
+    location_text: str,
+    utc_offset_override: float | None = None,
+) -> dict:
+    local_naive = build_local_naive_datetime(dob, tob_normalized)
     geo = geocode_birth_place(location_text)
 
     if utc_offset_override is not None:
@@ -170,31 +210,43 @@ def resolve_local_and_utc_birth(
             tzinfo=timezone(timedelta(hours=float(utc_offset_override)))
         )
         utc_dt = local_dt.astimezone(timezone.utc)
+
         timezone_info = {
             "timezone_name": "Manual/Override",
             "timezone_label": "Manual/Override",
+            "raw_offset_seconds": float(utc_offset_override) * 3600.0,
+            "dst_offset_seconds": 0.0,
             "utc_offset_at_birth": float(utc_offset_override),
         }
     else:
-        rough_utc = local_naive.replace(tzinfo=timezone.utc)
-        rough_timestamp = int(rough_utc.timestamp())
+        # First pass: use noon UTC on the same calendar date as a stable lookup anchor
+        # so timezone resolution isn't skewed by an unknown offset during first lookup.
+        lookup_anchor_utc = datetime(
+            local_naive.year,
+            local_naive.month,
+            local_naive.day,
+            12,
+            0,
+            0,
+            tzinfo=timezone.utc
+        )
 
         timezone_info = get_historical_timezone(
             geo["lat"],
             geo["lon"],
-            rough_timestamp,
+            int(lookup_anchor_utc.timestamp()),
         )
 
         zone = ZoneInfo(timezone_info["timezone_name"])
         local_dt = local_naive.replace(tzinfo=zone)
         utc_dt = local_dt.astimezone(timezone.utc)
 
-        refined_timezone_info = get_historical_timezone(
+        # Second pass: refine with the actual UTC instant
+        timezone_info = get_historical_timezone(
             geo["lat"],
             geo["lon"],
             int(utc_dt.timestamp()),
         )
-        timezone_info = refined_timezone_info
 
         zone = ZoneInfo(timezone_info["timezone_name"])
         local_dt = local_naive.replace(tzinfo=zone)
@@ -215,6 +267,7 @@ def to_julian_day_utc(utc_dt: datetime) -> float:
         utc_dt.hour
         + (utc_dt.minute / 60.0)
         + (utc_dt.second / 3600.0)
+        + (utc_dt.microsecond / 3600000000.0)
     )
 
     jd_ut = swe.julday(
@@ -235,7 +288,6 @@ def compute_angles_and_houses(jd_ut: float, lat: float, lon: float):
     desc = float((asc + 180.0) % 360.0)
     ic = float((mc + 180.0) % 360.0)
 
-    # cusps is 0-indexed in Python here for the 12 houses
     houses = [float(cusps[i] % 360.0) for i in range(12)]
 
     return {
@@ -292,6 +344,8 @@ def compute_chart_inputs(
         "utc_offset_at_birth": resolved["utc_offset_at_birth"],
         "timezone_name": resolved["timezone_name"],
         "timezone_label": resolved["timezone_label"],
+        "raw_offset_seconds": resolved.get("raw_offset_seconds"),
+        "dst_offset_seconds": resolved.get("dst_offset_seconds"),
         "lat": resolved["lat"],
         "lon": resolved["lon"],
         "local_time_resolved": resolved["local_time_resolved"],
@@ -323,6 +377,7 @@ def compute_transit_inputs():
         "mode": "transit",
         "utc_datetime": now_utc.isoformat(),
         "jd_ut": round(jd_ut, 6),
+        "note": "Transit mode active."
     }
 
     return result
@@ -337,61 +392,80 @@ class handler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
         self.end_headers()
 
+    def _write_json(self, status_code: int, payload: dict):
+        self._set_headers(status_code)
+        self.wfile.write(json.dumps(payload).encode("utf-8"))
+
     def do_OPTIONS(self):
         self._set_headers(204)
 
     def do_GET(self):
-        self._set_headers(200)
-        self.wfile.write(
-            json.dumps({
-                "ok": True,
-                "route": "/api/chart_inputs",
-                "message": "Lucy.OS API is live. Use POST for natal input or GET as health check."
-            }).encode("utf-8")
-        )
+        self._write_json(200, {
+            "ok": True,
+            "route": "/api/chart_inputs",
+            "message": "Lucy.OS API is live. Use POST for natal/transit input or GET as health check.",
+            "google_geocode_key_present": bool(GOOGLE_GEOCODE_API_KEY),
+            "google_timezone_key_present": bool(GOOGLE_TIMEZONE_API_KEY),
+        })
 
     def do_POST(self):
         try:
             content_length = int(self.headers.get("Content-Length", "0"))
-            raw_body = self.rfile.read(content_length).decode("utf-8")
-            payload = json.loads(raw_body or "{}")
+            raw_body = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else "{}"
+
+            try:
+                payload = json.loads(raw_body or "{}")
+            except json.JSONDecodeError:
+                self._write_json(400, {
+                    "error": "Request body must be valid JSON."
+                })
+                return
 
             mode = str(payload.get("mode", "natal")).strip().lower()
 
             if mode == "transit":
                 result = compute_transit_inputs()
-                self._set_headers(200)
-                self.wfile.write(json.dumps(result).encode("utf-8"))
+                self._write_json(200, result)
                 return
 
             dob = str(payload.get("dob", "")).strip()
 
-            # Prefer raw time + AM/PM, let backend normalize it
             tob = str(
                 payload.get("tob")
                 or payload.get("time")
+                or payload.get("time24")
                 or ""
             ).strip()
 
             ampm = str(payload.get("ampm", "")).strip().upper()
+
             location = str(
                 payload.get("locationText")
                 or payload.get("location")
                 or ""
             ).strip()
 
-            utc_override_raw = payload.get("utcOffsetOverride", None)
-            utc_override = None
-            if utc_override_raw not in (None, "", "null"):
-                utc_override = float(utc_override_raw)
+            utc_override = safe_float(
+                payload.get("utcOffsetOverride", None),
+                "utcOffsetOverride"
+            )
 
-            if not dob or not tob or not location:
-                self._set_headers(400)
-                self.wfile.write(
-                    json.dumps({
-                        "error": "dob, tob/time, and locationText/location are required"
-                    }).encode("utf-8")
-                )
+            if not dob:
+                self._write_json(400, {
+                    "error": "dob is required."
+                })
+                return
+
+            if not tob:
+                self._write_json(400, {
+                    "error": "tob (or time/time24) is required."
+                })
+                return
+
+            if not location:
+                self._write_json(400, {
+                    "error": "locationText (or location) is required."
+                })
                 return
 
             normalized_tob = normalize_tob_with_ampm(tob, ampm)
@@ -403,13 +477,17 @@ class handler(BaseHTTPRequestHandler):
                 location=location,
             )
 
-            self._set_headers(200)
-            self.wfile.write(json.dumps(result).encode("utf-8"))
+            self._write_json(200, result)
 
+        except ValueError as e:
+            self._write_json(400, {
+                "error": str(e)
+            })
+        except RuntimeError as e:
+            self._write_json(500, {
+                "error": str(e)
+            })
         except Exception as e:
-            self._set_headers(500)
-            self.wfile.write(
-                json.dumps({
-                    "error": str(e)
-                }).encode("utf-8")
-            )
+            self._write_json(500, {
+                "error": f"Internal server error: {str(e)}"
+            })
