@@ -497,13 +497,13 @@
         <label class="label" for="location">Location</label>
         <input id="location" type="text" value="Cuero, TX USA" />
 
-        <label class="label" for="utcOffset">UTC Offset</label>
-        <input id="utcOffset" type="number" value="-6" step="0.5" />
+        <label class="label" for="utcOffset">UTC Offset Override (Optional)</label>
+        <input id="utcOffset" type="number" placeholder="Optional manual override" step="0.5" />
 
         <button id="calculateBtn" type="button">Calculate State</button>
 
         <div class="sub" id="inputSubtext">
-          Lucy.OS uses birth date, birth time, and location-aware ephemeris inputs to drive the regulation engine.
+          Lucy.OS uses birth date, birth time, and birth location. Timezone is resolved automatically from location.
         </div>
 
         <div class="meta-box">
@@ -545,6 +545,7 @@
             <li id="resolvedInputUtcText">UTC Datetime: —</li>
             <li id="resolvedInputLocationText">Resolved Location: —</li>
             <li id="resolvedInputOffsetText">UTC Offset: —</li>
+            <li id="resolvedInputTimezoneText">Timezone: —</li>
           </ul>
         </div>
       </div>
@@ -809,39 +810,6 @@
       return mode;
     }
 
-    function convertTo24Hour(timeStr, ampm) {
-      const cleaned = timeStr.trim();
-      const parts = cleaned.split(":");
-
-      if (parts.length !== 2) {
-        throw new Error("Time must be in H:MM format.");
-      }
-
-      const rawHour = Number(parts[0]);
-      const rawMinute = Number(parts[1]);
-
-      if (!Number.isFinite(rawHour) || !Number.isFinite(rawMinute)) {
-        throw new Error("Invalid time value.");
-      }
-
-      if (rawHour < 1 || rawHour > 12 || rawMinute < 0 || rawMinute > 59) {
-        throw new Error("Time must be between 1:00 and 12:59.");
-      }
-
-      let hour = rawHour;
-      const minute = rawMinute;
-
-      if (ampm === "AM") {
-        if (hour === 12) hour = 0;
-      } else if (ampm === "PM") {
-        if (hour !== 12) hour += 12;
-      } else {
-        throw new Error("AM/PM value is invalid.");
-      }
-
-      return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
-    }
-
     function getLoadBand(effectiveLoad){
       if (effectiveLoad < 0.75) return "Light";
       if (effectiveLoad < 1.50) return "Moderate";
@@ -877,7 +845,7 @@
     }
 
     function regulationLevel(result){
-      const ratio = result.regulation / Math.max(result.effectiveLoad, 0.01);
+      const ratio = result.regulation / Math.max(result.finalEffectiveLoad, 0.01);
 
       if (ratio >= 0.60) return "Low";
       if (ratio >= 0.35) return "Moderate";
@@ -1148,15 +1116,20 @@
         Mercury: inputs.mercury
       };
 
+      const finalEffectiveLoad = environmentResult.adjustedEffectiveLoad;
+      const finalStrain = environmentResult.adjustedStrain;
+
       return {
         primaryDriver: argMax(loadDrivers),
         topRegulator: argMax(regulators),
         topDrivers: topThree(loadDrivers),
-        capacityUsedPct: graphResult.strain * 100,
+        capacityUsedPct: finalStrain * 100,
         plutoRewrite: modeResult.finalMode === "Pluto Rewrite",
         saturnOverride: modeResult.finalMode === "Saturn Shutdown",
-        loadBand: getLoadBand(graphResult.effectiveLoad),
-        strainBand: getStrainBand(graphResult.strain)
+        loadBand: getLoadBand(finalEffectiveLoad),
+        strainBand: getStrainBand(finalStrain),
+        finalEffectiveLoad,
+        finalStrain
       };
     }
 
@@ -1334,6 +1307,13 @@
       return `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
     }
 
+    function formatOffsetHours(value){
+      if (value === null || value === undefined || value === "n/a") return "—";
+      const num = Number(value);
+      if (!Number.isFinite(num)) return String(value);
+      return `${num >= 0 ? "+" : ""}${num.toFixed(2)}`;
+    }
+
     function updateEphemerisMeta(meta){
       document.getElementById("debugSource").textContent = meta?.source ?? "—";
       document.getElementById("debugMode").textContent = meta?.mode ?? "—";
@@ -1350,14 +1330,19 @@
       document.getElementById("resolvedInputLocationText").textContent =
         `Resolved Location: ${meta?.location_resolved || meta?.location || "—"}`;
       document.getElementById("resolvedInputOffsetText").textContent =
-        `UTC Offset: ${meta?.utc_offset ?? "—"}`;
+        `UTC Offset: ${formatOffsetHours(meta?.utc_offset)}`;
+      document.getElementById("resolvedInputTimezoneText").textContent =
+        `Timezone: ${meta?.timezone_name || "—"}`;
 
       let status = "No metadata returned.";
       if (meta?.source){
         status = `${meta.source} connected`;
         if (meta?.mode) status += ` · ${meta.mode} mode`;
+        if (meta?.timezone_name) status += ` · ${meta.timezone_name}`;
         if (meta?.utc_datetime) status += ` · ${meta.utc_datetime} UTC`;
-        if (meta?.location_resolved || meta?.location) status += ` · ${meta.location_resolved || meta.location}`;
+        if (meta?.location_resolved || meta?.location) {
+          status += ` · ${meta?.location_resolved || meta?.location}`;
+        }
       }
       document.getElementById("ephemerisStatus").textContent = status;
     }
@@ -1422,7 +1407,8 @@
           location: "n/a",
           location_resolved: "n/a",
           local_time_resolved: "n/a",
-          utc_offset: "n/a"
+          utc_offset: "n/a",
+          timezone_name: "n/a"
         }
       };
     }
@@ -1432,44 +1418,51 @@
       const tobRaw = document.getElementById("tob").value.trim();
       const ampm = document.getElementById("ampm").value.trim().toUpperCase();
       const location = document.getElementById("location").value.trim();
-      const utcOffset = parseFloat(document.getElementById("utcOffset").value);
+      const utcOffsetRaw = document.getElementById("utcOffset").value.trim();
 
       if (!dob) throw new Error("Date of birth is required.");
       if (!tobRaw) throw new Error("Time of birth is required.");
       if (!location) throw new Error("Location is required.");
-      if (!Number.isFinite(utcOffset)) throw new Error("UTC offset is invalid.");
 
-      const tob = convertTo24Hour(tobRaw, ampm);
+      let utcOffsetOverride = null;
+      if (utcOffsetRaw !== "") {
+        const parsed = parseFloat(utcOffsetRaw);
+        if (!Number.isFinite(parsed)) {
+          throw new Error("UTC offset override is invalid.");
+        }
+        utcOffsetOverride = parsed;
+      }
 
       return {
         dob,
         tobRaw,
         ampm,
-        tob,
         location,
-        utcOffset
+        utcOffsetOverride
       };
     }
 
     async function fetchPlanetInputs(currentInputs){
       console.log("Lucy.OS payload:", currentInputs);
 
+      const payload = {
+        mode: "natal",
+        dob: currentInputs.dob,
+        tob: currentInputs.tobRaw,
+        ampm: currentInputs.ampm,
+        locationText: currentInputs.location
+      };
+
+      if (currentInputs.utcOffsetOverride !== null) {
+        payload.utcOffsetOverride = currentInputs.utcOffsetOverride;
+      }
+
       const response = await fetch("/api/chart_inputs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          mode: "natal",
-          dob: currentInputs.dob,
-          tob: currentInputs.tob,
-          time: currentInputs.tobRaw,
-          time24: currentInputs.tob,
-          ampm: currentInputs.ampm,
-          location: currentInputs.location,
-          locationText: currentInputs.location,
-          utcOffset: currentInputs.utcOffset
-        })
+        body: JSON.stringify(payload)
       });
 
       if (!response.ok){
@@ -1529,7 +1522,7 @@
         const forecast = buildForecast(result, interp);
 
         document.getElementById("capacityValue").textContent = round2(result.capacity);
-        document.getElementById("stabilityValue").textContent = round2(result.strain);
+        document.getElementById("stabilityValue").textContent = round2(result.finalStrain);
         document.getElementById("driverValue").textContent = result.primaryDriver;
         document.getElementById("regulatorValue").textContent = result.topRegulator;
 
@@ -1540,12 +1533,12 @@
         document.getElementById("amplifiedLoadText").textContent = round2(result.amplifiedLoad);
         document.getElementById("regulationText").textContent = round2(result.regulation);
         document.getElementById("saturnText").textContent = round2(result.saturnConstraint);
-        document.getElementById("effectiveLoadText").textContent = round2(result.effectiveLoad);
+        document.getElementById("effectiveLoadText").textContent = round2(result.finalEffectiveLoad);
 
         setBar("amplifiedLoadBar", result.amplifiedLoad, 3.0);
         setBar("regulationBar", result.regulation, 1.5);
         setBar("saturnBar", result.saturnConstraint, 1.0);
-        setBar("effectiveLoadBar", result.effectiveLoad, 3.0);
+        setBar("effectiveLoadBar", result.finalEffectiveLoad, 3.0);
 
         const driversList = document.getElementById("driversList");
         driversList.innerHTML = "";
@@ -1577,7 +1570,7 @@
         document.getElementById("saturnFlag").textContent =
           `Saturn Shutdown: ${result.saturnOverride ? "ON" : "OFF"}`;
         document.getElementById("capacityUsedFlag").textContent =
-          `Strain Ratio: ${round2(result.strain)}x`;
+          `Strain Ratio: ${round2(result.finalStrain)}x`;
 
         document.getElementById("loadProfileText").textContent = interp.loadProfile;
         document.getElementById("stateSummaryText").textContent = interp.stateSummary;
