@@ -96,7 +96,11 @@ def geocode_birth_place(location_text: str) -> dict:
     data = http_get_json(url)
 
     if data.get("status") != "OK" or not data.get("results"):
-        raise ValueError(f"Could not geocode location: {location_text}")
+        error_message = data.get("error_message", "Unknown geocoding error")
+        raise ValueError(
+            f"Could not geocode location: {location_text} | "
+            f"status={data.get('status')} | error={error_message}"
+        )
 
     first = data["results"][0]
     geo = first["geometry"]["location"]
@@ -122,7 +126,11 @@ def get_historical_timezone(lat: float, lon: float, timestamp: int) -> dict:
     data = http_get_json(url)
 
     if data.get("status") != "OK":
-        raise ValueError(f"Could not resolve timezone for coordinates {lat},{lon}")
+        error_message = data.get("errorMessage", "Unknown timezone error")
+        raise ValueError(
+            f"Could not resolve timezone for coordinates {lat},{lon} | "
+            f"status={data.get('status')} | error={error_message}"
+        )
 
     raw_offset = float(data.get("rawOffset", 0))
     dst_offset = float(data.get("dstOffset", 0))
@@ -168,7 +176,6 @@ def resolve_local_and_utc_birth(
             "utc_offset_at_birth": float(utc_offset_override),
         }
     else:
-        # Rough UTC guess only for timezone API timestamp parameter
         rough_utc = local_naive.replace(tzinfo=timezone.utc)
         rough_timestamp = int(rough_utc.timestamp())
 
@@ -182,7 +189,6 @@ def resolve_local_and_utc_birth(
         local_dt = local_naive.replace(tzinfo=zone)
         utc_dt = local_dt.astimezone(timezone.utc)
 
-        # Re-run with the improved UTC timestamp for better historical accuracy
         refined_timezone_info = get_historical_timezone(
             geo["lat"],
             geo["lon"],
@@ -204,7 +210,7 @@ def resolve_local_and_utc_birth(
     }
 
 
-def to_julian_day_utc(utc_dt: datetime):
+def to_julian_day_utc(utc_dt: datetime) -> float:
     hour_decimal = (
         utc_dt.hour
         + (utc_dt.minute / 60.0)
@@ -229,7 +235,8 @@ def compute_angles_and_houses(jd_ut: float, lat: float, lon: float):
     desc = float((asc + 180.0) % 360.0)
     ic = float((mc + 180.0) % 360.0)
 
-    houses = [float(cusps[i] % 360.0) for i in range(1, 13)]
+    # cusps is 0-indexed in Python here for the 12 houses
+    houses = [float(cusps[i] % 360.0) for i in range(12)]
 
     return {
         "asc": asc,
@@ -359,9 +366,9 @@ class handler(BaseHTTPRequestHandler):
 
             dob = str(payload.get("dob", "")).strip()
 
+            # Prefer raw time + AM/PM, let backend normalize it
             tob = str(
-                payload.get("time24")
-                or payload.get("tob")
+                payload.get("tob")
                 or payload.get("time")
                 or ""
             ).strip()
@@ -382,7 +389,7 @@ class handler(BaseHTTPRequestHandler):
                 self._set_headers(400)
                 self.wfile.write(
                     json.dumps({
-                        "error": "dob, time/tob, and locationText/location are required"
+                        "error": "dob, tob/time, and locationText/location are required"
                     }).encode("utf-8")
                 )
                 return
