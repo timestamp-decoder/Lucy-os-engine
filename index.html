@@ -72,6 +72,11 @@
       font-size:24px;
     }
 
+    h3{
+      margin:0 0 12px;
+      font-size:18px;
+    }
+
     .label{
       font-size:14px;
       color:var(--muted);
@@ -151,6 +156,40 @@
       color:var(--text);
       font-weight:700;
       margin-bottom:6px;
+    }
+
+    .tech-toggle{
+      margin-top:18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 14px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:rgba(255,255,255,.025);
+      cursor:pointer;
+      user-select:none;
+    }
+
+    .tech-toggle span{
+      color:var(--text);
+      font-weight:700;
+      font-size:14px;
+    }
+
+    .tech-toggle small{
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .tech-panel{
+      display:none;
+      margin-top:12px;
+    }
+
+    .tech-panel.open{
+      display:block;
     }
 
     .debug-grid{
@@ -322,11 +361,6 @@
       min-width:0;
     }
 
-    .mini h3{
-      margin:0 0 12px;
-      font-size:18px;
-    }
-
     .mini ol,.mini ul{
       margin:0;
       padding-left:24px;
@@ -386,11 +420,22 @@
       grid-column:1 / -1;
     }
 
+    .forecast-wrap{
+      margin-top:18px;
+    }
+
+    .forecast-label{
+      font-size:12px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:10px;
+    }
+
     .forecast-grid{
       display:grid;
       grid-template-columns:1fr 1fr 1fr;
       gap:14px;
-      margin-top:18px;
     }
 
     .forecast-card{
@@ -514,33 +559,6 @@
           <div id="ephemerisStatus">Waiting for calculation.</div>
         </div>
 
-        <div class="debug-grid">
-          <div class="debug-item">
-            <strong>Source</strong>
-            <span id="debugSource">—</span>
-          </div>
-          <div class="debug-item">
-            <strong>Mode</strong>
-            <span id="debugMode">—</span>
-          </div>
-          <div class="debug-item">
-            <strong>UTC Datetime</strong>
-            <span id="debugUtc">—</span>
-          </div>
-          <div class="debug-item">
-            <strong>Julian Day</strong>
-            <span id="debugJd">—</span>
-          </div>
-          <div class="debug-item">
-            <strong>Resolved Place</strong>
-            <span id="debugResolvedLocation">—</span>
-          </div>
-          <div class="debug-item">
-            <strong>Lat / Lon</strong>
-            <span id="debugLatLon">—</span>
-          </div>
-        </div>
-
         <div class="mini" style="margin-top:18px;">
           <h3>Resolved Input</h3>
           <ul>
@@ -550,6 +568,40 @@
             <li id="resolvedInputOffsetText">UTC Offset: —</li>
             <li id="resolvedInputTimezoneText">Timezone: —</li>
           </ul>
+        </div>
+
+        <div class="tech-toggle" id="techToggle">
+          <span>Technical Details</span>
+          <small id="techToggleLabel">Show</small>
+        </div>
+
+        <div class="tech-panel" id="techPanel">
+          <div class="debug-grid">
+            <div class="debug-item">
+              <strong>Source</strong>
+              <span id="debugSource">—</span>
+            </div>
+            <div class="debug-item">
+              <strong>Mode</strong>
+              <span id="debugMode">—</span>
+            </div>
+            <div class="debug-item">
+              <strong>UTC Datetime</strong>
+              <span id="debugUtc">—</span>
+            </div>
+            <div class="debug-item">
+              <strong>Julian Day</strong>
+              <span id="debugJd">—</span>
+            </div>
+            <div class="debug-item">
+              <strong>Resolved Place</strong>
+              <span id="debugResolvedLocation">—</span>
+            </div>
+            <div class="debug-item">
+              <strong>Lat / Lon</strong>
+              <span id="debugLatLon">—</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -668,7 +720,8 @@
             <div class="house-preview" id="housesPreviewText">No house data returned.</div>
           </div>
         </div>
-                <div class="interp-grid">
+
+        <div class="interp-grid">
           <div class="interp-item">
             <div class="k">State Summary</div>
             <div class="text" id="stateSummaryText">Awaiting calculation.</div>
@@ -715,23 +768,26 @@
           </div>
         </div>
 
-        <div class="forecast-grid">
-          <div class="forecast-card">
-            <div class="forecast-title">Now</div>
-            <div class="forecast-state" id="forecastNowState">—</div>
-            <div class="forecast-text" id="forecastNowText">No forecast yet.</div>
-          </div>
+        <div class="forecast-wrap">
+          <div class="forecast-label">Forecast (Prototype)</div>
+          <div class="forecast-grid">
+            <div class="forecast-card">
+              <div class="forecast-title">Now</div>
+              <div class="forecast-state" id="forecastNowState">—</div>
+              <div class="forecast-text" id="forecastNowText">No forecast yet.</div>
+            </div>
 
-          <div class="forecast-card">
-            <div class="forecast-title">+6 Hours</div>
-            <div class="forecast-state" id="forecastSixState">—</div>
-            <div class="forecast-text" id="forecastSixText">No forecast yet.</div>
-          </div>
+            <div class="forecast-card">
+              <div class="forecast-title">+6 Hours</div>
+              <div class="forecast-state" id="forecastSixState">—</div>
+              <div class="forecast-text" id="forecastSixText">No forecast yet.</div>
+            </div>
 
-          <div class="forecast-card">
-            <div class="forecast-title">+24 Hours</div>
-            <div class="forecast-state" id="forecastDayState">—</div>
-            <div class="forecast-text" id="forecastDayText">No forecast yet.</div>
+            <div class="forecast-card">
+              <div class="forecast-title">+24 Hours</div>
+              <div class="forecast-state" id="forecastDayState">—</div>
+              <div class="forecast-text" id="forecastDayText">No forecast yet.</div>
+            </div>
           </div>
         </div>
 
@@ -744,8 +800,12 @@
   </div>
 
   <script>
-    const API_URL = "https://lucy-os-api.vercel.app/api/lucy";
+    const API_URL = "https://lucy-os-api.vercel.app/api/chart_inputs";
     const btn = document.getElementById("calculateBtn");
+
+    const techToggle = document.getElementById("techToggle");
+    const techPanel = document.getElementById("techPanel");
+    const techToggleLabel = document.getElementById("techToggleLabel");
 
     const modePill = document.getElementById("modePill");
     const capacityValue = document.getElementById("capacityValue");
@@ -817,6 +877,11 @@
     const forecastSixText = document.getElementById("forecastSixText");
     const forecastDayState = document.getElementById("forecastDayState");
     const forecastDayText = document.getElementById("forecastDayText");
+
+    techToggle.addEventListener("click", () => {
+      techPanel.classList.toggle("open");
+      techToggleLabel.textContent = techPanel.classList.contains("open") ? "Hide" : "Show";
+    });
 
     function clamp(n, min, max){
       return Math.max(min, Math.min(max, n));
@@ -932,11 +997,6 @@
       return houses.length > 6 ? `${preview} · …` : preview;
     }
 
-    function getPlanetValue(obj, name){
-      if (!obj || typeof obj !== "object") return 0;
-      return toNum(obj[name], 0);
-    }
-
     function sortDriversFromPlanetary(planetary){
       if (!planetary || typeof planetary !== "object") return [];
 
@@ -995,6 +1055,24 @@
       return raw && typeof raw === "object" ? raw : {};
     }
 
+    async function fetchPlanetInputs(payload){
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data?.error || `API request failed (${response.status})`);
+      }
+
+      return data;
+    }
+
     function updateFromResponse(data){
       const state = data?.state || {};
       const telemetry = data?.telemetry || {};
@@ -1023,9 +1101,15 @@
         ? telemetry.topRegulators
         : sortRegulatorsFromPlanetary(planetary).map(d => `${labelPlanet(d.key)} (${fmt(d.value)})`);
 
-      const primaryDriver = telemetry.primaryDriver || (driverList[0] ? String(driverList[0]).split(" (")[0] : "—");
-      const topRegulator = telemetry.topRegulator || (regulatorList[0] ? String(regulatorList[0]).split(" (")[0] : "—");
-            applyPill(modePill, mode);
+      const primaryDriver = telemetry.primaryDriver
+        ? telemetry.primaryDriver
+        : (driverList[0] ? String(driverList[0]).split(" (")[0] : "—");
+
+      const topRegulator = telemetry.topRegulator
+        ? telemetry.topRegulator
+        : (regulatorList[0] ? String(regulatorList[0]).split(" (")[0] : "—");
+
+      applyPill(modePill, mode);
 
       capacityValue.textContent = fmt(capacity);
       stabilityValue.textContent = fmt(strain);
@@ -1101,11 +1185,11 @@
       const nowState = forecast.now?.state || inferForecastState(strain);
       const nowText = forecast.now?.text || "Current state based on live engine output.";
 
-      const sixState = forecast.plus6?.state || "Monitor";
-      const sixText = forecast.plus6?.text || "Short-term outlook unavailable.";
+      const sixState = forecast.plus6?.state || "Preview";
+      const sixText = forecast.plus6?.text || "Short-term prototype outlook unavailable.";
 
-      const dayState = forecast.plus24?.state || forecast.tomorrow?.state || "Monitor";
-      const dayText = forecast.plus24?.text || forecast.tomorrow?.text || "Longer outlook unavailable.";
+      const dayState = forecast.plus24?.state || forecast.tomorrow?.state || "Preview";
+      const dayText = forecast.plus24?.text || forecast.tomorrow?.text || "Longer prototype outlook unavailable.";
 
       setForecastCard(forecastNowState, forecastNowText, nowState, nowText);
       setForecastCard(forecastSixState, forecastSixText, sixState, sixText);
@@ -1136,8 +1220,7 @@
         if (!tobRaw) throw new Error("Time of birth is required.");
         if (!location) throw new Error("Birth location is required.");
 
-        const utcOffsetOverride =
-          utcOffsetRaw === "" ? null : Number(utcOffsetRaw);
+        const utcOffsetOverride = utcOffsetRaw === "" ? null : Number(utcOffsetRaw);
 
         if (utcOffsetRaw !== "" && !Number.isFinite(utcOffsetOverride)) {
           throw new Error("UTC offset override must be a valid number.");
