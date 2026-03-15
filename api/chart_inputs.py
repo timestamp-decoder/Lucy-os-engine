@@ -373,27 +373,33 @@ def build_lucy_response(chart: dict) -> dict:
     neptune = float(chart.get("neptune", 0.0))
     pluto = float(chart.get("pluto", 0.0))
 
-    capacity = max(sun, 0.01)
+    # Capacity remap:
+    # raw normalized sun longitude is too fragile near zero,
+    # so we remap it into a stable operating range.
+    capacity = 0.55 + (sun * 0.45)
 
     amplified_load = (
-        moon * 0.30 +
-        mars * 0.18 +
-        jupiter * 0.14 +
-        uranus * 0.14 +
-        neptune * 0.12 +
-        pluto * 0.12
+        moon * 0.34 +
+        mars * 0.20 +
+        jupiter * 0.16 +
+        uranus * 0.16 +
+        neptune * 0.14 +
+        pluto * 0.14
     )
 
-    regulation = (
-        saturn * 0.45 +
-        venus * 0.35 +
-        mercury * 0.20
+    raw_regulation = (
+        saturn * 0.32 +
+        venus * 0.24 +
+        mercury * 0.14
     )
+
+    regulation_cap = amplified_load * 0.82
+    regulation = min(raw_regulation, regulation_cap)
 
     overload_delta = max(amplified_load - capacity, 0.0)
     saturn_constraint = min(
-        overload_delta * max(saturn, 0.20) * 0.35,
-        amplified_load
+        overload_delta * (0.20 + (saturn * 0.15)),
+        amplified_load * 0.25
     )
 
     effective_load = max(amplified_load - regulation - saturn_constraint, 0.0)
@@ -463,12 +469,15 @@ def build_lucy_response(chart: dict) -> dict:
         ),
         "regulationStatus": (
             f"{top_regulator} leads the regulation layer "
-            f"({fmt_value(regulation)} total regulation)."
+            f"({fmt_value(regulation)} active regulation; raw {fmt_value(raw_regulation)})."
         ),
         "volatilityNote": f"Uranus volatility proxy: {fmt_value(uranus)}.",
         "fogNote": f"Neptune fog proxy: {fmt_value(neptune)}.",
         "activationNote": f"Mars activation proxy: {fmt_value(mars)}.",
-        "constraintNote": f"Saturn constraint applied: {fmt_value(saturn_constraint)}.",
+        "constraintNote": (
+            f"Saturn constraint applied: {fmt_value(saturn_constraint)} "
+            f"(overload delta {fmt_value(overload_delta)})."
+        ),
     }
 
     forecast_now_state = (
