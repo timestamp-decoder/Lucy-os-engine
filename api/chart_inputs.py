@@ -1,11 +1,8 @@
 from http.server import BaseHTTPRequestHandler
 import json
-import os
 import re
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
-from urllib.parse import urlencode
-from urllib.request import urlopen, Request
 
 import swisseph as swe
 from geopy.geocoders import Nominatim
@@ -28,7 +25,7 @@ PLANETS = {
 FLAGS = swe.FLG_SWIEPH | swe.FLG_SPEED
 HOUSE_SYSTEM = b"P"
 
-BUILD_ID = "v2.6-saturn-angles"
+BUILD_ID = "v2.8-chart-parity-debug"
 
 _geolocator = Nominatim(user_agent="lucy-os-engine")
 _tzf = TimezoneFinder()
@@ -36,6 +33,13 @@ _tzf = TimezoneFinder()
 
 def normalize_longitude(lon: float) -> float:
     return (lon % 360.0) / 360.0
+
+
+def fmt(n: float) -> str:
+    try:
+        return f"{float(n):.2f}"
+    except Exception:
+        return "0.00"
 
 
 def normalize_tob_with_ampm(tob: str, ampm: str | None = None) -> str:
@@ -152,14 +156,12 @@ def to_julian_day_utc(utc_dt: datetime) -> float:
         + (utc_dt.second / 3600.0)
     )
 
-    jd_ut = swe.julday(
+    return swe.julday(
         utc_dt.year,
         utc_dt.month,
         utc_dt.day,
         hour_decimal,
     )
-
-    return jd_ut
 
 
 def compute_angles_and_houses(jd_ut: float, lat: float, lon: float):
@@ -178,6 +180,102 @@ def compute_angles_and_houses(jd_ut: float, lat: float, lon: float):
         "desc": desc,
         "ic": ic,
     }, houses
+
+
+def angular_distance(a: float, b: float) -> float:
+    diff = abs((a - b) % 360.0)
+    return min(diff, 360.0 - diff)
+
+
+def nearest_angle_distance(planet_lon: float, angles: dict) -> float:
+    return min(
+        angular_distance(planet_lon, angles.get("asc", 0.0)),
+        angular_distance(planet_lon, angles.get("mc", 0.0)),
+        angular_distance(planet_lon, angles.get("desc", 0.0)),
+        angular_distance(planet_lon, angles.get("ic", 0.0)),
+    )
+
+
+def angularity_multiplier(planet_lon: float, angles: dict) -> float:
+    d = nearest_angle_distance(planet_lon, angles)
+
+    if d <= 5:
+        return 1.35
+    if d <= 12:
+        return 1.22
+    if d <= 20:
+        return 1.12
+    return 1.00
+
+
+def house_multiplier(house_num: int) -> float:
+    if house_num in (1, 4, 7, 10):
+        return 1.18
+    if house_num in (2, 5, 8, 11):
+        return 1.08
+    return 1.00
+
+
+def infer_mode(strain: float) -> str:
+    if strain >= 1.0:
+        return "Overload"
+    if strain >= 0.85:
+        return "Threshold Strain"
+    if strain >= 0.60:
+        return "Mobilized"
+    return "Regulated Baseline"
+
+
+def zodiac_sign_name(lon: float) -> str:
+    signs = [
+        "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
+        "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
+    ]
+    idx = int((lon % 360.0) // 30)
+    return signs[idx]
+
+
+def zodiac_position(lon: float) -> str:
+    sign_deg = lon % 30.0
+    deg = int(sign_deg)
+    minutes_float = (sign_deg - deg) * 60.0
+    minutes = int(minutes_float)
+    return f"{deg:02d}°{minutes:02d}' {zodiac_sign_name(lon)}"
+
+
+def detect_major_aspects(longitudes_deg: dict) -> list:
+    aspect_defs = [
+        ("Conjunction", 0, 6),
+        ("Sextile", 60, 4),
+        ("Square", 90, 5),
+        ("Trine", 120, 5),
+        ("Opposition", 180, 6),
+    ]
+
+    names = list(longitudes_deg.keys())
+    aspects = []
+
+    for i in range(len(names)):
+        for j in range(i + 1, len(names)):
+            a = names[i]
+            b = names[j]
+            dist = angular_distance(longitudes_deg[a], longitudes_deg[b])
+
+            for aspect_name, exact_deg, orb in aspect_defs:
+                if abs(dist - exact_deg) <= orb:
+                    aspects.append({
+                        "pair": f"{a}-{b}",
+                        "a": a,
+                        "b": b,
+                        "aspect": aspect_name,
+                        "distance": round(dist, 3),
+                        "orb": round(abs(dist - exact_deg), 3),
+                        "exact": exact_deg,
+                    })
+                    break
+
+    aspects.sort(key=lambda x: (x["orb"], x["pair"]))
+    return aspects
 
 
 def compute_chart_inputs(
@@ -256,57 +354,6 @@ def compute_chart_inputs(
     }
 
     return result
-
-
-def fmt(n: float) -> str:
-    try:
-        return f"{float(n):.2f}"
-    except Exception:
-        return "0.00"
-
-
-def infer_mode(strain: float) -> str:
-    if strain >= 1.0:
-        return "Overload"
-    if strain >= 0.85:
-        return "Threshold Strain"
-    if strain >= 0.60:
-        return "Mobilized"
-    return "Regulated Baseline"
-
-
-def angular_distance(a: float, b: float) -> float:
-    diff = abs((a - b) % 360.0)
-    return min(diff, 360.0 - diff)
-
-
-def nearest_angle_distance(planet_lon: float, angles: dict) -> float:
-    return min(
-        angular_distance(planet_lon, angles.get("asc", 0.0)),
-        angular_distance(planet_lon, angles.get("mc", 0.0)),
-        angular_distance(planet_lon, angles.get("desc", 0.0)),
-        angular_distance(planet_lon, angles.get("ic", 0.0)),
-    )
-
-
-def angularity_multiplier(planet_lon: float, angles: dict) -> float:
-    d = nearest_angle_distance(planet_lon, angles)
-
-    if d <= 5:
-        return 1.35
-    if d <= 12:
-        return 1.22
-    if d <= 20:
-        return 1.12
-    return 1.00
-
-
-def house_multiplier(house_num: int) -> float:
-    if house_num in (1, 4, 7, 10):
-        return 1.18
-    if house_num in (2, 5, 8, 11):
-        return 1.08
-    return 1.00
 
 def build_lucy_response(chart: dict) -> dict:
     sun = float(chart.get("sun", 0))
@@ -557,7 +604,38 @@ def build_lucy_response(chart: dict) -> dict:
         "timingPressure": timing_pressure,
     }
 
+    planet_positions = {}
+    for name, lon in longitudes_deg.items():
+        planet_positions[name] = {
+            "longitudeDeg": round(float(lon), 6),
+            "zodiacPosition": zodiac_position(float(lon)),
+            "sign": zodiac_sign_name(float(lon)),
+            "house": int(planet_houses.get(name, 12)),
+        }
+
+    angles_detailed = {
+        "asc": {
+            "longitudeDeg": round(float(angles.get("asc", 0.0)), 6),
+            "zodiacPosition": zodiac_position(float(angles.get("asc", 0.0))),
+        },
+        "mc": {
+            "longitudeDeg": round(float(angles.get("mc", 0.0)), 6),
+            "zodiacPosition": zodiac_position(float(angles.get("mc", 0.0))),
+        },
+        "desc": {
+            "longitudeDeg": round(float(angles.get("desc", 0.0)), 6),
+            "zodiacPosition": zodiac_position(float(angles.get("desc", 0.0))),
+        },
+        "ic": {
+            "longitudeDeg": round(float(angles.get("ic", 0.0)), 6),
+            "zodiacPosition": zodiac_position(float(angles.get("ic", 0.0))),
+        },
+    }
+
+    aspect_table = detect_major_aspects(longitudes_deg)
+
     return {
+        "ok": True,
         "state": {
             "capacity": capacity,
             "strain": strain,
@@ -598,8 +676,11 @@ def build_lucy_response(chart: dict) -> dict:
         "planetary": planetary,
         "angularity": angularity,
         "angles": chart.get("angles", {}),
+        "anglesDetailed": angles_detailed,
         "houses": chart.get("houses", []),
         "planetHouses": chart.get("planetHouses", {}),
+        "planetPositions": planet_positions,
+        "aspectTable": aspect_table,
         "_longitudesDeg": chart.get("_longitudesDeg", {}),
         "_speedsDeg": chart.get("_speedsDeg", {}),
         "debug": debug,
@@ -697,4 +778,3 @@ class handler(BaseHTTPRequestHandler):
             self._write_json(400, {"error": str(e)})
         except Exception as e:
             self._write_json(500, {"error": str(e)})
-
