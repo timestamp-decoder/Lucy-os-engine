@@ -279,8 +279,7 @@
     .fill.fog{background:linear-gradient(90deg,#8aa0ff,#c3cbff);}
     .fill.act{background:linear-gradient(90deg,var(--warn),#ffd0a8);}
     .fill.damp{background:linear-gradient(90deg,#69d2c8,#b6f4ee);}
-
-    .summary{
+        .summary{
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:18px;
@@ -523,8 +522,7 @@
             <div class="barLabel"><span>Activation (Mars)</span><strong id="actNum">0.00</strong></div>
             <div class="track"><div id="actBar" class="fill act"></div></div>
           </div>
-
-          <div class="barBlock">
+                    <div class="barBlock">
             <div class="barLabel"><span>Damping (Saturn + Venus)</span><strong id="dampNum">0.00</strong></div>
             <div class="track"><div id="dampBar" class="fill damp"></div></div>
           </div>
@@ -640,7 +638,6 @@
     function setBadge(modeText){
       const text = String(modeText || "Unknown");
       els.statusBadge.textContent = text;
-
       els.statusBadge.classList.remove("ok","warn","alert");
 
       const lower = text.toLowerCase();
@@ -652,17 +649,6 @@
       } else {
         els.statusBadge.classList.add("alert");
       }
-    }
-
-    function pickTopRegulator(topRegulators){
-      if (!topRegulators) return "—";
-      if (Array.isArray(topRegulators) && topRegulators.length) return String(topRegulators[0]);
-      if (typeof topRegulators === "string") return topRegulators;
-      return "—";
-    }
-
-    function safeForecast(raw){
-      return raw && typeof raw === "object" ? raw : {};
     }
 
     async function fetchPlanetInputs(currentInputs){
@@ -717,48 +703,40 @@
 
         const data = await fetchPlanetInputs(currentInputs);
 
-        const longs = data?._longitudesDeg || {};
-        const meta = data?._meta || {};
+        console.log("Lucy API response:", data);
+
+        const state = data?.state || {};
+        const telemetry = data?.telemetry || {};
+        const interpretation = data?.interpretation || {};
+        const forecast = data?.forecast || {};
+        const inputResolved = data?.inputResolved || {};
+        const planetary = data?.planetary || {};
         const angles = data?.angles || {};
         const houses = Array.isArray(data?.houses) ? data.houses : [];
 
-        const loadDrivers = [
-          ["Moon", Number(data?.moon || 0)],
-          ["Mars", Number(data?.mars || 0)],
-          ["Jupiter", Number(data?.jupiter || 0)],
-          ["Uranus", Number(data?.uranus || 0)],
-          ["Neptune", Number(data?.neptune || 0)],
-          ["Pluto", Number(data?.pluto || 0)],
-        ].sort((a,b) => b[1] - a[1]);
+        const capacity = Number(state.capacity ?? data?.sun ?? 0);
+        const strain = Number(state.strain ?? 0);
+        const amplifiedLoad = Number(state.amplifiedLoad ?? 0);
+        const regulation = Number(state.regulation ?? 0);
+        const saturnConstraint = Number(state.saturnConstraint ?? 0);
+        const effectiveLoad = Number(state.effectiveLoad ?? 0);
+        const mode = String(state.mode || interpretation.modeMeaning || "Unknown");
 
-        const regulators = [
-          ["Saturn", Number(data?.saturn || 0)],
-          ["Venus", Number(data?.venus || 0)],
-          ["Mercury", Number(data?.mercury || 0)],
-        ].sort((a,b) => b[1] - a[1]);
+        const primaryDriver =
+          telemetry.primaryDriver ||
+          telemetry.dominantDriver ||
+          "—";
 
-        const capacity = Number(data?.sun || 0);
-        const amplifiedLoad =
-          Number(data?.moon || 0) * 0.30 +
-          Number(data?.mars || 0) * 0.18 +
-          Number(data?.jupiter || 0) * 0.14 +
-          Number(data?.uranus || 0) * 0.14 +
-          Number(data?.neptune || 0) * 0.12 +
-          Number(data?.pluto || 0) * 0.12;
+        const topRegulator =
+          telemetry.topRegulator ||
+          (Array.isArray(telemetry.topRegulators) ? telemetry.topRegulators[0] : null) ||
+          "—";
 
-        const regulation =
-          Number(data?.saturn || 0) * 0.45 +
-          Number(data?.venus || 0) * 0.35 +
-          Number(data?.mercury || 0) * 0.20;
-
-        const saturnConstraint = Number(data?.saturn || 0) * 0.25;
-        const effectiveLoad = Math.max(amplifiedLoad - regulation - saturnConstraint, 0);
-        const strain = capacity > 0 ? effectiveLoad / capacity : 0;
-
-        let mode = "Regulated Baseline";
-        if (strain >= 1.0) mode = "Overload";
-        else if (strain >= 0.85) mode = "Threshold Strain";
-        else if (strain >= 0.60) mode = "Mobilized";
+        const volatility = Number(planetary.uranus ?? data?.uranus ?? 0);
+        const fog = Number(planetary.neptune ?? data?.neptune ?? 0);
+        const activation = Number(planetary.mars ?? data?.mars ?? 0);
+        const damping =
+          (Number(planetary.saturn ?? data?.saturn ?? 0) + Number(planetary.venus ?? data?.venus ?? 0)) / 2;
 
         let loadState = "Low";
         if (amplifiedLoad >= 1.1) loadState = "Very High";
@@ -770,13 +748,10 @@
         else if (regulation >= 0.5) containment = "Strong";
         else if (regulation >= 0.25) containment = "Moderate";
 
-        const primaryDriver = loadDrivers[0]?.[0] || "—";
-        const topRegulator = regulators[0]?.[0] || "—";
-
         els.capacityVal.textContent = fmt(capacity);
         els.strainVal.textContent = fmt(strain);
-        els.driverVal.textContent = primaryDriver;
-        els.regulatorVal.textContent = topRegulator;
+        els.driverVal.textContent = String(primaryDriver);
+        els.regulatorVal.textContent = String(topRegulator);
 
         els.loadStateVal.textContent = loadState;
         els.containmentVal.textContent = containment;
@@ -786,60 +761,69 @@
         els.regNum.textContent = fmt(regulation);
         els.satNum.textContent = fmt(saturnConstraint);
         els.effNum.textContent = fmt(effectiveLoad);
-        els.volNum.textContent = fmt(data?.uranus || 0);
-        els.fogNum.textContent = fmt(data?.neptune || 0);
-        els.actNum.textContent = fmt(data?.mars || 0);
-        els.dampNum.textContent = fmt((Number(data?.saturn || 0) + Number(data?.venus || 0)) / 2);
+        els.volNum.textContent = fmt(volatility);
+        els.fogNum.textContent = fmt(fog);
+        els.actNum.textContent = fmt(activation);
+        els.dampNum.textContent = fmt(damping);
 
         setBar(els.ampLoadBar, amplifiedLoad, 1.5);
         setBar(els.regBar, regulation, 1.2);
         setBar(els.satBar, saturnConstraint, 0.5);
         setBar(els.effBar, effectiveLoad, 1.5);
-        setBar(els.volBar, Number(data?.uranus || 0), 1.0);
-        setBar(els.fogBar, Number(data?.neptune || 0), 1.0);
-        setBar(els.actBar, Number(data?.mars || 0), 1.0);
-        setBar(els.dampBar, (Number(data?.saturn || 0) + Number(data?.venus || 0)) / 2, 1.0);
+        setBar(els.volBar, volatility, 1.0);
+        setBar(els.fogBar, fog, 1.0);
+        setBar(els.actBar, activation, 1.0);
+        setBar(els.dampBar, damping, 1.0);
 
         els.summaryText.textContent =
-          `${mode}. Sun capacity ${fmt(capacity)} with effective load ${fmt(effectiveLoad)} and strain ${fmt(strain)}.`;
+          interpretation.stateSummary ||
+          `${mode}. Capacity ${fmt(capacity)} with effective load ${fmt(effectiveLoad)} and strain ${fmt(strain)}.`;
 
         els.pacingText.textContent =
-          strain >= 1
-            ? "Reduce load, simplify decisions, and avoid stacking stimulation."
-            : strain >= 0.85
-            ? "Use moderate pacing and stronger containment before adding more pressure."
-            : strain >= 0.6
-            ? "Mobilized but workable. Good for focused effort with breaks."
-            : "Stable enough for normal pacing and structured forward motion.";
+          interpretation.recommendedPacing ||
+          "Pacing guidance unavailable.";
 
         els.driverMeaningText.textContent =
-          `${primaryDriver} is currently the strongest load-side influence in this natal chart input layer.`;
+          interpretation.dominantDriverMeaning ||
+          "Driver interpretation unavailable.";
 
         els.behaviorText.textContent =
-          `Top regulator is ${topRegulator}. Load drivers are ${loadDrivers.map(x => x[0]).slice(0,3).join(", ")}.`;
+          interpretation.nervousSystemBehavior ||
+          "Nervous system behavior interpretation unavailable.";
 
-        els.todayTitle.textContent = mode;
+        els.todayTitle.textContent =
+          forecast.today?.title ||
+          mode;
+
         els.todayCopy.textContent =
-          `Natal chart input resolved for ${meta.location_resolved || currentInputs.location}.`;
+          forecast.today?.summary ||
+          "Today forecast not available yet.";
 
-        els.threeDayTitle.textContent = "Chart Input Active";
+        els.threeDayTitle.textContent =
+          forecast.next3Days?.title ||
+          "Next 3 Days";
+
         els.threeDayCopy.textContent =
-          "This page is currently reading raw chart input output from the API, not the full Lucy interpretation layer yet.";
+          forecast.next3Days?.summary ||
+          "3-day forecast not available yet.";
 
-        els.weekTitle.textContent = "Angles & Houses Loaded";
+        els.weekTitle.textContent =
+          forecast.next7Days?.title ||
+          "Next 7 Days";
+
         els.weekCopy.textContent =
+          forecast.next7Days?.summary ||
           `ASC ${fmt(angles.asc)}° · MC ${fmt(angles.mc)}° · Houses loaded: ${houses.length}`;
 
         const metaParts = [];
-        if (meta.timezone_name) metaParts.push(`Timezone: ${meta.timezone_name}`);
-        if (meta.location_resolved) metaParts.push(`Resolved: ${meta.location_resolved}`);
-        if (meta.utc_datetime) metaParts.push(`UTC: ${meta.utc_datetime}`);
-        if (Object.keys(longs).length) metaParts.push(`Planets: ${Object.keys(longs).length}`);
+        if (inputResolved.location) metaParts.push(`Resolved: ${inputResolved.location}`);
+        if (inputResolved.timezone) metaParts.push(`Timezone: ${inputResolved.timezone}`);
+        if (inputResolved.utcDateTime) metaParts.push(`UTC: ${inputResolved.utcDateTime}`);
         els.metaText.textContent = metaParts.length ? metaParts.join(" • ") : "Calculation complete.";
 
         setBadge(mode);
       } catch (err){
-        console.error(err);
+        console.error("Lucy calculateState error:", err);
         setBadge("Error");
         els.summaryText.textContent = err?.message || "Calculation failed.";
         els.pacingText.textContent = "Check API deployment, inputs, or helper wiring.";
