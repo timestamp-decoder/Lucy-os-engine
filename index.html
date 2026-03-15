@@ -97,12 +97,6 @@
       gap:10px;
     }
 
-    .row3{
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      gap:10px;
-    }
-
     button{
       margin-top:16px;
       background:linear-gradient(180deg,#1d5cff,#3f86ff);
@@ -113,6 +107,11 @@
 
     button:hover{
       filter:brightness(1.08);
+    }
+
+    button:disabled{
+      opacity:.72;
+      cursor:wait;
     }
 
     .tiny{
@@ -230,12 +229,34 @@
       margin-top:10px;
     }
 
-    .muted{
+    .statusBlock{
+      margin-top:14px;
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:rgba(255,255,255,.02);
+      font-size:12px;
+      line-height:1.45;
       color:var(--muted);
     }
 
-    .small{
+    .statusBlock strong{
+      color:var(--text);
+      display:block;
+      margin-bottom:6px;
       font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .ok{
+      color:var(--green);
+      font-weight:700;
+    }
+
+    .err{
+      color:#ff9c9c;
+      font-weight:700;
     }
 
     @media (max-width: 980px){
@@ -259,7 +280,6 @@
     </div>
 
     <div class="grid">
-      <!-- LEFT PANEL -->
       <div class="panel">
         <h2>Inputs</h2>
 
@@ -280,18 +300,26 @@
           </div>
         </div>
 
-        <label>Birth Location (optional)</label>
+        <label>Birth Location</label>
         <input id="location" type="text" placeholder="Cuero, TX" />
 
         <button id="calcBtn">Calculate</button>
 
         <div class="tiny">
-          Birth location improves planetary context when supported.  
-          If omitted, the engine can still run using default fallback behavior.
+          Birth location is used for geocoding, historical timezone resolution, houses, and angles.
+        </div>
+
+        <div class="statusBlock">
+          <strong>API Status</strong>
+          <div id="apiStatus">Waiting for calculation.</div>
+        </div>
+
+        <div class="statusBlock">
+          <strong>Resolved Input</strong>
+          <div id="resolvedInput">No resolved birth data yet.</div>
         </div>
       </div>
 
-      <!-- RIGHT PANEL -->
       <div class="panel">
         <div class="rightTop">
           <div class="stat">
@@ -325,7 +353,7 @@
               <td><span class="badge b-gold">Solar</span></td>
             </tr>
             <tr>
-              <td>Load (Moon+drivers)</td>
+              <td>Amplified Load</td>
               <td id="loadVal">0.00</td>
               <td><span class="badge b-red">Load</span></td>
             </tr>
@@ -410,23 +438,22 @@
         </div>
 
         <div class="tiny">
-          Environment and forecast panels are early-stage placeholders until the V1 forecast layer is fully wired.
+          Environment and forecast panels are early-stage placeholders until the forecast layer is fully wired.
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // FIXED: same-origin API route inside the same Vercel project
     const API_URL = "/api/chart_inputs";
 
     function clamp(v, min, max){
       return Math.max(min, Math.min(max, v));
     }
 
-    function safeNum(v){
+    function safeNum(v, fallback = 0){
       const n = Number(v);
-      return Number.isFinite(n) ? n : 0;
+      return Number.isFinite(n) ? n : fallback;
     }
 
     function fmt(v){
@@ -438,76 +465,85 @@
       if (el) el.textContent = value;
     }
 
-    function setBar(id, value, max=1.5){
+    function setBar(id, value, max = 1.5){
       const el = document.getElementById(id);
       if (!el) return;
       const pct = clamp((safeNum(value) / max) * 100, 0, 100);
       el.style.width = pct + "%";
     }
 
-    function stateLabelFromMode(mode){
-      const m = safeNum(mode);
-      if (m < 0.60) return "Regulated baseline";
-      if (m < 0.85) return "Mobilized state";
-      if (m < 1.00) return "Threshold strain";
-      return "Overload state";
+    function stateLabelFromMode(modeText){
+      const text = String(modeText || "").toLowerCase();
+      if (text.includes("overload")) return "Overload state";
+      if (text.includes("threshold") || text.includes("strain")) return "Threshold strain";
+      if (text.includes("mobilized") || text.includes("active")) return "Mobilized state";
+      return "Regulated baseline";
     }
 
-    function strainLabelFromMode(mode){
-      const m = safeNum(mode);
-      if (m < 0.60) return "Low active load";
-      if (m < 0.85) return "Moderate load";
-      if (m < 1.00) return "High strain";
+    function strainLabelFromStrain(strain){
+      const s = safeNum(strain);
+      if (s < 0.60) return "Low active load";
+      if (s < 0.85) return "Moderate load";
+      if (s < 1.00) return "High strain";
       return "Critical load";
     }
 
-    function envBandFromLoad(load){
-      const v = safeNum(load);
-      if (v < 0.60) return "Environmental Load: Calm";
-      if (v < 0.85) return "Environmental Load: Active";
-      if (v < 1.00) return "Environmental Load: Strained";
-      return "Environmental Load: Overloaded";
+    function envBandFromMode(envMode){
+      const text = String(envMode || "").trim();
+      return `Environmental Load: ${text || "—"}`;
     }
 
-    function forecastFromMode(mode){
-      const m = safeNum(mode);
-      if (m < 0.60) return "Forecast: Clear / regulated";
-      if (m < 0.85) return "Forecast: Active / manageable";
-      if (m < 1.00) return "Forecast: Watch pacing";
-      return "Forecast: Reduce load";
+    function forecastFromState(forecastState){
+      const text = String(forecastState || "").trim();
+      return `Forecast: ${text || "—"}`;
+    }
+
+    function driverValueFromTopDrivers(list, planetName){
+      if (!Array.isArray(list)) return null;
+      const hit = list.find(item => String(item).toLowerCase().startsWith(String(planetName).toLowerCase()));
+      if (!hit) return null;
+
+      const match = String(hit).match(/\(([^)]+)\)/);
+      return match ? safeNum(match[1]) : null;
     }
 
     function primaryDriverName(data){
-      if (data.primary_driver) return data.primary_driver;
-      if (data.primaryDriver) return data.primaryDriver;
-      if (data.dominant_driver) return data.dominant_driver;
-      return "—";
+      return data?.telemetry?.primaryDriver || "—";
     }
 
     function updateUI(data){
-      const mode = safeNum(data.mode ?? data.strain ?? data.si ?? 0);
-      const strain = safeNum(data.strain ?? data.si ?? mode);
+      console.log("Lucy.OS response:", data);
 
-      const capacity = safeNum(data.capacity ?? data.sun_capacity ?? data.S ?? 0);
-      const load = safeNum(data.load ?? data.total_load ?? data.M ?? 0);
-      const regulation = safeNum(data.regulation ?? data.R72 ?? data.damping ?? 0);
-      const effective = safeNum(data.effective_load ?? data.M_eff ?? Math.max(load - regulation, 0));
+      const state = data?.state || {};
+      const telemetry = data?.telemetry || {};
+      const environment = data?.environment || {};
+      const forecast = data?.forecast || {};
+      const planetary = data?.planetary || {};
+      const inputResolved = data?.inputResolved || {};
+      const ephemeris = data?.ephemeris || {};
 
-      const volatility = safeNum(data.volatility ?? data.uranus ?? 0);
-      const fog = safeNum(data.fog ?? data.neptune ?? 0);
-      const activation = safeNum(data.activation ?? data.mars ?? 0);
+      const capacity = safeNum(state.capacity);
+      const strain = safeNum(state.strain);
+      const load = safeNum(state.amplifiedLoad);
+      const regulation = safeNum(state.regulation);
+      const effective = safeNum(state.effectiveLoad);
+      const modeText = state.mode || "Regulated Baseline";
 
-      const saturn = safeNum(data.saturn ?? data.saturn_reg ?? 0);
-      const venus = safeNum(data.venus ?? data.venus_reg ?? 0);
-      const mercury = safeNum(data.mercury ?? data.mercury_reg ?? 0);
+      const volatility = safeNum(planetary.uranus, driverValueFromTopDrivers(telemetry.topDrivers, "Uranus"));
+      const fog = safeNum(planetary.neptune, driverValueFromTopDrivers(telemetry.topDrivers, "Neptune"));
+      const activation = safeNum(planetary.mars, driverValueFromTopDrivers(telemetry.topDrivers, "Mars"));
 
-      setText("stateScore", fmt(mode));
-      setText("stateLabel", stateLabelFromMode(mode));
+      const saturn = safeNum(planetary.saturn, driverValueFromTopDrivers(telemetry.topRegulators, "Saturn"));
+      const venus = safeNum(planetary.venus, driverValueFromTopDrivers(telemetry.topRegulators, "Venus"));
+      const mercury = safeNum(planetary.mercury, driverValueFromTopDrivers(telemetry.topRegulators, "Mercury"));
+
+      setText("stateScore", fmt(capacity));
+      setText("stateLabel", stateLabelFromMode(modeText));
       setText("strainScore", fmt(strain));
-      setText("strainLabel", strainLabelFromMode(mode));
+      setText("strainLabel", strainLabelFromStrain(strain));
 
-      setBar("stateBar", mode);
-      setBar("strainBar", strain);
+      setBar("stateBar", capacity, 1.2);
+      setBar("strainBar", strain, 1.2);
 
       setText("capVal", fmt(capacity));
       setText("loadVal", fmt(load));
@@ -522,29 +558,64 @@
       setText("saturnVal", fmt(saturn));
       setText("venusVal", fmt(venus));
       setText("mercuryVal", fmt(mercury));
-      setText("stateCondition", stateLabelFromMode(mode));
+      setText("stateCondition", modeText);
 
-      setText("envBand", envBandFromLoad(load));
-      setText("forecastBand", forecastFromMode(mode));
+      setText("envBand", envBandFromMode(environment.environmentMode));
+      setText("forecastBand", forecastFromState(forecast?.now?.state));
+
+      const resolvedLocation =
+        inputResolved.resolvedLocation ||
+        inputResolved.locationResolved ||
+        "—";
+
+      const resolvedTime =
+        inputResolved.localTimeResolved ||
+        inputResolved.local_time_resolved ||
+        "—";
+
+      const timezoneName =
+        inputResolved.timezoneName ||
+        inputResolved.timezone_name ||
+        "—";
+
+      const utcDatetime =
+        ephemeris.utcDatetime ||
+        ephemeris.utc_datetime ||
+        "—";
+
+      setText(
+        "resolvedInput",
+        `Local: ${resolvedTime} | UTC: ${utcDatetime} | Place: ${resolvedLocation} | TZ: ${timezoneName}`
+      );
+
+      setText(
+        "apiStatus",
+        `OK • ${ephemeris.source || "API"} • ${ephemeris.mode || "natal"}`
+      );
+
+      document.getElementById("apiStatus").className = "ok";
     }
 
     async function calculate(){
       const dob = document.getElementById("dob").value;
-      const tob = document.getElementById("tob").value.trim();
+      const tobRaw = document.getElementById("tob").value.trim();
       const ampm = document.getElementById("ampm").value;
       const location = document.getElementById("location").value.trim();
 
       const payload = {
         dob,
-        tob,
+        tobRaw,
         ampm,
-        location
+        locationText: location
       };
 
       try {
         const btn = document.getElementById("calcBtn");
         btn.disabled = true;
         btn.textContent = "Calculating...";
+
+        setText("apiStatus", "Calculating...");
+        document.getElementById("apiStatus").className = "";
 
         const response = await fetch(API_URL, {
           method: "POST",
@@ -554,18 +625,18 @@
           body: JSON.stringify(payload)
         });
 
+        const data = await response.json();
+
         if (!response.ok) {
-          const text = await response.text();
-          throw new Error(`API error ${response.status}: ${text}`);
+          throw new Error(data?.error || `API error ${response.status}`);
         }
 
-        const data = await response.json();
-        console.log("Lucy.OS response:", data);
         updateUI(data);
-
       } catch (err) {
         console.error(err);
-        alert("Calculation failed. Check Vercel API deployment or route.");
+        setText("apiStatus", `Error • ${err.message}`);
+        document.getElementById("apiStatus").className = "err";
+        alert("Calculation failed. Check API deployment or payload.");
       } finally {
         const btn = document.getElementById("calcBtn");
         btn.disabled = false;
@@ -575,11 +646,12 @@
 
     document.getElementById("calcBtn").addEventListener("click", calculate);
 
-    // Optional defaults for quick testing
     document.getElementById("dob").value = "1980-11-21";
     document.getElementById("tob").value = "6:20";
     document.getElementById("ampm").value = "AM";
     document.getElementById("location").value = "Cuero, TX";
+
+    calculate();
   </script>
 </body>
 </html>
