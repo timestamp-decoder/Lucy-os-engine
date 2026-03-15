@@ -18,6 +18,7 @@
       --violet:#b06cff;
       --gold:#d8b84c;
       --amber:#f0c15b;
+      --teal:#6fe0d3;
     }
 
     *{box-sizing:border-box}
@@ -30,7 +31,7 @@
     }
 
     .wrap{
-      max-width:1360px;
+      max-width:1380px;
       margin:0 auto;
       padding:28px;
     }
@@ -63,7 +64,7 @@
       border:1px solid var(--line);
       border-radius:18px;
       padding:18px;
-      box-shadow:0 10px 30px rgba(0,0,0,.22);
+      box-shadow:0 10px 28px rgba(0,0,0,.20);
     }
 
     .panel h2{
@@ -107,7 +108,7 @@
     }
 
     button:hover{
-      filter:brightness(1.06);
+      filter:brightness(1.05);
     }
 
     button:disabled{
@@ -133,7 +134,7 @@
       background:rgba(255,255,255,.02);
       border:1px solid var(--line);
       border-radius:14px;
-      padding:14px;
+      padding:16px;
     }
 
     .stat .label{
@@ -153,10 +154,11 @@
       font-size:12px;
       color:var(--muted);
       margin-top:6px;
+      line-height:1.4;
     }
 
     .meter{
-      margin-top:10px;
+      margin-top:12px;
       height:10px;
       width:100%;
       border-radius:999px;
@@ -214,6 +216,7 @@
     .b-gold{background:rgba(216,184,76,.12); color:var(--gold); border-color:rgba(216,184,76,.25)}
     .b-violet{background:rgba(176,108,255,.12); color:var(--violet); border-color:rgba(176,108,255,.25)}
     .b-amber{background:rgba(240,193,91,.12); color:var(--amber); border-color:rgba(240,193,91,.25)}
+    .b-teal{background:rgba(111,224,211,.12); color:var(--teal); border-color:rgba(111,224,211,.25)}
 
     .sectionTitle{
       margin:2px 0 10px;
@@ -258,6 +261,62 @@
       letter-spacing:.08em;
     }
 
+    .whyBlock{
+      margin-bottom:18px;
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:rgba(255,255,255,.02);
+    }
+
+    .whyTitle{
+      font-size:11px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:8px;
+    }
+
+    .whyText{
+      font-size:13px;
+      line-height:1.5;
+      color:var(--text);
+    }
+
+    .forecastRow{
+      display:grid;
+      grid-template-columns:1.3fr .7fr;
+      gap:18px;
+      margin-bottom:18px;
+    }
+
+    .miniCard{
+      background:rgba(255,255,255,.02);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+    }
+
+    .miniLabel{
+      font-size:11px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .miniValue{
+      font-size:18px;
+      font-weight:700;
+      margin-top:8px;
+    }
+
+    .miniSub{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:6px;
+      line-height:1.4;
+    }
+
     .ok{
       color:var(--green);
       font-weight:700;
@@ -273,6 +332,9 @@
         grid-template-columns:1fr;
       }
       .rightTop{
+        grid-template-columns:1fr;
+      }
+      .forecastRow{
         grid-template-columns:1fr;
       }
       .footerGrid{
@@ -360,6 +422,25 @@
           </div>
         </div>
 
+        <div class="forecastRow">
+          <div class="miniCard">
+            <div class="miniLabel">Outlook</div>
+            <div class="miniValue" id="forecastHeadline">Regulated</div>
+            <div class="miniSub" id="forecastSub">Current forecast layer is in early-stage placeholder mode.</div>
+          </div>
+
+          <div class="miniCard">
+            <div class="miniLabel">Sky Data</div>
+            <div class="miniValue"><span class="badge b-teal" id="skyVerified">Pending</span></div>
+            <div class="miniSub" id="skySub">Waiting for live ephemeris confirmation.</div>
+          </div>
+        </div>
+
+        <div class="whyBlock">
+          <div class="whyTitle">Why</div>
+          <div class="whyText" id="whyLine">Waiting for calculation.</div>
+        </div>
+
         <div class="sectionTitle">System Summary</div>
         <table class="table">
           <thead>
@@ -389,6 +470,11 @@
               <td>Effective Load</td>
               <td id="effVal">0.00</td>
               <td><span class="badge b-blue">Net</span></td>
+            </tr>
+            <tr>
+              <td>Stability Index</td>
+              <td id="stabilityVal">0.00</td>
+              <td><span class="badge b-teal">Display Only</span></td>
             </tr>
           </tbody>
         </table>
@@ -461,7 +547,7 @@
         </div>
 
         <div class="tiny">
-          Environment and outlook panels are early-stage placeholders until the forecast layer is fully wired.
+          Forecast, stability index, and why-line are interpretive layers on top of the current V2.5 engine.
         </div>
       </div>
     </div>
@@ -519,14 +605,6 @@
       return "badge b-blue";
     }
 
-    function strainLabelFromStrain(strain){
-      const s = safeNum(strain);
-      if (s < 0.60) return "Low active load";
-      if (s < 0.85) return "Moderate load";
-      if (s < 1.00) return "High strain";
-      return "Critical load";
-    }
-
     function fieldLabel(envMode){
       const text = String(envMode || "").trim();
       return `Field: ${text || "—"}`;
@@ -541,13 +619,70 @@
       if (!Array.isArray(list)) return null;
       const hit = list.find(item => String(item).toLowerCase().startsWith(String(planetName).toLowerCase()));
       if (!hit) return null;
-
       const match = String(hit).match(/\(([^)]+)\)/);
       return match ? safeNum(match[1]) : null;
     }
 
     function primaryDriverName(data){
       return data?.telemetry?.primaryDriver || "—";
+    }
+
+    function computeStabilityIndex(saturn, venus, mercury){
+      // display-only metric; does NOT affect engine state
+      return clamp((saturn * 0.4) + (venus * 0.3) + (mercury * 0.3), 0, 1.2);
+    }
+
+    function buildWhyLine(data){
+      const telemetry = data?.telemetry || {};
+      const planetary = data?.planetary || {};
+      const state = data?.state || {};
+
+      const driver = telemetry.primaryDriver || "signal";
+      const mode = cleanMode(state.mode || "Regulated");
+
+      const uranus = safeNum(planetary.uranus);
+      const neptune = safeNum(planetary.neptune);
+      const mars = safeNum(planetary.mars);
+      const saturn = safeNum(planetary.saturn);
+      const venus = safeNum(planetary.venus);
+      const mercury = safeNum(planetary.mercury);
+
+      const pressureBits = [];
+      const bufferBits = [];
+
+      if (uranus >= 0.7) pressureBits.push("Uranus is elevating volatility");
+      if (neptune >= 0.7) pressureBits.push("Neptune is increasing diffusion");
+      if (mars >= 0.7) pressureBits.push("Mars is raising activation");
+
+      if (saturn >= 0.6) bufferBits.push("Saturn is adding constraint");
+      if (venus >= 0.6) bufferBits.push("Venus is softening edge load");
+      if (mercury >= 0.6) bufferBits.push("Mercury is improving signal clarity");
+
+      let pressureText = pressureBits.slice(0, 2).join(" + ");
+      let bufferText = bufferBits.slice(0, 2).join(" + ");
+
+      if (!pressureText) pressureText = `${driver} is the dominant driver`;
+      if (!bufferText) bufferText = "regulation is currently modest";
+
+      return `${pressureText}; ${bufferText}. Current mode is ${mode.toLowerCase()}.`;
+    }
+
+    function updateSkyBadge(ephemeris, resolvedLocation){
+      const badge = document.getElementById("skyVerified");
+      const sub = document.getElementById("skySub");
+
+      const hasSource = !!(ephemeris?.source);
+      const hasPlace = resolvedLocation && resolvedLocation !== "—";
+
+      if (hasSource && hasPlace){
+        badge.textContent = "Verified";
+        badge.className = "badge b-teal";
+        sub.textContent = `Live ephemeris and resolved location confirmed.`;
+      } else {
+        badge.textContent = "Pending";
+        badge.className = "badge b-amber";
+        sub.textContent = `Waiting for live ephemeris confirmation.`;
+      }
     }
 
     function updateUI(data){
@@ -567,7 +702,6 @@
       const regulation = safeNum(state.regulation);
       const effective = safeNum(state.effectiveLoad);
       const modeText = state.mode || "Regulated";
-
       const cleanState = cleanMode(modeText);
 
       const volatility = safeNum(planetary.uranus, driverValueFromTopDrivers(telemetry.topDrivers, "Uranus"));
@@ -576,7 +710,9 @@
 
       const saturn = safeNum(planetary.saturn, driverValueFromTopDrivers(telemetry.topRegulators, "Saturn"));
       const venus = safeNum(planetary.venus, driverValueFromTopDrivers(telemetry.topRegulators, "Venus"));
-      const mercury = safeNum(planetary.mercury, driverValueFromTopDrivers(telemetry.topRegulators, "Mercury"));
+      const mercury = safeNum(planetary.mercury, driverValueFromTopRegulators(telemetry.topRegulators, "Mercury"));
+
+      const stabilityIndex = computeStabilityIndex(saturn, venus, mercury);
 
       setText("stateScore", fmt(capacity));
       setText("strainScore", fmt(strain));
@@ -584,6 +720,7 @@
       setText("loadVal", fmt(load));
       setText("regVal", fmt(regulation));
       setText("effVal", fmt(effective));
+      setText("stabilityVal", fmt(stabilityIndex));
 
       setText("stateLabel", cleanState);
       setText("stateHelper", stateHelperText(modeText));
@@ -604,8 +741,13 @@
       setText("venusVal", fmt(venus));
       setText("mercuryVal", fmt(mercury));
 
+      const forecastState = forecast?.now?.state || cleanState;
+      setText("forecastHeadline", forecastState);
+      setText("forecastSub", `Forecast layer is still early-stage, but the current outlook reads as ${String(forecastState).toLowerCase()}.`);
+
+      setText("whyLine", buildWhyLine(data));
       setText("envBand", fieldLabel(environment.environmentMode));
-      setText("forecastBand", outlookLabel(forecast?.now?.state));
+      setText("forecastBand", outlookLabel(forecastState));
       setText("apiStatus", `OK • ${ephemeris.source || "API"} • ${ephemeris.mode || "natal"}`);
 
       document.getElementById("apiStatus").className = "ok";
@@ -635,6 +777,8 @@
         `Local: ${resolvedTime} | UTC: ${utcDatetime} | Place: ${resolvedLocation} | TZ: ${timezoneName}`
       );
 
+      updateSkyBadge(ephemeris, resolvedLocation);
+
       const sunDeg = data?._longitudesDeg?.sun;
       const moonDeg = data?._longitudesDeg?.moon;
       const ascDeg = data?.angles?.asc;
@@ -648,6 +792,15 @@
 
       setBar("stateBar", capacity, 1.2);
       setBar("strainBar", strain, 1.2);
+    }
+
+    // helper alias for top regulators
+    function driverValueFromTopRegulators(list, planetName){
+      if (!Array.isArray(list)) return null;
+      const hit = list.find(item => String(item).toLowerCase().startsWith(String(planetName).toLowerCase()));
+      if (!hit) return null;
+      const match = String(hit).match(/\(([^)]+)\)/);
+      return match ? safeNum(match[1]) : null;
     }
 
     async function calculate(){
@@ -670,6 +823,7 @@
 
         setText("apiStatus", "Calculating...");
         document.getElementById("apiStatus").className = "";
+        setText("whyLine", "Calculating live chart inputs and interpretation layer...");
 
         const response = await fetch(API_URL, {
           method: "POST",
@@ -690,6 +844,7 @@
         console.error(err);
         setText("apiStatus", `Error • ${err.message}`);
         document.getElementById("apiStatus").className = "err";
+        setText("whyLine", "Calculation failed. Check API deployment, response shape, or payload handling.");
         alert("Calculation failed. Check API deployment or payload.");
       } finally {
         const btn = document.getElementById("calcBtn");
