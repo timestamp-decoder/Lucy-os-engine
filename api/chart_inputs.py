@@ -360,7 +360,6 @@ def infer_mode(strain: float) -> str:
         return "Mobilized State"
     return "Regulated Baseline"
 
-
 def build_lucy_response(chart: dict) -> dict:
     sun = float(chart.get("sun", 0.0))
     moon = float(chart.get("moon", 0.0))
@@ -373,18 +372,23 @@ def build_lucy_response(chart: dict) -> dict:
     neptune = float(chart.get("neptune", 0.0))
     pluto = float(chart.get("pluto", 0.0))
 
-    # Capacity remap:
-    # raw normalized sun longitude is too fragile near zero,
-    # so we remap it into a stable operating range.
+    angles = chart.get("angles", {}) or {}
+    asc_deg = float(angles.get("asc", 0.0))
+    mc_deg = float(angles.get("mc", 0.0))
+
+    asc_norm = normalize_longitude(asc_deg)
+    mc_norm = normalize_longitude(mc_deg)
+
     capacity = 0.55 + (sun * 0.45)
 
     amplified_load = (
-        moon * 0.34 +
-        mars * 0.20 +
-        jupiter * 0.16 +
-        uranus * 0.16 +
-        neptune * 0.14 +
-        pluto * 0.14
+        moon * 0.28 +
+        mars * 0.18 +
+        jupiter * 0.14 +
+        uranus * 0.14 +
+        neptune * 0.12 +
+        pluto * 0.10 +
+        asc_norm * 0.16
     )
 
     raw_regulation = (
@@ -403,6 +407,7 @@ def build_lucy_response(chart: dict) -> dict:
     )
 
     effective_load = max(amplified_load - regulation - saturn_constraint, 0.0)
+    effective_load *= (0.92 + (asc_norm * 0.16))
     strain = effective_load / capacity if capacity > 0 else 0.0
 
     mode = infer_mode(strain)
@@ -414,6 +419,7 @@ def build_lucy_response(chart: dict) -> dict:
         ("Uranus", uranus),
         ("Neptune", neptune),
         ("Pluto", pluto),
+        ("ASC", asc_norm),
     ]
     load_drivers.sort(key=lambda x: x[1], reverse=True)
 
@@ -427,14 +433,18 @@ def build_lucy_response(chart: dict) -> dict:
     primary_driver = load_drivers[0][0]
     top_regulator = regulators[0][0]
 
-    environment_load = (uranus * 0.5) + (neptune * 0.5)
+    environment_load = (uranus * 0.45) + (neptune * 0.45) + (asc_norm * 0.10)
     environment_mode = (
         "Clear / Stable" if environment_load < 0.33 else
         "Mixed / Variable" if environment_load < 0.66 else
         "Diffuse / Volatile"
     )
 
-    timing_pressure = (mars * 0.5) + (jupiter * 0.5)
+    timing_pressure = (
+        mars * 0.35 +
+        jupiter * 0.30 +
+        mc_norm * 0.35
+    )
     timing_mode = (
         "Stable Window" if timing_pressure < 0.33 else
         "Active Window" if timing_pressure < 0.66 else
@@ -538,6 +548,8 @@ def build_lucy_response(chart: dict) -> dict:
         "uranus": uranus,
         "neptune": neptune,
         "pluto": pluto,
+        "asc": asc_norm,
+        "mc": mc_norm,
     }
 
     return {
@@ -582,6 +594,12 @@ def build_lucy_response(chart: dict) -> dict:
         "angles": chart.get("angles", {}),
         "houses": chart.get("houses", []),
         "_longitudesDeg": chart.get("_longitudesDeg", {}),
+        "debugEcho": {
+            "ascNorm": asc_norm,
+            "mcNorm": mc_norm,
+            "rawRegulation": raw_regulation,
+            "regulationCap": regulation_cap,
+        }
     }
 
 
