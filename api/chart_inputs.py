@@ -570,7 +570,9 @@ def build_lucy_response(chart: dict) -> dict:
         "_longitudesDeg": chart.get("_longitudesDeg", {}),
         "build_id": BUILD_ID,
     }
-    class handler(BaseHTTPRequestHandler):
+
+
+class handler(BaseHTTPRequestHandler):
     def _set_headers(self, status_code=200):
         self.send_response(status_code)
         self.send_header("Content-Type", "application/json")
