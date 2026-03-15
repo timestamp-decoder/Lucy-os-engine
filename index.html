@@ -279,7 +279,8 @@
     .fill.fog{background:linear-gradient(90deg,#8aa0ff,#c3cbff);}
     .fill.act{background:linear-gradient(90deg,var(--warn),#ffd0a8);}
     .fill.damp{background:linear-gradient(90deg,#69d2c8,#b6f4ee);}
-        .summary{
+
+    .summary{
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:18px;
@@ -452,8 +453,7 @@
           Timezone is resolved automatically from location.
         </div>
       </div>
-
-      <div class="card state">
+            <div class="card state">
         <div class="stateHead">
           <h2>System State</h2>
           <div id="statusBadge" class="badge alert">Loading</div>
@@ -522,7 +522,8 @@
             <div class="barLabel"><span>Activation (Mars)</span><strong id="actNum">0.00</strong></div>
             <div class="track"><div id="actBar" class="fill act"></div></div>
           </div>
-                    <div class="barBlock">
+
+          <div class="barBlock">
             <div class="barLabel"><span>Damping (Saturn + Venus)</span><strong id="dampNum">0.00</strong></div>
             <div class="track"><div id="dampBar" class="fill damp"></div></div>
           </div>
@@ -688,8 +689,7 @@
 
       return data;
     }
-
-    async function calculateState(){
+        async function calculateState(){
       try{
         setBadge("Loading");
 
@@ -836,5 +836,9 @@
     $("calcBtn").addEventListener("click", calculateState);
     calculateState();
   </script>
+
+  <div style="margin-top:12px;color:#ff9d57;font-size:16px;text-align:center;padding-bottom:24px;">
+    BUILD MARKER: TEST-44
+  </div>
 </body>
 </html>
