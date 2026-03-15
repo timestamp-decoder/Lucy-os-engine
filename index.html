@@ -17,6 +17,7 @@
       --green:#67d26f;
       --violet:#b06cff;
       --gold:#d8b84c;
+      --amber:#f0c15b;
     }
 
     *{box-sizing:border-box}
@@ -53,7 +54,7 @@
 
     .grid{
       display:grid;
-      grid-template-columns: 380px 1fr;
+      grid-template-columns:380px 1fr;
       gap:22px;
     }
 
@@ -62,7 +63,7 @@
       border:1px solid var(--line);
       border-radius:18px;
       padding:18px;
-      box-shadow:0 10px 30px rgba(0,0,0,.25);
+      box-shadow:0 10px 30px rgba(0,0,0,.22);
     }
 
     .panel h2{
@@ -106,7 +107,7 @@
     }
 
     button:hover{
-      filter:brightness(1.08);
+      filter:brightness(1.06);
     }
 
     button:disabled{
@@ -123,7 +124,7 @@
 
     .rightTop{
       display:grid;
-      grid-template-columns:1fr 1fr;
+      grid-template-columns:1fr 1fr 1fr;
       gap:18px;
       margin-bottom:18px;
     }
@@ -168,8 +169,15 @@
       display:block;
       height:100%;
       width:0%;
-      background:linear-gradient(90deg,var(--green),var(--gold),var(--red));
       transition:width .35s ease;
+    }
+
+    .meter-capacity > span{
+      background:linear-gradient(90deg,#5fd2ff,#7bbcff,#f0c15b);
+    }
+
+    .meter-strain > span{
+      background:linear-gradient(90deg,var(--green),var(--amber),var(--red));
     }
 
     .table{
@@ -205,6 +213,7 @@
     .b-green{background:rgba(103,210,111,.12); color:var(--green); border-color:rgba(103,210,111,.25)}
     .b-gold{background:rgba(216,184,76,.12); color:var(--gold); border-color:rgba(216,184,76,.25)}
     .b-violet{background:rgba(176,108,255,.12); color:var(--violet); border-color:rgba(176,108,255,.25)}
+    .b-amber{background:rgba(240,193,91,.12); color:var(--amber); border-color:rgba(240,193,91,.25)}
 
     .sectionTitle{
       margin:2px 0 10px;
@@ -276,7 +285,7 @@
   <div class="wrap">
     <div class="hero">
       <h1>Lucy.OS</h1>
-      <p>Astrology-informed nervous system regulation engine</p>
+      <p>Astrology-informed system weather</p>
     </div>
 
     <div class="grid">
@@ -306,7 +315,7 @@
         <button id="calcBtn">Calculate</button>
 
         <div class="tiny">
-          Birth location is used for geocoding, historical timezone resolution, houses, and angles.
+          Birth location helps resolve time zone, angles, and houses accurately.
         </div>
 
         <div class="statusBlock">
@@ -315,12 +324,12 @@
         </div>
 
         <div class="statusBlock">
-          <strong>Resolved Input</strong>
+          <strong>Chart Input</strong>
           <div id="resolvedInput">No resolved birth data yet.</div>
         </div>
 
         <div class="statusBlock">
-          <strong>Debug Snapshot</strong>
+          <strong>Chart Debug</strong>
           <div id="debugSnapshot">No debug data yet.</div>
         </div>
       </div>
@@ -328,21 +337,30 @@
       <div class="panel">
         <div class="rightTop">
           <div class="stat">
-            <div class="label">System State</div>
+            <div class="label">Capacity</div>
             <div class="big" id="stateScore">0.00</div>
-            <div class="sub" id="stateLabel">Regulated baseline</div>
-            <div class="meter"><span id="stateBar"></span></div>
+            <div class="sub">Available system bandwidth</div>
+            <div class="meter meter-capacity"><span id="stateBar"></span></div>
           </div>
 
           <div class="stat">
             <div class="label">Strain</div>
             <div class="big" id="strainScore">0.00</div>
-            <div class="sub" id="strainLabel">Low active load</div>
-            <div class="meter"><span id="strainBar"></span></div>
+            <div class="sub">Current active load</div>
+            <div class="meter meter-strain"><span id="strainBar"></span></div>
+          </div>
+
+          <div class="stat">
+            <div class="label">State</div>
+            <div class="big" id="stateLabel">Regulated</div>
+            <div class="sub" id="stateHelper">Stable with manageable load</div>
+            <div style="margin-top:10px;">
+              <span class="badge b-blue" id="stateBadge">Regulated</span>
+            </div>
           </div>
         </div>
 
-        <div class="sectionTitle">Core State</div>
+        <div class="sectionTitle">System Summary</div>
         <table class="table">
           <thead>
             <tr>
@@ -353,7 +371,7 @@
           </thead>
           <tbody>
             <tr>
-              <td>Capacity (Sun)</td>
+              <td>Capacity</td>
               <td id="capVal">0.00</td>
               <td><span class="badge b-gold">Solar</span></td>
             </tr>
@@ -377,7 +395,7 @@
 
         <div class="footerGrid">
           <div>
-            <div class="sectionTitle">Driver Signals</div>
+            <div class="sectionTitle">Active Drivers</div>
             <table class="table">
               <thead>
                 <tr>
@@ -407,7 +425,7 @@
           </div>
 
           <div>
-            <div class="sectionTitle">Regulators</div>
+            <div class="sectionTitle">Stabilizers</div>
             <table class="table">
               <thead>
                 <tr>
@@ -429,7 +447,7 @@
                   <td id="mercuryVal">0.00</td>
                 </tr>
                 <tr>
-                  <td>State Condition</td>
+                  <td>Current State</td>
                   <td id="stateCondition">—</td>
                 </tr>
               </tbody>
@@ -438,12 +456,12 @@
         </div>
 
         <div class="statusLine">
-          <span class="badge b-violet" id="envBand">Environmental Load: —</span>
-          <span class="badge b-blue" id="forecastBand">Forecast: —</span>
+          <span class="badge b-violet" id="envBand">Field: —</span>
+          <span class="badge b-blue" id="forecastBand">Outlook: —</span>
         </div>
 
         <div class="tiny">
-          Environment and forecast panels are early-stage placeholders until the forecast layer is fully wired.
+          Environment and outlook panels are early-stage placeholders until the forecast layer is fully wired.
         </div>
       </div>
     </div>
@@ -477,12 +495,28 @@
       el.style.width = pct + "%";
     }
 
-    function stateLabelFromMode(modeText){
+    function cleanMode(modeText){
       const text = String(modeText || "").toLowerCase();
-      if (text.includes("overload")) return "Overload state";
-      if (text.includes("threshold") || text.includes("strain")) return "Threshold strain";
-      if (text.includes("mobilized") || text.includes("active")) return "Mobilized state";
-      return "Regulated baseline";
+      if (text.includes("overload")) return "Overloaded";
+      if (text.includes("threshold")) return "Threshold";
+      if (text.includes("mobilized") || text.includes("active")) return "Mobilized";
+      return "Regulated";
+    }
+
+    function stateHelperText(modeText){
+      const mode = cleanMode(modeText);
+      if (mode === "Overloaded") return "System is carrying more than it can comfortably regulate";
+      if (mode === "Threshold") return "Load is approaching capacity";
+      if (mode === "Mobilized") return "Elevated activity, still functioning";
+      return "Stable with manageable load";
+    }
+
+    function stateBadgeClass(modeText){
+      const mode = cleanMode(modeText);
+      if (mode === "Overloaded") return "badge b-red";
+      if (mode === "Threshold") return "badge b-amber";
+      if (mode === "Mobilized") return "badge b-gold";
+      return "badge b-blue";
     }
 
     function strainLabelFromStrain(strain){
@@ -493,14 +527,14 @@
       return "Critical load";
     }
 
-    function envBandFromMode(envMode){
+    function fieldLabel(envMode){
       const text = String(envMode || "").trim();
-      return `Environmental Load: ${text || "—"}`;
+      return `Field: ${text || "—"}`;
     }
 
-    function forecastFromState(forecastState){
+    function outlookLabel(forecastState){
       const text = String(forecastState || "").trim();
-      return `Forecast: ${text || "—"}`;
+      return `Outlook: ${text || "—"}`;
     }
 
     function driverValueFromTopDrivers(list, planetName){
@@ -532,7 +566,9 @@
       const load = safeNum(state.amplifiedLoad);
       const regulation = safeNum(state.regulation);
       const effective = safeNum(state.effectiveLoad);
-      const modeText = state.mode || "Regulated Baseline";
+      const modeText = state.mode || "Regulated";
+
+      const cleanState = cleanMode(modeText);
 
       const volatility = safeNum(planetary.uranus, driverValueFromTopDrivers(telemetry.topDrivers, "Uranus"));
       const fog = safeNum(planetary.neptune, driverValueFromTopDrivers(telemetry.topDrivers, "Neptune"));
@@ -543,17 +579,21 @@
       const mercury = safeNum(planetary.mercury, driverValueFromTopDrivers(telemetry.topRegulators, "Mercury"));
 
       setText("stateScore", fmt(capacity));
-      setText("stateLabel", stateLabelFromMode(modeText));
       setText("strainScore", fmt(strain));
-      setText("strainLabel", strainLabelFromStrain(strain));
-
-      setBar("stateBar", capacity, 1.2);
-      setBar("strainBar", strain, 1.2);
-
       setText("capVal", fmt(capacity));
       setText("loadVal", fmt(load));
       setText("regVal", fmt(regulation));
       setText("effVal", fmt(effective));
+
+      setText("stateLabel", cleanState);
+      setText("stateHelper", stateHelperText(modeText));
+      setText("stateCondition", cleanState);
+
+      const stateBadge = document.getElementById("stateBadge");
+      if (stateBadge){
+        stateBadge.textContent = cleanState;
+        stateBadge.className = stateBadgeClass(modeText);
+      }
 
       setText("primaryDriver", primaryDriverName(data));
       setText("volatilityVal", fmt(volatility));
@@ -563,10 +603,12 @@
       setText("saturnVal", fmt(saturn));
       setText("venusVal", fmt(venus));
       setText("mercuryVal", fmt(mercury));
-      setText("stateCondition", modeText);
 
-      setText("envBand", envBandFromMode(environment.environmentMode));
-      setText("forecastBand", forecastFromState(forecast?.now?.state));
+      setText("envBand", fieldLabel(environment.environmentMode));
+      setText("forecastBand", outlookLabel(forecast?.now?.state));
+      setText("apiStatus", `OK • ${ephemeris.source || "API"} • ${ephemeris.mode || "natal"}`);
+
+      document.getElementById("apiStatus").className = "ok";
 
       const resolvedLocation =
         inputResolved.resolvedLocation ||
@@ -593,13 +635,6 @@
         `Local: ${resolvedTime} | UTC: ${utcDatetime} | Place: ${resolvedLocation} | TZ: ${timezoneName}`
       );
 
-      setText(
-        "apiStatus",
-        `OK • ${ephemeris.source || "API"} • ${ephemeris.mode || "natal"}`
-      );
-
-      document.getElementById("apiStatus").className = "ok";
-
       const sunDeg = data?._longitudesDeg?.sun;
       const moonDeg = data?._longitudesDeg?.moon;
       const ascDeg = data?.angles?.asc;
@@ -610,6 +645,9 @@
         "debugSnapshot",
         `JD: ${jdUt} | Sun: ${sunDeg ?? "—"} | Moon: ${moonDeg ?? "—"} | ASC: ${ascDeg ?? "—"} | MC: ${mcDeg ?? "—"}`
       );
+
+      setBar("stateBar", capacity, 1.2);
+      setBar("strainBar", strain, 1.2);
     }
 
     async function calculate(){
