@@ -124,11 +124,24 @@
       margin-top:6px;
     }
 
+    .btn:disabled{
+      opacity:.78;
+      cursor:wait;
+    }
+
     .help{
       margin-top:22px;
       color:var(--muted);
       font-size:18px;
       line-height:1.45;
+    }
+
+    .debugLine{
+      margin-top:14px;
+      color:var(--amber);
+      font-size:15px;
+      line-height:1.4;
+      word-break:break-word;
     }
 
     .stateHead{
@@ -279,8 +292,7 @@
     .fill.fog{background:linear-gradient(90deg,#8aa0ff,#c3cbff);}
     .fill.act{background:linear-gradient(90deg,var(--warn),#ffd0a8);}
     .fill.damp{background:linear-gradient(90deg,#69d2c8,#b6f4ee);}
-
-    .summary{
+        .summary{
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:18px;
@@ -452,11 +464,16 @@
           Lucy.OS uses birth date, birth time, and birth location.<br/>
           Timezone is resolved automatically from location.
         </div>
+
+        <div class="debugLine" id="debugLine">
+          Last result: awaiting calculation...
+        </div>
       </div>
-            <div class="card state">
+
+      <div class="card state">
         <div class="stateHead">
           <h2>System State</h2>
-          <div id="statusBadge" class="badge alert">Loading</div>
+          <div id="statusBadge" class="badge alert">Awaiting Data</div>
         </div>
 
         <div class="metricGrid">
@@ -574,8 +591,13 @@
     </div>
   </div>
 
+  <div style="margin-top:12px;color:#ff9d57;font-size:16px;text-align:center;padding-bottom:24px;">
+    BUILD MARKER: TEST-44
+  </div>
+
   <script>
     const API_URL = "/api/lucy";
+    let isCalculating = false;
 
     const $ = (id) => document.getElementById(id);
 
@@ -619,6 +641,9 @@
       threeDayCopy: $("threeDayCopy"),
       weekTitle: $("weekTitle"),
       weekCopy: $("weekCopy"),
+
+      calcBtn: $("calcBtn"),
+      debugLine: $("debugLine"),
     };
 
     function fmt(n){
@@ -690,9 +715,13 @@
       return data;
     }
         async function calculateState(){
-      try{
-        setBadge("Loading");
+      if (isCalculating) return;
 
+      isCalculating = true;
+      els.calcBtn.disabled = true;
+      els.calcBtn.textContent = "Calculating...";
+
+      try{
         const currentInputs = {
           dob: $("dob").value.trim(),
           tobRaw: $("tob").value.trim(),
@@ -702,7 +731,6 @@
         };
 
         const data = await fetchPlanetInputs(currentInputs);
-
         console.log("Lucy API response:", data);
 
         const state = data?.state || {};
@@ -714,7 +742,7 @@
         const angles = data?.angles || {};
         const houses = Array.isArray(data?.houses) ? data.houses : [];
 
-        const capacity = Number(state.capacity ?? data?.sun ?? 0);
+        const capacity = Number(state.capacity ?? 0);
         const strain = Number(state.strain ?? 0);
         const amplifiedLoad = Number(state.amplifiedLoad ?? 0);
         const regulation = Number(state.regulation ?? 0);
@@ -732,11 +760,11 @@
           (Array.isArray(telemetry.topRegulators) ? telemetry.topRegulators[0] : null) ||
           "—";
 
-        const volatility = Number(planetary.uranus ?? data?.uranus ?? 0);
-        const fog = Number(planetary.neptune ?? data?.neptune ?? 0);
-        const activation = Number(planetary.mars ?? data?.mars ?? 0);
+        const volatility = Number(planetary.uranus ?? 0);
+        const fog = Number(planetary.neptune ?? 0);
+        const activation = Number(planetary.mars ?? 0);
         const damping =
-          (Number(planetary.saturn ?? data?.saturn ?? 0) + Number(planetary.venus ?? data?.venus ?? 0)) / 2;
+          (Number(planetary.saturn ?? 0) + Number(planetary.venus ?? 0)) / 2;
 
         let loadState = "Low";
         if (amplifiedLoad >= 1.1) loadState = "Very High";
@@ -816,10 +844,13 @@
           `ASC ${fmt(angles.asc)}° · MC ${fmt(angles.mc)}° · Houses loaded: ${houses.length}`;
 
         const metaParts = [];
-        if (inputResolved.location) metaParts.push(`Resolved: ${inputResolved.location}`);
-        if (inputResolved.timezone) metaParts.push(`Timezone: ${inputResolved.timezone}`);
-        if (inputResolved.utcDateTime) metaParts.push(`UTC: ${inputResolved.utcDateTime}`);
+        if (inputResolved.resolvedLocation) metaParts.push(`Resolved: ${inputResolved.resolvedLocation}`);
+        if (inputResolved.timezoneName) metaParts.push(`Timezone: ${inputResolved.timezoneName}`);
+        if (inputResolved.utcDatetime) metaParts.push(`UTC: ${inputResolved.utcDatetime}`);
         els.metaText.textContent = metaParts.length ? metaParts.join(" • ") : "Calculation complete.";
+
+        els.debugLine.textContent =
+          `Last result: mode=${mode} | load=${fmt(amplifiedLoad)} | reg=${fmt(regulation)} | eff=${fmt(effectiveLoad)} | driver=${primaryDriver} | regulator=${topRegulator}`;
 
         setBadge(mode);
       } catch (err){
@@ -830,15 +861,16 @@
         els.driverMeaningText.textContent = "No data returned.";
         els.behaviorText.textContent = "No data returned.";
         els.metaText.textContent = "Request failed. Open browser console for details.";
+        els.debugLine.textContent = `Last result: ERROR | ${err?.message || "Unknown error"}`;
+      } finally {
+        isCalculating = false;
+        els.calcBtn.disabled = false;
+        els.calcBtn.textContent = "Calculate State";
       }
     }
 
     $("calcBtn").addEventListener("click", calculateState);
     calculateState();
   </script>
-
-  <div style="margin-top:12px;color:#ff9d57;font-size:16px;text-align:center;padding-bottom:24px;">
-    BUILD MARKER: TEST-44
-  </div>
 </body>
 </html>
