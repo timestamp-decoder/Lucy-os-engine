@@ -279,7 +279,8 @@
     .fill.fog{background:linear-gradient(90deg,#8aa0ff,#c3cbff);}
     .fill.act{background:linear-gradient(90deg,var(--warn),#ffd0a8);}
     .fill.damp{background:linear-gradient(90deg,#69d2c8,#b6f4ee);}
-        .summary{
+
+    .summary{
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:18px;
@@ -524,7 +525,9 @@
             <div class="barLabel"><span>Damping (Saturn + Venus)</span><strong id="dampNum">0.00</strong></div>
             <div class="track"><div id="dampBar" class="fill damp"></div></div>
           </div>
-                  <div class="summary">
+        </div>
+
+        <div class="summary">
           <div class="summaryBox">
             <div class="title">State Summary</div>
             <div class="body" id="summaryText">Awaiting calculation.</div>
