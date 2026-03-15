@@ -157,6 +157,7 @@
       color:var(--gold);
       line-height:1.5;
       font-weight:700;
+      word-break:break-word;
     }
 
     .right-top{
@@ -311,10 +312,6 @@
     .bar-sat{ background:linear-gradient(90deg, #9d8cff, #c5b8ff); }
     .bar-eff{ background:linear-gradient(90deg, #ffd36b, #ffe89d); }
 
-    .section-spacer{
-      height:16px;
-    }
-
     .subcard{
       margin-top:18px;
       padding:18px;
@@ -441,37 +438,36 @@
     </div>
 
     <div class="grid">
-      <!-- LEFT -->
       <div class="left card">
         <div class="section-title">Natal Input</div>
 
         <div class="field">
-          <label for="dob">Birth Date</label>
-          <input id="dob" type="date" value="1980-11-21" />
+          <label for="dobInput">Birth Date</label>
+          <input id="dobInput" type="text" value="11/21/1980" placeholder="MM/DD/YYYY" />
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 160px;gap:14px;">
           <div class="field">
-            <label for="tob">Time of Birth</label>
-            <input id="tob" type="text" value="6:20" placeholder="6:20" />
+            <label for="tobInput">Time of Birth</label>
+            <input id="tobInput" type="text" value="6:20" placeholder="6:20" />
           </div>
           <div class="field">
-            <label for="ampm">AM / PM</label>
-            <select id="ampm">
-              <option value="AM">AM</option>
+            <label for="ampmInput">AM / PM</label>
+            <select id="ampmInput">
+              <option value="AM" selected>AM</option>
               <option value="PM">PM</option>
             </select>
           </div>
         </div>
 
         <div class="field">
-          <label for="location">Location</label>
-          <input id="location" type="text" value="Cuero, TX USA" placeholder="City, State/Country" />
+          <label for="locationInput">Location</label>
+          <input id="locationInput" type="text" value="Cuero, TX USA" placeholder="City, State/Country" />
         </div>
 
         <div class="field">
-          <label for="utcOffset">UTC Offset Override (Optional)</label>
-          <select id="utcOffset">
+          <label for="utcOffsetInput">UTC Offset Override (Optional)</label>
+          <select id="utcOffsetInput">
             <option value="">Optional manual override</option>
             <option value="-12">UTC -12</option>
             <option value="-11">UTC -11</option>
@@ -505,16 +501,16 @@
           </select>
         </div>
 
-        <button id="calcBtn">Calculate State 👆🏻</button>
+        <button id="calculateBtn">Calculate State 👆🏻</button>
 
         <div class="helper">
           Lucy.OS uses birth date, birth time, and birth location.<br />
           Timezone is resolved automatically from location.
         </div>
 
-        <div id="status" class="status warn">Ready.</div>
+        <div id="statusText" class="status warn">Ready.</div>
 
-        <div id="summary" class="summary">
+        <div id="summaryText" class="summary">
           Last result: waiting for first calculation.
         </div>
 
@@ -541,7 +537,6 @@
         </div>
       </div>
 
-      <!-- RIGHT -->
       <div class="right card">
         <div class="right-top">
           <h2>System State</h2>
@@ -649,14 +644,15 @@
     const $ = (id) => document.getElementById(id);
 
     const els = {
-      dob: $("dob"),
-      tob: $("tob"),
-      ampm: $("ampm"),
-      location: $("location"),
-      utcOffset: $("utcOffset"),
-      calcBtn: $("calcBtn"),
-      status: $("status"),
-      summary: $("summary"),
+      dobInput: $("dobInput"),
+      tobInput: $("tobInput"),
+      ampmInput: $("ampmInput"),
+      locationInput: $("locationInput"),
+      utcOffsetInput: $("utcOffsetInput"),
+      calculateBtn: $("calculateBtn"),
+
+      statusText: $("statusText"),
+      summaryText: $("summaryText"),
 
       resolvedLocation: $("resolvedLocation"),
       resolvedTimezone: $("resolvedTimezone"),
@@ -705,8 +701,8 @@
     }
 
     function setStatus(text, type="warn"){
-      els.status.textContent = text;
-      els.status.className = `status ${type}`;
+      els.statusText.textContent = text;
+      els.statusText.className = `status ${type}`;
     }
 
     function setBar(el, value){
@@ -733,32 +729,56 @@
       return "Thin";
     }
 
-    async function calculateState(){
-      const dob = els.dob.value.trim();
-      const tob = els.tob.value.trim();
-      const ampm = els.ampm.value;
-      const location = els.location.value.trim();
-      const utcOffset = els.utcOffset.value;
+    function normalizeDob(value){
+      const raw = (value || "").trim();
 
-      if (!dob || !tob || !location){
+      if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+        return raw;
+      }
+
+      const m = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      if (m) {
+        const mm = m[1].padStart(2, "0");
+        const dd = m[2].padStart(2, "0");
+        const yyyy = m[3];
+        return `${yyyy}-${mm}-${dd}`;
+      }
+
+      return raw;
+    }
+
+    async function calculateState(){
+      const dobRaw = els.dobInput.value.trim();
+      const tob = els.tobInput.value.trim();
+      const ampm = els.ampmInput.value;
+      const location = els.locationInput.value.trim();
+      const utcOffsetOverride = els.utcOffsetInput.value.trim();
+
+      if (!dobRaw || !tob || !location){
         setStatus("Birth date, time, and location are required.", "err");
         return;
       }
 
-      els.calcBtn.disabled = true;
-      setStatus("Calculating...", "warn");
-
       const payload = {
-        mode: "natal",
-        dob,
+        dob: normalizeDob(dobRaw),
         tob,
         ampm,
-        locationText: location
+        location
       };
 
-      if (utcOffset !== ""){
-        payload.utcOffsetOverride = Number(utcOffset);
+      if (utcOffsetOverride !== ""){
+        payload.utcOffsetOverride = utcOffsetOverride;
       }
+
+      console.log("PAYLOAD", payload);
+
+      if (!payload.location) {
+        setStatus("Location field is empty in UI payload.", "err");
+        return;
+      }
+
+      els.calculateBtn.disabled = true;
+      setStatus("Calculating...", "warn");
 
       try {
         const res = await fetch("/api/chart_inputs", {
@@ -770,7 +790,6 @@
         });
 
         const data = await res.json().catch(() => ({}));
-
         console.log("Lucy API response:", data);
 
         if (!res.ok){
@@ -782,16 +801,16 @@
       } catch (err) {
         console.error(err);
         setStatus(`Error: ${err.message}`, "err");
+        els.summaryText.textContent = `Last result: error | ${err.message}`;
         els.rawOutput.textContent = JSON.stringify({ error: err.message }, null, 2);
       } finally {
-        els.calcBtn.disabled = false;
+        els.calculateBtn.disabled = false;
       }
     }
 
     function renderState(data){
       const state = data.state || {};
       const telemetry = data.telemetry || {};
-      const interpretation = data.interpretation || {};
       const forecast = data.forecast || {};
       const inputResolved = data.inputResolved || {};
 
@@ -802,23 +821,20 @@
       const saturnConstraint = Number(state.saturnConstraint || 0);
       const effectiveLoad = Number(state.effectiveLoad || 0);
 
-      const mode = state.mode || interpretation.modeMeaning || "Unknown";
+      const mode = state.mode || "Unknown";
       const primaryDriver = telemetry.primaryDriver || "—";
       const topRegulator = telemetry.topRegulator || "—";
 
-      // Top summary
       els.modePill.textContent = mode;
       els.capacityVal.textContent = fmt(capacity);
       els.strainVal.textContent = fmt(strain);
       els.driverVal.textContent = primaryDriver;
       els.regulatorVal.textContent = topRegulator;
 
-      // Pills
-      els.loadStatePill.textContent = deriveLoadState(amplifiedLoad);
-      els.containmentPill.textContent = deriveContainment(regulation, amplifiedLoad);
+      els.loadStatePill.textContent = state.loadState || deriveLoadState(amplifiedLoad);
+      els.containmentPill.textContent = state.containment || deriveContainment(regulation, amplifiedLoad);
       els.modeTextPill.textContent = mode;
 
-      // Bars
       els.loadNum.textContent = fmt(amplifiedLoad);
       els.regNum.textContent = fmt(regulation);
       els.satNum.textContent = fmt(saturnConstraint);
@@ -829,14 +845,12 @@
       setBar(els.satBar, saturnConstraint);
       setBar(els.effBar, effectiveLoad);
 
-      // Summary line
-      els.summary.textContent =
+      els.summaryText.textContent =
         `Last result: mode=${mode} | load=${fmt(amplifiedLoad)} | reg=${fmt(regulation)} | eff=${fmt(effectiveLoad)} | driver=${primaryDriver} | regulator=${topRegulator}`;
 
-      // Resolved input
       els.resolvedLocation.textContent =
-        inputResolved.locationResolved ||
         inputResolved.resolvedLocation ||
+        inputResolved.locationResolved ||
         "—";
 
       els.resolvedTimezone.textContent =
@@ -854,21 +868,40 @@
         inputResolved.utc_datetime ||
         "—";
 
-      // Forecast
-      els.forecastNowState.textContent = forecast.now?.state || "—";
-      els.forecastNowText.textContent = forecast.now?.text || "No forecast available.";
+      els.forecastNowState.textContent =
+        forecast.now?.title ||
+        forecast.now?.state ||
+        "—";
 
-      els.forecast6State.textContent = forecast.plus6?.state || "—";
-      els.forecast6Text.textContent = forecast.plus6?.text || "No forecast available.";
+      els.forecastNowText.textContent =
+        forecast.now?.detail ||
+        forecast.now?.text ||
+        "Waiting for calculation.";
 
-      els.forecast24State.textContent = forecast.plus24?.state || "—";
-      els.forecast24Text.textContent = forecast.plus24?.text || "No forecast available.";
+      els.forecast6State.textContent =
+        forecast.plus6?.title ||
+        forecast.plus6?.state ||
+        "—";
 
-      // Raw
+      els.forecast6Text.textContent =
+        forecast.plus6?.detail ||
+        forecast.plus6?.text ||
+        "Waiting for calculation.";
+
+      els.forecast24State.textContent =
+        forecast.plus24?.title ||
+        forecast.plus24?.state ||
+        "—";
+
+      els.forecast24Text.textContent =
+        forecast.plus24?.detail ||
+        forecast.plus24?.text ||
+        "Waiting for calculation.";
+
       els.rawOutput.textContent = JSON.stringify(data, null, 2);
     }
 
-    els.calcBtn.addEventListener("click", calculateState);
+    els.calculateBtn.addEventListener("click", calculateState);
   </script>
 </body>
 </html>
