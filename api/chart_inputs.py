@@ -1,26 +1,15 @@
 from http.server import BaseHTTPRequestHandler
 import json
+import os
 import re
 from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
+from urllib.parse import urlencode
+from urllib.request import urlopen, Request
 
 import swisseph as swe
-
-try:
-    from zoneinfo import ZoneInfo
-except Exception:
-    ZoneInfo = None
-
-try:
-    from timezonefinder import TimezoneFinder
-    tf = TimezoneFinder()
-except Exception:
-    tf = None
-
-try:
-    from geopy.geocoders import Nominatim
-    geolocator = Nominatim(user_agent="lucy-os-engine")
-except Exception:
-    geolocator = None
+from geopy.geocoders import Nominatim
+from timezonefinder import TimezoneFinder
 
 
 PLANETS = {
@@ -37,495 +26,675 @@ PLANETS = {
 }
 
 FLAGS = swe.FLG_SWIEPH | swe.FLG_SPEED
+HOUSE_SYSTEM = b"P"
+
+BUILD_ID = "v2.6-saturn-angles"
+
+_geolocator = Nominatim(user_agent="lucy-os-engine")
+_tzf = TimezoneFinder()
 
 
 def normalize_longitude(lon: float) -> float:
     return (lon % 360.0) / 360.0
 
 
-def clamp(v, lo, hi):
-    return max(lo, min(hi, v))
-
-
 def normalize_tob_with_ampm(tob: str, ampm: str | None = None) -> str:
-    """
-    Accepts:
-      - tob='6:20', ampm='AM'
-      - tob='6:20 PM'
-      - tob='18:20'
-      - tob='06:20'
-    Returns HH:MM 24h
-    """
-    raw = (tob or "").strip().upper()
+    tob = str(tob or "").strip()
+    ampm = str(ampm or "").strip().upper()
 
-    m = re.match(r"^\s*(\d{1,2})\s*:\s*(\d{2})\s*(AM|PM)?\s*$", raw)
-    if not m:
-        raise ValueError("Time of birth must look like 6:20 or 6:20 PM")
+    if not tob:
+        raise ValueError("Time of birth is required")
 
-    hour = int(m.group(1))
-    minute = int(m.group(2))
-    suffix = m.group(3)
+    upper_tob = tob.upper()
+    if "AM" in upper_tob or "PM" in upper_tob:
+        return tob
 
-    if ampm:
-        suffix = ampm.strip().upper()
+    if ampm in ("AM", "PM"):
+        return f"{tob} {ampm}"
 
-    if minute < 0 or minute > 59:
-        raise ValueError("Minutes must be 00-59")
-
-    if suffix in ("AM", "PM"):
-        if hour < 1 or hour > 12:
-            raise ValueError("12-hour time must use hours 1-12")
-        if suffix == "AM":
-            hour = 0 if hour == 12 else hour
-        else:
-            hour = 12 if hour == 12 else hour + 12
-    else:
-        if hour < 0 or hour > 23:
-            raise ValueError("24-hour time must use hours 0-23")
-
-    return f"{hour:02d}:{minute:02d}"
+    return tob
 
 
-def geocode_location(location_text: str):
-    """
-    Returns:
-      {
-        lat, lon, display_name, timezone_name
-      }
-    """
-    if not location_text or not geolocator:
-        return None
+def parse_time_flexible(time_str: str) -> datetime:
+    cleaned = str(time_str or "").strip().upper().replace(".", "")
+    cleaned = re.sub(r"\s+", " ", cleaned)
 
-    try:
-        loc = geolocator.geocode(location_text, exactly_one=True, timeout=10)
-        if not loc:
-            return None
+    formats = [
+        "%I:%M %p",
+        "%I:%M%p",
+        "%I %p",
+        "%I%p",
+        "%H:%M",
+        "%H",
+    ]
 
-        lat = float(loc.latitude)
-        lon = float(loc.longitude)
-
-        tz_name = None
-        if tf:
-            try:
-                tz_name = tf.timezone_at(lat=lat, lng=lon)
-            except Exception:
-                tz_name = None
-
-        return {
-            "lat": lat,
-            "lon": lon,
-            "display_name": loc.address,
-            "timezone_name": tz_name,
-        }
-    except Exception:
-        return None
-
-
-def resolve_timezone_and_utc(dob: str, tob_24: str, location_text: str, utc_offset_override: str | None = None):
-    """
-    Returns:
-      {
-        lat, lon, resolved_location, timezone_name,
-        local_dt, utc_dt
-      }
-    """
-    y, m, d = [int(x) for x in dob.split("-")]
-    hh, mm = [int(x) for x in tob_24.split(":")]
-
-    geo = geocode_location(location_text) if location_text else None
-
-    # Manual UTC offset override (like -6, +9, -05:00)
-    if utc_offset_override:
-        txt = utc_offset_override.strip()
-        m_off = re.match(r"^([+-]?)(\d{1,2})(?::?(\d{2}))?$", txt)
-        if not m_off:
-            raise ValueError("UTC offset override must look like -6, +9, -05:00")
-
-        sign = -1 if m_off.group(1) == "-" else 1
-        oh = int(m_off.group(2))
-        om = int(m_off.group(3) or "0")
-
-        if oh > 14 or om > 59:
-            raise ValueError("UTC offset override out of range")
-
-        offset = timedelta(hours=oh, minutes=om) * sign
-        tzinfo = timezone(offset)
-
-        local_dt = datetime(y, m, d, hh, mm, tzinfo=tzinfo)
-        utc_dt = local_dt.astimezone(timezone.utc)
-
-        return {
-            "lat": geo["lat"] if geo else None,
-            "lon": geo["lon"] if geo else None,
-            "resolved_location": geo["display_name"] if geo else location_text,
-            "timezone_name": f"UTC{txt}",
-            "local_dt": local_dt,
-            "utc_dt": utc_dt,
-        }
-
-    # Automatic timezone resolution
-    if geo and geo.get("timezone_name") and ZoneInfo:
-        tz_name = geo["timezone_name"]
+    for fmt in formats:
         try:
-            tzinfo = ZoneInfo(tz_name)
-            local_dt = datetime(y, m, d, hh, mm, tzinfo=tzinfo)
-            utc_dt = local_dt.astimezone(timezone.utc)
+            return datetime.strptime(cleaned, fmt)
+        except ValueError:
+            continue
 
-            return {
-                "lat": geo["lat"],
-                "lon": geo["lon"],
-                "resolved_location": geo["display_name"],
-                "timezone_name": tz_name,
-                "local_dt": local_dt,
-                "utc_dt": utc_dt,
-            }
-        except Exception:
-            pass
+    raise ValueError("Time of birth must look like 6:20 AM, 10:55 PM, or 18:20")
 
-    # Fallback: treat as UTC if timezone can't be resolved
-    local_dt = datetime(y, m, d, hh, mm, tzinfo=timezone.utc)
-    utc_dt = local_dt
+
+def geocode_birth_place(location_text: str) -> dict:
+    if not location_text:
+        raise ValueError("Birth location is required")
+
+    loc = _geolocator.geocode(location_text, exactly_one=True, timeout=12)
+    if not loc:
+        raise ValueError(f"Could not geocode location: {location_text}")
+
+    lat = float(loc.latitude)
+    lon = float(loc.longitude)
+    tz_name = _tzf.timezone_at(lat=lat, lng=lon)
+
+    if not tz_name:
+        raise ValueError(f"Could not resolve timezone from coordinates: {lat}, {lon}")
 
     return {
-        "lat": geo["lat"] if geo else None,
-        "lon": geo["lon"] if geo else None,
-        "resolved_location": geo["display_name"] if geo else location_text,
-        "timezone_name": "UTC (fallback)",
-        "local_dt": local_dt,
-        "utc_dt": utc_dt,
+        "location_input": location_text,
+        "location_resolved": loc.address,
+        "lat": lat,
+        "lon": lon,
+        "timezone_name": tz_name,
     }
 
 
-def julian_day_from_utc(dt_utc: datetime):
-    return swe.julday(
-        dt_utc.year,
-        dt_utc.month,
-        dt_utc.day,
-        dt_utc.hour + (dt_utc.minute / 60.0) + (dt_utc.second / 3600.0),
+def resolve_local_and_utc_birth(
+    dob: str,
+    tob_normalized: str,
+    location_text: str,
+    utc_offset_override: float | None = None,
+) -> dict:
+    date_part = datetime.strptime(dob, "%Y-%m-%d")
+    time_part = parse_time_flexible(tob_normalized)
+
+    local_naive = datetime(
+        date_part.year,
+        date_part.month,
+        date_part.day,
+        time_part.hour,
+        time_part.minute,
+        0,
+        0,
     )
 
+    geo = geocode_birth_place(location_text)
 
-def get_real_ephemeris(dt_utc: datetime):
-    jd_ut = julian_day_from_utc(dt_utc)
+    if utc_offset_override is not None:
+        local_dt = local_naive.replace(
+            tzinfo=timezone(timedelta(hours=float(utc_offset_override)))
+        )
+        utc_dt = local_dt.astimezone(timezone.utc)
+        timezone_name = f"UTC{utc_offset_override:+}"
+    else:
+        zone = ZoneInfo(geo["timezone_name"])
+        local_dt = local_naive.replace(tzinfo=zone)
+        utc_dt = local_dt.astimezone(timezone.utc)
+        timezone_name = geo["timezone_name"]
 
-    out = {}
-    speeds = {}
+    return {
+        **geo,
+        "timezone_label": timezone_name,
+        "utc_offset_at_birth": local_dt.utcoffset().total_seconds() / 3600.0,
+        "local_dt": local_dt,
+        "utc_dt": utc_dt,
+        "local_time_resolved": local_dt.isoformat(),
+        "utc_datetime": utc_dt.isoformat(),
+    }
+
+
+def to_julian_day_utc(utc_dt: datetime) -> float:
+    hour_decimal = (
+        utc_dt.hour
+        + (utc_dt.minute / 60.0)
+        + (utc_dt.second / 3600.0)
+    )
+
+    jd_ut = swe.julday(
+        utc_dt.year,
+        utc_dt.month,
+        utc_dt.day,
+        hour_decimal,
+    )
+
+    return jd_ut
+
+
+def compute_angles_and_houses(jd_ut: float, lat: float, lon: float):
+    cusps, ascmc = swe.houses(jd_ut, lat, lon, HOUSE_SYSTEM)
+
+    asc = float(ascmc[0] % 360.0)
+    mc = float(ascmc[1] % 360.0)
+    desc = float((asc + 180.0) % 360.0)
+    ic = float((mc + 180.0) % 360.0)
+
+    houses = [float(cusps[i] % 360.0) for i in range(12)]
+
+    return {
+        "asc": asc,
+        "mc": mc,
+        "desc": desc,
+        "ic": ic,
+    }, houses
+
+
+def compute_chart_inputs(
+    dob: str,
+    tob: str,
+    utc_offset_hours: float | None = None,
+    location: str | None = None,
+):
+    resolved = resolve_local_and_utc_birth(
+        dob=dob,
+        tob_normalized=tob,
+        location_text=location or "",
+        utc_offset_override=utc_offset_hours,
+    )
+
+    utc_dt = resolved["utc_dt"]
+    jd_ut = to_julian_day_utc(utc_dt)
+
+    result = {}
+    longitudes_deg = {}
+    speeds_deg = {}
 
     for name, body in PLANETS.items():
         xx, _ = swe.calc_ut(jd_ut, body, FLAGS)
-        lon = xx[0]
-        speed = xx[3]
-        out[name] = normalize_longitude(lon)
-        speeds[name] = speed
+        lon = float(xx[0] % 360.0)
+        spd = float(xx[3])
+        longitudes_deg[name] = lon
+        speeds_deg[name] = spd
+        result[name] = normalize_longitude(lon)
 
-    return {
-        "normalized": out,
-        "speeds": speeds,
-        "jd_ut": jd_ut,
+    angles, houses = compute_angles_and_houses(
+        jd_ut,
+        resolved["lat"],
+        resolved["lon"],
+    )
+
+    planet_houses = {}
+    for name, lon in longitudes_deg.items():
+        house_num = 12
+        for i in range(12):
+            start = houses[i]
+            end = houses[(i + 1) % 12]
+
+            if start <= end:
+                if start <= lon < end:
+                    house_num = i + 1
+                    break
+            else:
+                if lon >= start or lon < end:
+                    house_num = i + 1
+                    break
+
+        planet_houses[name] = house_num
+
+    result["_longitudesDeg"] = longitudes_deg
+    result["_speedsDeg"] = speeds_deg
+    result["angles"] = angles
+    result["houses"] = houses
+    result["planetHouses"] = planet_houses
+
+    result["_meta"] = {
         "source": "Swiss Ephemeris",
+        "mode": "natal",
+        "utc_datetime": resolved["utc_datetime"],
+        "jd_ut": round(jd_ut, 6),
+        "location": resolved["location_input"],
+        "location_resolved": resolved["location_resolved"],
+        "utc_offset": resolved["utc_offset_at_birth"],
+        "utc_offset_at_birth": resolved["utc_offset_at_birth"],
+        "timezone_name": resolved["timezone_name"],
+        "timezone_label": resolved["timezone_label"],
+        "lat": resolved["lat"],
+        "lon": resolved["lon"],
+        "local_time_resolved": resolved["local_time_resolved"],
+        "note": "Worldwide location + timezone resolution active.",
     }
 
+    return result
 
-def smooth_planets(raw, previous=None):
-    # V2 smoothing layer
-    alpha_map = {
-        "sun": 0.01,
-        "moon": 0.05,
-        "mercury": 0.02,
-        "venus": 0.02,
-        "mars": 0.02,
-        "jupiter": 0.01,
-        "saturn": 0.01,
-        "uranus": 0.01,
-        "neptune": 0.01,
-        "pluto": 0.01,
+
+def fmt(n: float) -> str:
+    try:
+        return f"{float(n):.2f}"
+    except Exception:
+        return "0.00"
+
+
+def infer_mode(strain: float) -> str:
+    if strain >= 1.0:
+        return "Overload"
+    if strain >= 0.85:
+        return "Threshold Strain"
+    if strain >= 0.60:
+        return "Mobilized"
+    return "Regulated Baseline"
+
+
+def angular_distance(a: float, b: float) -> float:
+    diff = abs((a - b) % 360.0)
+    return min(diff, 360.0 - diff)
+
+
+def nearest_angle_distance(planet_lon: float, angles: dict) -> float:
+    return min(
+        angular_distance(planet_lon, angles.get("asc", 0.0)),
+        angular_distance(planet_lon, angles.get("mc", 0.0)),
+        angular_distance(planet_lon, angles.get("desc", 0.0)),
+        angular_distance(planet_lon, angles.get("ic", 0.0)),
+    )
+
+
+def angularity_multiplier(planet_lon: float, angles: dict) -> float:
+    d = nearest_angle_distance(planet_lon, angles)
+
+    if d <= 5:
+        return 1.35
+    if d <= 12:
+        return 1.22
+    if d <= 20:
+        return 1.12
+    return 1.00
+
+
+def house_multiplier(house_num: int) -> float:
+    if house_num in (1, 4, 7, 10):
+        return 1.18
+    if house_num in (2, 5, 8, 11):
+        return 1.08
+    return 1.00
+
+def build_lucy_response(chart: dict) -> dict:
+    sun = float(chart.get("sun", 0))
+    moon = float(chart.get("moon", 0))
+    mercury = float(chart.get("mercury", 0))
+    venus = float(chart.get("venus", 0))
+    mars = float(chart.get("mars", 0))
+    jupiter = float(chart.get("jupiter", 0))
+    saturn = float(chart.get("saturn", 0))
+    uranus = float(chart.get("uranus", 0))
+    neptune = float(chart.get("neptune", 0))
+    pluto = float(chart.get("pluto", 0))
+
+    longitudes_deg = chart.get("_longitudesDeg", {})
+    angles = chart.get("angles") or {}
+    planet_houses = chart.get("planetHouses", {})
+
+    sun_deg = float(longitudes_deg.get("sun", 0.0))
+    moon_deg = float(longitudes_deg.get("moon", 0.0))
+    mercury_deg = float(longitudes_deg.get("mercury", 0.0))
+    venus_deg = float(longitudes_deg.get("venus", 0.0))
+    mars_deg = float(longitudes_deg.get("mars", 0.0))
+    jupiter_deg = float(longitudes_deg.get("jupiter", 0.0))
+    saturn_deg = float(longitudes_deg.get("saturn", 0.0))
+    uranus_deg = float(longitudes_deg.get("uranus", 0.0))
+    neptune_deg = float(longitudes_deg.get("neptune", 0.0))
+    pluto_deg = float(longitudes_deg.get("pluto", 0.0))
+
+    sun_house = int(planet_houses.get("sun", 12))
+    moon_house = int(planet_houses.get("moon", 12))
+    mercury_house = int(planet_houses.get("mercury", 12))
+    venus_house = int(planet_houses.get("venus", 12))
+    mars_house = int(planet_houses.get("mars", 12))
+    jupiter_house = int(planet_houses.get("jupiter", 12))
+    saturn_house = int(planet_houses.get("saturn", 12))
+    uranus_house = int(planet_houses.get("uranus", 12))
+    neptune_house = int(planet_houses.get("neptune", 12))
+    pluto_house = int(planet_houses.get("pluto", 12))
+
+    has_angles = bool(angles)
+
+    def eff(base: float, lon: float, house_num: int, boost_fast: bool = False):
+        ang_mult = angularity_multiplier(lon, angles) if has_angles else 1.0
+        h_mult = house_multiplier(house_num)
+        extra = 1.10 if boost_fast and ang_mult > 1.0 else 1.0
+        eff_val = base * ang_mult * h_mult * extra
+        return eff_val, ang_mult, h_mult
+
+    sun_eff, sun_ang, sun_house_mult = eff(sun, sun_deg, sun_house, False)
+    moon_eff, moon_ang, moon_house_mult = eff(moon, moon_deg, moon_house, True)
+    mercury_eff, mercury_ang, mercury_house_mult = eff(mercury, mercury_deg, mercury_house, True)
+    venus_eff, venus_ang, venus_house_mult = eff(venus, venus_deg, venus_house, False)
+    mars_eff, mars_ang, mars_house_mult = eff(mars, mars_deg, mars_house, True)
+    jupiter_eff, jupiter_ang, jupiter_house_mult = eff(jupiter, jupiter_deg, jupiter_house, False)
+    saturn_eff, saturn_ang, saturn_house_mult = eff(saturn, saturn_deg, saturn_house, False)
+    uranus_eff, uranus_ang, uranus_house_mult = eff(uranus, uranus_deg, uranus_house, False)
+    neptune_eff, neptune_ang, neptune_house_mult = eff(neptune, neptune_deg, neptune_house, False)
+    pluto_eff, pluto_ang, pluto_house_mult = eff(pluto, pluto_deg, pluto_house, False)
+
+    capacity = max((sun * 0.70) + (sun_eff * 0.30), 0.01)
+
+    amplified_load = (
+        moon_eff * 0.30 +
+        mars_eff * 0.20 +
+        jupiter_eff * 0.14 +
+        uranus_eff * 0.16 +
+        neptune_eff * 0.12 +
+        pluto_eff * 0.08
+    )
+
+    regulation = (
+        saturn_eff * 0.40 +
+        venus_eff * 0.30 +
+        mercury_eff * 0.30
+    )
+
+    overload_gap = max(0.0, amplified_load - regulation)
+    capacity_pressure = overload_gap / max(capacity, 0.12)
+
+    provisional_effective_load = max(amplified_load - regulation, 0.0)
+    provisional_strain = provisional_effective_load / capacity if capacity > 0 else 0.0
+
+    saturn_raw = saturn_eff
+
+    saturn_constraint = min(
+        0.55,
+        saturn_raw * 0.12
+        + overload_gap * 0.18
+        + max(0.0, capacity_pressure - 0.35) * 0.22
+        + max(0.0, provisional_strain - 0.45) * 0.18
+    )
+
+    if amplified_load <= regulation:
+        saturn_constraint = min(saturn_constraint, 0.02)
+
+    saturn_constraint = min(saturn_constraint, amplified_load * 0.65)
+
+    effective_load = max(amplified_load - regulation - saturn_constraint, 0.0)
+    strain = effective_load / capacity if capacity > 0 else 0.0
+
+    mode = infer_mode(strain)
+
+    load_drivers = [
+        ("Moon", moon_eff),
+        ("Mars", mars_eff),
+        ("Jupiter", jupiter_eff),
+        ("Uranus", uranus_eff),
+        ("Neptune", neptune_eff),
+        ("Pluto", pluto_eff),
+    ]
+    load_drivers.sort(key=lambda x: x[1], reverse=True)
+
+    regulators = [
+        ("Saturn", saturn_eff),
+        ("Venus", venus_eff),
+        ("Mercury", mercury_eff),
+    ]
+    regulators.sort(key=lambda x: x[1], reverse=True)
+
+    primary_driver = load_drivers[0][0]
+    top_regulator = regulators[0][0]
+
+    environment_load = (uranus_eff * 0.5) + (neptune_eff * 0.5)
+    environment_mode = (
+        "Clear / Stable" if environment_load < 0.33 else
+        "Mixed / Variable" if environment_load < 0.66 else
+        "Diffuse / Volatile"
+    )
+
+    timing_pressure = (mars_eff * 0.4) + (moon_eff * 0.35) + (mercury_eff * 0.25)
+    timing_mode = (
+        "Stable Window" if timing_pressure < 0.33 else
+        "Active Window" if timing_pressure < 0.66 else
+        "Pushed Window"
+    )
+
+    pluto_rewrite = pluto_eff > 0.85 and strain > 0.95
+    saturn_shutdown = saturn_constraint > 0.12
+
+    interpretation = {
+        "modeMeaning": mode,
+        "stateSummary": (
+            f"{mode}. Capacity {fmt(capacity)}, effective load {fmt(effective_load)}, "
+            f"strain {fmt(strain)}."
+        ),
+        "nervousSystemBehavior": (
+            f"Primary load driver is {primary_driver}; top regulator is {top_regulator}."
+        ),
+        "recommendedPacing": (
+            "Reduce load, simplify decisions, and avoid stacking stimulation."
+            if strain >= 1.0 else
+            "Move slower and increase containment before adding pressure."
+            if strain >= 0.85 else
+            "Good for focused effort with pacing and breaks."
+            if strain >= 0.60 else
+            "Baseline / stable window."
+        ),
+        "dominantDriverMeaning": (
+            f"{primary_driver} is currently the strongest load-side influence."
+        ),
+        "regulationStatus": (
+            f"{top_regulator} leads the regulation layer ({fmt(regulation)} total regulation)."
+        ),
+        "volatilityNote": f"Uranus volatility proxy: {fmt(uranus_eff)}.",
+        "fogNote": f"Neptune fog proxy: {fmt(neptune_eff)}.",
+        "activationNote": f"Mars activation proxy: {fmt(mars_eff)}.",
+        "constraintNote": f"Saturn constraint applied: {fmt(saturn_constraint)}.",
     }
 
-    if not previous:
-        return raw.copy()
+    forecast_now_state = (
+        "Overload" if strain >= 1.0 else
+        "Threshold" if strain >= 0.85 else
+        "Mobilized" if strain >= 0.60 else
+        "Regulated"
+    )
 
-    smoothed = {}
-    for k, raw_val in raw.items():
-        prev_val = previous.get(k, raw_val)
-        a = alpha_map.get(k, 0.02)
-        smoothed[k] = (raw_val * a) + (prev_val * (1.0 - a))
-    return smoothed
-
-
-def build_planetary_state(p):
-    """
-    Core V2.5-ish engine:
-    - Sun = capacity baseline
-    - Moon/Mars/Jupiter/Uranus/Neptune/Pluto = load pressures
-    - Saturn/Venus/Mercury = regulation offsets
-    """
-    sun = p["sun"]
-    moon = p["moon"]
-    mercury = p["mercury"]
-    venus = p["venus"]
-    mars = p["mars"]
-    jupiter = p["jupiter"]
-    saturn = p["saturn"]
-    uranus = p["uranus"]
-    neptune = p["neptune"]
-    pluto = p["pluto"]
-
-    # Capacity (Sun baseline)
-    capacity = clamp(0.15 + (sun * 0.85), 0.10, 1.00)
-
-    # Load drivers
-    load_drivers = {
-        "Moon": moon * 0.95,
-        "Mars": mars * 1.00,
-        "Jupiter": jupiter * 1.05,
-        "Uranus": uranus * 1.10,
-        "Neptune": neptune * 0.90,
-        "Pluto": pluto * 1.15,
+    forecast = {
+        "now": {
+            "state": forecast_now_state,
+            "text": interpretation["stateSummary"],
+        },
+        "plus6": {
+            "state": forecast_now_state,
+            "text": "Short-horizon forecast is currently using the same natal-state proxy layer.",
+        },
+        "plus24": {
+            "state": forecast_now_state,
+            "text": "Longer-horizon forecast is currently using the same natal-state proxy layer.",
+        },
     }
 
-    amplified_load = sum(load_drivers.values()) / len(load_drivers)
-    amplified_load = clamp(amplified_load, 0.0, 1.30)
-
-    # Regulation drivers
-    regulation_drivers = {
-        "Mercury": mercury * 0.90,
-        "Venus": venus * 0.95,
-        "Saturn": saturn * 1.00,
+    meta = chart.get("_meta", {})
+    input_resolved = {
+        "resolvedLocation": meta.get("location_resolved"),
+        "locationResolved": meta.get("location_resolved"),
+        "lat": meta.get("lat"),
+        "lon": meta.get("lon"),
+        "utcOffsetAtBirth": meta.get("utc_offset_at_birth"),
+        "utc_offset_at_birth": meta.get("utc_offset_at_birth"),
+        "timezoneName": meta.get("timezone_name"),
+        "timezone_name": meta.get("timezone_name"),
+        "localTimeResolved": meta.get("local_time_resolved"),
+        "local_time_resolved": meta.get("local_time_resolved"),
+        "utcDatetime": meta.get("utc_datetime"),
+        "utc_datetime": meta.get("utc_datetime"),
     }
 
-    regulation = sum(regulation_drivers.values()) / len(regulation_drivers)
-    regulation = clamp(regulation, 0.0, amplified_load)  # regulation cannot exceed load
+    ephemeris = {
+        "source": meta.get("source", "Swiss Ephemeris"),
+        "mode": meta.get("mode", "natal"),
+        "utcDatetime": meta.get("utc_datetime"),
+        "utc_datetime": meta.get("utc_datetime"),
+        "jdUt": meta.get("jd_ut"),
+        "jd_ut": meta.get("jd_ut"),
+    }
 
-    # ---- SATURN HARD GOVERNOR (TUNED STRONGER) ----
-    # This is the overload clamp, distinct from Saturn's normal contribution inside regulation.
-    # It engages when amplified load is above capacity (relative overload).
-    overload_delta = max(0.0, amplified_load - capacity)
+    planetary = {
+        "sun": sun,
+        "moon": moon,
+        "mercury": mercury,
+        "venus": venus,
+        "mars": mars,
+        "jupiter": jupiter,
+        "saturn": saturn,
+        "uranus": uranus,
+        "neptune": neptune,
+        "pluto": pluto,
+    }
 
-    saturn_eff = regulation_drivers["Saturn"]
+    angularity = {
+        "sun": {"angleMult": sun_ang, "houseMult": sun_house_mult, "house": sun_house},
+        "moon": {"angleMult": moon_ang, "houseMult": moon_house_mult, "house": moon_house},
+        "mercury": {"angleMult": mercury_ang, "houseMult": mercury_house_mult, "house": mercury_house},
+        "venus": {"angleMult": venus_ang, "houseMult": venus_house_mult, "house": venus_house},
+        "mars": {"angleMult": mars_ang, "houseMult": mars_house_mult, "house": mars_house},
+        "jupiter": {"angleMult": jupiter_ang, "houseMult": jupiter_house_mult, "house": jupiter_house},
+        "saturn": {"angleMult": saturn_ang, "houseMult": saturn_house_mult, "house": saturn_house},
+        "uranus": {"angleMult": uranus_ang, "houseMult": uranus_house_mult, "house": uranus_house},
+        "neptune": {"angleMult": neptune_ang, "houseMult": neptune_house_mult, "house": neptune_house},
+        "pluto": {"angleMult": pluto_ang, "houseMult": pluto_house_mult, "house": pluto_house},
+    }
 
-    # Strengthened from previous weaker tuning.
-    saturn_constraint = 0.0
-    if overload_delta > 0:
-        saturn_constraint = min(
-            overload_delta * max(saturn_eff, 0.20) * 0.35,
-            amplified_load * 0.50
-        )
-
-    saturn_constraint = clamp(saturn_constraint, 0.0, amplified_load * 0.50)
-
-    # Effective load after regulation + hard constraint
-    effective_load = amplified_load - regulation - saturn_constraint
-    effective_load = clamp(effective_load, 0.0, 1.30)
-
-    strain = clamp(effective_load / max(capacity, 0.10), 0.0, 2.0)
-
-    # Mode logic
-    if strain < 0.60:
-        mode = "Regulated Baseline"
-    elif strain < 0.85:
-        mode = "Mobilized"
-    elif strain < 1.00:
-        mode = "Threshold Strain"
-    else:
-        mode = "Overload"
-
-    # Pluto override (collapse mode if very high pluto and low containment)
-    if pluto > 0.92 and regulation < 0.22 and strain > 1.05:
-        mode = "Collapse / Rewrite"
-
-    # Load state / containment labels
-    if amplified_load < 0.45:
-        load_state = "Low"
-    elif amplified_load < 0.70:
-        load_state = "Moderate"
-    else:
-        load_state = "Elevated"
-
-    if regulation >= amplified_load * 0.85:
-        containment = "Strong"
-    elif regulation >= amplified_load * 0.55:
-        containment = "Partial"
-    else:
-        containment = "Weak"
-
-    # Driver rankings
-    primary_driver = max(load_drivers, key=load_drivers.get)
-    top_regulator = max(regulation_drivers, key=regulation_drivers.get)
-
-    top_loads = sorted(load_drivers.items(), key=lambda x: x[1], reverse=True)
-    top_regs = sorted(regulation_drivers.items(), key=lambda x: x[1], reverse=True)
+    debug = {
+        "overloadGap": overload_gap,
+        "capacityPressure": capacity_pressure,
+        "provisionalStrain": provisional_strain,
+        "saturnRaw": saturn_raw,
+        "timingPressure": timing_pressure,
+    }
 
     return {
         "state": {
-            "capacity": round(capacity, 4),
-            "strain": round(strain, 4),
-            "amplifiedLoad": round(amplified_load, 4),
-            "regulation": round(regulation, 4),
-            "saturnConstraint": round(saturn_constraint, 4),
-            "effectiveLoad": round(effective_load, 4),
+            "capacity": capacity,
+            "strain": strain,
+            "amplifiedLoad": amplified_load,
+            "regulation": regulation,
+            "saturnConstraint": saturn_constraint,
+            "effectiveLoad": effective_load,
             "mode": mode,
-            "loadState": load_state,
-            "containment": containment,
         },
         "telemetry": {
             "primaryDriver": primary_driver,
             "topRegulator": top_regulator,
-            "topDrivers": [f"{k} ({round(v, 2)})" for k, v in top_loads[:3]],
-            "topRegulators": [f"{k} ({round(v, 2)})" for k, v in top_regs[:3]],
+            "topDrivers": [f"{name} ({fmt(val)})" for name, val in load_drivers[:3]],
+            "topRegulators": [f"{name} ({fmt(val)})" for name, val in regulators[:3]],
+            "capacity": capacity,
+            "strain": strain,
+            "amplifiedLoad": amplified_load,
+            "regulation": regulation,
+            "saturnConstraint": saturn_constraint,
+            "effectiveLoad": effective_load,
         },
-        "raw": {
-            "loadDrivers": {k: round(v, 4) for k, v in load_drivers.items()},
-            "regulationDrivers": {k: round(v, 4) for k, v in regulation_drivers.items()},
-            "overloadDelta": round(overload_delta, 4),
-            "saturnEff": round(saturn_eff, 4),
+        "environment": {
+            "environmentalLoad": environment_load,
+            "environmentMode": environment_mode,
         },
-    }
-
-
-def build_forecast_snapshot(current_state):
-    """
-    Prototype placeholder forecast layer.
-    Right now it intentionally mirrors the natal-state proxy.
-    """
-    s = current_state["state"]
-
-    def summarize(label):
-        if s["mode"] == "Regulated Baseline":
-            title = "Regulated"
-        elif s["mode"] == "Mobilized":
-            title = "Mobilized"
-        elif s["mode"] == "Threshold Strain":
-            title = "Threshold"
-        elif s["mode"] == "Overload":
-            title = "Overloaded"
-        else:
-            title = "Rewrite"
-
-        if label == "now":
-            detail = f"{s['mode']}. Capacity {s['capacity']:.2f}, effective load {s['effectiveLoad']:.2f}, strain {s['strain']:.2f}."
-        elif label == "plus6":
-            detail = "Short-horizon forecast is currently using the same natal-state proxy layer."
-        else:
-            detail = "Longer-horizon forecast is currently using the same natal-state proxy layer."
-
-        return {
-            "title": title,
-            "detail": detail,
-        }
-
-    return {
-        "now": summarize("now"),
-        "plus6": summarize("plus6"),
-        "plus24": summarize("plus24"),
+        "timing": {
+            "timingPressure": timing_pressure,
+            "timingMode": timing_mode,
+        },
+        "flags": {
+            "plutoRewrite": pluto_rewrite,
+            "saturnShutdown": saturn_shutdown,
+        },
+        "interpretation": interpretation,
+        "forecast": forecast,
+        "ephemeris": ephemeris,
+        "inputResolved": input_resolved,
+        "planetary": planetary,
+        "angularity": angularity,
+        "angles": chart.get("angles", {}),
+        "houses": chart.get("houses", []),
+        "planetHouses": chart.get("planetHouses", {}),
+        "_longitudesDeg": chart.get("_longitudesDeg", {}),
+        "_speedsDeg": chart.get("_speedsDeg", {}),
+        "debug": debug,
+        "build_id": BUILD_ID,
     }
 
 
 class handler(BaseHTTPRequestHandler):
-    def _send(self, code, payload):
-        self.send_response(code)
+    def _set_headers(self, status_code=200):
+        self.send_response(status_code)
         self.send_header("Content-Type", "application/json")
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Allow-Headers", "*")
+        self.send_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
         self.end_headers()
+
+    def _write_json(self, status_code: int, payload: dict):
+        self._set_headers(status_code)
         self.wfile.write(json.dumps(payload).encode("utf-8"))
 
     def do_OPTIONS(self):
-        self._send(200, {"ok": True})
+        self._set_headers(204)
 
     def do_GET(self):
-        if self.path.startswith("/api/health"):
-            self._send(200, {
-                "ok": True,
-                "service": "lucy-os-engine",
-                "build_id": "v2.5-saturn-tuned",
-            })
-            return
-
-        self._send(200, {
+        self._write_json(200, {
             "ok": True,
-            "service": "lucy-os-engine",
-            "message": "POST natal inputs to this endpoint.",
-            "build_id": "v2.5-saturn-tuned",
+            "route": "/api/chart_inputs",
+            "message": "Lucy.OS API is live.",
+            "build_id": BUILD_ID,
         })
 
     def do_POST(self):
         try:
-            content_length = int(self.headers.get("Content-Length", 0))
+            content_length = int(self.headers.get("Content-Length", "0"))
             raw_body = self.rfile.read(content_length).decode("utf-8")
-            body = json.loads(raw_body or "{}")
+            payload = json.loads(raw_body or "{}")
 
-            dob_in = (body.get("dob") or "").strip()
-            tob_in = (body.get("tob") or "").strip()
-            ampm_in = (body.get("ampm") or "").strip().upper() or None
-            location_in = (body.get("location") or "").strip()
-            utc_offset_override = (body.get("utcOffsetOverride") or "").strip() or None
+            dob = str(payload.get("dob", "")).strip()
 
-            if not dob_in:
-                raise ValueError("dob is required (YYYY-MM-DD or MM/DD/YYYY)")
-            if not tob_in:
-                raise ValueError("tob is required")
-            if not location_in:
-                raise ValueError("location is required")
+            tob = str(
+                payload.get("tob")
+                or payload.get("tobRaw")
+                or payload.get("time")
+                or ""
+            ).strip()
 
-            # Normalize DOB
-            if re.match(r"^\d{4}-\d{2}-\d{2}$", dob_in):
-                dob = dob_in
-            else:
-                m = re.match(r"^(\d{1,2})/(\d{1,2})/(\d{4})$", dob_in)
-                if not m:
-                    raise ValueError("dob must be YYYY-MM-DD or MM/DD/YYYY")
-                mm, dd, yyyy = m.groups()
-                dob = f"{int(yyyy):04d}-{int(mm):02d}-{int(dd):02d}"
+            ampm = str(
+                payload.get("ampm")
+                or payload.get("timePeriod")
+                or ""
+            ).strip().upper()
 
-            tob_24 = normalize_tob_with_ampm(tob_in, ampm_in)
+            location = str(
+                payload.get("locationText")
+                or payload.get("location")
+                or payload.get("birthLocation")
+                or ""
+            ).strip()
 
-            resolved = resolve_timezone_and_utc(
-                dob=dob,
-                tob_24=tob_24,
-                location_text=location_in,
-                utc_offset_override=utc_offset_override,
+            utc_override_raw = (
+                payload.get("utcOffsetOverride", None)
+                if payload.get("utcOffsetOverride", None) not in (None, "", "null")
+                else payload.get("utcOffset", None)
             )
 
-            ephem = get_real_ephemeris(resolved["utc_dt"])
-            raw_planets = ephem["normalized"]
+            utc_override = None
+            if utc_override_raw not in (None, "", "null"):
+                utc_override = float(utc_override_raw)
 
-            # For now, use raw as smoothed baseline on single-shot requests
-            smoothed = smooth_planets(raw_planets, previous=None)
+            if not dob:
+                self._write_json(400, {"error": "dob is required"})
+                return
 
-            engine = build_planetary_state(smoothed)
-            forecast = build_forecast_snapshot(engine)
+            if not tob:
+                self._write_json(400, {"error": "tob / tobRaw / time is required"})
+                return
 
-            response = {
-                "ok": True,
-                "build_id": "v2.5-saturn-tuned",
-                "inputResolved": {
-                    "dob": dob,
-                    "tob24": tob_24,
-                    "resolvedLocation": resolved["resolved_location"],
-                    "timezoneName": resolved["timezone_name"],
-                    "localTimeResolved": resolved["local_dt"].isoformat(),
-                    "utcDatetime": resolved["utc_dt"].isoformat(),
-                    "lat": resolved["lat"],
-                    "lon": resolved["lon"],
-                },
-                "ephemeris": {
-                    "source": ephem["source"],
-                    "jdUt": round(ephem["jd_ut"], 6),
-                    "raw": {k: round(v, 6) for k, v in raw_planets.items()},
-                    "smoothed": {k: round(v, 6) for k, v in smoothed.items()},
-                },
-                "state": engine["state"],
-                "telemetry": engine["telemetry"],
-                "raw": engine["raw"],
-                "forecast": forecast,
-            }
+            if not location:
+                self._write_json(400, {"error": "locationText / location / birthLocation is required"})
+                return
 
-            self._send(200, response)
+            normalized_tob = normalize_tob_with_ampm(tob, ampm)
 
+            chart = compute_chart_inputs(
+                dob=dob,
+                tob=normalized_tob,
+                utc_offset_hours=utc_override,
+                location=location,
+            )
+
+            response = build_lucy_response(chart)
+            self._write_json(200, response)
+
+        except ValueError as e:
+            self._write_json(400, {"error": str(e)})
         except Exception as e:
-            self._send(400, {
-                "ok": False,
-                "error": str(e),
-                "build_id": "v2.5-saturn-tuned",
-            })
+            self._write_json(500, {"error": str(e)})
+
