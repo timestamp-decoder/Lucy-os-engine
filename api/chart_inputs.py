@@ -244,7 +244,9 @@ def to_julian_day_utc(utc_dt: datetime) -> float:
     )
 
     return jd_ut
-    def compute_angles_and_houses(jd_ut: float, lat: float, lon: float):
+
+
+def compute_angles_and_houses(jd_ut: float, lat: float, lon: float):
     cusps, ascmc = swe.houses(jd_ut, lat, lon, HOUSE_SYSTEM)
 
     asc = float(ascmc[0] % 360.0)
@@ -500,7 +502,8 @@ def build_lucy_response(chart: dict) -> dict:
 
     pluto_rewrite = pluto_eff > 0.85 and strain > 0.95
     saturn_shutdown = saturn_constraint > 0.20
-        interpretation = {
+
+    interpretation = {
         "modeMeaning": mode,
         "stateSummary": (
             f"{mode}. Capacity {fmt(capacity)}, effective load {fmt(effective_load)}, "
