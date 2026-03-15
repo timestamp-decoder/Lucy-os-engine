@@ -29,6 +29,8 @@ HOUSE_SYSTEM = b"P"
 GOOGLE_GEOCODE_API_KEY = os.getenv("GOOGLE_GEOCODE_API_KEY", "")
 GOOGLE_TIMEZONE_API_KEY = os.getenv("GOOGLE_TIMEZONE_API_KEY", "")
 
+BUILD_ID = "LUCY_API_TEST_45"
+
 
 def normalize_longitude(lon: float) -> float:
     return (lon % 360.0) / 360.0
@@ -464,6 +466,8 @@ def build_lucy_response(chart: dict) -> dict:
         "timezone_name": meta.get("timezone_name"),
         "localTimeResolved": meta.get("local_time_resolved"),
         "local_time_resolved": meta.get("local_time_resolved"),
+        "utcDatetime": meta.get("utc_datetime"),
+        "utc_datetime": meta.get("utc_datetime"),
     }
 
     ephemeris = {
@@ -530,10 +534,9 @@ def build_lucy_response(chart: dict) -> dict:
         "angles": chart.get("angles", {}),
         "houses": chart.get("houses", []),
         "_longitudesDeg": chart.get("_longitudesDeg", {}),
+        "build_id": BUILD_ID,
     }
-
-
-class handler(BaseHTTPRequestHandler):
+    class handler(BaseHTTPRequestHandler):
     def _set_headers(self, status_code=200):
         self.send_response(status_code)
         self.send_header("Content-Type", "application/json")
@@ -553,6 +556,7 @@ class handler(BaseHTTPRequestHandler):
         self._write_json(200, {
             "ok": True,
             "route": "/api/lucy",
+            "build_id": BUILD_ID,
             "message": "Lucy.OS API is live. Use POST for natal input.",
             "env": {
                 "has_geocode_key": bool(GOOGLE_GEOCODE_API_KEY),
