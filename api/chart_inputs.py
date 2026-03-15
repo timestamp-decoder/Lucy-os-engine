@@ -29,6 +29,8 @@ HOUSE_SYSTEM = b"P"
 GOOGLE_GEOCODE_API_KEY = os.getenv("GOOGLE_GEOCODE_API_KEY", "")
 GOOGLE_TIMEZONE_API_KEY = os.getenv("GOOGLE_TIMEZONE_API_KEY", "")
 
+BUILD_ID = "CHART_INPUTS_LUCY_WRAPPED_01"
+
 
 def normalize_longitude(lon: float) -> float:
     return (lon % 360.0) / 360.0
@@ -181,7 +183,6 @@ def resolve_local_and_utc_birth(
             "dst_offset_seconds": 0.0,
         }
     else:
-        # First pass: rough UTC assumption to get the correct historical timezone
         rough_utc = local_naive.replace(tzinfo=timezone.utc)
         rough_timestamp = int(rough_utc.timestamp())
 
@@ -191,19 +192,16 @@ def resolve_local_and_utc_birth(
             rough_timestamp,
         )
 
-        # Use IANA zone if available
         try:
             zone = ZoneInfo(timezone_info["timezone_name"])
             local_dt = local_naive.replace(tzinfo=zone)
             utc_dt = local_dt.astimezone(timezone.utc)
         except Exception:
-            # Fallback to fixed offset if ZoneInfo fails
             local_dt = local_naive.replace(
                 tzinfo=timezone(timedelta(hours=timezone_info["utc_offset_at_birth"]))
             )
             utc_dt = local_dt.astimezone(timezone.utc)
 
-        # Second pass: refine timezone using actual UTC timestamp
         refined_timezone_info = get_historical_timezone(
             geo["lat"],
             geo["lon"],
@@ -348,7 +346,231 @@ def compute_transit_inputs():
     return result
 
 
-class handler(BaseHTTPRequestHandler):
+def fmt(n: float) -> str:
+    try:
+        return f"{float(n):.2f}"
+    except Exception:
+        return "0.00"
+
+
+def infer_mode(strain: float) -> str:
+    if strain >= 1.0:
+        return "Overload"
+    if strain >= 0.85:
+        return "Threshold Strain"
+    if strain >= 0.60:
+        return "Mobilized"
+    return "Regulated Baseline"
+
+
+def build_lucy_response(chart: dict) -> dict:
+    sun = float(chart.get("sun", 0))
+    moon = float(chart.get("moon", 0))
+    mercury = float(chart.get("mercury", 0))
+    venus = float(chart.get("venus", 0))
+    mars = float(chart.get("mars", 0))
+    jupiter = float(chart.get("jupiter", 0))
+    saturn = float(chart.get("saturn", 0))
+    uranus = float(chart.get("uranus", 0))
+    neptune = float(chart.get("neptune", 0))
+    pluto = float(chart.get("pluto", 0))
+
+    capacity = max(sun, 0.01)
+
+    amplified_load = (
+        moon * 0.30 +
+        mars * 0.18 +
+        jupiter * 0.14 +
+        uranus * 0.14 +
+        neptune * 0.12 +
+        pluto * 0.12
+    )
+
+    regulation = (
+        saturn * 0.45 +
+        venus * 0.35 +
+        mercury * 0.20
+    )
+
+    overload_delta = max(amplified_load - capacity, 0.0)
+    saturn_constraint = min(overload_delta * max(saturn, 0.20) * 0.35, amplified_load)
+    effective_load = max(amplified_load - regulation - saturn_constraint, 0.0)
+    strain = effective_load / capacity if capacity > 0 else 0.0
+
+    mode = infer_mode(strain)
+
+    load_drivers = [
+        ("Moon", moon),
+        ("Mars", mars),
+        ("Jupiter", jupiter),
+        ("Uranus", uranus),
+        ("Neptune", neptune),
+        ("Pluto", pluto),
+    ]
+    load_drivers.sort(key=lambda x: x[1], reverse=True)
+
+    regulators = [
+        ("Saturn", saturn),
+        ("Venus", venus),
+        ("Mercury", mercury),
+    ]
+    regulators.sort(key=lambda x: x[1], reverse=True)
+
+    primary_driver = load_drivers[0][0]
+    top_regulator = regulators[0][0]
+
+    environment_load = (uranus * 0.5) + (neptune * 0.5)
+    environment_mode = (
+        "Clear / Stable" if environment_load < 0.33 else
+        "Mixed / Variable" if environment_load < 0.66 else
+        "Diffuse / Volatile"
+    )
+
+    timing_pressure = (mars * 0.5) + (jupiter * 0.5)
+    timing_mode = (
+        "Stable Window" if timing_pressure < 0.33 else
+        "Active Window" if timing_pressure < 0.66 else
+        "Pushed Window"
+    )
+
+    pluto_rewrite = pluto > 0.85 and strain > 0.95
+    saturn_shutdown = saturn_constraint > 0.20
+
+    interpretation = {
+        "modeMeaning": mode,
+        "stateSummary": (
+            f"{mode}. Capacity {fmt(capacity)}, effective load {fmt(effective_load)}, "
+            f"strain {fmt(strain)}."
+        ),
+        "nervousSystemBehavior": (
+            f"Primary load driver is {primary_driver}; top regulator is {top_regulator}."
+        ),
+        "recommendedPacing": (
+            "Reduce load, simplify decisions, and avoid stacking stimulation."
+            if strain >= 1.0 else
+            "Move slower and increase containment before adding pressure."
+            if strain >= 0.85 else
+            "Good for focused effort with pacing and breaks."
+            if strain >= 0.60 else
+            "Baseline / stable window."
+        ),
+        "dominantDriverMeaning": (
+            f"{primary_driver} is currently the strongest load-side influence."
+        ),
+        "regulationStatus": (
+            f"{top_regulator} leads the regulation layer ({fmt(regulation)} total regulation)."
+        ),
+        "volatilityNote": f"Uranus volatility proxy: {fmt(uranus)}.",
+        "fogNote": f"Neptune fog proxy: {fmt(neptune)}.",
+        "activationNote": f"Mars activation proxy: {fmt(mars)}.",
+        "constraintNote": f"Saturn constraint applied: {fmt(saturn_constraint)}.",
+    }
+
+    forecast_now_state = (
+        "Overload" if strain >= 1.0 else
+        "Threshold" if strain >= 0.85 else
+        "Mobilized" if strain >= 0.60 else
+        "Regulated"
+    )
+
+    forecast = {
+        "now": {
+            "state": forecast_now_state,
+            "text": interpretation["stateSummary"],
+        },
+        "plus6": {
+            "state": forecast_now_state,
+            "text": "Short-horizon forecast is currently using the same natal-state proxy layer.",
+        },
+        "plus24": {
+            "state": forecast_now_state,
+            "text": "Longer-horizon forecast is currently using the same natal-state proxy layer.",
+        },
+    }
+
+    meta = chart.get("_meta", {})
+    input_resolved = {
+        "resolvedLocation": meta.get("location_resolved"),
+        "locationResolved": meta.get("location_resolved"),
+        "lat": meta.get("lat"),
+        "lon": meta.get("lon"),
+        "utcOffsetAtBirth": meta.get("utc_offset_at_birth"),
+        "utc_offset_at_birth": meta.get("utc_offset_at_birth"),
+        "timezoneName": meta.get("timezone_name"),
+        "timezone_name": meta.get("timezone_name"),
+        "localTimeResolved": meta.get("local_time_resolved"),
+        "local_time_resolved": meta.get("local_time_resolved"),
+        "utcDatetime": meta.get("utc_datetime"),
+        "utc_datetime": meta.get("utc_datetime"),
+    }
+
+    ephemeris = {
+        "source": meta.get("source", "Swiss Ephemeris"),
+        "mode": meta.get("mode", "natal"),
+        "utcDatetime": meta.get("utc_datetime"),
+        "utc_datetime": meta.get("utc_datetime"),
+        "jdUt": meta.get("jd_ut"),
+        "jd_ut": meta.get("jd_ut"),
+    }
+
+    planetary = {
+        "sun": sun,
+        "moon": moon,
+        "mercury": mercury,
+        "venus": venus,
+        "mars": mars,
+        "jupiter": jupiter,
+        "saturn": saturn,
+        "uranus": uranus,
+        "neptune": neptune,
+        "pluto": pluto,
+    }
+
+    return {
+        "state": {
+            "capacity": capacity,
+            "strain": strain,
+            "amplifiedLoad": amplified_load,
+            "regulation": regulation,
+            "saturnConstraint": saturn_constraint,
+            "effectiveLoad": effective_load,
+            "mode": mode,
+        },
+        "telemetry": {
+            "primaryDriver": primary_driver,
+            "topRegulator": top_regulator,
+            "topDrivers": [f"{name} ({fmt(val)})" for name, val in load_drivers[:3]],
+            "topRegulators": [f"{name} ({fmt(val)})" for name, val in regulators[:3]],
+            "capacity": capacity,
+            "strain": strain,
+            "amplifiedLoad": amplified_load,
+            "regulation": regulation,
+            "saturnConstraint": saturn_constraint,
+            "effectiveLoad": effective_load,
+        },
+        "environment": {
+            "environmentalLoad": environment_load,
+            "environmentMode": environment_mode,
+        },
+        "timing": {
+            "timingPressure": timing_pressure,
+            "timingMode": timing_mode,
+        },
+        "flags": {
+            "plutoRewrite": pluto_rewrite,
+            "saturnShutdown": saturn_shutdown,
+        },
+        "interpretation": interpretation,
+        "forecast": forecast,
+        "ephemeris": ephemeris,
+        "inputResolved": input_resolved,
+        "planetary": planetary,
+        "angles": chart.get("angles", {}),
+        "houses": chart.get("houses", []),
+        "_longitudesDeg": chart.get("_longitudesDeg", {}),
+        "build_id": BUILD_ID,
+    }
+    class handler(BaseHTTPRequestHandler):
     def _set_headers(self, status_code=200):
         self.send_response(status_code)
         self.send_header("Content-Type", "application/json")
@@ -368,7 +590,8 @@ class handler(BaseHTTPRequestHandler):
         self._write_json(200, {
             "ok": True,
             "route": "/api/chart_inputs",
-            "message": "Lucy.OS API is live. Use POST for natal input or GET as health check.",
+            "message": "Lucy.OS wrapped API is live. Use POST for natal input or GET as health check.",
+            "build_id": BUILD_ID,
             "env": {
                 "has_geocode_key": bool(GOOGLE_GEOCODE_API_KEY),
                 "has_timezone_key": bool(GOOGLE_TIMEZONE_API_KEY),
@@ -384,13 +607,13 @@ class handler(BaseHTTPRequestHandler):
             mode = str(payload.get("mode", "natal")).strip().lower()
 
             if mode == "transit":
-                result = compute_transit_inputs()
-                self._write_json(200, result)
+                chart = compute_transit_inputs()
+                response = build_lucy_response(chart)
+                self._write_json(200, response)
                 return
 
             dob = str(payload.get("dob", "")).strip()
 
-            # Accept multiple frontend key names
             tob = str(
                 payload.get("tob")
                 or payload.get("tobRaw")
@@ -411,7 +634,6 @@ class handler(BaseHTTPRequestHandler):
                 or ""
             ).strip()
 
-            # Accept both utcOffsetOverride and utcOffset from frontend
             utc_override_raw = (
                 payload.get("utcOffsetOverride", None)
                 if payload.get("utcOffsetOverride", None) not in (None, "", "null")
@@ -436,14 +658,15 @@ class handler(BaseHTTPRequestHandler):
 
             normalized_tob = normalize_tob_with_ampm(tob, ampm)
 
-            result = compute_chart_inputs(
+            chart = compute_chart_inputs(
                 dob=dob,
                 tob=normalized_tob,
                 utc_offset_hours=utc_override,
                 location=location,
             )
 
-            self._write_json(200, result)
+            response = build_lucy_response(chart)
+            self._write_json(200, response)
 
         except ValueError as e:
             self._write_json(400, {"error": str(e)})
