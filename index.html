@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lucy.OS</title>
+  <link rel="icon" href="data:," />
   <style>
     :root{
       --bg:#09142f;
@@ -17,375 +18,418 @@
       --green:#67d26f;
       --violet:#b06cff;
       --gold:#d8b84c;
-      --amber:#f3c96b;
-      --warn:#ff9d57;
-      --cardRadius:26px;
-      --softGlow:0 0 0 1px rgba(103,193,255,.06), 0 14px 40px rgba(0,0,0,.18);
+      --soft:#1a2d57;
+      --soft2:#16264b;
     }
 
     *{box-sizing:border-box}
 
     body{
       margin:0;
-      font-family:Arial,sans-serif;
-      background:var(--bg);
+      font-family:Arial, sans-serif;
+      background:radial-gradient(circle at top, #11204a 0%, var(--bg) 55%);
       color:var(--text);
     }
 
     .wrap{
-      max-width:1600px;
+      max-width:1400px;
       margin:0 auto;
       padding:28px;
     }
 
     .hero{
       text-align:center;
-      margin-bottom:26px;
+      margin-bottom:24px;
     }
 
     .hero h1{
       margin:0;
-      font-size:88px;
-      line-height:.95;
-      letter-spacing:-1px;
+      font-size:48px;
       font-weight:800;
+      letter-spacing:.5px;
     }
 
     .hero p{
-      margin:14px 0 0;
+      margin:10px 0 0;
       color:var(--muted);
-      font-size:26px;
+      font-size:16px;
     }
 
     .grid{
       display:grid;
-      grid-template-columns:560px 1fr;
-      gap:30px;
+      grid-template-columns: 420px 1fr;
+      gap:24px;
       align-items:start;
     }
 
     .card{
-      background:
-        radial-gradient(circle at top left, rgba(103,193,255,.08), transparent 40%),
-        linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)),
-        var(--panel);
-      border:1px solid rgba(103,193,255,.18);
-      border-radius:var(--cardRadius);
-      padding:30px;
-      box-shadow:var(--softGlow);
+      background:linear-gradient(180deg, rgba(19,35,71,.96), rgba(15,27,56,.96));
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:22px;
+      box-shadow:0 18px 40px rgba(0,0,0,.22);
+      backdrop-filter: blur(6px);
     }
 
-    .inputs h2,.state h2,.forecast h2{
-      margin:0 0 28px;
-      font-size:54px;
-      font-weight:800;
-      letter-spacing:-.5px;
+    .left .section-title,
+    .right .section-title{
+      font-size:14px;
+      font-weight:700;
+      color:var(--muted);
+      margin:0 0 14px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .field{
+      margin-bottom:16px;
     }
 
     label{
       display:block;
-      font-size:17px;
+      font-size:14px;
       color:var(--muted);
-      margin-bottom:10px;
+      margin-bottom:8px;
+      font-weight:600;
     }
 
-    input,select{
-      width:100%;
-      padding:18px 20px;
-      border-radius:18px;
-      border:2px solid rgba(103,193,255,.18);
-      background:#06112c;
-      color:var(--text);
-      font-size:24px;
-      outline:none;
-    }
-
-    .row2{
-      display:grid;
-      grid-template-columns:1.5fr 1fr;
-      gap:16px;
-      margin-top:20px;
-    }
-
-    .field{
-      margin-bottom:24px;
-    }
-
-    .btn{
+    input, select, button{
       width:100%;
       border:none;
-      border-radius:20px;
-      padding:24px 26px;
-      background:#79b6eb;
-      color:#10203d;
-      font-size:28px;
+      outline:none;
+      border-radius:14px;
+      font-size:18px;
+      padding:14px 16px;
+      font-family:inherit;
+    }
+
+    input, select{
+      background:#0c1735;
+      color:var(--text);
+      border:1px solid #20345f;
+      font-weight:700;
+    }
+
+    button{
+      margin-top:6px;
+      background:linear-gradient(180deg, #8fd4ff, #69c2ff);
+      color:#0a1836;
       font-weight:800;
       cursor:pointer;
-      margin-top:6px;
+      font-size:20px;
+      padding:18px;
+      box-shadow:0 10px 24px rgba(103,193,255,.25);
+      transition:transform .12s ease, opacity .12s ease;
     }
 
-    .btn:disabled{
-      opacity:.78;
-      cursor:wait;
+    button:hover{ transform:translateY(-1px); }
+    button:disabled{
+      opacity:.7;
+      cursor:not-allowed;
+      transform:none;
     }
 
-    .help{
-      margin-top:22px;
-      color:var(--muted);
-      font-size:18px;
-      line-height:1.45;
-    }
-
-    .debugLine{
+    .helper{
       margin-top:14px;
-      color:var(--amber);
-      font-size:15px;
-      line-height:1.4;
-      word-break:break-word;
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.5;
     }
 
-    .stateHead{
+    .status{
+      margin-top:16px;
+      min-height:22px;
+      font-size:14px;
+      font-weight:700;
+    }
+
+    .status.ok{ color:var(--green); }
+    .status.err{ color:var(--red); }
+    .status.warn{ color:var(--gold); }
+
+    .summary{
+      margin-top:18px;
+      padding:16px;
+      border-radius:16px;
+      background:rgba(9,20,47,.5);
+      border:1px solid rgba(103,193,255,.12);
+      font-size:14px;
+      color:var(--gold);
+      line-height:1.5;
+      font-weight:700;
+    }
+
+    .right-top{
       display:flex;
       justify-content:space-between;
       align-items:center;
-      gap:16px;
-      margin-bottom:22px;
+      gap:18px;
+      margin-bottom:18px;
     }
 
-    .badge{
+    .right-top h2{
+      margin:0;
+      font-size:64px;
+      line-height:1;
+      font-weight:900;
+      letter-spacing:-1px;
+    }
+
+    .mode-pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:14px 22px;
       border-radius:999px;
-      padding:10px 18px;
-      font-size:18px;
-      font-weight:700;
-      border:1px solid rgba(255,255,255,.12);
-      white-space:nowrap;
+      font-size:16px;
+      font-weight:800;
+      border:1px solid rgba(103,210,111,.35);
+      background:rgba(103,210,111,.08);
+      color:#a8f3ae;
+      min-width:220px;
+      text-align:center;
     }
 
-    .badge.ok{
-      background:rgba(103,210,111,.10);
-      color:#9df0a4;
-      border-color:rgba(103,210,111,.35);
-    }
-
-    .badge.warn{
-      background:rgba(243,201,107,.10);
-      color:#ffd98b;
-      border-color:rgba(243,201,107,.35);
-    }
-
-    .badge.alert{
-      background:rgba(255,102,102,.10);
-      color:#ffb0b0;
-      border-color:rgba(255,102,102,.35);
-    }
-
-    .metricGrid{
+    .stats{
       display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:20px;
-      margin-bottom:22px;
+      grid-template-columns: repeat(2, 1fr);
+      gap:18px;
+      margin-bottom:18px;
     }
 
-    .metric{
-      background:rgba(255,255,255,.02);
-      border:2px solid rgba(103,193,255,.14);
-      border-radius:22px;
-      padding:22px;
+    .stat{
+      background:rgba(14,24,52,.6);
+      border:1px solid rgba(103,193,255,.16);
+      border-radius:20px;
+      padding:18px;
     }
 
-    .metric .label{
-      font-size:18px;
+    .stat-label{
       color:var(--muted);
+      font-size:14px;
       text-transform:uppercase;
-      letter-spacing:1px;
+      letter-spacing:.08em;
+      font-weight:700;
       margin-bottom:10px;
     }
 
-    .metric .value{
-      font-size:66px;
-      font-weight:800;
+    .stat-value{
+      font-size:58px;
+      font-weight:900;
       line-height:1;
     }
 
-    .driverGrid{
+    .mini-grid{
       display:grid;
-      grid-template-columns:1fr 1fr;
+      grid-template-columns: repeat(2, 1fr);
       gap:18px;
-      margin-bottom:22px;
+      margin-bottom:18px;
     }
 
-    .driverBox{
-      background:rgba(255,255,255,.02);
-      border:2px solid rgba(103,193,255,.14);
-      border-radius:22px;
-      padding:22px;
+    .mini-card{
+      background:rgba(14,24,52,.55);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:18px;
+      padding:16px;
     }
 
-    .driverBox .label{
-      font-size:16px;
+    .mini-label{
+      font-size:13px;
       color:var(--muted);
       text-transform:uppercase;
-      letter-spacing:1px;
-      margin-bottom:10px;
-    }
-
-    .driverBox .value{
-      font-size:24px;
       font-weight:700;
-      line-height:1.25;
-    }
-
-    .chips{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:14px;
-      margin-bottom:22px;
-    }
-
-    .chip{
-      border-radius:999px;
-      border:2px solid rgba(103,193,255,.18);
-      padding:12px 16px;
-      font-size:18px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      background:rgba(255,255,255,.02);
-    }
-
-    .bars{
-      display:grid;
-      gap:18px;
-      margin-bottom:22px;
-    }
-
-    .barBlock .barLabel{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      font-size:18px;
       margin-bottom:8px;
     }
 
-    .track{
-      width:100%;
-      height:18px;
+    .mini-value{
+      font-size:18px;
+      font-weight:800;
+    }
+
+    .pills{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    .pill{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
       border-radius:999px;
-      background:#07122f;
-      border:1px solid rgba(103,193,255,.16);
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(9,20,47,.45);
+      font-size:14px;
+      font-weight:700;
+    }
+
+    .pill b{
+      color:#fff;
+    }
+
+    .bar-block{
+      margin-bottom:14px;
+    }
+
+    .bar-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:8px;
+      font-size:14px;
+      font-weight:700;
+    }
+
+    .bar-head span:first-child{
+      color:#dbe7ff;
+    }
+
+    .bar-head span:last-child{
+      color:#ffffff;
+    }
+
+    .bar-track{
+      width:100%;
+      height:14px;
+      border-radius:999px;
+      background:#0a1634;
+      border:1px solid rgba(255,255,255,.06);
       overflow:hidden;
     }
 
-    .fill{
+    .bar-fill{
       height:100%;
-      width:0%;
       border-radius:999px;
+      width:0%;
       transition:width .35s ease;
     }
 
-    .fill.load{background:linear-gradient(90deg,var(--blue),#9fdbff);}
-    .fill.reg{background:linear-gradient(90deg,var(--green),#b9f7bf);}
-    .fill.sat{background:linear-gradient(90deg,var(--amber),#ffe3a4);}
-    .fill.eff{background:linear-gradient(90deg,var(--violet),#d9b0ff);}
-    .fill.vol{background:linear-gradient(90deg,var(--red),#ffb2b2);}
-    .fill.fog{background:linear-gradient(90deg,#8aa0ff,#c3cbff);}
-    .fill.act{background:linear-gradient(90deg,var(--warn),#ffd0a8);}
-    .fill.damp{background:linear-gradient(90deg,#69d2c8,#b6f4ee);}
-        .summary{
+    .bar-load{ background:linear-gradient(90deg, #79e8ff, #a6f5ff); }
+    .bar-reg{ background:linear-gradient(90deg, #7cfb4f, #b9ff86); }
+    .bar-sat{ background:linear-gradient(90deg, #9d8cff, #c5b8ff); }
+    .bar-eff{ background:linear-gradient(90deg, #ffd36b, #ffe89d); }
+
+    .section-spacer{
+      height:16px;
+    }
+
+    .subcard{
+      margin-top:18px;
+      padding:18px;
+      border-radius:18px;
+      background:rgba(9,20,47,.45);
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .subcard h3{
+      margin:0 0 14px;
+      font-size:18px;
+      font-weight:800;
+    }
+
+    .resolved-grid{
       display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:18px;
-      margin-top:8px;
+      grid-template-columns: repeat(2, 1fr);
+      gap:12px;
     }
 
-    .summaryBox{
-      border-radius:22px;
-      border:2px solid rgba(103,193,255,.14);
-      padding:22px;
-      background:rgba(255,255,255,.02);
+    .resolved-item{
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.05);
+      border-radius:14px;
+      padding:12px;
     }
 
-    .summaryBox .title{
-      font-size:16px;
-      text-transform:uppercase;
+    .resolved-item .k{
+      font-size:12px;
       color:var(--muted);
-      letter-spacing:1px;
-      margin-bottom:10px;
+      text-transform:uppercase;
+      font-weight:700;
+      margin-bottom:6px;
+      letter-spacing:.06em;
     }
 
-    .summaryBox .body{
-      font-size:20px;
-      line-height:1.4;
+    .resolved-item .v{
+      font-size:14px;
+      font-weight:700;
+      line-height:1.35;
       word-break:break-word;
     }
 
-    .forecast{
-      margin-top:30px;
-    }
-
-    .forecastGrid{
+    .forecast-grid{
       display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:18px;
+      grid-template-columns: repeat(3, 1fr);
+      gap:14px;
     }
 
-    .forecastCard{
-      border-radius:22px;
-      border:2px solid rgba(103,193,255,.14);
-      background:rgba(255,255,255,.02);
-      padding:22px;
+    .forecast-card{
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:16px;
+      padding:14px;
     }
 
-    .forecastCard .small{
+    .forecast-label{
+      font-size:12px;
       color:var(--muted);
-      font-size:15px;
       text-transform:uppercase;
-      letter-spacing:1px;
+      font-weight:700;
       margin-bottom:8px;
+      letter-spacing:.06em;
     }
 
-    .forecastCard .big{
-      font-size:22px;
+    .forecast-state{
+      font-size:16px;
       font-weight:800;
       margin-bottom:8px;
     }
 
-    .forecastCard .copy{
-      font-size:17px;
+    .forecast-text{
+      font-size:13px;
       line-height:1.45;
-      color:#dfe8ff;
+      color:#dce7ff;
+    }
+
+    .raw{
+      margin-top:18px;
+      padding:14px;
+      border-radius:14px;
+      background:#081227;
+      border:1px solid rgba(255,255,255,.06);
+      color:#8ca0cc;
+      font-size:12px;
+      max-height:260px;
+      overflow:auto;
+      white-space:pre-wrap;
       word-break:break-word;
     }
 
-    .tiny{
-      font-size:15px;
-      color:var(--muted);
-      margin-top:14px;
-      line-height:1.4;
-      word-break:break-word;
-    }
+    @media (max-width: 1100px){
+      .grid{
+        grid-template-columns: 1fr;
+      }
 
-    @media (max-width:1300px){
-      .grid{grid-template-columns:1fr}
-      .forecastGrid{grid-template-columns:1fr}
-      .summary{grid-template-columns:1fr}
-      .hero h1{font-size:72px}
-      .hero p{font-size:22px}
-    }
+      .right-top{
+        flex-direction:column;
+        align-items:flex-start;
+      }
 
-    @media (max-width:700px){
-      .wrap{padding:18px}
-      .card{padding:20px}
-      .hero h1{font-size:52px}
-      .hero p{font-size:18px}
-      .inputs h2,.state h2,.forecast h2{font-size:38px}
-      .metric .value{font-size:44px}
-      .metricGrid,.driverGrid,.summary{grid-template-columns:1fr}
-      .chips{grid-template-columns:1fr}
-      .row2{grid-template-columns:1fr}
-      input,select{font-size:20px}
-      .btn{font-size:24px}
+      .right-top h2{
+        font-size:44px;
+      }
+
+      .stats,
+      .mini-grid,
+      .resolved-grid,
+      .forecast-grid{
+        grid-template-columns: 1fr;
+      }
+
+      .stat-value{
+        font-size:44px;
+      }
     }
   </style>
 </head>
@@ -393,19 +437,20 @@
   <div class="wrap">
     <div class="hero">
       <h1>Lucy.OS</h1>
-      <p>Astrology-informed nervous system regulation engine</p>
+      <p>Astrology-powered system weather • capacity, load, regulation, and state telemetry</p>
     </div>
 
     <div class="grid">
-      <div class="card inputs">
-        <h2>Inputs</h2>
+      <!-- LEFT -->
+      <div class="left card">
+        <div class="section-title">Natal Input</div>
 
         <div class="field">
-          <label for="dob">Date of Birth</label>
+          <label for="dob">Birth Date</label>
           <input id="dob" type="date" value="1980-11-21" />
         </div>
 
-        <div class="row2">
+        <div style="display:grid;grid-template-columns:1fr 160px;gap:14px;">
           <div class="field">
             <label for="tob">Time of Birth</label>
             <input id="tob" type="text" value="6:20" placeholder="6:20" />
@@ -413,464 +458,417 @@
           <div class="field">
             <label for="ampm">AM / PM</label>
             <select id="ampm">
-              <option>AM</option>
-              <option>PM</option>
+              <option value="AM">AM</option>
+              <option value="PM">PM</option>
             </select>
           </div>
         </div>
 
         <div class="field">
           <label for="location">Location</label>
-          <input id="location" type="text" value="Cuero, TX USA" />
+          <input id="location" type="text" value="Cuero, TX USA" placeholder="City, State/Country" />
         </div>
 
         <div class="field">
-          <label for="utcOverride">UTC Offset Override (Optional)</label>
-          <select id="utcOverride">
+          <label for="utcOffset">UTC Offset Override (Optional)</label>
+          <select id="utcOffset">
             <option value="">Optional manual override</option>
-            <option value="-12">UTC-12</option>
-            <option value="-11">UTC-11</option>
-            <option value="-10">UTC-10</option>
-            <option value="-9">UTC-9</option>
-            <option value="-8">UTC-8</option>
-            <option value="-7">UTC-7</option>
-            <option value="-6">UTC-6</option>
-            <option value="-5">UTC-5</option>
-            <option value="-4">UTC-4</option>
-            <option value="-3">UTC-3</option>
-            <option value="-2">UTC-2</option>
-            <option value="-1">UTC-1</option>
-            <option value="0">UTC+0</option>
-            <option value="1">UTC+1</option>
-            <option value="2">UTC+2</option>
-            <option value="3">UTC+3</option>
-            <option value="4">UTC+4</option>
-            <option value="5">UTC+5</option>
-            <option value="6">UTC+6</option>
-            <option value="7">UTC+7</option>
-            <option value="8">UTC+8</option>
-            <option value="9">UTC+9</option>
-            <option value="10">UTC+10</option>
-            <option value="11">UTC+11</option>
-            <option value="12">UTC+12</option>
-            <option value="13">UTC+13</option>
-            <option value="14">UTC+14</option>
+            <option value="-12">UTC -12</option>
+            <option value="-11">UTC -11</option>
+            <option value="-10">UTC -10</option>
+            <option value="-9">UTC -9</option>
+            <option value="-8">UTC -8</option>
+            <option value="-7">UTC -7</option>
+            <option value="-6">UTC -6</option>
+            <option value="-5">UTC -5</option>
+            <option value="-4">UTC -4</option>
+            <option value="-3">UTC -3</option>
+            <option value="-2">UTC -2</option>
+            <option value="-1">UTC -1</option>
+            <option value="0">UTC 0</option>
+            <option value="1">UTC +1</option>
+            <option value="2">UTC +2</option>
+            <option value="3">UTC +3</option>
+            <option value="4">UTC +4</option>
+            <option value="5">UTC +5</option>
+            <option value="5.5">UTC +5.5</option>
+            <option value="6">UTC +6</option>
+            <option value="7">UTC +7</option>
+            <option value="8">UTC +8</option>
+            <option value="9">UTC +9</option>
+            <option value="9.5">UTC +9.5</option>
+            <option value="10">UTC +10</option>
+            <option value="11">UTC +11</option>
+            <option value="12">UTC +12</option>
+            <option value="13">UTC +13</option>
+            <option value="14">UTC +14</option>
           </select>
         </div>
 
-        <button class="btn" id="calcBtn">Calculate State</button>
+        <button id="calcBtn">Calculate State 👆🏻</button>
 
-        <div class="help">
-          Lucy.OS uses birth date, birth time, and birth location.<br/>
+        <div class="helper">
+          Lucy.OS uses birth date, birth time, and birth location.<br />
           Timezone is resolved automatically from location.
         </div>
 
-        <div class="debugLine" id="debugLine">
-          Last result: awaiting calculation...
+        <div id="status" class="status warn">Ready.</div>
+
+        <div id="summary" class="summary">
+          Last result: waiting for first calculation.
+        </div>
+
+        <div class="subcard">
+          <h3>Resolved Input</h3>
+          <div class="resolved-grid">
+            <div class="resolved-item">
+              <div class="k">Resolved Location</div>
+              <div class="v" id="resolvedLocation">—</div>
+            </div>
+            <div class="resolved-item">
+              <div class="k">Timezone</div>
+              <div class="v" id="resolvedTimezone">—</div>
+            </div>
+            <div class="resolved-item">
+              <div class="k">Local Time Resolved</div>
+              <div class="v" id="resolvedLocalTime">—</div>
+            </div>
+            <div class="resolved-item">
+              <div class="k">UTC at Birth</div>
+              <div class="v" id="resolvedUTC">—</div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="card state">
-        <div class="stateHead">
+      <!-- RIGHT -->
+      <div class="right card">
+        <div class="right-top">
           <h2>System State</h2>
-          <div id="statusBadge" class="badge alert">Awaiting Data</div>
+          <div class="mode-pill" id="modePill">Waiting for calculation</div>
         </div>
 
-        <div class="metricGrid">
-          <div class="metric">
-            <div class="label">Capacity</div>
-            <div class="value" id="capacityVal">0.00</div>
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-label">Capacity</div>
+            <div class="stat-value" id="capacityVal">0.00</div>
           </div>
-          <div class="metric">
-            <div class="label">Strain</div>
-            <div class="value" id="strainVal">0.00</div>
-          </div>
-        </div>
-
-        <div class="driverGrid">
-          <div class="driverBox">
-            <div class="label">Primary Driver</div>
-            <div class="value" id="driverVal">—</div>
-          </div>
-          <div class="driverBox">
-            <div class="label">Top Regulator</div>
-            <div class="value" id="regulatorVal">—</div>
+          <div class="stat">
+            <div class="stat-label">Strain</div>
+            <div class="stat-value" id="strainVal">0.00</div>
           </div>
         </div>
 
-        <div class="chips">
-          <div class="chip"><span>Load State</span><strong id="loadStateVal">—</strong></div>
-          <div class="chip"><span>Containment</span><strong id="containmentVal">—</strong></div>
-          <div class="chip"><span>Mode</span><strong id="modeVal">—</strong></div>
-        </div>
-
-        <div class="bars">
-          <div class="barBlock">
-            <div class="barLabel"><span>Amplified Load</span><strong id="ampLoadNum">0.00</strong></div>
-            <div class="track"><div id="ampLoadBar" class="fill load"></div></div>
+        <div class="mini-grid">
+          <div class="mini-card">
+            <div class="mini-label">Primary Driver</div>
+            <div class="mini-value" id="driverVal">—</div>
           </div>
-
-          <div class="barBlock">
-            <div class="barLabel"><span>Regulation</span><strong id="regNum">0.00</strong></div>
-            <div class="track"><div id="regBar" class="fill reg"></div></div>
-          </div>
-
-          <div class="barBlock">
-            <div class="barLabel"><span>Saturn Constraint</span><strong id="satNum">0.00</strong></div>
-            <div class="track"><div id="satBar" class="fill sat"></div></div>
-          </div>
-
-          <div class="barBlock">
-            <div class="barLabel"><span>Effective Load</span><strong id="effNum">0.00</strong></div>
-            <div class="track"><div id="effBar" class="fill eff"></div></div>
-          </div>
-
-          <div class="barBlock">
-            <div class="barLabel"><span>Volatility (Uranus)</span><strong id="volNum">0.00</strong></div>
-            <div class="track"><div id="volBar" class="fill vol"></div></div>
-          </div>
-
-          <div class="barBlock">
-            <div class="barLabel"><span>Fog (Neptune)</span><strong id="fogNum">0.00</strong></div>
-            <div class="track"><div id="fogBar" class="fill fog"></div></div>
-          </div>
-
-          <div class="barBlock">
-            <div class="barLabel"><span>Activation (Mars)</span><strong id="actNum">0.00</strong></div>
-            <div class="track"><div id="actBar" class="fill act"></div></div>
-          </div>
-
-          <div class="barBlock">
-            <div class="barLabel"><span>Damping (Saturn + Venus)</span><strong id="dampNum">0.00</strong></div>
-            <div class="track"><div id="dampBar" class="fill damp"></div></div>
+          <div class="mini-card">
+            <div class="mini-label">Top Regulator</div>
+            <div class="mini-value" id="regulatorVal">—</div>
           </div>
         </div>
 
-        <div class="summary">
-          <div class="summaryBox">
-            <div class="title">State Summary</div>
-            <div class="body" id="summaryText">Awaiting calculation.</div>
+        <div class="pills">
+          <div class="pill">Load State <b id="loadStatePill">—</b></div>
+          <div class="pill">Containment <b id="containmentPill">—</b></div>
+          <div class="pill">Mode <b id="modeTextPill">—</b></div>
+        </div>
+
+        <div class="bar-block">
+          <div class="bar-head">
+            <span>Amplified Load</span>
+            <span id="loadNum">0.00</span>
           </div>
-          <div class="summaryBox">
-            <div class="title">Pacing Guidance</div>
-            <div class="body" id="pacingText">Awaiting calculation.</div>
-          </div>
-          <div class="summaryBox">
-            <div class="title">Dominant Driver Meaning</div>
-            <div class="body" id="driverMeaningText">Awaiting calculation.</div>
-          </div>
-          <div class="summaryBox">
-            <div class="title">Nervous System Behavior</div>
-            <div class="body" id="behaviorText">Awaiting calculation.</div>
+          <div class="bar-track">
+            <div class="bar-fill bar-load" id="loadBar"></div>
           </div>
         </div>
 
-        <div class="tiny" id="metaText">No data loaded yet.</div>
-      </div>
-    </div>
+        <div class="bar-block">
+          <div class="bar-head">
+            <span>Regulation</span>
+            <span id="regNum">0.00</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill bar-reg" id="regBar"></div>
+          </div>
+        </div>
 
-    <div class="card forecast">
-      <h2>Forecast</h2>
-      <div class="forecastGrid">
-        <div class="forecastCard">
-          <div class="small">Today</div>
-          <div class="big" id="todayTitle">Awaiting data</div>
-          <div class="copy" id="todayCopy">Run a calculation to populate the daily forecast layer.</div>
+        <div class="bar-block">
+          <div class="bar-head">
+            <span>Saturn Constraint</span>
+            <span id="satNum">0.00</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill bar-sat" id="satBar"></div>
+          </div>
         </div>
-        <div class="forecastCard">
-          <div class="small">Next 3 Days</div>
-          <div class="big" id="threeDayTitle">Awaiting data</div>
-          <div class="copy" id="threeDayCopy">Forecast panel will summarize short-horizon movement and pacing.</div>
+
+        <div class="bar-block">
+          <div class="bar-head">
+            <span>Effective Load</span>
+            <span id="effNum">0.00</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill bar-eff" id="effBar"></div>
+          </div>
         </div>
-        <div class="forecastCard">
-          <div class="small">Next 7 Days</div>
-          <div class="big" id="weekTitle">Awaiting data</div>
-          <div class="copy" id="weekCopy">Forecast panel will summarize broader weekly conditions and containment guidance.</div>
+
+        <div class="subcard">
+          <h3>Forecast (Prototype)</h3>
+          <div class="forecast-grid">
+            <div class="forecast-card">
+              <div class="forecast-label">Now</div>
+              <div class="forecast-state" id="forecastNowState">—</div>
+              <div class="forecast-text" id="forecastNowText">Waiting for calculation.</div>
+            </div>
+            <div class="forecast-card">
+              <div class="forecast-label">+6 Hours</div>
+              <div class="forecast-state" id="forecast6State">—</div>
+              <div class="forecast-text" id="forecast6Text">Waiting for calculation.</div>
+            </div>
+            <div class="forecast-card">
+              <div class="forecast-label">+24 Hours</div>
+              <div class="forecast-state" id="forecast24State">—</div>
+              <div class="forecast-text" id="forecast24Text">Waiting for calculation.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subcard">
+          <h3>Raw API Snapshot</h3>
+          <div id="rawOutput" class="raw">Waiting for first response…</div>
         </div>
       </div>
     </div>
-  </div>
-
-  <div style="margin-top:12px;color:#ff9d57;font-size:16px;text-align:center;padding-bottom:24px;">
-    BUILD MARKER: TEST-44
   </div>
 
   <script>
-    const API_URL = "/api/chart_inputs";
-    let isCalculating = false;
-
     const $ = (id) => document.getElementById(id);
 
     const els = {
-      statusBadge: $("statusBadge"),
+      dob: $("dob"),
+      tob: $("tob"),
+      ampm: $("ampm"),
+      location: $("location"),
+      utcOffset: $("utcOffset"),
+      calcBtn: $("calcBtn"),
+      status: $("status"),
+      summary: $("summary"),
+
+      resolvedLocation: $("resolvedLocation"),
+      resolvedTimezone: $("resolvedTimezone"),
+      resolvedLocalTime: $("resolvedLocalTime"),
+      resolvedUTC: $("resolvedUTC"),
+
+      modePill: $("modePill"),
       capacityVal: $("capacityVal"),
       strainVal: $("strainVal"),
       driverVal: $("driverVal"),
       regulatorVal: $("regulatorVal"),
-      loadStateVal: $("loadStateVal"),
-      containmentVal: $("containmentVal"),
-      modeVal: $("modeVal"),
 
-      ampLoadNum: $("ampLoadNum"),
+      loadStatePill: $("loadStatePill"),
+      containmentPill: $("containmentPill"),
+      modeTextPill: $("modeTextPill"),
+
+      loadNum: $("loadNum"),
       regNum: $("regNum"),
       satNum: $("satNum"),
       effNum: $("effNum"),
-      volNum: $("volNum"),
-      fogNum: $("fogNum"),
-      actNum: $("actNum"),
-      dampNum: $("dampNum"),
 
-      ampLoadBar: $("ampLoadBar"),
+      loadBar: $("loadBar"),
       regBar: $("regBar"),
       satBar: $("satBar"),
       effBar: $("effBar"),
-      volBar: $("volBar"),
-      fogBar: $("fogBar"),
-      actBar: $("actBar"),
-      dampBar: $("dampBar"),
 
-      summaryText: $("summaryText"),
-      pacingText: $("pacingText"),
-      driverMeaningText: $("driverMeaningText"),
-      behaviorText: $("behaviorText"),
-      metaText: $("metaText"),
+      forecastNowState: $("forecastNowState"),
+      forecastNowText: $("forecastNowText"),
+      forecast6State: $("forecast6State"),
+      forecast6Text: $("forecast6Text"),
+      forecast24State: $("forecast24State"),
+      forecast24Text: $("forecast24Text"),
 
-      todayTitle: $("todayTitle"),
-      todayCopy: $("todayCopy"),
-      threeDayTitle: $("threeDayTitle"),
-      threeDayCopy: $("threeDayCopy"),
-      weekTitle: $("weekTitle"),
-      weekCopy: $("weekCopy"),
-
-      calcBtn: $("calcBtn"),
-      debugLine: $("debugLine"),
+      rawOutput: $("rawOutput"),
     };
 
     function fmt(n){
-      const v = Number(n);
+      const v = Number(n || 0);
       return Number.isFinite(v) ? v.toFixed(2) : "0.00";
     }
 
-    function pct(value, max = 1.5){
-      const v = Number(value) || 0;
-      const p = Math.max(0, Math.min(100, (v / max) * 100));
-      return `${p}%`;
+    function clamp01(n){
+      const v = Number(n || 0);
+      if (!Number.isFinite(v)) return 0;
+      return Math.max(0, Math.min(v, 1));
     }
 
-    function setBar(el, value, max = 1.5){
-      el.style.width = pct(value, max);
+    function setStatus(text, type="warn"){
+      els.status.textContent = text;
+      els.status.className = `status ${type}`;
     }
 
-    function setBadge(modeText){
-      const text = String(modeText || "Unknown");
-      els.statusBadge.textContent = text;
-      els.statusBadge.classList.remove("ok","warn","alert");
+    function setBar(el, value){
+      const pct = clamp01(value) * 100;
+      el.style.width = `${pct}%`;
+    }
 
-      const lower = text.toLowerCase();
+    function deriveLoadState(load){
+      const v = Number(load || 0);
+      if (v >= 0.85) return "High";
+      if (v >= 0.60) return "Elevated";
+      if (v >= 0.35) return "Moderate";
+      return "Light";
+    }
 
-      if (lower.includes("regulated") || lower.includes("stable") || lower.includes("baseline")) {
-        els.statusBadge.classList.add("ok");
-      } else if (lower.includes("mobilized") || lower.includes("threshold") || lower.includes("strained") || lower.includes("active")) {
-        els.statusBadge.classList.add("warn");
-      } else {
-        els.statusBadge.classList.add("alert");
+    function deriveContainment(reg, load){
+      const r = Number(reg || 0);
+      const l = Number(load || 0);
+      const ratio = l > 0 ? (r / l) : 1;
+
+      if (ratio >= 1.0) return "Strong";
+      if (ratio >= 0.75) return "Stable";
+      if (ratio >= 0.50) return "Partial";
+      return "Thin";
+    }
+
+    async function calculateState(){
+      const dob = els.dob.value.trim();
+      const tob = els.tob.value.trim();
+      const ampm = els.ampm.value;
+      const location = els.location.value.trim();
+      const utcOffset = els.utcOffset.value;
+
+      if (!dob || !tob || !location){
+        setStatus("Birth date, time, and location are required.", "err");
+        return;
       }
-    }
 
-    async function fetchPlanetInputs(currentInputs){
+      els.calcBtn.disabled = true;
+      setStatus("Calculating...", "warn");
+
       const payload = {
-        dob: currentInputs.dob,
-        tob: currentInputs.tobRaw,
-        ampm: currentInputs.ampm,
-        location: currentInputs.location
+        mode: "natal",
+        dob,
+        tob,
+        ampm,
+        locationText: location
       };
 
-      if (currentInputs.utcOffsetOverride !== null && currentInputs.utcOffsetOverride !== undefined) {
-        payload.utcOffsetOverride = currentInputs.utcOffsetOverride;
+      if (utcOffset !== ""){
+        payload.utcOffsetOverride = Number(utcOffset);
       }
 
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
-
-      let data;
       try {
-        data = await response.json();
-      } catch {
-        throw new Error(`API returned a non-JSON response (${response.status}).`);
-      }
+        const res = await fetch("/api/chart_inputs", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
 
-      if (!response.ok) {
-        const msg =
-          data?.error ||
-          data?.message ||
-          `API request failed with status ${response.status}`;
-        throw new Error(msg);
-      }
+        const data = await res.json().catch(() => ({}));
 
-      return data;
-    }
-        async function calculateState(){
-      if (isCalculating) return;
-
-      isCalculating = true;
-      els.calcBtn.disabled = true;
-      els.calcBtn.textContent = "Calculating...";
-
-      try{
-        const currentInputs = {
-          dob: $("dob").value.trim(),
-          tobRaw: $("tob").value.trim(),
-          ampm: $("ampm").value,
-          location: $("location").value.trim(),
-          utcOffsetOverride: $("utcOverride").value === "" ? null : Number($("utcOverride").value)
-        };
-
-        const data = await fetchPlanetInputs(currentInputs);
         console.log("Lucy API response:", data);
 
-        const state = data?.state || {};
-        const telemetry = data?.telemetry || {};
-        const interpretation = data?.interpretation || {};
-        const forecast = data?.forecast || {};
-        const inputResolved = data?.inputResolved || {};
-        const planetary = data?.planetary || {};
-        const angles = data?.angles || {};
-        const houses = Array.isArray(data?.houses) ? data.houses : [];
+        if (!res.ok){
+          throw new Error(data.error || `HTTP ${res.status}`);
+        }
 
-        const capacity = Number(state.capacity ?? 0);
-        const strain = Number(state.strain ?? 0);
-        const amplifiedLoad = Number(state.amplifiedLoad ?? 0);
-        const regulation = Number(state.regulation ?? 0);
-        const saturnConstraint = Number(state.saturnConstraint ?? 0);
-        const effectiveLoad = Number(state.effectiveLoad ?? 0);
-        const mode = String(state.mode || interpretation.modeMeaning || "Unknown");
-
-        const primaryDriver =
-          telemetry.primaryDriver ||
-          telemetry.dominantDriver ||
-          "—";
-
-        const topRegulator =
-          telemetry.topRegulator ||
-          (Array.isArray(telemetry.topRegulators) ? telemetry.topRegulators[0] : null) ||
-          "—";
-
-        const volatility = Number(planetary.uranus ?? 0);
-        const fog = Number(planetary.neptune ?? 0);
-        const activation = Number(planetary.mars ?? 0);
-        const damping =
-          (Number(planetary.saturn ?? 0) + Number(planetary.venus ?? 0)) / 2;
-
-        let loadState = "Low";
-        if (amplifiedLoad >= 1.1) loadState = "Very High";
-        else if (amplifiedLoad >= 0.8) loadState = "High";
-        else if (amplifiedLoad >= 0.45) loadState = "Moderate";
-
-        let containment = "Weak";
-        if (regulation >= 0.8) containment = "Very Strong";
-        else if (regulation >= 0.5) containment = "Strong";
-        else if (regulation >= 0.25) containment = "Moderate";
-
-        els.capacityVal.textContent = fmt(capacity);
-        els.strainVal.textContent = fmt(strain);
-        els.driverVal.textContent = String(primaryDriver);
-        els.regulatorVal.textContent = String(topRegulator);
-
-        els.loadStateVal.textContent = loadState;
-        els.containmentVal.textContent = containment;
-        els.modeVal.textContent = mode;
-
-        els.ampLoadNum.textContent = fmt(amplifiedLoad);
-        els.regNum.textContent = fmt(regulation);
-        els.satNum.textContent = fmt(saturnConstraint);
-        els.effNum.textContent = fmt(effectiveLoad);
-        els.volNum.textContent = fmt(volatility);
-        els.fogNum.textContent = fmt(fog);
-        els.actNum.textContent = fmt(activation);
-        els.dampNum.textContent = fmt(damping);
-
-        setBar(els.ampLoadBar, amplifiedLoad, 1.5);
-        setBar(els.regBar, regulation, 1.2);
-        setBar(els.satBar, saturnConstraint, 0.5);
-        setBar(els.effBar, effectiveLoad, 1.5);
-        setBar(els.volBar, volatility, 1.0);
-        setBar(els.fogBar, fog, 1.0);
-        setBar(els.actBar, activation, 1.0);
-        setBar(els.dampBar, damping, 1.0);
-
-        els.summaryText.textContent =
-          interpretation.stateSummary ||
-          `${mode}. Capacity ${fmt(capacity)} with effective load ${fmt(effectiveLoad)} and strain ${fmt(strain)}.`;
-
-        els.pacingText.textContent =
-          interpretation.recommendedPacing ||
-          "Pacing guidance unavailable.";
-
-        els.driverMeaningText.textContent =
-          interpretation.dominantDriverMeaning ||
-          "Driver interpretation unavailable.";
-
-        els.behaviorText.textContent =
-          interpretation.nervousSystemBehavior ||
-          "Nervous system behavior interpretation unavailable.";
-
-        els.todayTitle.textContent =
-          forecast.today?.title ||
-          mode;
-
-        els.todayCopy.textContent =
-          forecast.today?.summary ||
-          "Today forecast not available yet.";
-
-        els.threeDayTitle.textContent =
-          forecast.next3Days?.title ||
-          "Next 3 Days";
-
-        els.threeDayCopy.textContent =
-          forecast.next3Days?.summary ||
-          "3-day forecast not available yet.";
-
-        els.weekTitle.textContent =
-          forecast.next7Days?.title ||
-          "Next 7 Days";
-
-        els.weekCopy.textContent =
-          forecast.next7Days?.summary ||
-          `ASC ${fmt(angles.asc)}° · MC ${fmt(angles.mc)}° · Houses loaded: ${houses.length}`;
-
-        const metaParts = [];
-        if (inputResolved.resolvedLocation) metaParts.push(`Resolved: ${inputResolved.resolvedLocation}`);
-        if (inputResolved.timezoneName) metaParts.push(`Timezone: ${inputResolved.timezoneName}`);
-        if (inputResolved.utcDatetime) metaParts.push(`UTC: ${inputResolved.utcDatetime}`);
-        els.metaText.textContent = metaParts.length ? metaParts.join(" • ") : "Calculation complete.";
-
-        els.debugLine.textContent =
-          `Last result: mode=${mode} | load=${fmt(amplifiedLoad)} | reg=${fmt(regulation)} | eff=${fmt(effectiveLoad)} | driver=${primaryDriver} | regulator=${topRegulator}`;
-
-        setBadge(mode);
-      } catch (err){
-        console.error("Lucy calculateState error:", err);
-        setBadge("Error");
-        els.summaryText.textContent = err?.message || "Calculation failed.";
-        els.pacingText.textContent = "Check API deployment, inputs, or helper wiring.";
-        els.driverMeaningText.textContent = "No data returned.";
-        els.behaviorText.textContent = "No data returned.";
-        els.metaText.textContent = "Request failed. Open browser console for details.";
-        els.debugLine.textContent = `Last result: ERROR | ${err?.message || "Unknown error"}`;
+        renderState(data);
+        setStatus("Calculation complete.", "ok");
+      } catch (err) {
+        console.error(err);
+        setStatus(`Error: ${err.message}`, "err");
+        els.rawOutput.textContent = JSON.stringify({ error: err.message }, null, 2);
       } finally {
-        isCalculating = false;
         els.calcBtn.disabled = false;
-        els.calcBtn.textContent = "Calculate State";
       }
     }
 
-    $("calcBtn").addEventListener("click", calculateState);
-    calculateState();
+    function renderState(data){
+      const state = data.state || {};
+      const telemetry = data.telemetry || {};
+      const interpretation = data.interpretation || {};
+      const forecast = data.forecast || {};
+      const inputResolved = data.inputResolved || {};
+
+      const capacity = Number(state.capacity || 0);
+      const strain = Number(state.strain || 0);
+      const amplifiedLoad = Number(state.amplifiedLoad || 0);
+      const regulation = Number(state.regulation || 0);
+      const saturnConstraint = Number(state.saturnConstraint || 0);
+      const effectiveLoad = Number(state.effectiveLoad || 0);
+
+      const mode = state.mode || interpretation.modeMeaning || "Unknown";
+      const primaryDriver = telemetry.primaryDriver || "—";
+      const topRegulator = telemetry.topRegulator || "—";
+
+      // Top summary
+      els.modePill.textContent = mode;
+      els.capacityVal.textContent = fmt(capacity);
+      els.strainVal.textContent = fmt(strain);
+      els.driverVal.textContent = primaryDriver;
+      els.regulatorVal.textContent = topRegulator;
+
+      // Pills
+      els.loadStatePill.textContent = deriveLoadState(amplifiedLoad);
+      els.containmentPill.textContent = deriveContainment(regulation, amplifiedLoad);
+      els.modeTextPill.textContent = mode;
+
+      // Bars
+      els.loadNum.textContent = fmt(amplifiedLoad);
+      els.regNum.textContent = fmt(regulation);
+      els.satNum.textContent = fmt(saturnConstraint);
+      els.effNum.textContent = fmt(effectiveLoad);
+
+      setBar(els.loadBar, amplifiedLoad);
+      setBar(els.regBar, regulation);
+      setBar(els.satBar, saturnConstraint);
+      setBar(els.effBar, effectiveLoad);
+
+      // Summary line
+      els.summary.textContent =
+        `Last result: mode=${mode} | load=${fmt(amplifiedLoad)} | reg=${fmt(regulation)} | eff=${fmt(effectiveLoad)} | driver=${primaryDriver} | regulator=${topRegulator}`;
+
+      // Resolved input
+      els.resolvedLocation.textContent =
+        inputResolved.locationResolved ||
+        inputResolved.resolvedLocation ||
+        "—";
+
+      els.resolvedTimezone.textContent =
+        inputResolved.timezoneName ||
+        inputResolved.timezone_name ||
+        "—";
+
+      els.resolvedLocalTime.textContent =
+        inputResolved.localTimeResolved ||
+        inputResolved.local_time_resolved ||
+        "—";
+
+      els.resolvedUTC.textContent =
+        inputResolved.utcDatetime ||
+        inputResolved.utc_datetime ||
+        "—";
+
+      // Forecast
+      els.forecastNowState.textContent = forecast.now?.state || "—";
+      els.forecastNowText.textContent = forecast.now?.text || "No forecast available.";
+
+      els.forecast6State.textContent = forecast.plus6?.state || "—";
+      els.forecast6Text.textContent = forecast.plus6?.text || "No forecast available.";
+
+      els.forecast24State.textContent = forecast.plus24?.state || "—";
+      els.forecast24Text.textContent = forecast.plus24?.text || "No forecast available.";
+
+      // Raw
+      els.rawOutput.textContent = JSON.stringify(data, null, 2);
+    }
+
+    els.calcBtn.addEventListener("click", calculateState);
   </script>
 </body>
 </html>
