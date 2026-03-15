@@ -318,6 +318,11 @@
           <strong>Resolved Input</strong>
           <div id="resolvedInput">No resolved birth data yet.</div>
         </div>
+
+        <div class="statusBlock">
+          <strong>Debug Snapshot</strong>
+          <div id="debugSnapshot">No debug data yet.</div>
+        </div>
       </div>
 
       <div class="panel">
@@ -594,6 +599,17 @@
       );
 
       document.getElementById("apiStatus").className = "ok";
+
+      const sunDeg = data?._longitudesDeg?.sun;
+      const moonDeg = data?._longitudesDeg?.moon;
+      const ascDeg = data?.angles?.asc;
+      const mcDeg = data?.angles?.mc;
+      const jdUt = ephemeris.jdUt || ephemeris.jd_ut || "—";
+
+      setText(
+        "debugSnapshot",
+        `JD: ${jdUt} | Sun: ${sunDeg ?? "—"} | Moon: ${moonDeg ?? "—"} | ASC: ${ascDeg ?? "—"} | MC: ${mcDeg ?? "—"}`
+      );
     }
 
     async function calculate(){
