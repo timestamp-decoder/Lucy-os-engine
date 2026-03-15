@@ -10,8 +10,10 @@
       --panel:#0f1b38;
       --panel2:#132347;
       --line:#2a3c69;
+      --lineSoft:rgba(255,255,255,.06);
       --text:#f4f7ff;
       --muted:#aab7d6;
+      --muted2:#8fa1c8;
       --blue:#67c1ff;
       --red:#ff6666;
       --green:#67d26f;
@@ -19,6 +21,7 @@
       --gold:#d8b84c;
       --amber:#f0c15b;
       --teal:#6fe0d3;
+      --soft:#c9d7ff;
     }
 
     *{box-sizing:border-box}
@@ -31,20 +34,22 @@
     }
 
     .wrap{
-      max-width:1380px;
+      max-width:1400px;
       margin:0 auto;
       padding:28px;
     }
 
     .hero{
       text-align:center;
-      margin-bottom:26px;
+      margin-bottom:28px;
+      padding:8px 0 4px;
     }
 
     .hero h1{
       margin:0;
       font-size:40px;
       letter-spacing:.4px;
+      font-weight:800;
     }
 
     .hero p{
@@ -55,21 +60,22 @@
 
     .grid{
       display:grid;
-      grid-template-columns:380px 1fr;
+      grid-template-columns:390px 1fr;
       gap:22px;
     }
 
     .panel{
       background:linear-gradient(180deg,var(--panel),var(--panel2));
       border:1px solid var(--line);
-      border-radius:18px;
-      padding:18px;
+      border-radius:20px;
+      padding:20px;
       box-shadow:0 10px 28px rgba(0,0,0,.20);
     }
 
     .panel h2{
       margin:0 0 14px;
       font-size:18px;
+      font-weight:700;
     }
 
     label{
@@ -123,6 +129,36 @@
       line-height:1.45;
     }
 
+    .statusBlock{
+      margin-top:14px;
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:rgba(255,255,255,.02);
+      font-size:12px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+
+    .statusBlock strong{
+      color:var(--text);
+      display:block;
+      margin-bottom:6px;
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .ok{
+      color:var(--green);
+      font-weight:700;
+    }
+
+    .err{
+      color:#ff9c9c;
+      font-weight:700;
+    }
+
     .rightTop{
       display:grid;
       grid-template-columns:1fr 1fr 1fr;
@@ -133,8 +169,9 @@
     .stat{
       background:rgba(255,255,255,.02);
       border:1px solid var(--line);
-      border-radius:14px;
-      padding:16px;
+      border-radius:16px;
+      padding:18px;
+      min-height:148px;
     }
 
     .stat .label{
@@ -148,17 +185,18 @@
       font-size:34px;
       font-weight:800;
       margin-top:8px;
+      line-height:1.05;
     }
 
     .sub{
       font-size:12px;
       color:var(--muted);
-      margin-top:6px;
-      line-height:1.4;
+      margin-top:7px;
+      line-height:1.45;
     }
 
     .meter{
-      margin-top:12px;
+      margin-top:14px;
       height:10px;
       width:100%;
       border-radius:999px;
@@ -182,119 +220,23 @@
       background:linear-gradient(90deg,var(--green),var(--amber),var(--red));
     }
 
-    .table{
-      width:100%;
-      border-collapse:collapse;
-      font-size:13px;
-    }
-
-    .table th,.table td{
-      padding:10px 8px;
-      border-bottom:1px solid rgba(255,255,255,.06);
-      text-align:left;
-    }
-
-    .table th{
-      color:var(--muted);
-      font-size:11px;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-    }
-
-    .badge{
-      display:inline-block;
-      padding:5px 8px;
-      border-radius:999px;
-      font-size:11px;
-      font-weight:700;
-      border:1px solid transparent;
-    }
-
-    .b-blue{background:rgba(103,193,255,.12); color:var(--blue); border-color:rgba(103,193,255,.25)}
-    .b-red{background:rgba(255,102,102,.12); color:var(--red); border-color:rgba(255,102,102,.25)}
-    .b-green{background:rgba(103,210,111,.12); color:var(--green); border-color:rgba(103,210,111,.25)}
-    .b-gold{background:rgba(216,184,76,.12); color:var(--gold); border-color:rgba(216,184,76,.25)}
-    .b-violet{background:rgba(176,108,255,.12); color:var(--violet); border-color:rgba(176,108,255,.25)}
-    .b-amber{background:rgba(240,193,91,.12); color:var(--amber); border-color:rgba(240,193,91,.25)}
-    .b-teal{background:rgba(111,224,211,.12); color:var(--teal); border-color:rgba(111,224,211,.25)}
-
-    .sectionTitle{
-      margin:2px 0 10px;
-      font-size:15px;
-      color:var(--muted);
-      text-transform:uppercase;
-      letter-spacing:.08em;
-    }
-
-    .footerGrid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:18px;
-      margin-top:18px;
-    }
-
-    .statusLine{
-      display:flex;
-      gap:8px;
-      align-items:center;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
-
-    .statusBlock{
-      margin-top:14px;
-      padding:12px;
-      border:1px solid var(--line);
-      border-radius:12px;
-      background:rgba(255,255,255,.02);
-      font-size:12px;
-      line-height:1.45;
-      color:var(--muted);
-    }
-
-    .statusBlock strong{
-      color:var(--text);
-      display:block;
-      margin-bottom:6px;
-      font-size:12px;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-    }
-
-    .whyBlock{
-      margin-bottom:18px;
-      padding:14px;
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:rgba(255,255,255,.02);
-    }
-
-    .whyTitle{
-      font-size:11px;
-      color:var(--muted);
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      margin-bottom:8px;
-    }
-
-    .whyText{
-      font-size:13px;
-      line-height:1.5;
-      color:var(--text);
-    }
-
     .forecastRow{
       display:grid;
       grid-template-columns:1.3fr .7fr;
       gap:18px;
-      margin-bottom:18px;
+      margin-bottom:20px;
+      align-items:stretch;
     }
 
     .miniCard{
       background:rgba(255,255,255,.02);
       border:1px solid var(--line);
-      border-radius:14px;
-      padding:14px;
+      border-radius:16px;
+      padding:16px;
+      min-height:112px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
     }
 
     .miniLabel{
@@ -308,23 +250,115 @@
       font-size:18px;
       font-weight:700;
       margin-top:8px;
+      line-height:1.2;
     }
 
     .miniSub{
       font-size:12px;
       color:var(--muted);
-      margin-top:6px;
-      line-height:1.4;
+      margin-top:7px;
+      line-height:1.45;
     }
 
-    .ok{
-      color:var(--green);
+    .badge{
+      display:inline-block;
+      padding:5px 9px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:700;
+      border:1px solid transparent;
+      white-space:nowrap;
+    }
+
+    .b-blue{background:rgba(103,193,255,.12); color:var(--blue); border-color:rgba(103,193,255,.25)}
+    .b-red{background:rgba(255,102,102,.12); color:var(--red); border-color:rgba(255,102,102,.25)}
+    .b-green{background:rgba(103,210,111,.12); color:var(--green); border-color:rgba(103,210,111,.25)}
+    .b-gold{background:rgba(216,184,76,.12); color:var(--gold); border-color:rgba(216,184,76,.25)}
+    .b-violet{background:rgba(176,108,255,.12); color:var(--violet); border-color:rgba(176,108,255,.25)}
+    .b-amber{background:rgba(240,193,91,.12); color:var(--amber); border-color:rgba(240,193,91,.25)}
+    .b-teal{background:rgba(111,224,211,.12); color:var(--teal); border-color:rgba(111,224,211,.25)}
+    .b-soft{background:rgba(201,215,255,.08); color:var(--soft); border-color:rgba(201,215,255,.16)}
+
+    .whyBlock{
+      margin:6px 0 22px;
+      padding:18px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:rgba(255,255,255,.02);
+    }
+
+    .whyTitle{
+      font-size:11px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:10px;
+    }
+
+    .whyText{
+      font-size:13px;
+      line-height:1.62;
+      color:var(--text);
+    }
+
+    .sectionTitle{
+      margin:4px 0 12px;
+      font-size:15px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:13px;
+    }
+
+    .table th,.table td{
+      padding:12px 8px;
+      border-bottom:1px solid var(--lineSoft);
+      text-align:left;
+      vertical-align:middle;
+    }
+
+    .table th{
+      color:var(--muted);
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .derivedRow td{
+      color:var(--muted2);
+      font-size:12px;
+    }
+
+    .derivedRow td strong{
+      color:var(--soft);
       font-weight:700;
     }
 
-    .err{
-      color:#ff9c9c;
-      font-weight:700;
+    .footerGrid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:22px;
+      margin-top:22px;
+    }
+
+    .subPanel{
+      background:rgba(255,255,255,.02);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+    }
+
+    .statusLine{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top:16px;
     }
 
     @media (max-width: 980px){
@@ -377,7 +411,7 @@
         <button id="calcBtn">Calculate</button>
 
         <div class="tiny">
-          Birth location helps resolve time zone, angles, and houses accurately.
+          Birth location resolves timezone, angles, and houses for accurate chart input.
         </div>
 
         <div class="statusBlock">
@@ -416,7 +450,7 @@
             <div class="label">State</div>
             <div class="big" id="stateLabel">Regulated</div>
             <div class="sub" id="stateHelper">Stable with manageable load</div>
-            <div style="margin-top:10px;">
+            <div style="margin-top:12px;">
               <span class="badge b-blue" id="stateBadge">Regulated</span>
             </div>
           </div>
@@ -424,14 +458,16 @@
 
         <div class="forecastRow">
           <div class="miniCard">
-            <div class="miniLabel">Outlook</div>
+            <div class="miniLabel">Forecast</div>
             <div class="miniValue" id="forecastHeadline">Regulated</div>
-            <div class="miniSub" id="forecastSub">Current forecast layer is in early-stage placeholder mode.</div>
+            <div class="miniSub" id="forecastSub">Current forecast layer is using an early-stage proxy.</div>
           </div>
 
           <div class="miniCard">
             <div class="miniLabel">Sky Data</div>
-            <div class="miniValue"><span class="badge b-teal" id="skyVerified">Pending</span></div>
+            <div class="miniValue">
+              <span class="badge b-teal" id="skyVerified">Pending</span>
+            </div>
             <div class="miniSub" id="skySub">Waiting for live ephemeris confirmation.</div>
           </div>
         </div>
@@ -454,7 +490,7 @@
             <tr>
               <td>Capacity</td>
               <td id="capVal">0.00</td>
-              <td><span class="badge b-gold">Solar</span></td>
+              <td><span class="badge b-gold">Capacity</span></td>
             </tr>
             <tr>
               <td>Amplified Load</td>
@@ -464,23 +500,23 @@
             <tr>
               <td>Regulation</td>
               <td id="regVal">0.00</td>
-              <td><span class="badge b-green">Damping</span></td>
+              <td><span class="badge b-green">Regulation</span></td>
             </tr>
             <tr>
               <td>Effective Load</td>
               <td id="effVal">0.00</td>
               <td><span class="badge b-blue">Net</span></td>
             </tr>
-            <tr>
-              <td>Stability Index</td>
+            <tr class="derivedRow">
+              <td><strong>Stability Index</strong></td>
               <td id="stabilityVal">0.00</td>
-              <td><span class="badge b-teal">Display Only</span></td>
+              <td><span class="badge b-soft">Derived</span></td>
             </tr>
           </tbody>
         </table>
 
         <div class="footerGrid">
-          <div>
+          <div class="subPanel">
             <div class="sectionTitle">Active Drivers</div>
             <table class="table">
               <thead>
@@ -510,7 +546,7 @@
             </table>
           </div>
 
-          <div>
+          <div class="subPanel">
             <div class="sectionTitle">Stabilizers</div>
             <table class="table">
               <thead>
@@ -543,7 +579,7 @@
 
         <div class="statusLine">
           <span class="badge b-violet" id="envBand">Field: —</span>
-          <span class="badge b-blue" id="forecastBand">Outlook: —</span>
+          <span class="badge b-blue" id="forecastBand">Forecast: —</span>
         </div>
 
         <div class="tiny">
@@ -560,13 +596,18 @@
       return Math.max(min, Math.min(max, v));
     }
 
-    function safeNum(v, fallback = 0){
+    function num(v){
       const n = Number(v);
-      return Number.isFinite(n) ? n : fallback;
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function safe(v, fallback = 0){
+      const n = num(v);
+      return n === null ? fallback : n;
     }
 
     function fmt(v){
-      return safeNum(v).toFixed(2);
+      return safe(v).toFixed(2);
     }
 
     function setText(id, value){
@@ -574,10 +615,10 @@
       if (el) el.textContent = value;
     }
 
-    function setBar(id, value, max = 1.5){
+    function setBar(id, value, max = 1.2){
       const el = document.getElementById(id);
       if (!el) return;
-      const pct = clamp((safeNum(value) / max) * 100, 0, 100);
+      const pct = clamp((safe(value) / max) * 100, 0, 100);
       el.style.width = pct + "%";
     }
 
@@ -610,21 +651,26 @@
       return `Field: ${text || "—"}`;
     }
 
-    function outlookLabel(forecastState){
+    function forecastLabel(forecastState){
       const text = String(forecastState || "").trim();
-      return `Outlook: ${text || "—"}`;
+      return `Forecast: ${text || "—"}`;
     }
 
-    function driverValueFromTopDrivers(list, planetName){
+    function extractValueFromTaggedList(list, name){
       if (!Array.isArray(list)) return null;
-      const hit = list.find(item => String(item).toLowerCase().startsWith(String(planetName).toLowerCase()));
+      const hit = list.find(item => String(item).toLowerCase().startsWith(String(name).toLowerCase()));
       if (!hit) return null;
       const match = String(hit).match(/\(([^)]+)\)/);
-      return match ? safeNum(match[1]) : null;
+      return match ? num(match[1]) : null;
     }
 
-    function primaryDriverName(data){
-      return data?.telemetry?.primaryDriver || "—";
+    function firstDefined(...values){
+      for (const v of values){
+        if (v !== null && v !== undefined && Number.isFinite(Number(v))) {
+          return Number(v);
+        }
+      }
+      return null;
     }
 
     function computeStabilityIndex(saturn, venus, mercury){
@@ -640,12 +686,12 @@
       const driver = telemetry.primaryDriver || "signal";
       const mode = cleanMode(state.mode || "Regulated");
 
-      const uranus = safeNum(planetary.uranus);
-      const neptune = safeNum(planetary.neptune);
-      const mars = safeNum(planetary.mars);
-      const saturn = safeNum(planetary.saturn);
-      const venus = safeNum(planetary.venus);
-      const mercury = safeNum(planetary.mercury);
+      const uranus = safe(planetary.uranus);
+      const neptune = safe(planetary.neptune);
+      const mars = safe(planetary.mars);
+      const saturn = safe(planetary.saturn);
+      const venus = safe(planetary.venus);
+      const mercury = safe(planetary.mercury);
 
       const pressureBits = [];
       const bufferBits = [];
@@ -671,17 +717,17 @@
       const badge = document.getElementById("skyVerified");
       const sub = document.getElementById("skySub");
 
-      const hasSource = !!(ephemeris?.source);
-      const hasPlace = resolvedLocation && resolvedLocation !== "—";
+      const hasSource = !!ephemeris?.source;
+      const hasPlace = !!resolvedLocation && resolvedLocation !== "—";
 
       if (hasSource && hasPlace){
         badge.textContent = "Verified";
         badge.className = "badge b-teal";
-        sub.textContent = `Live ephemeris and resolved location confirmed.`;
+        sub.textContent = "Live ephemeris and resolved location confirmed.";
       } else {
         badge.textContent = "Pending";
         badge.className = "badge b-amber";
-        sub.textContent = `Waiting for live ephemeris confirmation.`;
+        sub.textContent = "Waiting for live ephemeris confirmation.";
       }
     }
 
@@ -696,21 +742,49 @@
       const inputResolved = data?.inputResolved || {};
       const ephemeris = data?.ephemeris || {};
 
-      const capacity = safeNum(state.capacity);
-      const strain = safeNum(state.strain);
-      const load = safeNum(state.amplifiedLoad);
-      const regulation = safeNum(state.regulation);
-      const effective = safeNum(state.effectiveLoad);
+      const capacity = safe(state.capacity);
+      const strain = safe(state.strain);
+      const load = safe(state.amplifiedLoad);
+      const regulation = safe(state.regulation);
+      const effective = safe(state.effectiveLoad);
       const modeText = state.mode || "Regulated";
       const cleanState = cleanMode(modeText);
 
-      const volatility = safeNum(planetary.uranus, driverValueFromTopDrivers(telemetry.topDrivers, "Uranus"));
-      const fog = safeNum(planetary.neptune, driverValueFromTopDrivers(telemetry.topDrivers, "Neptune"));
-      const activation = safeNum(planetary.mars, driverValueFromTopDrivers(telemetry.topDrivers, "Mars"));
+      const volatility = firstDefined(
+        planetary.uranus,
+        extractValueFromTaggedList(telemetry.topDrivers, "Uranus"),
+        0
+      );
 
-      const saturn = safeNum(planetary.saturn, driverValueFromTopDrivers(telemetry.topRegulators, "Saturn"));
-      const venus = safeNum(planetary.venus, driverValueFromTopDrivers(telemetry.topRegulators, "Venus"));
-      const mercury = safeNum(planetary.mercury, driverValueFromTopRegulators(telemetry.topRegulators, "Mercury"));
+      const fog = firstDefined(
+        planetary.neptune,
+        extractValueFromTaggedList(telemetry.topDrivers, "Neptune"),
+        0
+      );
+
+      const activation = firstDefined(
+        planetary.mars,
+        extractValueFromTaggedList(telemetry.topDrivers, "Mars"),
+        0
+      );
+
+      const saturn = firstDefined(
+        planetary.saturn,
+        extractValueFromTaggedList(telemetry.topRegulators, "Saturn"),
+        0
+      );
+
+      const venus = firstDefined(
+        planetary.venus,
+        extractValueFromTaggedList(telemetry.topRegulators, "Venus"),
+        0
+      );
+
+      const mercury = firstDefined(
+        planetary.mercury,
+        extractValueFromTaggedList(telemetry.topRegulators, "Mercury"),
+        0
+      );
 
       const stabilityIndex = computeStabilityIndex(saturn, venus, mercury);
 
@@ -719,7 +793,10 @@
       setText("capVal", fmt(capacity));
       setText("loadVal", fmt(load));
       setText("regVal", fmt(regulation));
+
+      // Keep raw value visible, but protect visual hierarchy if it spikes
       setText("effVal", fmt(effective));
+
       setText("stabilityVal", fmt(stabilityIndex));
 
       setText("stateLabel", cleanState);
@@ -732,7 +809,7 @@
         stateBadge.className = stateBadgeClass(modeText);
       }
 
-      setText("primaryDriver", primaryDriverName(data));
+      setText("primaryDriver", telemetry.primaryDriver || "—");
       setText("volatilityVal", fmt(volatility));
       setText("fogVal", fmt(fog));
       setText("activationVal", fmt(activation));
@@ -743,13 +820,16 @@
 
       const forecastState = forecast?.now?.state || cleanState;
       setText("forecastHeadline", forecastState);
-      setText("forecastSub", `Forecast layer is still early-stage, but the current outlook reads as ${String(forecastState).toLowerCase()}.`);
+      setText(
+        "forecastSub",
+        `Forecast layer is still early-stage, but the current outlook reads as ${String(forecastState).toLowerCase()}.`
+      );
 
       setText("whyLine", buildWhyLine(data));
       setText("envBand", fieldLabel(environment.environmentMode));
-      setText("forecastBand", outlookLabel(forecastState));
-      setText("apiStatus", `OK • ${ephemeris.source || "API"} • ${ephemeris.mode || "natal"}`);
+      setText("forecastBand", forecastLabel(forecastState));
 
+      setText("apiStatus", `OK • ${ephemeris.source || "API"} • ${ephemeris.mode || "natal"}`);
       document.getElementById("apiStatus").className = "ok";
 
       const resolvedLocation =
@@ -779,28 +859,20 @@
 
       updateSkyBadge(ephemeris, resolvedLocation);
 
-      const sunDeg = data?._longitudesDeg?.sun;
-      const moonDeg = data?._longitudesDeg?.moon;
-      const ascDeg = data?.angles?.asc;
-      const mcDeg = data?.angles?.mc;
+      const sunDeg = data?._longitudesDeg?.sun ?? "—";
+      const moonDeg = data?._longitudesDeg?.moon ?? "—";
+      const ascDeg = data?.angles?.asc ?? "—";
+      const mcDeg = data?.angles?.mc ?? "—";
       const jdUt = ephemeris.jdUt || ephemeris.jd_ut || "—";
 
       setText(
         "debugSnapshot",
-        `JD: ${jdUt} | Sun: ${sunDeg ?? "—"} | Moon: ${moonDeg ?? "—"} | ASC: ${ascDeg ?? "—"} | MC: ${mcDeg ?? "—"}`
+        `JD: ${jdUt} | Sun: ${sunDeg} | Moon: ${moonDeg} | ASC: ${ascDeg} | MC: ${mcDeg}`
       );
 
+      // Visual bars capped to preserve hierarchy
       setBar("stateBar", capacity, 1.2);
       setBar("strainBar", strain, 1.2);
-    }
-
-    // helper alias for top regulators
-    function driverValueFromTopRegulators(list, planetName){
-      if (!Array.isArray(list)) return null;
-      const hit = list.find(item => String(item).toLowerCase().startsWith(String(planetName).toLowerCase()));
-      if (!hit) return null;
-      const match = String(hit).match(/\(([^)]+)\)/);
-      return match ? safeNum(match[1]) : null;
     }
 
     async function calculate(){
@@ -855,6 +927,7 @@
 
     document.getElementById("calcBtn").addEventListener("click", calculate);
 
+    // Default test values
     document.getElementById("dob").value = "1980-11-21";
     document.getElementById("tob").value = "6:20";
     document.getElementById("ampm").value = "AM";
