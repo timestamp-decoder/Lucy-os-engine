@@ -19,11 +19,6 @@
       --green:#67d26f;
       --violet:#b06cff;
       --gold:#d8b84c;
-      --softBlue:rgba(103,193,255,.12);
-      --softRed:rgba(255,102,102,.10);
-      --softGreen:rgba(103,210,111,.10);
-      --softGold:rgba(216,184,76,.10);
-      --softViolet:rgba(176,108,255,.10);
     }
 
     *{box-sizing:border-box}
@@ -32,7 +27,7 @@
       margin:0;
       font-family:Arial, sans-serif;
       background:
-        radial-gradient(circle at 50% 0%, rgba(103,193,255,.08), transparent 35%),
+        radial-gradient(circle at 50% 0%, rgba(103,193,255,.06), transparent 32%),
         linear-gradient(180deg,#071126 0%, #09142f 100%);
       color:var(--text);
     }
@@ -46,13 +41,8 @@
     .hero{
       position:relative;
       text-align:center;
-      margin-bottom:20px;
-      padding:18px 18px 16px;
-      border:1px solid rgba(255,255,255,.05);
-      border-radius:18px;
-      background:
-        radial-gradient(circle at 50% 50%, rgba(103,193,255,.08), transparent 55%),
-        linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+      margin-bottom:22px;
+      padding:18px 18px 14px;
       overflow:hidden;
     }
 
@@ -60,11 +50,10 @@
       position:absolute;
       inset:0;
       pointer-events:none;
-      opacity:.9;
-      transition:all .35s ease;
+      opacity:.95;
+      transition:background .35s ease;
       background:
-        radial-gradient(circle at 50% 30%, rgba(103,193,255,.12), transparent 42%);
-      filter:blur(0px);
+        radial-gradient(circle at 50% 28%, rgba(103,193,255,.10), transparent 42%);
     }
 
     .hero h1{
@@ -85,7 +74,7 @@
 
     .grid{
       display:grid;
-      grid-template-columns: 360px 1fr;
+      grid-template-columns:360px 1fr;
       gap:20px;
       align-items:start;
     }
@@ -94,8 +83,8 @@
       background:linear-gradient(180deg,var(--panel),var(--panel2));
       border:1px solid var(--line);
       border-radius:18px;
-      padding:16px;
-      box-shadow:0 10px 30px rgba(0,0,0,.22);
+      padding:18px;
+      box-shadow:0 10px 30px rgba(0,0,0,.20);
     }
 
     .panel h2{
@@ -116,7 +105,7 @@
       border:1px solid var(--line);
       background:#0b1734;
       color:var(--text);
-      padding:12px 12px;
+      padding:12px;
       font-size:14px;
     }
 
@@ -157,15 +146,16 @@
     .leftStack{
       display:grid;
       gap:12px;
+      margin-top:14px;
     }
 
     .statusBlock{
-      padding:12px;
+      padding:14px;
       border:1px solid var(--line);
-      border-radius:12px;
+      border-radius:14px;
       background:rgba(255,255,255,.02);
       font-size:12px;
-      line-height:1.5;
+      line-height:1.55;
       color:var(--muted);
     }
 
@@ -198,9 +188,9 @@
     .stat{
       background:rgba(255,255,255,.025);
       border:1px solid var(--line);
-      border-radius:14px;
-      padding:14px;
-      min-height:132px;
+      border-radius:16px;
+      padding:16px;
+      min-height:138px;
     }
 
     .stat .label{
@@ -214,17 +204,18 @@
       font-size:30px;
       font-weight:800;
       margin-top:8px;
+      line-height:1.05;
     }
 
     .sub{
       font-size:12px;
       color:var(--muted);
-      margin-top:6px;
-      line-height:1.35;
+      margin-top:8px;
+      line-height:1.4;
     }
 
     .meter{
-      margin-top:10px;
+      margin-top:12px;
       height:10px;
       width:100%;
       border-radius:999px;
@@ -237,13 +228,32 @@
       display:block;
       height:100%;
       width:0%;
-      background:linear-gradient(90deg,var(--green),var(--gold),var(--red));
       transition:width .35s ease;
+    }
+
+    .meter-capacity > span{
+      background:linear-gradient(90deg,#67c1ff,#a1d8ff,#d8b84c);
+    }
+
+    .meter-strain > span{
+      background:linear-gradient(90deg,#67d26f,#d8b84c,#ff6666);
+    }
+
+    .stateBadge{
+      display:inline-block;
+      margin-top:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      background:rgba(103,193,255,.10);
+      color:var(--blue);
+      border:1px solid rgba(103,193,255,.18);
     }
 
     .midRow{
       display:grid;
-      grid-template-columns:1.1fr .9fr;
+      grid-template-columns:1.15fr .85fr;
       gap:14px;
       margin-bottom:14px;
     }
@@ -251,9 +261,9 @@
     .microCard{
       background:rgba(255,255,255,.025);
       border:1px solid var(--line);
-      border-radius:14px;
-      padding:13px 14px;
-      min-height:112px;
+      border-radius:16px;
+      padding:14px 16px;
+      min-height:126px;
     }
 
     .microHeader{
@@ -275,35 +285,34 @@
     .verifiedBadge{
       display:inline-flex;
       align-items:center;
-      gap:6px;
-      padding:5px 8px;
+      padding:4px 8px;
       border-radius:999px;
       font-size:10px;
       font-weight:700;
-      color:var(--blue);
-      background:rgba(103,193,255,.10);
-      border:1px solid rgba(103,193,255,.18);
+      color:var(--teal, #6fe0d3);
+      background:rgba(103,193,255,.08);
+      border:1px solid rgba(103,193,255,.14);
       white-space:nowrap;
     }
 
     .forecastBig{
       font-size:18px;
       font-weight:800;
-      margin:2px 0 4px;
+      margin:2px 0 6px;
     }
 
     .forecastSub{
       font-size:12px;
       color:var(--muted);
-      line-height:1.4;
+      line-height:1.45;
     }
 
     .whyCard{
-      margin-bottom:14px;
+      margin-bottom:16px;
       background:rgba(255,255,255,.025);
       border:1px solid var(--line);
-      border-radius:14px;
-      padding:16px 16px;
+      border-radius:16px;
+      padding:18px;
     }
 
     .whyTitle{
@@ -318,7 +327,7 @@
     .whyText{
       font-size:13px;
       color:var(--text);
-      line-height:1.6;
+      line-height:1.72;
     }
 
     .sectionTitle{
@@ -330,6 +339,15 @@
       font-weight:700;
     }
 
+    .summaryTitle{
+      margin:0 0 10px;
+      font-size:14px;
+      color:var(--text);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-weight:800;
+    }
+
     .table{
       width:100%;
       border-collapse:collapse;
@@ -337,7 +355,7 @@
     }
 
     .table th,.table td{
-      padding:10px 8px;
+      padding:11px 8px;
       border-bottom:1px solid var(--lineSoft);
       text-align:left;
       vertical-align:middle;
@@ -363,10 +381,14 @@
     .b-red{background:rgba(255,102,102,.12); color:var(--red); border-color:rgba(255,102,102,.22)}
     .b-green{background:rgba(103,210,111,.12); color:var(--green); border-color:rgba(103,210,111,.22)}
     .b-gold{background:rgba(216,184,76,.12); color:var(--gold); border-color:rgba(216,184,76,.22)}
-    .b-violet{background:rgba(176,108,255,.10); color:#cab1ff; border-color:rgba(176,108,255,.16)}
+    .b-violet{background:rgba(176,108,255,.08); color:#cab1ff; border-color:rgba(176,108,255,.14)}
 
-    .softMetric{
-      opacity:.78;
+    .softMetric td{
+      opacity:.70;
+    }
+
+    .softMetric .badge{
+      opacity:.82;
     }
 
     .bottomGrid{
@@ -379,8 +401,8 @@
     .miniPanel{
       background:rgba(255,255,255,.025);
       border:1px solid var(--line);
-      border-radius:14px;
-      padding:14px;
+      border-radius:16px;
+      padding:16px;
     }
 
     .metaRow{
@@ -388,7 +410,7 @@
       gap:8px;
       align-items:center;
       flex-wrap:wrap;
-      margin-top:14px;
+      margin-top:16px;
     }
 
     .metaPill{
@@ -403,22 +425,23 @@
       color:var(--muted);
     }
 
+    .metaPill.field{
+      color:#c27cff;
+      background:rgba(176,108,255,.10);
+      border-color:rgba(176,108,255,.16);
+    }
+
+    .metaPill.forecast{
+      color:#6fc0ff;
+      background:rgba(103,193,255,.10);
+      border-color:rgba(103,193,255,.16);
+    }
+
     @media (max-width: 1120px){
-      .grid{
-        grid-template-columns:1fr;
-      }
-
-      .heroStats{
-        grid-template-columns:1fr;
-      }
-
-      .midRow{
-        grid-template-columns:1fr;
-      }
-
-      .bottomGrid{
-        grid-template-columns:1fr;
-      }
+      .grid{grid-template-columns:1fr}
+      .heroStats{grid-template-columns:1fr}
+      .midRow{grid-template-columns:1fr}
+      .bottomGrid{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -427,11 +450,10 @@
     <div class="hero">
       <div class="heroGlow" id="heroGlow"></div>
       <h1>Lucy.OS</h1>
-      <p>Astrology-informed nervous system regulation engine</p>
+      <p>Astrology-informed system weather</p>
     </div>
 
     <div class="grid">
-      <!-- LEFT COLUMN -->
       <div class="panel">
         <h2>Inputs</h2>
 
@@ -458,7 +480,7 @@
         <button id="calcBtn">Calculate</button>
 
         <div class="tiny">
-          Birth location is used for geocoding, historical timezone resolution, houses, and angles.
+          Birth location resolves timezone, angles, and houses for accurate chart input.
         </div>
 
         <div class="leftStack">
@@ -468,7 +490,7 @@
           </div>
 
           <div class="statusBlock">
-            <strong>Resolved Input</strong>
+            <strong>Chart Input</strong>
             <div id="resolvedInput">No resolved birth data yet.</div>
           </div>
 
@@ -479,33 +501,30 @@
         </div>
       </div>
 
-      <!-- RIGHT COLUMN -->
       <div class="panel">
-        <!-- HERO STATS -->
         <div class="heroStats">
           <div class="stat">
             <div class="label">Capacity</div>
             <div class="big" id="capacityScore">0.00</div>
-            <div class="sub" id="capacityLabel">Solar baseline</div>
-            <div class="meter"><span id="capacityBar"></span></div>
+            <div class="sub" id="capacityLabel">Available system bandwidth</div>
+            <div class="meter meter-capacity"><span id="capacityBar"></span></div>
           </div>
 
           <div class="stat">
             <div class="label">Strain</div>
             <div class="big" id="strainScore">0.00</div>
-            <div class="sub" id="strainLabel">Low active load</div>
-            <div class="meter"><span id="strainBar"></span></div>
+            <div class="sub" id="strainLabel">Current active load</div>
+            <div class="meter meter-strain"><span id="strainBar"></span></div>
           </div>
 
           <div class="stat">
             <div class="label">State</div>
-            <div class="big" id="stateScore">0.00</div>
-            <div class="sub" id="stateLabel">Regulated baseline</div>
-            <div class="meter"><span id="stateBar"></span></div>
+            <div class="big" id="stateText">Regulated</div>
+            <div class="sub" id="stateLabel">Stable with manageable load</div>
+            <div class="stateBadge" id="stateBadge">Regulated</div>
           </div>
         </div>
 
-        <!-- FORECAST + SKY DATA -->
         <div class="midRow">
           <div class="microCard">
             <div class="microHeader">
@@ -513,7 +532,7 @@
             </div>
             <div class="forecastBig" id="forecastTitle">Forecast: —</div>
             <div class="forecastSub" id="forecastText">
-              Early-stage forecast layer. Presenting current state as placeholder until forward pass is fully wired.
+              Early-stage forecast placeholder based on current chart state.
             </div>
           </div>
 
@@ -529,16 +548,12 @@
           </div>
         </div>
 
-        <!-- WHY -->
         <div class="whyCard">
           <div class="whyTitle">Why</div>
-          <div class="whyText" id="whyText">
-            Waiting for chart interpretation.
-          </div>
+          <div class="whyText" id="whyText">Waiting for chart interpretation.</div>
         </div>
 
-        <!-- CORE STATE -->
-        <div class="sectionTitle">Core State</div>
+        <div class="summaryTitle">System Summary</div>
         <table class="table">
           <thead>
             <tr>
@@ -576,10 +591,9 @@
           </tbody>
         </table>
 
-        <!-- DRIVERS + STABILIZERS -->
         <div class="bottomGrid">
           <div class="miniPanel">
-            <div class="sectionTitle">Active Drivers</div>
+            <div class="summaryTitle" style="font-size:13px; margin-bottom:10px;">Active Drivers</div>
             <table class="table">
               <thead>
                 <tr>
@@ -609,7 +623,7 @@
           </div>
 
           <div class="miniPanel">
-            <div class="sectionTitle">Stabilizers</div>
+            <div class="summaryTitle" style="font-size:13px; margin-bottom:10px;">Stabilizers</div>
             <table class="table">
               <thead>
                 <tr>
@@ -639,10 +653,13 @@
           </div>
         </div>
 
-        <!-- META -->
         <div class="metaRow">
-          <span class="metaPill" id="envBand">Field: —</span>
-          <span class="metaPill" id="forecastBand">Forecast: —</span>
+          <span class="metaPill field" id="envBand">Field: —</span>
+          <span class="metaPill forecast" id="forecastBand">Forecast: —</span>
+        </div>
+
+        <div class="tiny">
+          Forecast, stability index, and why-line are interpretive layers on top of the current V2.5 engine.
         </div>
       </div>
     </div>
@@ -681,23 +698,22 @@
       if (!el) return;
 
       const text = String(modeText || "").toLowerCase();
-
-      let glow = "radial-gradient(circle at 50% 30%, rgba(103,193,255,.12), transparent 42%)";
+      let glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.10), transparent 42%)";
 
       if (text.includes("overload")) {
-        glow = "radial-gradient(circle at 50% 30%, rgba(255,102,102,.16), transparent 42%)";
+        glow = "radial-gradient(circle at 50% 28%, rgba(255,102,102,.14), transparent 42%)";
       } else if (text.includes("threshold") || text.includes("strain")) {
-        glow = "radial-gradient(circle at 50% 30%, rgba(216,184,76,.16), transparent 42%)";
+        glow = "radial-gradient(circle at 50% 28%, rgba(216,184,76,.14), transparent 42%)";
       } else if (text.includes("mobilized") || text.includes("active")) {
-        glow = "radial-gradient(circle at 50% 30%, rgba(216,184,76,.10), rgba(103,193,255,.10), transparent 48%)";
+        glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.08), rgba(216,184,76,.10), transparent 48%)";
       }
 
       if (safeNum(fog) > 0.72) {
-        glow = "radial-gradient(circle at 50% 30%, rgba(176,108,255,.14), rgba(103,193,255,.06), transparent 48%)";
+        glow = "radial-gradient(circle at 50% 28%, rgba(176,108,255,.12), rgba(103,193,255,.05), transparent 48%)";
       }
 
       if (safeNum(volatility) > 0.75 && !text.includes("overload")) {
-        glow = "radial-gradient(circle at 50% 30%, rgba(103,193,255,.14), rgba(176,108,255,.06), transparent 48%)";
+        glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.12), rgba(176,108,255,.05), transparent 48%)";
       }
 
       el.style.background = glow;
@@ -705,25 +721,30 @@
 
     function stateLabelFromMode(modeText){
       const text = String(modeText || "").toLowerCase();
-      if (text.includes("overload")) return "Overload state";
-      if (text.includes("threshold") || text.includes("strain")) return "Threshold strain";
-      if (text.includes("mobilized") || text.includes("active")) return "Mobilized state";
-      return "Regulated baseline";
+      if (text.includes("overload")) return "Overloaded";
+      if (text.includes("threshold") || text.includes("strain")) return "Threshold";
+      if (text.includes("mobilized") || text.includes("active")) return "Mobilized";
+      return "Regulated";
+    }
+
+    function stateHelperFromMode(modeText){
+      const text = String(modeText || "").toLowerCase();
+      if (text.includes("overload")) return "System is carrying more than it can comfortably regulate";
+      if (text.includes("threshold") || text.includes("strain")) return "Load is approaching capacity";
+      if (text.includes("mobilized") || text.includes("active")) return "Elevated activity, still functioning";
+      return "Stable with manageable load";
     }
 
     function strainLabelFromStrain(strain){
       const s = safeNum(strain);
-      if (s < 0.60) return "Low active load";
-      if (s < 0.85) return "Moderate load";
+      if (s < 0.60) return "Current active load";
+      if (s < 0.85) return "Moderate active load";
       if (s < 1.00) return "High strain";
       return "Critical load";
     }
 
-    function capacityLabelFromValue(capacity){
-      const c = safeNum(capacity);
-      if (c < 0.40) return "Lower solar baseline";
-      if (c < 0.75) return "Moderate solar baseline";
-      return "Strong solar baseline";
+    function capacityLabelFromValue(){
+      return "Available system bandwidth";
     }
 
     function envBandFromMode(envMode){
@@ -736,7 +757,7 @@
       return `Forecast: ${text || "—"}`;
     }
 
-    function driverValueFromTopDrivers(list, planetName){
+    function driverValueFromTaggedList(list, planetName){
       if (!Array.isArray(list)) return null;
       const hit = list.find(item => String(item).toLowerCase().startsWith(String(planetName).toLowerCase()));
       if (!hit) return null;
@@ -753,26 +774,16 @@
 
       if (safeNum(fog) >= 0.65) parts.push("Neptune is increasing diffusion");
       if (safeNum(activation) >= 0.65) parts.push("Mars is raising activation");
-      if (safeNum(mercury) >= 0.65) parts.push("Mercury is improving clarity");
+      if (safeNum(mercury) >= 0.65) parts.push("Mercury is improving signal clarity");
       if (safeNum(saturn) >= 0.65) parts.push("Saturn is adding constraint");
       if (safeNum(venus) >= 0.65) parts.push("Venus is supporting regulation");
 
-      let front = parts.slice(0, 3).join("; ");
+      let front = parts.slice(0, 3).join(" + ");
       if (!front) {
         front = `${primaryDriver || "Current drivers"} are within stable operating range`;
       }
 
-      return `${front}. Current mode is ${String(modeText || "Regulated baseline").toLowerCase()}.`;
-    }
-
-    function calculateDisplayState(capacity, strain, effective, modeText) {
-      const text = String(modeText || "").toLowerCase();
-
-      if (text.includes("overload")) return Math.min(Math.max(strain, 1.0), 1.2);
-      if (text.includes("threshold") || text.includes("strain")) return Math.min(Math.max(strain, 0.85), 1.0);
-      if (text.includes("mobilized") || text.includes("active")) return Math.min(Math.max(strain, 0.60), 0.85);
-
-      return Math.min(Math.max(strain, 0), 0.60);
+      return `${front}. Current mode is ${String(modeText || "Regulated").toLowerCase()}.`;
     }
 
     function updateUI(data){
@@ -791,66 +802,74 @@
       const load = safeNum(state.amplifiedLoad);
       const regulation = safeNum(state.regulation);
       const effective = safeNum(state.effectiveLoad);
-      const modeText = state.mode || "Regulated Baseline";
+      const modeText = state.mode || "Regulated";
 
-      // UI display normalization only (does NOT change engine)
       const effectiveDisplay = Math.min(effective, Math.max(capacity * 1.15, 1.10));
-      const stateDisplay = calculateDisplayState(capacity, strain, effective, modeText);
 
-      const volatility = safeNum(planetary.uranus, driverValueFromTopDrivers(telemetry.topDrivers, "Uranus"));
-      const fog = safeNum(planetary.neptune, driverValueFromTopDrivers(telemetry.topDrivers, "Neptune"));
-      const activation = safeNum(planetary.mars, driverValueFromTopDrivers(telemetry.topDrivers, "Mars"));
+      const volatility = safeNum(
+        planetary.uranus,
+        driverValueFromTaggedList(telemetry.topDrivers, "Uranus")
+      );
+      const fog = safeNum(
+        planetary.neptune,
+        driverValueFromTaggedList(telemetry.topDrivers, "Neptune")
+      );
+      const activation = safeNum(
+        planetary.mars,
+        driverValueFromTaggedList(telemetry.topDrivers, "Mars")
+      );
 
-      const saturn = safeNum(planetary.saturn, driverValueFromTopDrivers(telemetry.topRegulators, "Saturn"));
-      const venus = safeNum(planetary.venus, driverValueFromTopDrivers(telemetry.topRegulators, "Venus"));
-      const mercury = safeNum(planetary.mercury, driverValueFromTopDrivers(telemetry.topRegulators, "Mercury"));
+      const saturn = safeNum(
+        planetary.saturn,
+        driverValueFromTaggedList(telemetry.topRegulators, "Saturn")
+      );
+      const venus = safeNum(
+        planetary.venus,
+        driverValueFromTaggedList(telemetry.topRegulators, "Venus")
+      );
+      const mercury = safeNum(
+        planetary.mercury,
+        driverValueFromTaggedList(telemetry.topRegulators, "Mercury")
+      );
 
-      // Display-only stability index
-      const stabilityIndex = ((saturn + venus + mercury) / 3);
+      const stabilityIndex = (saturn + venus + mercury) / 3;
 
-      // Top trio
       setText("capacityScore", fmt(capacity));
       setText("capacityLabel", capacityLabelFromValue(capacity));
 
       setText("strainScore", fmt(strain));
       setText("strainLabel", strainLabelFromStrain(strain));
 
-      setText("stateScore", fmt(stateDisplay));
-      setText("stateLabel", stateLabelFromMode(modeText));
+      setText("stateText", stateLabelFromMode(modeText));
+      setText("stateLabel", stateHelperFromMode(modeText));
+      setText("stateBadge", stateLabelFromMode(modeText));
 
       setBar("capacityBar", capacity, 1.2);
       setBar("strainBar", strain, 1.2);
-      setBar("stateBar", stateDisplay, 1.2);
 
-      // Core table
       setText("capVal", fmt(capacity));
       setText("loadVal", fmt(load));
       setText("regVal", fmt(regulation));
       setText("effVal", fmt(effectiveDisplay));
       setText("stabilityVal", fmt(stabilityIndex));
 
-      // Drivers
       setText("primaryDriver", primaryDriverName(data));
       setText("volatilityVal", fmt(volatility));
       setText("fogVal", fmt(fog));
       setText("activationVal", fmt(activation));
 
-      // Stabilizers
       setText("saturnVal", fmt(saturn));
       setText("venusVal", fmt(venus));
       setText("mercuryVal", fmt(mercury));
-      setText("stateCondition", modeText);
+      setText("stateCondition", stateLabelFromMode(modeText));
 
-      // Forecast
-      const forecastState = forecast?.now?.state || "Unavailable";
+      const forecastState = forecast?.now?.state || "Regulated";
       setText("forecastTitle", forecastState);
       setText(
         "forecastText",
-        forecast?.now?.summary ||
-        "Current-state placeholder shown until forecast forward pass is fully connected."
+        "Forecast layer is still early-stage, but the current outlook reads as regulated."
       );
 
-      // Sky data
       const resolvedLocation =
         inputResolved.resolvedLocation ||
         inputResolved.locationResolved ||
@@ -871,17 +890,18 @@
         ephemeris.utc_datetime ||
         "—";
 
-      setText("skyDataTitle", ephemeris.source ? "Sky Data Verified" : "Chart Loaded");
+      setText("skyDataTitle", ephemeris.source ? "Verified" : "Pending");
       setText(
         "skyDataText",
-        `Local: ${resolvedTime} • UTC: ${utcDatetime} • ${resolvedLocation} • ${timezoneName}`
+        ephemeris.source
+          ? "Live ephemeris and resolved location confirmed."
+          : `Local: ${resolvedTime} • UTC: ${utcDatetime} • ${resolvedLocation} • ${timezoneName}`
       );
 
-      // Why
       setText(
         "whyText",
         buildWhyText({
-          modeText,
+          modeText: stateLabelFromMode(modeText),
           primaryDriver: primaryDriverName(data),
           fog,
           activation,
@@ -891,11 +911,9 @@
         })
       );
 
-      // Meta pills
       setText("envBand", envBandFromMode(environment.environmentMode));
       setText("forecastBand", forecastBandFromState(forecastState));
 
-      // Left rail
       setText(
         "resolvedInput",
         `Local: ${resolvedTime} | UTC: ${utcDatetime} | Place: ${resolvedLocation} | TZ: ${timezoneName}`
@@ -907,12 +925,16 @@
       );
       document.getElementById("apiStatus").className = "ok";
 
+      const sunDeg = data?._longitudesDeg?.sun ?? "—";
+      const moonDeg = data?._longitudesDeg?.moon ?? "—";
+      const ascDeg = data?.angles?.asc ?? "—";
+      const mcDeg = data?.angles?.mc ?? "—";
+
       setText(
         "chartDebug",
-        `Capacity ${fmt(capacity)} | Load ${fmt(load)} | Regulation ${fmt(regulation)} | Effective ${fmt(effective)} | Displayed ${fmt(effectiveDisplay)}`
+        `JD: ${ephemeris.jdUt || ephemeris.jd_ut || "—"} | Sun: ${sunDeg} | Moon: ${moonDeg} | ASC: ${ascDeg} | MC: ${mcDeg}`
       );
 
-      // Hero weather feel
       setHeroGlow(modeText, fog, volatility);
     }
 
@@ -966,7 +988,6 @@
 
     document.getElementById("calcBtn").addEventListener("click", calculate);
 
-    // Default test values
     document.getElementById("dob").value = "1980-11-21";
     document.getElementById("tob").value = "6:20";
     document.getElementById("ampm").value = "AM";
