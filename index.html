@@ -330,15 +330,6 @@
       line-height:1.72;
     }
 
-    .sectionTitle{
-      margin:0 0 10px;
-      font-size:11px;
-      color:var(--muted);
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      font-weight:700;
-    }
-
     .summaryTitle{
       margin:0 0 10px;
       font-size:14px;
@@ -743,7 +734,9 @@
       return "Critical load";
     }
 
-    function capacityLabelFromValue(){
+    function capacityLabelFromValue(capacity){
+      if (safeNum(capacity) >= 0.95) return "High stable bandwidth";
+      if (safeNum(capacity) >= 0.80) return "Solid available bandwidth";
       return "Available system bandwidth";
     }
 
@@ -769,21 +762,23 @@
       return data?.telemetry?.primaryDriver || "—";
     }
 
-    function buildWhyText({ modeText, primaryDriver, fog, activation, mercury, saturn, venus }) {
+    function buildWhyText({ baseline, modeText, primaryDriver, fog, activation, mercury, saturn, venus }) {
       const parts = [];
 
       if (safeNum(fog) >= 0.65) parts.push("Neptune is increasing diffusion");
       if (safeNum(activation) >= 0.65) parts.push("Mars is raising activation");
-      if (safeNum(mercury) >= 0.65) parts.push("Mercury is improving signal clarity");
+      if (safeNum(mercury) >= 0.65) parts.push("Mercury is improving clarity");
       if (safeNum(saturn) >= 0.65) parts.push("Saturn is adding constraint");
       if (safeNum(venus) >= 0.65) parts.push("Venus is supporting regulation");
 
-      let front = parts.slice(0, 3).join(" + ");
-      if (!front) {
-        front = `${primaryDriver || "Current drivers"} are within stable operating range`;
+      const baselineLead = baseline?.summary || "Natal baseline is stable.";
+      let weatherLead = parts.slice(0, 2).join(" + ");
+
+      if (!weatherLead) {
+        weatherLead = `${primaryDriver || "Current drivers"} are within normal operating range`;
       }
 
-      return `${front}. Current mode is ${String(modeText || "Regulated").toLowerCase()}.`;
+      return `${baselineLead} Current weather: ${weatherLead}. Present mode is ${String(modeText || "Regulated").toLowerCase()}.`;
     }
 
     function buildForecastText(forecast){
@@ -792,20 +787,19 @@
       const plus72 = forecast?.plus72 || {};
       const plus168 = forecast?.plus168 || {};
 
-      const parts = [];
+      const nowState = now.state || "Regulated";
+      const d1 = plus24.state || nowState;
+      const d3 = plus72.state || d1;
+      const d7 = plus168.state || d3;
 
-      if (now.state) parts.push(`Now: ${now.state}`);
-      if (plus24.state) parts.push(`24h: ${plus24.state}`);
-      if (plus72.state) parts.push(`72h: ${plus72.state}`);
-      if (plus168.state) parts.push(`7d: ${plus168.state}`);
+      if (nowState === d1 && d1 === d3 && d3 === d7) {
+        return `${nowState} now, with a similar pattern holding through the next 7 days.${now.primaryDriver ? ` Main driver: ${now.primaryDriver}.` : ""}`;
+      }
 
-      const trendText = parts.join(" • ");
-      const driverText = now.primaryDriver ? ` Main driver: ${now.primaryDriver}.` : "";
-
-      return trendText ? `${trendText}.${driverText}` : "Forecast unavailable.";
+      return `${nowState} now. Over the next 24 hours: ${d1.toLowerCase()}. Around 72 hours: ${d3.toLowerCase()}. By 7 days: ${d7.toLowerCase()}.${now.primaryDriver ? ` Main driver right now: ${now.primaryDriver}.` : ""}`;
     }
 
-    function buildSkyText({ ephemeris, inputResolved, transitNow, baseline }){
+    function buildSkyText({ ephemeris, inputResolved, transitNow }){
       const resolvedLocation =
         inputResolved.resolvedLocation ||
         inputResolved.locationResolved ||
@@ -816,18 +810,6 @@
         inputResolved.local_time_resolved ||
         "—";
 
-      const timezoneName =
-        inputResolved.timezoneName ||
-        inputResolved.timezone_name ||
-        "—";
-
-      const natalUtc =
-        ephemeris.natalUtcDatetime ||
-        ephemeris.natal_utc_datetime ||
-        inputResolved.utcDatetime ||
-        inputResolved.utc_datetime ||
-        "—";
-
       const transitUtc =
         ephemeris.transitUtcDatetime ||
         ephemeris.transit_utc_datetime ||
@@ -835,8 +817,7 @@
         transitNow?.utc_datetime ||
         "—";
 
-      const baselineText = baseline?.summary || "Natal baseline active.";
-      return `Local birth: ${resolvedTime} • Natal UTC: ${natalUtc} • Transit UTC: ${transitUtc} • ${resolvedLocation} • ${timezoneName} • ${baselineText}`;
+      return `${resolvedLocation} • Birth local: ${resolvedTime} • Transit refresh: ${transitUtc}`;
     }
 
     function updateUI(data){
@@ -930,12 +911,13 @@
       setText("skyDataTitle", ephemeris.source ? "Verified" : "Pending");
       setText(
         "skyDataText",
-        buildSkyText({ ephemeris, inputResolved, transitNow, baseline })
+        buildSkyText({ ephemeris, inputResolved, transitNow })
       );
 
       setText(
         "whyText",
         buildWhyText({
+          baseline,
           modeText: stateLabelFromMode(modeText),
           primaryDriver: primaryDriverName(data),
           fog,
