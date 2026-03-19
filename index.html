@@ -532,7 +532,7 @@
             </div>
             <div class="forecastBig" id="forecastTitle">Forecast: —</div>
             <div class="forecastSub" id="forecastText">
-              Early-stage forecast placeholder based on current chart state.
+              Waiting for forecast.
             </div>
           </div>
 
@@ -659,7 +659,7 @@
         </div>
 
         <div class="tiny">
-          Forecast, stability index, and why-line are interpretive layers on top of the current V2.5 engine.
+          Forecast now uses the blended baseline + transit weather engine.
         </div>
       </div>
     </div>
@@ -786,6 +786,59 @@
       return `${front}. Current mode is ${String(modeText || "Regulated").toLowerCase()}.`;
     }
 
+    function buildForecastText(forecast){
+      const now = forecast?.now || {};
+      const plus24 = forecast?.plus24 || {};
+      const plus72 = forecast?.plus72 || {};
+      const plus168 = forecast?.plus168 || {};
+
+      const parts = [];
+
+      if (now.state) parts.push(`Now: ${now.state}`);
+      if (plus24.state) parts.push(`24h: ${plus24.state}`);
+      if (plus72.state) parts.push(`72h: ${plus72.state}`);
+      if (plus168.state) parts.push(`7d: ${plus168.state}`);
+
+      const trendText = parts.join(" • ");
+      const driverText = now.primaryDriver ? ` Main driver: ${now.primaryDriver}.` : "";
+
+      return trendText ? `${trendText}.${driverText}` : "Forecast unavailable.";
+    }
+
+    function buildSkyText({ ephemeris, inputResolved, transitNow, baseline }){
+      const resolvedLocation =
+        inputResolved.resolvedLocation ||
+        inputResolved.locationResolved ||
+        "—";
+
+      const resolvedTime =
+        inputResolved.localTimeResolved ||
+        inputResolved.local_time_resolved ||
+        "—";
+
+      const timezoneName =
+        inputResolved.timezoneName ||
+        inputResolved.timezone_name ||
+        "—";
+
+      const natalUtc =
+        ephemeris.natalUtcDatetime ||
+        ephemeris.natal_utc_datetime ||
+        inputResolved.utcDatetime ||
+        inputResolved.utc_datetime ||
+        "—";
+
+      const transitUtc =
+        ephemeris.transitUtcDatetime ||
+        ephemeris.transit_utc_datetime ||
+        transitNow?.utcDatetime ||
+        transitNow?.utc_datetime ||
+        "—";
+
+      const baselineText = baseline?.summary || "Natal baseline active.";
+      return `Local birth: ${resolvedTime} • Natal UTC: ${natalUtc} • Transit UTC: ${transitUtc} • ${resolvedLocation} • ${timezoneName} • ${baselineText}`;
+    }
+
     function updateUI(data){
       console.log("Lucy.OS response:", data);
 
@@ -794,8 +847,11 @@
       const environment = data?.environment || {};
       const forecast = data?.forecast || {};
       const planetary = data?.planetary || {};
+      const planetaryLayers = data?.planetaryLayers || {};
       const inputResolved = data?.inputResolved || {};
       const ephemeris = data?.ephemeris || {};
+      const baseline = data?.baseline || {};
+      const transitNow = data?.transitNow || {};
 
       const capacity = safeNum(state.capacity);
       const strain = safeNum(state.strain);
@@ -806,29 +862,33 @@
 
       const effectiveDisplay = Math.min(effective, Math.max(capacity * 1.15, 1.10));
 
+      const blendedPlanetary = Object.keys(planetary).length
+        ? planetary
+        : (planetaryLayers?.blended || {});
+
       const volatility = safeNum(
-        planetary.uranus,
+        blendedPlanetary.uranus,
         driverValueFromTaggedList(telemetry.topDrivers, "Uranus")
       );
       const fog = safeNum(
-        planetary.neptune,
+        blendedPlanetary.neptune,
         driverValueFromTaggedList(telemetry.topDrivers, "Neptune")
       );
       const activation = safeNum(
-        planetary.mars,
+        blendedPlanetary.mars,
         driverValueFromTaggedList(telemetry.topDrivers, "Mars")
       );
 
       const saturn = safeNum(
-        planetary.saturn,
+        blendedPlanetary.saturn,
         driverValueFromTaggedList(telemetry.topRegulators, "Saturn")
       );
       const venus = safeNum(
-        planetary.venus,
+        blendedPlanetary.venus,
         driverValueFromTaggedList(telemetry.topRegulators, "Venus")
       );
       const mercury = safeNum(
-        planetary.mercury,
+        blendedPlanetary.mercury,
         driverValueFromTaggedList(telemetry.topRegulators, "Mercury")
       );
 
@@ -865,37 +925,12 @@
 
       const forecastState = forecast?.now?.state || "Regulated";
       setText("forecastTitle", forecastState);
-      setText(
-        "forecastText",
-        "Forecast layer is still early-stage, but the current outlook reads as regulated."
-      );
-
-      const resolvedLocation =
-        inputResolved.resolvedLocation ||
-        inputResolved.locationResolved ||
-        "—";
-
-      const resolvedTime =
-        inputResolved.localTimeResolved ||
-        inputResolved.local_time_resolved ||
-        "—";
-
-      const timezoneName =
-        inputResolved.timezoneName ||
-        inputResolved.timezone_name ||
-        "—";
-
-      const utcDatetime =
-        ephemeris.utcDatetime ||
-        ephemeris.utc_datetime ||
-        "—";
+      setText("forecastText", buildForecastText(forecast));
 
       setText("skyDataTitle", ephemeris.source ? "Verified" : "Pending");
       setText(
         "skyDataText",
-        ephemeris.source
-          ? "Live ephemeris and resolved location confirmed."
-          : `Local: ${resolvedTime} • UTC: ${utcDatetime} • ${resolvedLocation} • ${timezoneName}`
+        buildSkyText({ ephemeris, inputResolved, transitNow, baseline })
       );
 
       setText(
@@ -914,14 +949,36 @@
       setText("envBand", envBandFromMode(environment.environmentMode));
       setText("forecastBand", forecastBandFromState(forecastState));
 
+      const resolvedLocation =
+        inputResolved.resolvedLocation ||
+        inputResolved.locationResolved ||
+        "—";
+
+      const resolvedTime =
+        inputResolved.localTimeResolved ||
+        inputResolved.local_time_resolved ||
+        "—";
+
+      const timezoneName =
+        inputResolved.timezoneName ||
+        inputResolved.timezone_name ||
+        "—";
+
+      const natalUtc =
+        ephemeris.natalUtcDatetime ||
+        ephemeris.natal_utc_datetime ||
+        inputResolved.utcDatetime ||
+        inputResolved.utc_datetime ||
+        "—";
+
       setText(
         "resolvedInput",
-        `Local: ${resolvedTime} | UTC: ${utcDatetime} | Place: ${resolvedLocation} | TZ: ${timezoneName}`
+        `Local: ${resolvedTime} | Natal UTC: ${natalUtc} | Place: ${resolvedLocation} | TZ: ${timezoneName}`
       );
 
       setText(
         "apiStatus",
-        `OK • ${ephemeris.source || "API"} • ${ephemeris.mode || "natal"}`
+        `OK • ${ephemeris.source || "API"} • ${ephemeris.mode || "blended"}`
       );
       document.getElementById("apiStatus").className = "ok";
 
