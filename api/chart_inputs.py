@@ -1,854 +1,1056 @@
-from http.server import BaseHTTPRequestHandler
-import json
-import os
-import re
-from datetime import datetime, timedelta, timezone
-from zoneinfo import ZoneInfo
-from urllib.parse import urlencode
-from urllib.request import urlopen, Request
-
-import swisseph as swe
-
-
-PLANETS = {
-    "sun": swe.SUN,
-    "moon": swe.MOON,
-    "mercury": swe.MERCURY,
-    "venus": swe.VENUS,
-    "mars": swe.MARS,
-    "jupiter": swe.JUPITER,
-    "saturn": swe.SATURN,
-    "uranus": swe.URANUS,
-    "neptune": swe.NEPTUNE,
-    "pluto": swe.PLUTO,
-}
-
-PLANET_BLEND_WEIGHTS = {
-    "sun": {"natal": 0.90, "transit": 0.10},
-    "moon": {"natal": 0.35, "transit": 0.65},
-    "mercury": {"natal": 0.55, "transit": 0.45},
-    "venus": {"natal": 0.50, "transit": 0.50},
-    "mars": {"natal": 0.40, "transit": 0.60},
-    "jupiter": {"natal": 0.60, "transit": 0.40},
-    "saturn": {"natal": 0.65, "transit": 0.35},
-    "uranus": {"natal": 0.45, "transit": 0.55},
-    "neptune": {"natal": 0.50, "transit": 0.50},
-    "pluto": {"natal": 0.70, "transit": 0.30},
-}
-
-FLAGS = swe.FLG_SWIEPH | swe.FLG_SPEED
-HOUSE_SYSTEM = b"P"
-
-GOOGLE_GEOCODE_API_KEY = os.getenv("GOOGLE_GEOCODE_API_KEY", "")
-GOOGLE_TIMEZONE_API_KEY = os.getenv("GOOGLE_TIMEZONE_API_KEY", "")
-
-
-def normalize_longitude(lon: float) -> float:
-    return (lon % 360.0) / 360.0
-
-
-def normalize_tob_with_ampm(tob: str, ampm: str | None = None) -> str:
-    tob = str(tob or "").strip()
-    ampm = str(ampm or "").strip().upper()
-
-    if not tob:
-        raise ValueError("Time of birth is required")
-
-    upper_tob = tob.upper()
-    if "AM" in upper_tob or "PM" in upper_tob:
-        return tob
-
-    if ampm in ("AM", "PM"):
-        return f"{tob} {ampm}"
-
-    return tob
-
-
-def parse_time_flexible(time_str: str) -> datetime:
-    cleaned = str(time_str or "").strip().upper().replace(".", "")
-    cleaned = re.sub(r"\s+", " ", cleaned)
-
-    formats = [
-        "%I:%M %p",
-        "%I:%M%p",
-        "%I %p",
-        "%I%p",
-        "%H:%M",
-        "%H",
-    ]
-
-    for fmt in formats:
-        try:
-            return datetime.strptime(cleaned, fmt)
-        except ValueError:
-            continue
-
-    raise ValueError("Time of birth must look like 6:20 AM, 10:55 PM, or 18:20")
-
-
-def http_get_json(url: str) -> dict:
-    req = Request(
-        url,
-        headers={
-            "User-Agent": "LucyOS/1.0"
-        },
-    )
-    with urlopen(req, timeout=20) as resp:
-        return json.loads(resp.read().decode("utf-8"))
-
-
-def geocode_birth_place(location_text: str) -> dict:
-    if not location_text:
-        raise ValueError("Birth location is required")
-
-    if not GOOGLE_GEOCODE_API_KEY:
-        raise RuntimeError("Missing GOOGLE_GEOCODE_API_KEY in environment")
-
-    params = urlencode({
-        "address": location_text,
-        "key": GOOGLE_GEOCODE_API_KEY,
-    })
-    url = f"https://maps.googleapis.com/maps/api/geocode/json?{params}"
-    data = http_get_json(url)
-
-    if data.get("status") != "OK" or not data.get("results"):
-        error_message = data.get("error_message", "Unknown geocoding error")
-        raise ValueError(
-            f"Could not geocode location: {location_text} | "
-            f"status={data.get('status')} | error={error_message}"
-        )
-
-    first = data["results"][0]
-    geo = first["geometry"]["location"]
-
-    return {
-        "location_input": location_text,
-        "location_resolved": first.get("formatted_address", location_text),
-        "lat": float(geo["lat"]),
-        "lon": float(geo["lng"]),
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lucy.OS</title>
+  <style>
+    :root{
+      --bg:#09142f;
+      --panel:#0f1b38;
+      --panel2:#132347;
+      --line:#2a3c69;
+      --lineSoft:rgba(255,255,255,.06);
+      --text:#f4f7ff;
+      --muted:#aab7d6;
+      --muted2:#7f8fb8;
+      --blue:#67c1ff;
+      --red:#ff6666;
+      --green:#67d26f;
+      --violet:#b06cff;
+      --gold:#d8b84c;
     }
 
+    *{box-sizing:border-box}
 
-def get_historical_timezone(lat: float, lon: float, timestamp: int) -> dict:
-    if not GOOGLE_TIMEZONE_API_KEY:
-        raise RuntimeError("Missing GOOGLE_TIMEZONE_API_KEY in environment")
-
-    params = urlencode({
-        "location": f"{lat},{lon}",
-        "timestamp": str(timestamp),
-        "key": GOOGLE_TIMEZONE_API_KEY,
-    })
-    url = f"https://maps.googleapis.com/maps/api/timezone/json?{params}"
-    data = http_get_json(url)
-
-    if data.get("status") != "OK":
-        error_message = data.get("errorMessage", "Unknown timezone error")
-        raise ValueError(
-            f"Could not resolve timezone for coordinates {lat},{lon} | "
-            f"status={data.get('status')} | error={error_message}"
-        )
-
-    raw_offset = float(data.get("rawOffset", 0))
-    dst_offset = float(data.get("dstOffset", 0))
-
-    return {
-        "timezone_name": data["timeZoneId"],
-        "timezone_label": data.get("timeZoneName", data["timeZoneId"]),
-        "raw_offset_seconds": raw_offset,
-        "dst_offset_seconds": dst_offset,
-        "utc_offset_at_birth": (raw_offset + dst_offset) / 3600.0,
+    body{
+      margin:0;
+      font-family:Arial, sans-serif;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(103,193,255,.06), transparent 32%),
+        linear-gradient(180deg,#071126 0%, #09142f 100%);
+      color:var(--text);
     }
 
-
-def resolve_local_and_utc_birth(
-    dob: str,
-    tob_normalized: str,
-    location_text: str,
-    utc_offset_override: float | None = None,
-) -> dict:
-    date_part = datetime.strptime(dob, "%Y-%m-%d")
-    time_part = parse_time_flexible(tob_normalized)
-
-    local_naive = datetime(
-        date_part.year,
-        date_part.month,
-        date_part.day,
-        time_part.hour,
-        time_part.minute,
-        0,
-        0,
-    )
-
-    geo = geocode_birth_place(location_text)
-
-    if utc_offset_override is not None:
-        local_dt = local_naive.replace(
-            tzinfo=timezone(timedelta(hours=float(utc_offset_override)))
-        )
-        utc_dt = local_dt.astimezone(timezone.utc)
-        timezone_info = {
-            "timezone_name": "Manual/Override",
-            "timezone_label": "Manual/Override",
-            "utc_offset_at_birth": float(utc_offset_override),
-            "raw_offset_seconds": float(utc_offset_override) * 3600.0,
-            "dst_offset_seconds": 0.0,
-        }
-    else:
-        rough_utc = local_naive.replace(tzinfo=timezone.utc)
-        rough_timestamp = int(rough_utc.timestamp())
-
-        timezone_info = get_historical_timezone(
-            geo["lat"],
-            geo["lon"],
-            rough_timestamp,
-        )
-
-        try:
-            zone = ZoneInfo(timezone_info["timezone_name"])
-            local_dt = local_naive.replace(tzinfo=zone)
-            utc_dt = local_dt.astimezone(timezone.utc)
-        except Exception:
-            local_dt = local_naive.replace(
-                tzinfo=timezone(timedelta(hours=timezone_info["utc_offset_at_birth"]))
-            )
-            utc_dt = local_dt.astimezone(timezone.utc)
-
-        refined_timezone_info = get_historical_timezone(
-            geo["lat"],
-            geo["lon"],
-            int(utc_dt.timestamp()),
-        )
-        timezone_info = refined_timezone_info
-
-        try:
-            zone = ZoneInfo(timezone_info["timezone_name"])
-            local_dt = local_naive.replace(tzinfo=zone)
-            utc_dt = local_dt.astimezone(timezone.utc)
-        except Exception:
-            local_dt = local_naive.replace(
-                tzinfo=timezone(timedelta(hours=timezone_info["utc_offset_at_birth"]))
-            )
-            utc_dt = local_dt.astimezone(timezone.utc)
-
-    return {
-        **geo,
-        **timezone_info,
-        "local_dt": local_dt,
-        "utc_dt": utc_dt,
-        "local_time_resolved": local_dt.strftime("%Y-%m-%d %I:%M %p"),
-        "utc_datetime": utc_dt.isoformat(),
+    .wrap{
+      max-width:1380px;
+      margin:0 auto;
+      padding:24px;
     }
 
-
-def to_julian_day_utc(utc_dt: datetime) -> float:
-    hour_decimal = (
-        utc_dt.hour
-        + (utc_dt.minute / 60.0)
-        + (utc_dt.second / 3600.0)
-    )
-
-    jd_ut = swe.julday(
-        utc_dt.year,
-        utc_dt.month,
-        utc_dt.day,
-        hour_decimal,
-    )
-
-    return jd_ut
-
-
-def compute_angles_and_houses(jd_ut: float, lat: float, lon: float):
-    cusps, ascmc = swe.houses(jd_ut, lat, lon, HOUSE_SYSTEM)
-
-    asc = float(ascmc[0] % 360.0)
-    mc = float(ascmc[1] % 360.0)
-    desc = float((asc + 180.0) % 360.0)
-    ic = float((mc + 180.0) % 360.0)
-
-    houses = [float(cusps[i] % 360.0) for i in range(12)]
-
-    return {
-        "asc": asc,
-        "mc": mc,
-        "desc": desc,
-        "ic": ic,
-    }, houses
-
-
-def extract_planetary_and_longitudes(jd_ut: float) -> tuple[dict, dict]:
-    planetary = {}
-    longitudes_deg = {}
-
-    for name, body in PLANETS.items():
-        xx, _ = swe.calc_ut(jd_ut, body, FLAGS)
-        lon = float(xx[0] % 360.0)
-        longitudes_deg[name] = lon
-        planetary[name] = normalize_longitude(lon)
-
-    return planetary, longitudes_deg
-
-
-def compute_chart_inputs(
-    dob: str,
-    tob: str,
-    utc_offset_hours: float | None = None,
-    location: str | None = None,
-):
-    resolved = resolve_local_and_utc_birth(
-        dob=dob,
-        tob_normalized=tob,
-        location_text=location or "",
-        utc_offset_override=utc_offset_hours,
-    )
-
-    utc_dt = resolved["utc_dt"]
-    jd_ut = to_julian_day_utc(utc_dt)
-
-    planetary, longitudes_deg = extract_planetary_and_longitudes(jd_ut)
-
-    angles, houses = compute_angles_and_houses(
-        jd_ut,
-        resolved["lat"],
-        resolved["lon"],
-    )
-
-    result = {**planetary}
-    result["_longitudesDeg"] = longitudes_deg
-    result["angles"] = angles
-    result["houses"] = houses
-
-    result["_meta"] = {
-        "source": "Swiss Ephemeris",
-        "mode": "natal",
-        "utc_datetime": resolved["utc_datetime"],
-        "jd_ut": round(jd_ut, 6),
-        "location": resolved["location_input"],
-        "location_resolved": resolved["location_resolved"],
-        "utc_offset": resolved["utc_offset_at_birth"],
-        "utc_offset_at_birth": resolved["utc_offset_at_birth"],
-        "timezone_name": resolved["timezone_name"],
-        "timezone_label": resolved["timezone_label"],
-        "lat": resolved["lat"],
-        "lon": resolved["lon"],
-        "local_time_resolved": resolved["local_time_resolved"],
-        "note": "Worldwide location + timezone resolution active."
+    .hero{
+      position:relative;
+      text-align:center;
+      margin-bottom:22px;
+      padding:18px 18px 14px;
+      overflow:hidden;
     }
 
-    return result
-
-
-def compute_transit_inputs_at(target_utc: datetime):
-    if target_utc.tzinfo is None:
-        target_utc = target_utc.replace(tzinfo=timezone.utc)
-    else:
-        target_utc = target_utc.astimezone(timezone.utc)
-
-    jd_ut = to_julian_day_utc(target_utc)
-    planetary, longitudes_deg = extract_planetary_and_longitudes(jd_ut)
-
-    result = {**planetary}
-    result["_longitudesDeg"] = longitudes_deg
-    result["angles"] = {}
-    result["houses"] = []
-
-    result["_meta"] = {
-        "source": "Swiss Ephemeris",
-        "mode": "transit",
-        "utc_datetime": target_utc.isoformat(),
-        "jd_ut": round(jd_ut, 6),
+    .heroGlow{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.95;
+      transition:background .35s ease;
+      background:
+        radial-gradient(circle at 50% 28%, rgba(103,193,255,.10), transparent 42%);
     }
 
-    return result
-
-
-def compute_transit_inputs():
-    return compute_transit_inputs_at(datetime.now(timezone.utc))
-
-
-def fmt_value(n: float) -> str:
-    try:
-        return f"{float(n):.2f}"
-    except Exception:
-        return "0.00"
-
-
-def infer_mode(strain: float) -> str:
-    if strain >= 1.0:
-        return "Overload State"
-    if strain >= 0.85:
-        return "Threshold Strain"
-    if strain >= 0.60:
-        return "Mobilized State"
-    return "Regulated Baseline"
-
-
-def forecast_state_label(strain: float) -> str:
-    if strain >= 1.0:
-        return "Overload"
-    if strain >= 0.85:
-        return "Threshold"
-    if strain >= 0.60:
-        return "Mobilized"
-    return "Regulated"
-
-
-def build_planetary_view(chart: dict) -> dict:
-    angles = chart.get("angles", {}) or {}
-    asc_deg = float(angles.get("asc", 0.0))
-    mc_deg = float(angles.get("mc", 0.0))
-
-    return {
-        "sun": float(chart.get("sun", 0.0)),
-        "moon": float(chart.get("moon", 0.0)),
-        "mercury": float(chart.get("mercury", 0.0)),
-        "venus": float(chart.get("venus", 0.0)),
-        "mars": float(chart.get("mars", 0.0)),
-        "jupiter": float(chart.get("jupiter", 0.0)),
-        "saturn": float(chart.get("saturn", 0.0)),
-        "uranus": float(chart.get("uranus", 0.0)),
-        "neptune": float(chart.get("neptune", 0.0)),
-        "pluto": float(chart.get("pluto", 0.0)),
-        "asc": normalize_longitude(asc_deg),
-        "mc": normalize_longitude(mc_deg),
+    .hero h1{
+      position:relative;
+      margin:0;
+      font-size:40px;
+      letter-spacing:.4px;
+      z-index:1;
     }
 
-
-def blend_charts(natal: dict, transit: dict) -> dict:
-    blended = {}
-
-    for planet in PLANETS.keys():
-        weights = PLANET_BLEND_WEIGHTS[planet]
-        natal_val = float(natal.get(planet, 0.0))
-        transit_val = float(transit.get(planet, 0.0))
-        blended[planet] = (
-            natal_val * weights["natal"] +
-            transit_val * weights["transit"]
-        )
-
-    blended["angles"] = natal.get("angles", {}) or {}
-    blended["houses"] = natal.get("houses", []) or []
-    blended["_longitudesDeg"] = natal.get("_longitudesDeg", {}) or {}
-
-    natal_meta = natal.get("_meta", {}) or {}
-    transit_meta = transit.get("_meta", {}) or {}
-
-    blended["_meta"] = {
-        "source": "Swiss Ephemeris",
-        "mode": "blended",
-        "utc_datetime": transit_meta.get("utc_datetime"),
-        "jd_ut": transit_meta.get("jd_ut"),
-        "natal_utc_datetime": natal_meta.get("utc_datetime"),
-        "transit_utc_datetime": transit_meta.get("utc_datetime"),
-        "location": natal_meta.get("location"),
-        "location_resolved": natal_meta.get("location_resolved"),
-        "utc_offset": natal_meta.get("utc_offset"),
-        "utc_offset_at_birth": natal_meta.get("utc_offset_at_birth"),
-        "timezone_name": natal_meta.get("timezone_name"),
-        "timezone_label": natal_meta.get("timezone_label"),
-        "lat": natal_meta.get("lat"),
-        "lon": natal_meta.get("lon"),
-        "local_time_resolved": natal_meta.get("local_time_resolved"),
-        "note": "Blended natal baseline + transit weather."
+    .hero p{
+      position:relative;
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:14px;
+      z-index:1;
     }
 
-    return blended
-
-
-def compute_engine_metrics(chart: dict) -> dict:
-    sun = float(chart.get("sun", 0.0))
-    moon = float(chart.get("moon", 0.0))
-    mercury = float(chart.get("mercury", 0.0))
-    venus = float(chart.get("venus", 0.0))
-    mars = float(chart.get("mars", 0.0))
-    jupiter = float(chart.get("jupiter", 0.0))
-    saturn = float(chart.get("saturn", 0.0))
-    uranus = float(chart.get("uranus", 0.0))
-    neptune = float(chart.get("neptune", 0.0))
-    pluto = float(chart.get("pluto", 0.0))
-
-    angles = chart.get("angles", {}) or {}
-    asc_deg = float(angles.get("asc", 0.0))
-    mc_deg = float(angles.get("mc", 0.0))
-
-    asc_norm = normalize_longitude(asc_deg)
-    mc_norm = normalize_longitude(mc_deg)
-
-    capacity = (
-        sun * 0.70 +
-        saturn * 0.20 +
-        jupiter * 0.10
-    )
-
-    load = (
-        moon * 0.30 +
-        mars * 0.20 +
-        uranus * 0.15 +
-        neptune * 0.15 +
-        pluto * 0.10 +
-        jupiter * 0.10
-    )
-
-    raw_regulation = (
-        saturn * 0.45 +
-        venus * 0.30 +
-        mercury * 0.25
-    )
-
-    regulation_cap = load * 0.90
-    regulation = min(raw_regulation, regulation_cap)
-
-    overload_delta = max(load - capacity, 0.0)
-    saturn_factor = 0.20 + (saturn * 0.15)
-    saturn_constraint = min(
-        overload_delta * saturn_factor,
-        load * 0.25
-    )
-
-    effective_load = max(load - regulation - saturn_constraint, 0.0)
-    strain = effective_load / max(capacity, 0.1)
-
-    mode = infer_mode(strain)
-
-    load_drivers = [
-        ("Moon", moon),
-        ("Mars", mars),
-        ("Jupiter", jupiter),
-        ("Uranus", uranus),
-        ("Neptune", neptune),
-        ("Pluto", pluto),
-    ]
-    load_drivers.sort(key=lambda x: x[1], reverse=True)
-
-    regulators = [
-        ("Saturn", saturn),
-        ("Venus", venus),
-        ("Mercury", mercury),
-    ]
-    regulators.sort(key=lambda x: x[1], reverse=True)
-
-    primary_driver = load_drivers[0][0]
-    top_regulator = regulators[0][0]
-
-    environment_load = (uranus * 0.45) + (neptune * 0.45) + (asc_norm * 0.10)
-    environment_mode = (
-        "Clear / Stable" if environment_load < 0.33 else
-        "Mixed / Variable" if environment_load < 0.66 else
-        "Diffuse / Volatile"
-    )
-
-    timing_pressure = (
-        mars * 0.35 +
-        jupiter * 0.30 +
-        mc_norm * 0.35
-    )
-    timing_mode = (
-        "Stable Window" if timing_pressure < 0.33 else
-        "Active Window" if timing_pressure < 0.66 else
-        "Pushed Window"
-    )
-
-    pluto_rewrite = pluto > 0.85 and strain > 0.95
-    saturn_shutdown = saturn_constraint > 0.20
-
-    interpretation = {
-        "modeMeaning": mode,
-        "stateSummary": (
-            f"{mode}. Capacity {fmt_value(capacity)}, "
-            f"effective load {fmt_value(effective_load)}, "
-            f"strain {fmt_value(strain)}."
-        ),
-        "nervousSystemBehavior": (
-            f"Primary load driver is {primary_driver}; "
-            f"top regulator is {top_regulator}."
-        ),
-        "recommendedPacing": (
-            "Reduce load, simplify decisions, and avoid stacking stimulation."
-            if strain >= 1.0 else
-            "Move slower and increase containment before adding pressure."
-            if strain >= 0.85 else
-            "Good for focused effort with pacing and breaks."
-            if strain >= 0.60 else
-            "Baseline / stable window."
-        ),
-        "dominantDriverMeaning": (
-            f"{primary_driver} is currently the strongest load-side influence."
-        ),
-        "regulationStatus": (
-            f"{top_regulator} leads the regulation layer "
-            f"({fmt_value(regulation)} active regulation; raw {fmt_value(raw_regulation)})."
-        ),
-        "volatilityNote": f"Uranus volatility proxy: {fmt_value(uranus)}.",
-        "fogNote": f"Neptune fog proxy: {fmt_value(neptune)}.",
-        "activationNote": f"Mars activation proxy: {fmt_value(mars)}.",
-        "constraintNote": (
-            f"Saturn constraint applied: {fmt_value(saturn_constraint)} "
-            f"(overload delta {fmt_value(overload_delta)})."
-        ),
+    .grid{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:20px;
+      align-items:start;
     }
 
-    return {
-        "state": {
-            "capacity": capacity,
-            "strain": strain,
-            "amplifiedLoad": load,
-            "regulation": regulation,
-            "saturnConstraint": saturn_constraint,
-            "effectiveLoad": effective_load,
-            "mode": mode,
-        },
-        "telemetry": {
-            "primaryDriver": primary_driver,
-            "topRegulator": top_regulator,
-            "topDrivers": [f"{name} ({fmt_value(val)})" for name, val in load_drivers[:3]],
-            "topRegulators": [f"{name} ({fmt_value(val)})" for name, val in regulators[:3]],
-            "capacity": capacity,
-            "strain": strain,
-            "amplifiedLoad": load,
-            "regulation": regulation,
-            "saturnConstraint": saturn_constraint,
-            "effectiveLoad": effective_load,
-        },
-        "environment": {
-            "environmentalLoad": environment_load,
-            "environmentMode": environment_mode,
-        },
-        "timing": {
-            "timingPressure": timing_pressure,
-            "timingMode": timing_mode,
-        },
-        "flags": {
-            "plutoRewrite": pluto_rewrite,
-            "saturnShutdown": saturn_shutdown,
-        },
-        "interpretation": interpretation,
-        "debugEcho": {
-            "ascNorm": asc_norm,
-            "mcNorm": mc_norm,
-            "rawRegulation": raw_regulation,
-            "regulationCap": regulation_cap,
-            "saturnFactor": saturn_factor,
-        }
+    .panel{
+      background:linear-gradient(180deg,var(--panel),var(--panel2));
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:0 10px 30px rgba(0,0,0,.20);
     }
 
-
-def build_forecast_entry(label: str, blended_chart: dict) -> dict:
-    metrics = compute_engine_metrics(blended_chart)
-    state = metrics["state"]
-    telemetry = metrics["telemetry"]
-    interpretation = metrics["interpretation"]
-
-    return {
-        "label": label,
-        "state": forecast_state_label(float(state["strain"])),
-        "mode": state["mode"],
-        "strain": state["strain"],
-        "capacity": state["capacity"],
-        "effectiveLoad": state["effectiveLoad"],
-        "primaryDriver": telemetry["primaryDriver"],
-        "topRegulator": telemetry["topRegulator"],
-        "text": interpretation["stateSummary"],
+    .panel h2{
+      margin:0 0 12px;
+      font-size:18px;
     }
 
-
-def build_lucy_response(natal: dict, transit_now: dict) -> dict:
-    blended_now = blend_charts(natal, transit_now)
-    now_metrics = compute_engine_metrics(blended_now)
-
-    now_utc = datetime.now(timezone.utc)
-
-    transit_plus6 = compute_transit_inputs_at(now_utc + timedelta(hours=6))
-    transit_plus24 = compute_transit_inputs_at(now_utc + timedelta(hours=24))
-    transit_plus72 = compute_transit_inputs_at(now_utc + timedelta(hours=72))
-    transit_plus168 = compute_transit_inputs_at(now_utc + timedelta(hours=168))
-
-    blended_plus6 = blend_charts(natal, transit_plus6)
-    blended_plus24 = blend_charts(natal, transit_plus24)
-    blended_plus72 = blend_charts(natal, transit_plus72)
-    blended_plus168 = blend_charts(natal, transit_plus168)
-
-    forecast = {
-        "now": build_forecast_entry("Now", blended_now),
-        "plus6": build_forecast_entry("+6h", blended_plus6),
-        "plus24": build_forecast_entry("+24h", blended_plus24),
-        "plus72": build_forecast_entry("+72h", blended_plus72),
-        "plus168": build_forecast_entry("+168h", blended_plus168),
+    label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin:10px 0 6px;
     }
 
-    natal_meta = natal.get("_meta", {}) or {}
-    transit_meta = transit_now.get("_meta", {}) or {}
-    blended_meta = blended_now.get("_meta", {}) or {}
-
-    input_resolved = {
-        "resolvedLocation": natal_meta.get("location_resolved"),
-        "locationResolved": natal_meta.get("location_resolved"),
-        "lat": natal_meta.get("lat"),
-        "lon": natal_meta.get("lon"),
-        "utcOffsetAtBirth": natal_meta.get("utc_offset_at_birth"),
-        "utc_offset_at_birth": natal_meta.get("utc_offset_at_birth"),
-        "timezoneName": natal_meta.get("timezone_name"),
-        "timezone_name": natal_meta.get("timezone_name"),
-        "localTimeResolved": natal_meta.get("local_time_resolved"),
-        "local_time_resolved": natal_meta.get("local_time_resolved"),
-        "utcDatetime": natal_meta.get("utc_datetime"),
-        "utc_datetime": natal_meta.get("utc_datetime"),
+    input, select, button{
+      width:100%;
+      border-radius:10px;
+      border:1px solid var(--line);
+      background:#0b1734;
+      color:var(--text);
+      padding:12px;
+      font-size:14px;
     }
 
-    ephemeris = {
-        "source": "Swiss Ephemeris",
-        "mode": "blended",
-        "utcDatetime": blended_meta.get("utc_datetime"),
-        "utc_datetime": blended_meta.get("utc_datetime"),
-        "jdUt": blended_meta.get("jd_ut"),
-        "jd_ut": blended_meta.get("jd_ut"),
-        "natalUtcDatetime": natal_meta.get("utc_datetime"),
-        "natal_utc_datetime": natal_meta.get("utc_datetime"),
-        "transitUtcDatetime": transit_meta.get("utc_datetime"),
-        "transit_utc_datetime": transit_meta.get("utc_datetime"),
+    input::placeholder{
+      color:var(--muted2);
     }
 
-    baseline = {
-        "capacityBias": (
-            float(natal.get("sun", 0.0)) * 0.70 +
-            float(natal.get("saturn", 0.0)) * 0.20 +
-            float(natal.get("jupiter", 0.0)) * 0.10
-        ),
-        "summary": "Natal chart provides the stable architecture layer.",
+    .row2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
     }
 
-    transit_summary = {
-        "summary": "Current transit chart provides the moving weather layer.",
-        "utcDatetime": transit_meta.get("utc_datetime"),
-        "utc_datetime": transit_meta.get("utc_datetime"),
+    button{
+      margin-top:14px;
+      background:linear-gradient(180deg,#1d5cff,#3f86ff);
+      border:none;
+      cursor:pointer;
+      font-weight:700;
     }
 
-    planetary = {
-        "natal": build_planetary_view(natal),
-        "transit": build_planetary_view(transit_now),
-        "blended": build_planetary_view(blended_now),
+    button:hover{
+      filter:brightness(1.08);
     }
 
-    return {
-        "baseline": baseline,
-        "transitNow": transit_summary,
-        "state": now_metrics["state"],
-        "telemetry": now_metrics["telemetry"],
-        "environment": now_metrics["environment"],
-        "timing": now_metrics["timing"],
-        "flags": now_metrics["flags"],
-        "interpretation": now_metrics["interpretation"],
-        "forecast": forecast,
-        "ephemeris": ephemeris,
-        "inputResolved": input_resolved,
-        "planetary": planetary["blended"],
-        "planetaryLayers": planetary,
-        "angles": natal.get("angles", {}),
-        "houses": natal.get("houses", []),
-        "_longitudesDeg": natal.get("_longitudesDeg", {}),
-        "debugEcho": {
-            **now_metrics["debugEcho"],
-            "blendWeights": PLANET_BLEND_WEIGHTS,
-        }
+    button:disabled{
+      opacity:.72;
+      cursor:wait;
     }
 
+    .tiny{
+      font-size:11px;
+      color:var(--muted);
+      margin-top:10px;
+      line-height:1.45;
+    }
 
-class handler(BaseHTTPRequestHandler):
-    def _set_headers(self, status_code=200):
-        self.send_response(status_code)
-        self.send_header("Content-Type", "application/json")
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Headers", "*")
-        self.send_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-        self.end_headers()
+    .leftStack{
+      display:grid;
+      gap:12px;
+      margin-top:14px;
+    }
 
-    def _write_json(self, status_code: int, payload: dict):
-        self._set_headers(status_code)
-        self.wfile.write(json.dumps(payload).encode("utf-8"))
+    .statusBlock{
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:rgba(255,255,255,.02);
+      font-size:12px;
+      line-height:1.55;
+      color:var(--muted);
+    }
 
-    def do_OPTIONS(self):
-        self._set_headers(204)
+    .statusBlock strong{
+      color:var(--text);
+      display:block;
+      margin-bottom:6px;
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
 
-    def do_GET(self):
-        self._write_json(200, {
-            "ok": True,
-            "route": "/api/chart_inputs",
-            "message": "Lucy.OS API is live. Use POST for natal input or GET as health check.",
-            "env": {
-                "has_geocode_key": bool(GOOGLE_GEOCODE_API_KEY),
-                "has_timezone_key": bool(GOOGLE_TIMEZONE_API_KEY),
-            }
+    .ok{
+      color:var(--green);
+      font-weight:700;
+    }
+
+    .err{
+      color:#ff9c9c;
+      font-weight:700;
+    }
+
+    .heroStats{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:14px;
+      margin-bottom:14px;
+    }
+
+    .stat{
+      background:rgba(255,255,255,.025);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      min-height:138px;
+    }
+
+    .stat .label{
+      font-size:11px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .big{
+      font-size:30px;
+      font-weight:800;
+      margin-top:8px;
+      line-height:1.05;
+    }
+
+    .sub{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:8px;
+      line-height:1.4;
+    }
+
+    .meter{
+      margin-top:12px;
+      height:10px;
+      width:100%;
+      border-radius:999px;
+      background:#081126;
+      border:1px solid var(--line);
+      overflow:hidden;
+    }
+
+    .meter > span{
+      display:block;
+      height:100%;
+      width:0%;
+      transition:width .35s ease;
+    }
+
+    .meter-capacity > span{
+      background:linear-gradient(90deg,#67c1ff,#a1d8ff,#d8b84c);
+    }
+
+    .meter-strain > span{
+      background:linear-gradient(90deg,#67d26f,#d8b84c,#ff6666);
+    }
+
+    .stateBadge{
+      display:inline-block;
+      margin-top:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      background:rgba(103,193,255,.10);
+      color:var(--blue);
+      border:1px solid rgba(103,193,255,.18);
+    }
+
+    .midRow{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:14px;
+      margin-bottom:14px;
+    }
+
+    .microCard{
+      background:rgba(255,255,255,.025);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px 16px;
+      min-height:126px;
+    }
+
+    .microHeader{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:8px;
+    }
+
+    .microTitle{
+      font-size:11px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-weight:700;
+    }
+
+    .verifiedBadge{
+      display:inline-flex;
+      align-items:center;
+      padding:4px 8px;
+      border-radius:999px;
+      font-size:10px;
+      font-weight:700;
+      color:var(--teal, #6fe0d3);
+      background:rgba(103,193,255,.08);
+      border:1px solid rgba(103,193,255,.14);
+      white-space:nowrap;
+    }
+
+    .forecastBig{
+      font-size:18px;
+      font-weight:800;
+      margin:2px 0 6px;
+    }
+
+    .forecastSub{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .whyCard{
+      margin-bottom:16px;
+      background:rgba(255,255,255,.025);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px;
+    }
+
+    .whyTitle{
+      font-size:11px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-weight:700;
+      margin-bottom:8px;
+    }
+
+    .whyText{
+      font-size:13px;
+      color:var(--text);
+      line-height:1.72;
+    }
+
+    .sectionTitle{
+      margin:0 0 10px;
+      font-size:11px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-weight:700;
+    }
+
+    .summaryTitle{
+      margin:0 0 10px;
+      font-size:14px;
+      color:var(--text);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-weight:800;
+    }
+
+    .table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:13px;
+    }
+
+    .table th,.table td{
+      padding:11px 8px;
+      border-bottom:1px solid var(--lineSoft);
+      text-align:left;
+      vertical-align:middle;
+    }
+
+    .table th{
+      color:var(--muted);
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .badge{
+      display:inline-block;
+      padding:5px 8px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:700;
+      border:1px solid transparent;
+    }
+
+    .b-blue{background:rgba(103,193,255,.12); color:var(--blue); border-color:rgba(103,193,255,.22)}
+    .b-red{background:rgba(255,102,102,.12); color:var(--red); border-color:rgba(255,102,102,.22)}
+    .b-green{background:rgba(103,210,111,.12); color:var(--green); border-color:rgba(103,210,111,.22)}
+    .b-gold{background:rgba(216,184,76,.12); color:var(--gold); border-color:rgba(216,184,76,.22)}
+    .b-violet{background:rgba(176,108,255,.08); color:#cab1ff; border-color:rgba(176,108,255,.14)}
+
+    .softMetric td{
+      opacity:.70;
+    }
+
+    .softMetric .badge{
+      opacity:.82;
+    }
+
+    .bottomGrid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-top:14px;
+    }
+
+    .miniPanel{
+      background:rgba(255,255,255,.025);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+    }
+
+    .metaRow{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top:16px;
+    }
+
+    .metaPill{
+      display:inline-flex;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:700;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+      color:var(--muted);
+    }
+
+    .metaPill.field{
+      color:#c27cff;
+      background:rgba(176,108,255,.10);
+      border-color:rgba(176,108,255,.16);
+    }
+
+    .metaPill.forecast{
+      color:#6fc0ff;
+      background:rgba(103,193,255,.10);
+      border-color:rgba(103,193,255,.16);
+    }
+
+    @media (max-width: 1120px){
+      .grid{grid-template-columns:1fr}
+      .heroStats{grid-template-columns:1fr}
+      .midRow{grid-template-columns:1fr}
+      .bottomGrid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div class="heroGlow" id="heroGlow"></div>
+      <h1>Lucy.OS</h1>
+      <p>Astrology-informed system weather</p>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <h2>Inputs</h2>
+
+        <label>Date of Birth</label>
+        <input id="dob" type="date" />
+
+        <div class="row2">
+          <div>
+            <label>Time of Birth</label>
+            <input id="tob" type="text" placeholder="6:20" />
+          </div>
+          <div>
+            <label>AM / PM</label>
+            <select id="ampm">
+              <option>AM</option>
+              <option>PM</option>
+            </select>
+          </div>
+        </div>
+
+        <label>Birth Location</label>
+        <input id="location" type="text" placeholder="Cuero, TX" />
+
+        <button id="calcBtn">Calculate</button>
+
+        <div class="tiny">
+          Birth location resolves timezone, angles, and houses for accurate chart input.
+        </div>
+
+        <div class="leftStack">
+          <div class="statusBlock">
+            <strong>API Status</strong>
+            <div id="apiStatus">Waiting for calculation.</div>
+          </div>
+
+          <div class="statusBlock">
+            <strong>Chart Input</strong>
+            <div id="resolvedInput">No resolved birth data yet.</div>
+          </div>
+
+          <div class="statusBlock">
+            <strong>Chart Debug</strong>
+            <div id="chartDebug">Awaiting first chart load.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="heroStats">
+          <div class="stat">
+            <div class="label">Capacity</div>
+            <div class="big" id="capacityScore">0.00</div>
+            <div class="sub" id="capacityLabel">Available system bandwidth</div>
+            <div class="meter meter-capacity"><span id="capacityBar"></span></div>
+          </div>
+
+          <div class="stat">
+            <div class="label">Strain</div>
+            <div class="big" id="strainScore">0.00</div>
+            <div class="sub" id="strainLabel">Current active load</div>
+            <div class="meter meter-strain"><span id="strainBar"></span></div>
+          </div>
+
+          <div class="stat">
+            <div class="label">State</div>
+            <div class="big" id="stateText">Regulated</div>
+            <div class="sub" id="stateLabel">Stable with manageable load</div>
+            <div class="stateBadge" id="stateBadge">Regulated</div>
+          </div>
+        </div>
+
+        <div class="midRow">
+          <div class="microCard">
+            <div class="microHeader">
+              <div class="microTitle">Forecast</div>
+            </div>
+            <div class="forecastBig" id="forecastTitle">Forecast: —</div>
+            <div class="forecastSub" id="forecastText">
+              Waiting for forecast.
+            </div>
+          </div>
+
+          <div class="microCard">
+            <div class="microHeader">
+              <div class="microTitle">Sky Data</div>
+              <div class="verifiedBadge" id="skyVerified">Verified</div>
+            </div>
+            <div class="forecastBig" id="skyDataTitle">Chart Loaded</div>
+            <div class="forecastSub" id="skyDataText">
+              Waiting for resolved birth data and ephemeris source confirmation.
+            </div>
+          </div>
+        </div>
+
+        <div class="whyCard">
+          <div class="whyTitle">Why</div>
+          <div class="whyText" id="whyText">Waiting for chart interpretation.</div>
+        </div>
+
+        <div class="summaryTitle">System Summary</div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Value</th>
+              <th>Band</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Capacity</td>
+              <td id="capVal">0.00</td>
+              <td><span class="badge b-gold">Capacity</span></td>
+            </tr>
+            <tr>
+              <td>Amplified Load</td>
+              <td id="loadVal">0.00</td>
+              <td><span class="badge b-red">Load</span></td>
+            </tr>
+            <tr>
+              <td>Regulation</td>
+              <td id="regVal">0.00</td>
+              <td><span class="badge b-green">Regulation</span></td>
+            </tr>
+            <tr>
+              <td>Effective Load</td>
+              <td id="effVal">0.00</td>
+              <td><span class="badge b-blue">Net</span></td>
+            </tr>
+            <tr class="softMetric">
+              <td>Stability Index</td>
+              <td id="stabilityVal">0.00</td>
+              <td><span class="badge b-violet">Derived</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="bottomGrid">
+          <div class="miniPanel">
+            <div class="summaryTitle" style="font-size:13px; margin-bottom:10px;">Active Drivers</div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Driver</th>
+                  <th>Strength</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Primary Driver</td>
+                  <td id="primaryDriver">—</td>
+                </tr>
+                <tr>
+                  <td>Volatility (Uranus)</td>
+                  <td id="volatilityVal">0.00</td>
+                </tr>
+                <tr>
+                  <td>Fog (Neptune)</td>
+                  <td id="fogVal">0.00</td>
+                </tr>
+                <tr>
+                  <td>Activation (Mars)</td>
+                  <td id="activationVal">0.00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="miniPanel">
+            <div class="summaryTitle" style="font-size:13px; margin-bottom:10px;">Stabilizers</div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Regulator</th>
+                  <th>Strength</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Saturn</td>
+                  <td id="saturnVal">0.00</td>
+                </tr>
+                <tr>
+                  <td>Venus</td>
+                  <td id="venusVal">0.00</td>
+                </tr>
+                <tr>
+                  <td>Mercury</td>
+                  <td id="mercuryVal">0.00</td>
+                </tr>
+                <tr>
+                  <td>Current State</td>
+                  <td id="stateCondition">—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="metaRow">
+          <span class="metaPill field" id="envBand">Field: —</span>
+          <span class="metaPill forecast" id="forecastBand">Forecast: —</span>
+        </div>
+
+        <div class="tiny">
+          Forecast now uses the blended baseline + transit weather engine.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "/api/chart_inputs";
+
+    function clamp(v, min, max){
+      return Math.max(min, Math.min(max, v));
+    }
+
+    function safeNum(v, fallback = 0){
+      const n = Number(v);
+      return Number.isFinite(n) ? n : fallback;
+    }
+
+    function fmt(v){
+      return safeNum(v).toFixed(2);
+    }
+
+    function setText(id, value){
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    function setBar(id, value, max = 1.2){
+      const el = document.getElementById(id);
+      if (!el) return;
+      const pct = clamp((safeNum(value) / max) * 100, 0, 100);
+      el.style.width = pct + "%";
+    }
+
+    function setHeroGlow(modeText, fog, volatility){
+      const el = document.getElementById("heroGlow");
+      if (!el) return;
+
+      const text = String(modeText || "").toLowerCase();
+      let glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.10), transparent 42%)";
+
+      if (text.includes("overload")) {
+        glow = "radial-gradient(circle at 50% 28%, rgba(255,102,102,.14), transparent 42%)";
+      } else if (text.includes("threshold") || text.includes("strain")) {
+        glow = "radial-gradient(circle at 50% 28%, rgba(216,184,76,.14), transparent 42%)";
+      } else if (text.includes("mobilized") || text.includes("active")) {
+        glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.08), rgba(216,184,76,.10), transparent 48%)";
+      }
+
+      if (safeNum(fog) > 0.72) {
+        glow = "radial-gradient(circle at 50% 28%, rgba(176,108,255,.12), rgba(103,193,255,.05), transparent 48%)";
+      }
+
+      if (safeNum(volatility) > 0.75 && !text.includes("overload")) {
+        glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.12), rgba(176,108,255,.05), transparent 48%)";
+      }
+
+      el.style.background = glow;
+    }
+
+    function stateLabelFromMode(modeText){
+      const text = String(modeText || "").toLowerCase();
+      if (text.includes("overload")) return "Overloaded";
+      if (text.includes("threshold") || text.includes("strain")) return "Threshold";
+      if (text.includes("mobilized") || text.includes("active")) return "Mobilized";
+      return "Regulated";
+    }
+
+    function stateHelperFromMode(modeText){
+      const text = String(modeText || "").toLowerCase();
+      if (text.includes("overload")) return "System is carrying more than it can comfortably regulate";
+      if (text.includes("threshold") || text.includes("strain")) return "Load is approaching capacity";
+      if (text.includes("mobilized") || text.includes("active")) return "Elevated activity, still functioning";
+      return "Stable with manageable load";
+    }
+
+    function strainLabelFromStrain(strain){
+      const s = safeNum(strain);
+      if (s < 0.60) return "Current active load";
+      if (s < 0.85) return "Moderate active load";
+      if (s < 1.00) return "High strain";
+      return "Critical load";
+    }
+
+    function capacityLabelFromValue(){
+      return "Available system bandwidth";
+    }
+
+    function envBandFromMode(envMode){
+      const text = String(envMode || "").trim();
+      return `Field: ${text || "—"}`;
+    }
+
+    function forecastBandFromState(forecastState){
+      const text = String(forecastState || "").trim();
+      return `Forecast: ${text || "—"}`;
+    }
+
+    function driverValueFromTaggedList(list, planetName){
+      if (!Array.isArray(list)) return null;
+      const hit = list.find(item => String(item).toLowerCase().startsWith(String(planetName).toLowerCase()));
+      if (!hit) return null;
+      const match = String(hit).match(/\(([^)]+)\)/);
+      return match ? safeNum(match[1]) : null;
+    }
+
+    function primaryDriverName(data){
+      return data?.telemetry?.primaryDriver || "—";
+    }
+
+    function buildWhyText({ modeText, primaryDriver, fog, activation, mercury, saturn, venus }) {
+      const parts = [];
+
+      if (safeNum(fog) >= 0.65) parts.push("Neptune is increasing diffusion");
+      if (safeNum(activation) >= 0.65) parts.push("Mars is raising activation");
+      if (safeNum(mercury) >= 0.65) parts.push("Mercury is improving signal clarity");
+      if (safeNum(saturn) >= 0.65) parts.push("Saturn is adding constraint");
+      if (safeNum(venus) >= 0.65) parts.push("Venus is supporting regulation");
+
+      let front = parts.slice(0, 3).join(" + ");
+      if (!front) {
+        front = `${primaryDriver || "Current drivers"} are within stable operating range`;
+      }
+
+      return `${front}. Current mode is ${String(modeText || "Regulated").toLowerCase()}.`;
+    }
+
+    function buildForecastText(forecast){
+      const now = forecast?.now || {};
+      const plus24 = forecast?.plus24 || {};
+      const plus72 = forecast?.plus72 || {};
+      const plus168 = forecast?.plus168 || {};
+
+      const parts = [];
+
+      if (now.state) parts.push(`Now: ${now.state}`);
+      if (plus24.state) parts.push(`24h: ${plus24.state}`);
+      if (plus72.state) parts.push(`72h: ${plus72.state}`);
+      if (plus168.state) parts.push(`7d: ${plus168.state}`);
+
+      const trendText = parts.join(" • ");
+      const driverText = now.primaryDriver ? ` Main driver: ${now.primaryDriver}.` : "";
+
+      return trendText ? `${trendText}.${driverText}` : "Forecast unavailable.";
+    }
+
+    function buildSkyText({ ephemeris, inputResolved, transitNow, baseline }){
+      const resolvedLocation =
+        inputResolved.resolvedLocation ||
+        inputResolved.locationResolved ||
+        "—";
+
+      const resolvedTime =
+        inputResolved.localTimeResolved ||
+        inputResolved.local_time_resolved ||
+        "—";
+
+      const timezoneName =
+        inputResolved.timezoneName ||
+        inputResolved.timezone_name ||
+        "—";
+
+      const natalUtc =
+        ephemeris.natalUtcDatetime ||
+        ephemeris.natal_utc_datetime ||
+        inputResolved.utcDatetime ||
+        inputResolved.utc_datetime ||
+        "—";
+
+      const transitUtc =
+        ephemeris.transitUtcDatetime ||
+        ephemeris.transit_utc_datetime ||
+        transitNow?.utcDatetime ||
+        transitNow?.utc_datetime ||
+        "—";
+
+      const baselineText = baseline?.summary || "Natal baseline active.";
+      return `Local birth: ${resolvedTime} • Natal UTC: ${natalUtc} • Transit UTC: ${transitUtc} • ${resolvedLocation} • ${timezoneName} • ${baselineText}`;
+    }
+
+    function updateUI(data){
+      console.log("Lucy.OS response:", data);
+
+      const state = data?.state || {};
+      const telemetry = data?.telemetry || {};
+      const environment = data?.environment || {};
+      const forecast = data?.forecast || {};
+      const planetary = data?.planetary || {};
+      const planetaryLayers = data?.planetaryLayers || {};
+      const inputResolved = data?.inputResolved || {};
+      const ephemeris = data?.ephemeris || {};
+      const baseline = data?.baseline || {};
+      const transitNow = data?.transitNow || {};
+
+      const capacity = safeNum(state.capacity);
+      const strain = safeNum(state.strain);
+      const load = safeNum(state.amplifiedLoad);
+      const regulation = safeNum(state.regulation);
+      const effective = safeNum(state.effectiveLoad);
+      const modeText = state.mode || "Regulated";
+
+      const effectiveDisplay = Math.min(effective, Math.max(capacity * 1.15, 1.10));
+
+      const blendedPlanetary = Object.keys(planetary).length
+        ? planetary
+        : (planetaryLayers?.blended || {});
+
+      const volatility = safeNum(
+        blendedPlanetary.uranus,
+        driverValueFromTaggedList(telemetry.topDrivers, "Uranus")
+      );
+      const fog = safeNum(
+        blendedPlanetary.neptune,
+        driverValueFromTaggedList(telemetry.topDrivers, "Neptune")
+      );
+      const activation = safeNum(
+        blendedPlanetary.mars,
+        driverValueFromTaggedList(telemetry.topDrivers, "Mars")
+      );
+
+      const saturn = safeNum(
+        blendedPlanetary.saturn,
+        driverValueFromTaggedList(telemetry.topRegulators, "Saturn")
+      );
+      const venus = safeNum(
+        blendedPlanetary.venus,
+        driverValueFromTaggedList(telemetry.topRegulators, "Venus")
+      );
+      const mercury = safeNum(
+        blendedPlanetary.mercury,
+        driverValueFromTaggedList(telemetry.topRegulators, "Mercury")
+      );
+
+      const stabilityIndex = (saturn + venus + mercury) / 3;
+
+      setText("capacityScore", fmt(capacity));
+      setText("capacityLabel", capacityLabelFromValue(capacity));
+
+      setText("strainScore", fmt(strain));
+      setText("strainLabel", strainLabelFromStrain(strain));
+
+      setText("stateText", stateLabelFromMode(modeText));
+      setText("stateLabel", stateHelperFromMode(modeText));
+      setText("stateBadge", stateLabelFromMode(modeText));
+
+      setBar("capacityBar", capacity, 1.2);
+      setBar("strainBar", strain, 1.2);
+
+      setText("capVal", fmt(capacity));
+      setText("loadVal", fmt(load));
+      setText("regVal", fmt(regulation));
+      setText("effVal", fmt(effectiveDisplay));
+      setText("stabilityVal", fmt(stabilityIndex));
+
+      setText("primaryDriver", primaryDriverName(data));
+      setText("volatilityVal", fmt(volatility));
+      setText("fogVal", fmt(fog));
+      setText("activationVal", fmt(activation));
+
+      setText("saturnVal", fmt(saturn));
+      setText("venusVal", fmt(venus));
+      setText("mercuryVal", fmt(mercury));
+      setText("stateCondition", stateLabelFromMode(modeText));
+
+      const forecastState = forecast?.now?.state || "Regulated";
+      setText("forecastTitle", forecastState);
+      setText("forecastText", buildForecastText(forecast));
+
+      setText("skyDataTitle", ephemeris.source ? "Verified" : "Pending");
+      setText(
+        "skyDataText",
+        buildSkyText({ ephemeris, inputResolved, transitNow, baseline })
+      );
+
+      setText(
+        "whyText",
+        buildWhyText({
+          modeText: stateLabelFromMode(modeText),
+          primaryDriver: primaryDriverName(data),
+          fog,
+          activation,
+          mercury,
+          saturn,
+          venus
         })
+      );
 
-    def do_POST(self):
-        try:
-            content_length = int(self.headers.get("Content-Length", "0"))
-            raw_body = self.rfile.read(content_length).decode("utf-8")
-            payload = json.loads(raw_body or "{}")
+      setText("envBand", envBandFromMode(environment.environmentMode));
+      setText("forecastBand", forecastBandFromState(forecastState));
 
-            mode = str(payload.get("mode", "natal")).strip().lower()
+      const resolvedLocation =
+        inputResolved.resolvedLocation ||
+        inputResolved.locationResolved ||
+        "—";
 
-            if mode == "transit":
-                transit = compute_transit_inputs()
-                self._write_json(200, transit)
-                return
+      const resolvedTime =
+        inputResolved.localTimeResolved ||
+        inputResolved.local_time_resolved ||
+        "—";
 
-            dob = str(payload.get("dob", "")).strip()
+      const timezoneName =
+        inputResolved.timezoneName ||
+        inputResolved.timezone_name ||
+        "—";
 
-            tob = str(
-                payload.get("tob")
-                or payload.get("tobRaw")
-                or payload.get("time")
-                or ""
-            ).strip()
+      const natalUtc =
+        ephemeris.natalUtcDatetime ||
+        ephemeris.natal_utc_datetime ||
+        inputResolved.utcDatetime ||
+        inputResolved.utc_datetime ||
+        "—";
 
-            ampm = str(
-                payload.get("ampm")
-                or payload.get("timePeriod")
-                or ""
-            ).strip().upper()
+      setText(
+        "resolvedInput",
+        `Local: ${resolvedTime} | Natal UTC: ${natalUtc} | Place: ${resolvedLocation} | TZ: ${timezoneName}`
+      );
 
-            location = str(
-                payload.get("locationText")
-                or payload.get("location")
-                or payload.get("birthLocation")
-                or ""
-            ).strip()
+      setText(
+        "apiStatus",
+        `OK • ${ephemeris.source || "API"} • ${ephemeris.mode || "blended"}`
+      );
+      document.getElementById("apiStatus").className = "ok";
 
-            utc_override_raw = (
-                payload.get("utcOffsetOverride", None)
-                if payload.get("utcOffsetOverride", None) not in (None, "", "null")
-                else payload.get("utcOffset", None)
-            )
+      const sunDeg = data?._longitudesDeg?.sun ?? "—";
+      const moonDeg = data?._longitudesDeg?.moon ?? "—";
+      const ascDeg = data?.angles?.asc ?? "—";
+      const mcDeg = data?.angles?.mc ?? "—";
 
-            utc_override = None
-            if utc_override_raw not in (None, "", "null"):
-                utc_override = float(utc_override_raw)
+      setText(
+        "chartDebug",
+        `JD: ${ephemeris.jdUt || ephemeris.jd_ut || "—"} | Sun: ${sunDeg} | Moon: ${moonDeg} | ASC: ${ascDeg} | MC: ${mcDeg}`
+      );
 
-            if not dob:
-                self._write_json(400, {"error": "dob is required"})
-                return
+      setHeroGlow(modeText, fog, volatility);
+    }
 
-            if not tob:
-                self._write_json(400, {"error": "tob / tobRaw / time is required"})
-                return
+    async function calculate(){
+      const dob = document.getElementById("dob").value;
+      const tobRaw = document.getElementById("tob").value.trim();
+      const ampm = document.getElementById("ampm").value;
+      const location = document.getElementById("location").value.trim();
 
-            if not location:
-                self._write_json(400, {"error": "locationText / location / birthLocation is required"})
-                return
+      const payload = {
+        dob,
+        tobRaw,
+        ampm,
+        locationText: location
+      };
 
-            normalized_tob = normalize_tob_with_ampm(tob, ampm)
+      try {
+        const btn = document.getElementById("calcBtn");
+        btn.disabled = true;
+        btn.textContent = "Calculating...";
 
-            natal = compute_chart_inputs(
-                dob=dob,
-                tob=normalized_tob,
-                utc_offset_hours=utc_override,
-                location=location,
-            )
+        setText("apiStatus", "Calculating...");
+        document.getElementById("apiStatus").className = "";
 
-            transit_now = compute_transit_inputs()
-            response = build_lucy_response(natal, transit_now)
-            self._write_json(200, response)
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
 
-        except ValueError as e:
-            self._write_json(400, {"error": str(e)})
-        except Exception as e:
-            self._write_json(500, {"error": str(e)})
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data?.error || `API error ${response.status}`);
+        }
+
+        updateUI(data);
+      } catch (err) {
+        console.error(err);
+        setText("apiStatus", `Error • ${err.message}`);
+        document.getElementById("apiStatus").className = "err";
+        alert("Calculation failed. Check API deployment or payload.");
+      } finally {
+        const btn = document.getElementById("calcBtn");
+        btn.disabled = false;
+        btn.textContent = "Calculate";
+      }
+    }
+
+    document.getElementById("calcBtn").addEventListener("click", calculate);
+
+    document.getElementById("dob").value = "1980-11-21";
+    document.getElementById("tob").value = "6:20";
+    document.getElementById("ampm").value = "AM";
+    document.getElementById("location").value = "Cuero, TX";
+
+    calculate();
+  </script>
+</body>
+</html>
