@@ -23,6 +23,19 @@ PLANETS = {
     "pluto": swe.PLUTO,
 }
 
+PLANET_BLEND_WEIGHTS = {
+    "sun": {"natal": 0.90, "transit": 0.10},
+    "moon": {"natal": 0.35, "transit": 0.65},
+    "mercury": {"natal": 0.55, "transit": 0.45},
+    "venus": {"natal": 0.50, "transit": 0.50},
+    "mars": {"natal": 0.40, "transit": 0.60},
+    "jupiter": {"natal": 0.60, "transit": 0.40},
+    "saturn": {"natal": 0.65, "transit": 0.35},
+    "uranus": {"natal": 0.45, "transit": 0.55},
+    "neptune": {"natal": 0.50, "transit": 0.50},
+    "pluto": {"natal": 0.70, "transit": 0.30},
+}
+
 FLAGS = swe.FLG_SWIEPH | swe.FLG_SPEED
 HOUSE_SYSTEM = b"P"
 
@@ -262,6 +275,19 @@ def compute_angles_and_houses(jd_ut: float, lat: float, lon: float):
     }, houses
 
 
+def extract_planetary_and_longitudes(jd_ut: float) -> tuple[dict, dict]:
+    planetary = {}
+    longitudes_deg = {}
+
+    for name, body in PLANETS.items():
+        xx, _ = swe.calc_ut(jd_ut, body, FLAGS)
+        lon = float(xx[0] % 360.0)
+        longitudes_deg[name] = lon
+        planetary[name] = normalize_longitude(lon)
+
+    return planetary, longitudes_deg
+
+
 def compute_chart_inputs(
     dob: str,
     tob: str,
@@ -278,14 +304,7 @@ def compute_chart_inputs(
     utc_dt = resolved["utc_dt"]
     jd_ut = to_julian_day_utc(utc_dt)
 
-    result = {}
-    longitudes_deg = {}
-
-    for name, body in PLANETS.items():
-        xx, _ = swe.calc_ut(jd_ut, body, FLAGS)
-        lon = float(xx[0] % 360.0)
-        longitudes_deg[name] = lon
-        result[name] = normalize_longitude(lon)
+    planetary, longitudes_deg = extract_planetary_and_longitudes(jd_ut)
 
     angles, houses = compute_angles_and_houses(
         jd_ut,
@@ -293,6 +312,7 @@ def compute_chart_inputs(
         resolved["lon"],
     )
 
+    result = {**planetary}
     result["_longitudesDeg"] = longitudes_deg
     result["angles"] = angles
     result["houses"] = houses
@@ -317,19 +337,16 @@ def compute_chart_inputs(
     return result
 
 
-def compute_transit_inputs():
-    now_utc = datetime.now(timezone.utc)
-    jd_ut = to_julian_day_utc(now_utc)
+def compute_transit_inputs_at(target_utc: datetime):
+    if target_utc.tzinfo is None:
+        target_utc = target_utc.replace(tzinfo=timezone.utc)
+    else:
+        target_utc = target_utc.astimezone(timezone.utc)
 
-    result = {}
-    longitudes_deg = {}
+    jd_ut = to_julian_day_utc(target_utc)
+    planetary, longitudes_deg = extract_planetary_and_longitudes(jd_ut)
 
-    for name, body in PLANETS.items():
-        xx, _ = swe.calc_ut(jd_ut, body, FLAGS)
-        lon = float(xx[0] % 360.0)
-        longitudes_deg[name] = lon
-        result[name] = normalize_longitude(lon)
-
+    result = {**planetary}
     result["_longitudesDeg"] = longitudes_deg
     result["angles"] = {}
     result["houses"] = []
@@ -337,11 +354,15 @@ def compute_transit_inputs():
     result["_meta"] = {
         "source": "Swiss Ephemeris",
         "mode": "transit",
-        "utc_datetime": now_utc.isoformat(),
+        "utc_datetime": target_utc.isoformat(),
         "jd_ut": round(jd_ut, 6),
     }
 
     return result
+
+
+def compute_transit_inputs():
+    return compute_transit_inputs_at(datetime.now(timezone.utc))
 
 
 def fmt_value(n: float) -> str:
@@ -360,7 +381,80 @@ def infer_mode(strain: float) -> str:
         return "Mobilized State"
     return "Regulated Baseline"
 
-def build_lucy_response(chart: dict) -> dict:
+
+def forecast_state_label(strain: float) -> str:
+    if strain >= 1.0:
+        return "Overload"
+    if strain >= 0.85:
+        return "Threshold"
+    if strain >= 0.60:
+        return "Mobilized"
+    return "Regulated"
+
+
+def build_planetary_view(chart: dict) -> dict:
+    angles = chart.get("angles", {}) or {}
+    asc_deg = float(angles.get("asc", 0.0))
+    mc_deg = float(angles.get("mc", 0.0))
+
+    return {
+        "sun": float(chart.get("sun", 0.0)),
+        "moon": float(chart.get("moon", 0.0)),
+        "mercury": float(chart.get("mercury", 0.0)),
+        "venus": float(chart.get("venus", 0.0)),
+        "mars": float(chart.get("mars", 0.0)),
+        "jupiter": float(chart.get("jupiter", 0.0)),
+        "saturn": float(chart.get("saturn", 0.0)),
+        "uranus": float(chart.get("uranus", 0.0)),
+        "neptune": float(chart.get("neptune", 0.0)),
+        "pluto": float(chart.get("pluto", 0.0)),
+        "asc": normalize_longitude(asc_deg),
+        "mc": normalize_longitude(mc_deg),
+    }
+
+
+def blend_charts(natal: dict, transit: dict) -> dict:
+    blended = {}
+
+    for planet in PLANETS.keys():
+        weights = PLANET_BLEND_WEIGHTS[planet]
+        natal_val = float(natal.get(planet, 0.0))
+        transit_val = float(transit.get(planet, 0.0))
+        blended[planet] = (
+            natal_val * weights["natal"] +
+            transit_val * weights["transit"]
+        )
+
+    blended["angles"] = natal.get("angles", {}) or {}
+    blended["houses"] = natal.get("houses", []) or []
+    blended["_longitudesDeg"] = natal.get("_longitudesDeg", {}) or {}
+
+    natal_meta = natal.get("_meta", {}) or {}
+    transit_meta = transit.get("_meta", {}) or {}
+
+    blended["_meta"] = {
+        "source": "Swiss Ephemeris",
+        "mode": "blended",
+        "utc_datetime": transit_meta.get("utc_datetime"),
+        "jd_ut": transit_meta.get("jd_ut"),
+        "natal_utc_datetime": natal_meta.get("utc_datetime"),
+        "transit_utc_datetime": transit_meta.get("utc_datetime"),
+        "location": natal_meta.get("location"),
+        "location_resolved": natal_meta.get("location_resolved"),
+        "utc_offset": natal_meta.get("utc_offset"),
+        "utc_offset_at_birth": natal_meta.get("utc_offset_at_birth"),
+        "timezone_name": natal_meta.get("timezone_name"),
+        "timezone_label": natal_meta.get("timezone_label"),
+        "lat": natal_meta.get("lat"),
+        "lon": natal_meta.get("lon"),
+        "local_time_resolved": natal_meta.get("local_time_resolved"),
+        "note": "Blended natal baseline + transit weather."
+    }
+
+    return blended
+
+
+def compute_engine_metrics(chart: dict) -> dict:
     sun = float(chart.get("sun", 0.0))
     moon = float(chart.get("moon", 0.0))
     mercury = float(chart.get("mercury", 0.0))
@@ -379,36 +473,39 @@ def build_lucy_response(chart: dict) -> dict:
     asc_norm = normalize_longitude(asc_deg)
     mc_norm = normalize_longitude(mc_deg)
 
-    capacity = 0.55 + (sun * 0.45)
+    capacity = (
+        sun * 0.70 +
+        saturn * 0.20 +
+        jupiter * 0.10
+    )
 
-    amplified_load = (
-        moon * 0.28 +
-        mars * 0.18 +
-        jupiter * 0.14 +
-        uranus * 0.14 +
-        neptune * 0.12 +
+    load = (
+        moon * 0.30 +
+        mars * 0.20 +
+        uranus * 0.15 +
+        neptune * 0.15 +
         pluto * 0.10 +
-        asc_norm * 0.16
+        jupiter * 0.10
     )
 
     raw_regulation = (
-        saturn * 0.32 +
-        venus * 0.24 +
-        mercury * 0.14
+        saturn * 0.45 +
+        venus * 0.30 +
+        mercury * 0.25
     )
 
-    regulation_cap = amplified_load * 0.82
+    regulation_cap = load * 0.90
     regulation = min(raw_regulation, regulation_cap)
 
-    overload_delta = max(amplified_load - capacity, 0.0)
+    overload_delta = max(load - capacity, 0.0)
+    saturn_factor = 0.20 + (saturn * 0.15)
     saturn_constraint = min(
-        overload_delta * (0.20 + (saturn * 0.15)),
-        amplified_load * 0.25
+        overload_delta * saturn_factor,
+        load * 0.25
     )
 
-    effective_load = max(amplified_load - regulation - saturn_constraint, 0.0)
-    effective_load *= (0.92 + (asc_norm * 0.16))
-    strain = effective_load / capacity if capacity > 0 else 0.0
+    effective_load = max(load - regulation - saturn_constraint, 0.0)
+    strain = effective_load / max(capacity, 0.1)
 
     mode = infer_mode(strain)
 
@@ -419,7 +516,6 @@ def build_lucy_response(chart: dict) -> dict:
         ("Uranus", uranus),
         ("Neptune", neptune),
         ("Pluto", pluto),
-        ("ASC", asc_norm),
     ]
     load_drivers.sort(key=lambda x: x[1], reverse=True)
 
@@ -490,73 +586,11 @@ def build_lucy_response(chart: dict) -> dict:
         ),
     }
 
-    forecast_now_state = (
-        "Overload" if strain >= 1.0 else
-        "Threshold" if strain >= 0.85 else
-        "Mobilized" if strain >= 0.60 else
-        "Regulated"
-    )
-
-    forecast = {
-        "now": {
-            "state": forecast_now_state,
-            "text": interpretation["stateSummary"],
-        },
-        "plus6": {
-            "state": forecast_now_state,
-            "text": "Short-horizon forecast is currently using the same natal-state proxy layer.",
-        },
-        "plus24": {
-            "state": forecast_now_state,
-            "text": "Longer-horizon forecast is currently using the same natal-state proxy layer.",
-        },
-    }
-
-    meta = chart.get("_meta", {})
-    input_resolved = {
-        "resolvedLocation": meta.get("location_resolved"),
-        "locationResolved": meta.get("location_resolved"),
-        "lat": meta.get("lat"),
-        "lon": meta.get("lon"),
-        "utcOffsetAtBirth": meta.get("utc_offset_at_birth"),
-        "utc_offset_at_birth": meta.get("utc_offset_at_birth"),
-        "timezoneName": meta.get("timezone_name"),
-        "timezone_name": meta.get("timezone_name"),
-        "localTimeResolved": meta.get("local_time_resolved"),
-        "local_time_resolved": meta.get("local_time_resolved"),
-        "utcDatetime": meta.get("utc_datetime"),
-        "utc_datetime": meta.get("utc_datetime"),
-    }
-
-    ephemeris = {
-        "source": meta.get("source", "Swiss Ephemeris"),
-        "mode": meta.get("mode", "natal"),
-        "utcDatetime": meta.get("utc_datetime"),
-        "utc_datetime": meta.get("utc_datetime"),
-        "jdUt": meta.get("jd_ut"),
-        "jd_ut": meta.get("jd_ut"),
-    }
-
-    planetary = {
-        "sun": sun,
-        "moon": moon,
-        "mercury": mercury,
-        "venus": venus,
-        "mars": mars,
-        "jupiter": jupiter,
-        "saturn": saturn,
-        "uranus": uranus,
-        "neptune": neptune,
-        "pluto": pluto,
-        "asc": asc_norm,
-        "mc": mc_norm,
-    }
-
     return {
         "state": {
             "capacity": capacity,
             "strain": strain,
-            "amplifiedLoad": amplified_load,
+            "amplifiedLoad": load,
             "regulation": regulation,
             "saturnConstraint": saturn_constraint,
             "effectiveLoad": effective_load,
@@ -569,7 +603,7 @@ def build_lucy_response(chart: dict) -> dict:
             "topRegulators": [f"{name} ({fmt_value(val)})" for name, val in regulators[:3]],
             "capacity": capacity,
             "strain": strain,
-            "amplifiedLoad": amplified_load,
+            "amplifiedLoad": load,
             "regulation": regulation,
             "saturnConstraint": saturn_constraint,
             "effectiveLoad": effective_load,
@@ -587,18 +621,132 @@ def build_lucy_response(chart: dict) -> dict:
             "saturnShutdown": saturn_shutdown,
         },
         "interpretation": interpretation,
-        "forecast": forecast,
-        "ephemeris": ephemeris,
-        "inputResolved": input_resolved,
-        "planetary": planetary,
-        "angles": chart.get("angles", {}),
-        "houses": chart.get("houses", []),
-        "_longitudesDeg": chart.get("_longitudesDeg", {}),
         "debugEcho": {
             "ascNorm": asc_norm,
             "mcNorm": mc_norm,
             "rawRegulation": raw_regulation,
             "regulationCap": regulation_cap,
+            "saturnFactor": saturn_factor,
+        }
+    }
+
+
+def build_forecast_entry(label: str, blended_chart: dict) -> dict:
+    metrics = compute_engine_metrics(blended_chart)
+    state = metrics["state"]
+    telemetry = metrics["telemetry"]
+    interpretation = metrics["interpretation"]
+
+    return {
+        "label": label,
+        "state": forecast_state_label(float(state["strain"])),
+        "mode": state["mode"],
+        "strain": state["strain"],
+        "capacity": state["capacity"],
+        "effectiveLoad": state["effectiveLoad"],
+        "primaryDriver": telemetry["primaryDriver"],
+        "topRegulator": telemetry["topRegulator"],
+        "text": interpretation["stateSummary"],
+    }
+
+
+def build_lucy_response(natal: dict, transit_now: dict) -> dict:
+    blended_now = blend_charts(natal, transit_now)
+    now_metrics = compute_engine_metrics(blended_now)
+
+    now_utc = datetime.now(timezone.utc)
+
+    transit_plus6 = compute_transit_inputs_at(now_utc + timedelta(hours=6))
+    transit_plus24 = compute_transit_inputs_at(now_utc + timedelta(hours=24))
+    transit_plus72 = compute_transit_inputs_at(now_utc + timedelta(hours=72))
+    transit_plus168 = compute_transit_inputs_at(now_utc + timedelta(hours=168))
+
+    blended_plus6 = blend_charts(natal, transit_plus6)
+    blended_plus24 = blend_charts(natal, transit_plus24)
+    blended_plus72 = blend_charts(natal, transit_plus72)
+    blended_plus168 = blend_charts(natal, transit_plus168)
+
+    forecast = {
+        "now": build_forecast_entry("Now", blended_now),
+        "plus6": build_forecast_entry("+6h", blended_plus6),
+        "plus24": build_forecast_entry("+24h", blended_plus24),
+        "plus72": build_forecast_entry("+72h", blended_plus72),
+        "plus168": build_forecast_entry("+168h", blended_plus168),
+    }
+
+    natal_meta = natal.get("_meta", {}) or {}
+    transit_meta = transit_now.get("_meta", {}) or {}
+    blended_meta = blended_now.get("_meta", {}) or {}
+
+    input_resolved = {
+        "resolvedLocation": natal_meta.get("location_resolved"),
+        "locationResolved": natal_meta.get("location_resolved"),
+        "lat": natal_meta.get("lat"),
+        "lon": natal_meta.get("lon"),
+        "utcOffsetAtBirth": natal_meta.get("utc_offset_at_birth"),
+        "utc_offset_at_birth": natal_meta.get("utc_offset_at_birth"),
+        "timezoneName": natal_meta.get("timezone_name"),
+        "timezone_name": natal_meta.get("timezone_name"),
+        "localTimeResolved": natal_meta.get("local_time_resolved"),
+        "local_time_resolved": natal_meta.get("local_time_resolved"),
+        "utcDatetime": natal_meta.get("utc_datetime"),
+        "utc_datetime": natal_meta.get("utc_datetime"),
+    }
+
+    ephemeris = {
+        "source": "Swiss Ephemeris",
+        "mode": "blended",
+        "utcDatetime": blended_meta.get("utc_datetime"),
+        "utc_datetime": blended_meta.get("utc_datetime"),
+        "jdUt": blended_meta.get("jd_ut"),
+        "jd_ut": blended_meta.get("jd_ut"),
+        "natalUtcDatetime": natal_meta.get("utc_datetime"),
+        "natal_utc_datetime": natal_meta.get("utc_datetime"),
+        "transitUtcDatetime": transit_meta.get("utc_datetime"),
+        "transit_utc_datetime": transit_meta.get("utc_datetime"),
+    }
+
+    baseline = {
+        "capacityBias": (
+            float(natal.get("sun", 0.0)) * 0.70 +
+            float(natal.get("saturn", 0.0)) * 0.20 +
+            float(natal.get("jupiter", 0.0)) * 0.10
+        ),
+        "summary": "Natal chart provides the stable architecture layer.",
+    }
+
+    transit_summary = {
+        "summary": "Current transit chart provides the moving weather layer.",
+        "utcDatetime": transit_meta.get("utc_datetime"),
+        "utc_datetime": transit_meta.get("utc_datetime"),
+    }
+
+    planetary = {
+        "natal": build_planetary_view(natal),
+        "transit": build_planetary_view(transit_now),
+        "blended": build_planetary_view(blended_now),
+    }
+
+    return {
+        "baseline": baseline,
+        "transitNow": transit_summary,
+        "state": now_metrics["state"],
+        "telemetry": now_metrics["telemetry"],
+        "environment": now_metrics["environment"],
+        "timing": now_metrics["timing"],
+        "flags": now_metrics["flags"],
+        "interpretation": now_metrics["interpretation"],
+        "forecast": forecast,
+        "ephemeris": ephemeris,
+        "inputResolved": input_resolved,
+        "planetary": planetary["blended"],
+        "planetaryLayers": planetary,
+        "angles": natal.get("angles", {}),
+        "houses": natal.get("houses", []),
+        "_longitudesDeg": natal.get("_longitudesDeg", {}),
+        "debugEcho": {
+            **now_metrics["debugEcho"],
+            "blendWeights": PLANET_BLEND_WEIGHTS,
         }
     }
 
@@ -639,9 +787,8 @@ class handler(BaseHTTPRequestHandler):
             mode = str(payload.get("mode", "natal")).strip().lower()
 
             if mode == "transit":
-                chart = compute_transit_inputs()
-                response = build_lucy_response(chart)
-                self._write_json(200, response)
+                transit = compute_transit_inputs()
+                self._write_json(200, transit)
                 return
 
             dob = str(payload.get("dob", "")).strip()
@@ -690,14 +837,15 @@ class handler(BaseHTTPRequestHandler):
 
             normalized_tob = normalize_tob_with_ampm(tob, ampm)
 
-            chart = compute_chart_inputs(
+            natal = compute_chart_inputs(
                 dob=dob,
                 tob=normalized_tob,
                 utc_offset_hours=utc_override,
                 location=location,
             )
 
-            response = build_lucy_response(chart)
+            transit_now = compute_transit_inputs()
+            response = build_lucy_response(natal, transit_now)
             self._write_json(200, response)
 
         except ValueError as e:
