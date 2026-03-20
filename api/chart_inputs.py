@@ -360,6 +360,7 @@ def infer_mode(strain: float) -> str:
         return "Mobilized State"
     return "Regulated Baseline"
 
+
 def build_lucy_response(chart: dict) -> dict:
     sun = float(chart.get("sun", 0.0))
     moon = float(chart.get("moon", 0.0))
@@ -379,35 +380,35 @@ def build_lucy_response(chart: dict) -> dict:
     asc_norm = normalize_longitude(asc_deg)
     mc_norm = normalize_longitude(mc_deg)
 
-    capacity = 0.55 + (sun * 0.45)
+    capacity = 0.50 + (sun * 0.40)
 
     amplified_load = (
-        moon * 0.28 +
-        mars * 0.18 +
-        jupiter * 0.14 +
-        uranus * 0.14 +
-        neptune * 0.12 +
-        pluto * 0.10 +
-        asc_norm * 0.16
+        moon * 0.32 +
+        mars * 0.22 +
+        jupiter * 0.16 +
+        uranus * 0.18 +
+        neptune * 0.14 +
+        pluto * 0.12 +
+        asc_norm * 0.18
     )
 
     raw_regulation = (
-        saturn * 0.32 +
-        venus * 0.24 +
-        mercury * 0.14
+        saturn * 0.26 +
+        venus * 0.20 +
+        mercury * 0.12
     )
 
-    regulation_cap = amplified_load * 0.82
+    regulation_cap = amplified_load * 0.68
     regulation = min(raw_regulation, regulation_cap)
 
     overload_delta = max(amplified_load - capacity, 0.0)
     saturn_constraint = min(
-        overload_delta * (0.20 + (saturn * 0.15)),
-        amplified_load * 0.25
+        overload_delta * (0.14 + (saturn * 0.10)),
+        amplified_load * 0.18
     )
 
     effective_load = max(amplified_load - regulation - saturn_constraint, 0.0)
-    effective_load *= (0.92 + (asc_norm * 0.16))
+    effective_load *= (0.96 + (asc_norm * 0.20))
     strain = effective_load / capacity if capacity > 0 else 0.0
 
     mode = infer_mode(strain)
