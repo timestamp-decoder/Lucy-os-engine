@@ -380,9 +380,9 @@ def build_lucy_response(chart: dict) -> dict:
     asc_norm = normalize_longitude(asc_deg)
     mc_norm = normalize_longitude(mc_deg)
 
-    capacity = 0.50 + (sun * 0.40)
+    natal_capacity = 0.50 + (sun * 0.40)
 
-    amplified_load = (
+    natal_load = (
         moon * 0.32 +
         mars * 0.22 +
         jupiter * 0.16 +
@@ -393,23 +393,68 @@ def build_lucy_response(chart: dict) -> dict:
         mc_norm * 0.12
     )
 
-    raw_regulation = (
+    natal_raw_regulation = (
         saturn * 0.26 +
         venus * 0.20 +
         mercury * 0.12
     )
 
-    regulation_cap = amplified_load * 0.68
+    natal_regulation_cap = natal_load * 0.68
+    natal_regulation = min(natal_raw_regulation, natal_regulation_cap)
+
+    natal_overload_delta = max(natal_load - natal_capacity, 0.0)
+    natal_saturn_constraint = min(
+        natal_overload_delta * (0.14 + (saturn * 0.10)),
+        natal_load * 0.18
+    )
+
+    natal_effective_load = max(
+        natal_load - natal_regulation - natal_saturn_constraint,
+        0.0
+    )
+    natal_effective_load *= (0.96 + (asc_norm * 0.20))
+    natal_strain = natal_effective_load / natal_capacity if natal_capacity > 0 else 0.0
+
+    transit = compute_transit_inputs()
+
+    t_moon = float(transit.get("moon", 0.0))
+    t_mercury = float(transit.get("mercury", 0.0))
+    t_venus = float(transit.get("venus", 0.0))
+    t_mars = float(transit.get("mars", 0.0))
+    t_jupiter = float(transit.get("jupiter", 0.0))
+    t_saturn = float(transit.get("saturn", 0.0))
+    t_uranus = float(transit.get("uranus", 0.0))
+    t_neptune = float(transit.get("neptune", 0.0))
+    t_pluto = float(transit.get("pluto", 0.0))
+
+    transit_load = (
+        t_moon * 0.18 +
+        t_mars * 0.14 +
+        t_jupiter * 0.10 +
+        t_uranus * 0.12 +
+        t_neptune * 0.10 +
+        t_pluto * 0.08
+    )
+
+    transit_regulation = (
+        t_saturn * 0.12 +
+        t_venus * 0.10 +
+        t_mercury * 0.06
+    )
+
+    capacity = natal_capacity
+    amplified_load = natal_load + transit_load
+    raw_regulation = natal_regulation + transit_regulation
+    regulation_cap = amplified_load * 0.72
     regulation = min(raw_regulation, regulation_cap)
 
     overload_delta = max(amplified_load - capacity, 0.0)
     saturn_constraint = min(
-        overload_delta * (0.14 + (saturn * 0.10)),
-        amplified_load * 0.18
+        overload_delta * (0.10 + (t_saturn * 0.08)),
+        amplified_load * 0.12
     )
 
     effective_load = max(amplified_load - regulation - saturn_constraint, 0.0)
-    effective_load *= (0.96 + (asc_norm * 0.20))
     strain = effective_load / capacity if capacity > 0 else 0.0
 
     mode = infer_mode(strain)
@@ -423,6 +468,12 @@ def build_lucy_response(chart: dict) -> dict:
         ("Pluto", pluto),
         ("ASC", asc_norm),
         ("MC", mc_norm),
+        ("Transit Moon", t_moon),
+        ("Transit Mars", t_mars),
+        ("Transit Jupiter", t_jupiter),
+        ("Transit Uranus", t_uranus),
+        ("Transit Neptune", t_neptune),
+        ("Transit Pluto", t_pluto),
     ]
     load_drivers.sort(key=lambda x: x[1], reverse=True)
 
@@ -430,13 +481,21 @@ def build_lucy_response(chart: dict) -> dict:
         ("Saturn", saturn),
         ("Venus", venus),
         ("Mercury", mercury),
+        ("Transit Saturn", t_saturn),
+        ("Transit Venus", t_venus),
+        ("Transit Mercury", t_mercury),
     ]
     regulators.sort(key=lambda x: x[1], reverse=True)
 
     primary_driver = load_drivers[0][0]
     top_regulator = regulators[0][0]
 
-    environment_load = (uranus * 0.45) + (neptune * 0.45) + (asc_norm * 0.10)
+    environment_load = (
+        (uranus * 0.25) +
+        (neptune * 0.25) +
+        (t_uranus * 0.25) +
+        (t_neptune * 0.25)
+    )
     environment_mode = (
         "Clear / Stable" if environment_load < 0.33 else
         "Mixed / Variable" if environment_load < 0.66 else
@@ -444,9 +503,12 @@ def build_lucy_response(chart: dict) -> dict:
     )
 
     timing_pressure = (
-        mars * 0.30 +
-        jupiter * 0.20 +
-        mc_norm * 0.50
+        mars * 0.10 +
+        jupiter * 0.08 +
+        t_mars * 0.34 +
+        t_jupiter * 0.18 +
+        t_moon * 0.12 +
+        mc_norm * 0.18
     )
     timing_mode = (
         "Stable Window" if timing_pressure < 0.33 else
@@ -454,7 +516,7 @@ def build_lucy_response(chart: dict) -> dict:
         "Pushed Window"
     )
 
-    pluto_rewrite = pluto > 0.85 and strain > 0.95
+    pluto_rewrite = (t_pluto > 0.85 and strain > 0.95) or (pluto > 0.90 and strain > 0.95)
     saturn_shutdown = saturn_constraint > 0.20
 
     interpretation = {
@@ -484,11 +546,20 @@ def build_lucy_response(chart: dict) -> dict:
             f"{top_regulator} leads the regulation layer "
             f"({fmt_value(regulation)} active regulation; raw {fmt_value(raw_regulation)})."
         ),
-        "volatilityNote": f"Uranus volatility proxy: {fmt_value(uranus)}.",
-        "fogNote": f"Neptune fog proxy: {fmt_value(neptune)}.",
-        "activationNote": f"Mars activation proxy: {fmt_value(mars)}.",
+        "volatilityNote": (
+            f"Transit Uranus {fmt_value(t_uranus)} + natal Uranus {fmt_value(uranus)} "
+            f"set volatility conditions."
+        ),
+        "fogNote": (
+            f"Transit Neptune {fmt_value(t_neptune)} + natal Neptune {fmt_value(neptune)} "
+            f"set diffusion conditions."
+        ),
+        "activationNote": (
+            f"Transit Mars {fmt_value(t_mars)} with natal Mars {fmt_value(mars)} "
+            f"drives activation."
+        ),
         "constraintNote": (
-            f"Saturn constraint applied: {fmt_value(saturn_constraint)} "
+            f"Transit Saturn constraint applied: {fmt_value(saturn_constraint)} "
             f"(overload delta {fmt_value(overload_delta)})."
         ),
     }
@@ -507,11 +578,11 @@ def build_lucy_response(chart: dict) -> dict:
         },
         "plus6": {
             "state": forecast_now_state,
-            "text": "Short-horizon forecast is currently using the same natal-state proxy layer.",
+            "text": "Transit-aware live layer is active; short-horizon forecasting is still early-stage.",
         },
         "plus24": {
             "state": forecast_now_state,
-            "text": "Longer-horizon forecast is currently using the same natal-state proxy layer.",
+            "text": "Transit-aware live layer is active; longer-horizon forecasting remains a simple proxy.",
         },
     }
 
@@ -538,6 +609,8 @@ def build_lucy_response(chart: dict) -> dict:
         "utc_datetime": meta.get("utc_datetime"),
         "jdUt": meta.get("jd_ut"),
         "jd_ut": meta.get("jd_ut"),
+        "transitUtcDatetime": transit.get("_meta", {}).get("utc_datetime"),
+        "transitMode": transit.get("_meta", {}).get("mode", "transit"),
     }
 
     planetary = {
@@ -553,6 +626,15 @@ def build_lucy_response(chart: dict) -> dict:
         "pluto": pluto,
         "asc": asc_norm,
         "mc": mc_norm,
+        "transitMoon": t_moon,
+        "transitMercury": t_mercury,
+        "transitVenus": t_venus,
+        "transitMars": t_mars,
+        "transitJupiter": t_jupiter,
+        "transitSaturn": t_saturn,
+        "transitUranus": t_uranus,
+        "transitNeptune": t_neptune,
+        "transitPluto": t_pluto,
     }
 
     return {
@@ -565,17 +647,28 @@ def build_lucy_response(chart: dict) -> dict:
             "effectiveLoad": effective_load,
             "mode": mode,
         },
+        "baselineState": {
+            "capacity": natal_capacity,
+            "strain": natal_strain,
+            "amplifiedLoad": natal_load,
+            "regulation": natal_regulation,
+            "saturnConstraint": natal_saturn_constraint,
+            "effectiveLoad": natal_effective_load,
+            "mode": infer_mode(natal_strain),
+        },
         "telemetry": {
             "primaryDriver": primary_driver,
             "topRegulator": top_regulator,
-            "topDrivers": [f"{name} ({fmt_value(val)})" for name, val in load_drivers[:3]],
-            "topRegulators": [f"{name} ({fmt_value(val)})" for name, val in regulators[:3]],
+            "topDrivers": [f"{name} ({fmt_value(val)})" for name, val in load_drivers[:4]],
+            "topRegulators": [f"{name} ({fmt_value(val)})" for name, val in regulators[:4]],
             "capacity": capacity,
             "strain": strain,
             "amplifiedLoad": amplified_load,
             "regulation": regulation,
             "saturnConstraint": saturn_constraint,
             "effectiveLoad": effective_load,
+            "transitLoad": transit_load,
+            "transitRegulation": transit_regulation,
         },
         "environment": {
             "environmentalLoad": environment_load,
@@ -597,11 +690,17 @@ def build_lucy_response(chart: dict) -> dict:
         "angles": chart.get("angles", {}),
         "houses": chart.get("houses", []),
         "_longitudesDeg": chart.get("_longitudesDeg", {}),
+        "transitLongitudesDeg": transit.get("_longitudesDeg", {}),
         "debugEcho": {
             "ascNorm": asc_norm,
             "mcNorm": mc_norm,
             "rawRegulation": raw_regulation,
             "regulationCap": regulation_cap,
+            "natalLoad": natal_load,
+            "natalRegulation": natal_regulation,
+            "transitLoad": transit_load,
+            "transitRegulation": transit_regulation,
+            "transitMode": transit.get("_meta", {}).get("mode", "transit"),
         }
     }
 
@@ -643,7 +742,11 @@ class handler(BaseHTTPRequestHandler):
 
             if mode == "transit":
                 chart = compute_transit_inputs()
-                response = build_lucy_response(chart)
+                response = {
+                    "ok": True,
+                    "transitOnly": True,
+                    "chart": chart,
+                }
                 self._write_json(200, response)
                 return
 
