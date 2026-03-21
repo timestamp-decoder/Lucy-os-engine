@@ -382,12 +382,6 @@ def build_lucy_response(chart: dict) -> dict:
 
     capacity = 0.50 + (sun * 0.40)
 
-    angle_phase_bias = (
-        0.04 +
-        (mc_norm * 0.10) +
-        (asc_norm * 0.04)
-    )
-
     amplified_load = (
         moon * 0.32 +
         mars * 0.22 +
@@ -395,8 +389,8 @@ def build_lucy_response(chart: dict) -> dict:
         uranus * 0.18 +
         neptune * 0.14 +
         pluto * 0.12 +
-        asc_norm * 0.08 +
-        angle_phase_bias
+        asc_norm * 0.10 +
+        mc_norm * 0.12
     )
 
     raw_regulation = (
@@ -415,6 +409,7 @@ def build_lucy_response(chart: dict) -> dict:
     )
 
     effective_load = max(amplified_load - regulation - saturn_constraint, 0.0)
+    effective_load *= (0.96 + (asc_norm * 0.20))
     strain = effective_load / capacity if capacity > 0 else 0.0
 
     mode = infer_mode(strain)
@@ -450,8 +445,8 @@ def build_lucy_response(chart: dict) -> dict:
 
     timing_pressure = (
         mars * 0.30 +
-        jupiter * 0.25 +
-        mc_norm * 0.45
+        jupiter * 0.20 +
+        mc_norm * 0.50
     )
     timing_mode = (
         "Stable Window" if timing_pressure < 0.33 else
@@ -607,7 +602,6 @@ def build_lucy_response(chart: dict) -> dict:
             "mcNorm": mc_norm,
             "rawRegulation": raw_regulation,
             "regulationCap": regulation_cap,
-            "anglePhaseBias": angle_phase_bias,
         }
     }
 
