@@ -330,6 +330,153 @@
       line-height:1.72;
     }
 
+    .harmonicGrid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-bottom:16px;
+    }
+
+    .harmonicCard{
+      background:
+        radial-gradient(circle at 0% 0%, rgba(103,193,255,.08), transparent 34%),
+        rgba(255,255,255,.025);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px;
+      min-height:220px;
+    }
+
+    .harmonicCard.gold{
+      background:
+        radial-gradient(circle at 0% 0%, rgba(216,184,76,.09), transparent 34%),
+        rgba(255,255,255,.025);
+    }
+
+    .harmonicTitle{
+      font-size:11px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-weight:700;
+      margin-bottom:10px;
+    }
+
+    .harmonicBig{
+      font-size:22px;
+      font-weight:850;
+      color:var(--text);
+      line-height:1.1;
+      margin-bottom:8px;
+    }
+
+    .harmonicSub{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.55;
+      margin-bottom:12px;
+    }
+
+    .harmonicList{
+      display:grid;
+      gap:9px;
+      margin-top:12px;
+    }
+
+    .harmonicLine{
+      display:grid;
+      gap:3px;
+      padding-top:9px;
+      border-top:1px solid var(--lineSoft);
+    }
+
+    .harmonicLine strong{
+      font-size:10px;
+      color:var(--blue);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .harmonicLine span{
+      font-size:12px;
+      color:var(--text);
+      line-height:1.45;
+    }
+
+    .dailyCard{
+      margin-bottom:16px;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(176,108,255,.09), transparent 34%),
+        rgba(255,255,255,.025);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px;
+    }
+
+    .dailyHeader{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+
+    .weatherPill{
+      display:inline-flex;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:700;
+      color:var(--gold);
+      background:rgba(216,184,76,.10);
+      border:1px solid rgba(216,184,76,.18);
+    }
+
+    .dailyTitle{
+      font-size:20px;
+      font-weight:850;
+      line-height:1.15;
+      margin:0;
+    }
+
+    .dailyRead{
+      font-size:13px;
+      color:var(--text);
+      line-height:1.72;
+      margin:0 0 14px;
+    }
+
+    .dailyGrid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+    }
+
+    .dailyMini{
+      border:1px solid var(--lineSoft);
+      background:rgba(255,255,255,.025);
+      border-radius:14px;
+      padding:13px;
+    }
+
+    .dailyMini strong{
+      display:block;
+      font-size:10px;
+      color:var(--blue);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:6px;
+    }
+
+    .dailyMini span{
+      display:block;
+      color:var(--text);
+      font-size:12px;
+      line-height:1.5;
+    }
+
     .sectionTitle{
       margin:0 0 10px;
       font-size:11px;
@@ -441,6 +588,8 @@
       .grid{grid-template-columns:1fr}
       .heroStats{grid-template-columns:1fr}
       .midRow{grid-template-columns:1fr}
+      .harmonicGrid{grid-template-columns:1fr}
+      .dailyGrid{grid-template-columns:1fr}
       .bottomGrid{grid-template-columns:1fr}
     }
   </style>
@@ -553,6 +702,95 @@
           <div class="whyText" id="whyText">Waiting for chart interpretation.</div>
         </div>
 
+        <div class="harmonicGrid">
+          <div class="harmonicCard gold">
+            <div class="harmonicTitle">Harmonic Identity Layer</div>
+            <div class="harmonicBig" id="primaryHarmonic">Primary Harmonic: —</div>
+            <div class="harmonicSub" id="harmonicPlainRead">
+              Waiting for baseline harmonic profile.
+            </div>
+
+            <div class="harmonicList">
+              <div class="harmonicLine">
+                <strong>Support Harmonic</strong>
+                <span id="supportHarmonic">—</span>
+              </div>
+              <div class="harmonicLine">
+                <strong>Distortion Harmonic</strong>
+                <span id="distortionHarmonic">—</span>
+              </div>
+              <div class="harmonicLine">
+                <strong>Signal Quality</strong>
+                <span id="signalQuality">—</span>
+              </div>
+              <div class="harmonicLine">
+                <strong>Stability Method</strong>
+                <span id="stabilityMethod">—</span>
+              </div>
+              <div class="harmonicLine">
+                <strong>Overload Risk</strong>
+                <span id="overloadRisk">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="harmonicCard">
+            <div class="harmonicTitle">Today’s Field Harmonic</div>
+            <div class="harmonicBig" id="todayFieldHarmonic">Today’s Field: —</div>
+            <div class="harmonicSub" id="todayFieldPlainRead">
+              Waiting for live field harmonic.
+            </div>
+
+            <div class="harmonicList">
+              <div class="harmonicLine">
+                <strong>System Weather</strong>
+                <span id="systemWeather">—</span>
+              </div>
+              <div class="harmonicLine">
+                <strong>Field Pressure</strong>
+                <span id="fieldPressureRead">—</span>
+              </div>
+              <div class="harmonicLine">
+                <strong>Current Field Tone</strong>
+                <span id="currentFieldTone">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dailyCard">
+          <div class="dailyHeader">
+            <div>
+              <div class="harmonicTitle">Daily Guidance</div>
+              <h3 class="dailyTitle" id="dailyGuidanceTitle">Today’s Read</h3>
+            </div>
+            <div class="weatherPill" id="dailyWeatherPill">System Weather: —</div>
+          </div>
+
+          <p class="dailyRead" id="dailyRead">
+            Waiting for daily guidance.
+          </p>
+
+          <div class="dailyGrid">
+            <div class="dailyMini">
+              <strong>What to lean into</strong>
+              <span id="leanInto">—</span>
+            </div>
+            <div class="dailyMini">
+              <strong>What to watch for</strong>
+              <span id="watchFor">—</span>
+            </div>
+            <div class="dailyMini">
+              <strong>One Good Move</strong>
+              <span id="oneGoodMove">—</span>
+            </div>
+            <div class="dailyMini">
+              <strong>Return to yourself by</strong>
+              <span id="returnCue">—</span>
+            </div>
+          </div>
+        </div>
+
         <div class="summaryTitle">System Summary</div>
         <table class="table">
           <thead>
@@ -659,7 +897,7 @@
         </div>
 
         <div class="tiny">
-          Forecast, stability index, and why-line are interpretive layers on top of the current V2.5 engine.
+          Forecast, stability index, harmonic identity, and daily guidance are interpretive layers on top of the current V2.5 engine.
         </div>
       </div>
     </div>
@@ -667,6 +905,90 @@
 
   <script>
     const API_URL = "/api/chart_inputs";
+
+    const HARMONICS = {
+      structured: {
+        name: "Structured",
+        display: "Harmonic-Structured",
+        coreFunction: "Signal becomes form.",
+        signalQuality: "High, coherent, pattern-seeking, structure-oriented",
+        stabilityMethod: "Regulation, sequencing, naming, meaning-making",
+        overloadRisk: "Too much signal before the container is finished; premature output; pressure outrunning structure",
+        plainRead: "This system stabilizes by turning pressure into order. Overload happens when clarity arrives faster than the structure can hold it."
+      },
+      contained: {
+        name: "Contained",
+        display: "Harmonic-Contained",
+        coreFunction: "Signal protects itself inwardly.",
+        signalQuality: "Deep, internal, cyclical, protected",
+        stabilityMethod: "Withdrawal, privacy, inward processing, controlled release",
+        overloadRisk: "Emotional compression; signal trapped inside; delayed expression turning into pressure buildup",
+        plainRead: "This system stabilizes by pulling signal inward until it feels safe. Overload happens when too much stays unexpressed for too long."
+      },
+      chaotic: {
+        name: "Chaotic",
+        display: "Harmonic-Chaotic",
+        coreFunction: "Signal moves through charge and disruption.",
+        signalQuality: "High-voltage, mobile, catalytic, nonlinear",
+        stabilityMethod: "Movement, disruption, voltage release, rapid shifts",
+        overloadRisk: "Scattering, instability, shock cycles, losing continuity",
+        plainRead: "This system stabilizes through motion and charge release. Overload happens when the voltage has nowhere to go."
+      },
+      relational: {
+        name: "Relational",
+        display: "Harmonic-Relational",
+        coreFunction: "Signal organizes through contact.",
+        signalQuality: "Attuned, responsive, field-sensitive, relational",
+        stabilityMethod: "Contact, mirroring, tone-tracking, repairing the field",
+        overloadRisk: "Over-attunement, losing center, attachment loops, emotional fusion",
+        plainRead: "This system stabilizes by reading and repairing the space between people. Overload happens when the field becomes too loud or too fused."
+      },
+      threshold: {
+        name: "Threshold",
+        display: "Harmonic-Threshold",
+        coreFunction: "Signal activates at the edge.",
+        signalQuality: "Sharp, decisive, activation-based, timing-sensitive",
+        stabilityMethod: "Timing, crossings, clean openings, decisive action",
+        overloadRisk: "Urgency, rupture, impatience, acting before the field is ready",
+        plainRead: "This system stabilizes at turning points. Overload happens when everything feels like a turning point."
+      },
+      reconstructive: {
+        name: "Reconstructive",
+        display: "Harmonic-Reconstructive",
+        coreFunction: "Signal rebuilds through pressure.",
+        signalQuality: "Compressed, transformative, deep-field, pressure-bearing",
+        stabilityMethod: "Breakdown to rebuild cycles, pressure integration, reforming structure",
+        overloadRisk: "Crisis identity, heaviness, repeated collapse loops",
+        plainRead: "This system stabilizes by transforming pressure into a stronger form. Overload happens when the system is forced to rebuild too often without rest."
+      },
+      integrative: {
+        name: "Integrative",
+        display: "Harmonic-Integrative",
+        coreFunction: "Signal gathers fragments into wholeness.",
+        signalQuality: "Wide, connective, meaning-oriented, integrative",
+        stabilityMethod: "Synthesis, pattern-linking, big-picture coherence",
+        overloadRisk: "Over-meaning, abstraction, taking in too many layers at once",
+        plainRead: "This system stabilizes by making the scattered field coherent. Overload happens when there are too many pieces to integrate."
+      },
+      diffused: {
+        name: "Diffused",
+        display: "Harmonic-Diffused",
+        coreFunction: "Signal spreads before it forms.",
+        signalQuality: "Porous, atmospheric, impressionistic, subtle",
+        stabilityMethod: "Soft focus, spaciousness, gentle pacing, wide reception",
+        overloadRisk: "Fog, overwhelm, boundary loss, unclear direction",
+        plainRead: "This system stabilizes by receiving widely before defining. Overload happens when the field is too dense or too demanding."
+      },
+      regulated: {
+        name: "Regulated",
+        display: "Harmonic-Regulated",
+        coreFunction: "Signal stabilizes through pacing.",
+        signalQuality: "Measured, paced, controlled, load-aware",
+        stabilityMethod: "Timing, containment, emotional management, load control",
+        overloadRisk: "Over-control, bottlenecking, emotional restriction, fear of disorder",
+        plainRead: "This system stabilizes by pacing the signal until it becomes manageable. Overload happens when the system tries to control too much for too long."
+      }
+    };
 
     function clamp(v, min, max){
       return Math.max(min, Math.min(max, v));
@@ -691,6 +1013,390 @@
       if (!el) return;
       const pct = clamp((safeNum(value) / max) * 100, 0, 100);
       el.style.width = pct + "%";
+    }
+
+    function topScore(scores, excludeKeys = []){
+      const excluded = new Set(excludeKeys);
+      return Object.entries(scores || {})
+        .filter(([key]) => !excluded.has(key))
+        .sort((a, b) => safeNum(b[1]) - safeNum(a[1]))[0]?.[0] || "structured";
+    }
+
+    function secondTopScore(scores, firstKey){
+      return topScore(scores, [firstKey]);
+    }
+
+    function scoreBand(value){
+      const v = safeNum(value);
+      if (v >= 1.2) return "High";
+      if (v >= 0.78) return "Moderate";
+      return "Low";
+    }
+
+    function weightedSum(items){
+      return items.reduce((sum, item) => sum + (safeNum(item.value) * safeNum(item.weight, 1)), 0);
+    }
+
+    function calculateHarmonicProfile(data){
+      const state = data?.state || {};
+      const baselineState = data?.baselineState || {};
+      const planetary = data?.planetary || {};
+      const environment = data?.environment || {};
+      const timing = data?.timing || {};
+      const flags = data?.flags || {};
+
+      const sun = safeNum(planetary.sun);
+      const moon = safeNum(planetary.moon);
+      const mercury = safeNum(planetary.mercury);
+      const venus = safeNum(planetary.venus);
+      const mars = safeNum(planetary.mars);
+      const jupiter = safeNum(planetary.jupiter);
+      const saturn = safeNum(planetary.saturn);
+      const uranus = safeNum(planetary.uranus);
+      const neptune = safeNum(planetary.neptune);
+      const pluto = safeNum(planetary.pluto);
+      const asc = safeNum(planetary.asc);
+      const mc = safeNum(planetary.mc);
+
+      const tMoon = safeNum(planetary.transitMoon);
+      const tMercury = safeNum(planetary.transitMercury);
+      const tVenus = safeNum(planetary.transitVenus);
+      const tMars = safeNum(planetary.transitMars);
+      const tJupiter = safeNum(planetary.transitJupiter);
+      const tSaturn = safeNum(planetary.transitSaturn);
+      const tUranus = safeNum(planetary.transitUranus);
+      const tNeptune = safeNum(planetary.transitNeptune);
+      const tPluto = safeNum(planetary.transitPluto);
+
+      const strain = safeNum(state.strain);
+      const baselineStrain = safeNum(baselineState.strain);
+      const regulation = safeNum(state.regulation);
+      const effectiveLoad = safeNum(state.effectiveLoad);
+      const timingPressure = safeNum(timing.timingPressure);
+      const environmentalLoad = safeNum(environment.environmentalLoad);
+
+      const baselineScores = {
+        structured: weightedSum([
+          { value: saturn, weight: 1.35 },
+          { value: mercury, weight: 1.15 },
+          { value: mc, weight: 0.75 },
+          { value: sun, weight: 0.35 }
+        ]),
+        contained: weightedSum([
+          { value: moon, weight: 1.10 },
+          { value: saturn, weight: 0.90 },
+          { value: neptune, weight: 0.40 },
+          { value: baselineStrain, weight: 0.35 }
+        ]),
+        chaotic: weightedSum([
+          { value: uranus, weight: 1.25 },
+          { value: mars, weight: 1.00 },
+          { value: neptune, weight: 0.40 },
+          { value: asc, weight: 0.35 }
+        ]),
+        relational: weightedSum([
+          { value: venus, weight: 1.25 },
+          { value: moon, weight: 1.00 },
+          { value: mercury, weight: 0.35 }
+        ]),
+        threshold: weightedSum([
+          { value: mars, weight: 1.15 },
+          { value: uranus, weight: 0.95 },
+          { value: pluto, weight: 0.65 },
+          { value: asc, weight: 0.55 },
+          { value: mc, weight: 0.45 }
+        ]),
+        reconstructive: weightedSum([
+          { value: pluto, weight: 1.35 },
+          { value: saturn, weight: 0.85 },
+          { value: baselineStrain, weight: 0.70 },
+          { value: effectiveLoad, weight: 0.25 }
+        ]),
+        integrative: weightedSum([
+          { value: jupiter, weight: 1.10 },
+          { value: neptune, weight: 0.85 },
+          { value: moon, weight: 0.55 },
+          { value: mercury, weight: 0.35 }
+        ]),
+        diffused: weightedSum([
+          { value: neptune, weight: 1.35 },
+          { value: moon, weight: 0.85 },
+          { value: jupiter, weight: 0.35 },
+          { value: baselineStrain, weight: 0.35 }
+        ]),
+        regulated: weightedSum([
+          { value: saturn, weight: 1.15 },
+          { value: mercury, weight: 0.85 },
+          { value: venus, weight: 0.75 },
+          { value: regulation, weight: 0.50 }
+        ])
+      };
+
+      const currentFieldScores = {
+        structured: weightedSum([
+          { value: tSaturn, weight: 1.10 },
+          { value: tMercury, weight: 0.85 },
+          { value: mc, weight: 0.35 }
+        ]),
+        contained: weightedSum([
+          { value: tMoon, weight: 0.95 },
+          { value: tSaturn, weight: 0.70 },
+          { value: tNeptune, weight: 0.40 }
+        ]),
+        chaotic: weightedSum([
+          { value: tUranus, weight: 1.20 },
+          { value: tMars, weight: 1.00 },
+          { value: environmentalLoad, weight: 0.60 }
+        ]),
+        relational: weightedSum([
+          { value: tVenus, weight: 1.10 },
+          { value: tMoon, weight: 0.85 },
+          { value: tMercury, weight: 0.30 }
+        ]),
+        threshold: weightedSum([
+          { value: tMars, weight: 1.05 },
+          { value: tUranus, weight: 0.90 },
+          { value: timingPressure, weight: 0.90 },
+          { value: tPluto, weight: 0.45 }
+        ]),
+        reconstructive: weightedSum([
+          { value: tPluto, weight: 1.15 },
+          { value: tSaturn, weight: 0.75 },
+          { value: strain, weight: 0.75 },
+          { value: flags.plutoRewrite ? 1 : 0, weight: 0.80 }
+        ]),
+        integrative: weightedSum([
+          { value: tJupiter, weight: 1.00 },
+          { value: tNeptune, weight: 0.75 },
+          { value: tMoon, weight: 0.45 }
+        ]),
+        diffused: weightedSum([
+          { value: tNeptune, weight: 1.25 },
+          { value: tMoon, weight: 0.65 },
+          { value: environmentalLoad, weight: 0.70 }
+        ]),
+        regulated: weightedSum([
+          { value: tSaturn, weight: 1.00 },
+          { value: tMercury, weight: 0.85 },
+          { value: tVenus, weight: 0.70 },
+          { value: regulation, weight: 0.35 }
+        ])
+      };
+
+      const distortionScores = {
+        structured: Math.max(baselineScores.structured * 0.35, regulation * 0.8),
+        contained: (moon * 0.8) + (saturn * 0.55) + (strain * 0.55),
+        chaotic: (uranus * 0.9) + (mars * 0.8) + (environmentalLoad * 0.75),
+        relational: (venus * 0.65) + (moon * 0.75) + (strain * 0.45),
+        threshold: (mars * 0.75) + (uranus * 0.75) + (timingPressure * 0.85),
+        reconstructive: (pluto * 0.95) + (effectiveLoad * 0.75) + (strain * 0.65),
+        integrative: (jupiter * 0.55) + (neptune * 0.75) + (strain * 0.45),
+        diffused: (neptune * 1.05) + (environmentalLoad * 0.75) + (strain * 0.55),
+        regulated: (saturn * 0.85) + (regulation * 0.70) + (strain * 0.35)
+      };
+
+      const primaryKey = topScore(baselineScores);
+      const supportKey = secondTopScore(baselineScores, primaryKey);
+      const distortionKey = topScore(distortionScores);
+      const todayKey = topScore(currentFieldScores);
+
+      const primary = HARMONICS[primaryKey];
+      const support = HARMONICS[supportKey];
+      const distortion = HARMONICS[distortionKey];
+      const today = HARMONICS[todayKey];
+
+      const fieldPressure = Math.max(strain, environmentalLoad, timingPressure);
+      const weather = `${primary.name} baseline × ${today.name} field`;
+
+      return {
+        primaryKey,
+        supportKey,
+        distortionKey,
+        todayKey,
+        primary,
+        support,
+        distortion,
+        today,
+        weather,
+        fieldPressure,
+        fieldPressureBand: scoreBand(fieldPressure),
+        baselineScores,
+        currentFieldScores,
+        distortionScores,
+        daily: buildDailyGuidance(primaryKey, todayKey, distortionKey, fieldPressure)
+      };
+    }
+
+    function buildDailyGuidance(primaryKey, todayKey, distortionKey, fieldPressure){
+      const primary = HARMONICS[primaryKey];
+      const today = HARMONICS[todayKey];
+      const distortion = HARMONICS[distortionKey];
+      const pressureBand = scoreBand(fieldPressure);
+
+      const combo = `${primaryKey}_${todayKey}`;
+      const fallback = {
+        title: `${primary.name} baseline × ${today.name} field`,
+        read: `Today may make your ${primary.name.toLowerCase()} pattern meet a ${today.name.toLowerCase()} field. Let the day shape your pace without forcing the whole system to resolve at once.`,
+        lean: "Work with the clearest part of the pattern first.",
+        watch: `Overusing the ${distortion.name.toLowerCase()} pathway when pressure rises.`,
+        move: "Choose one clean adjustment and let it be enough for now.",
+        returnCue: "Come back to the simplest true signal before adding more."
+      };
+
+      const library = {
+        structured_contained: {
+          read: "Today may pull you inward even though part of you wants clarity. This is better for shaping one private piece than trying to explain the whole field outwardly.",
+          lean: "Private refinement, simple structure, and unfinished work staying protected.",
+          watch: "Forcing clarity too soon or getting frustrated because the words are not ready yet.",
+          move: "Finish one small piece instead of organizing the whole system.",
+          returnCue: "Name the real pressure point, then step away before it becomes the whole field."
+        },
+        structured_chaotic: {
+          read: "Your mind may try to organize every signal at once. The field may feel louder than your container wants it to be.",
+          lean: "Catch one useful thread and give it a container.",
+          watch: "Chasing every signal just because it feels meaningful.",
+          move: "Write down the one pattern that actually helps today.",
+          returnCue: "Return to the structure that makes the pressure usable."
+        },
+        structured_relational: {
+          read: "Clarity may come through contact today. You may not need to explain the whole system before letting someone meet the simple version.",
+          lean: "Simple language, honest contact, and one clear sentence.",
+          watch: "Over-explaining before connection has actually formed.",
+          move: "Say the smaller true thing first.",
+          returnCue: "Let contact test the structure instead of perfecting it alone."
+        },
+        structured_diffused: {
+          read: "The field may feel foggier than your system prefers. You may want clean structure before the signal is ready to fully define itself.",
+          lean: "Soft focus, one sentence, one boundary, one workable frame.",
+          watch: "Treating fog as failure instead of early formation.",
+          move: "Give the atmosphere a simple name.",
+          returnCue: "Come back to one clear line and let the rest stay blurry."
+        },
+        contained_chaotic: {
+          read: "The day may feel louder than your inner field wants. Protect your signal without disappearing completely.",
+          lean: "Lower stimulation and choose controlled movement.",
+          watch: "Withdrawing so far that the pressure has nowhere to move.",
+          move: "Release charge through one safe action.",
+          returnCue: "Give the inner field privacy, then let one small signal out."
+        },
+        contained_structured: {
+          read: "Today can help private pressure find form. You do not need to reveal everything; you only need one stronger container.",
+          lean: "Quiet structure, protected planning, and simple order.",
+          watch: "Using structure to hide instead of support expression.",
+          move: "Build one private frame for what you are carrying.",
+          returnCue: "Let the container make expression safer."
+        },
+        chaotic_regulated: {
+          read: "The day may slow you down. Do not fight the container. It may help your charge become more useful.",
+          lean: "Channeling energy into paced action.",
+          watch: "Mistaking regulation for restriction.",
+          move: "Put the voltage into one timed task.",
+          returnCue: "Let rhythm carry the charge."
+        },
+        chaotic_structured: {
+          read: "Movement wants a frame today. The charge is not wrong; it just needs somewhere useful to go.",
+          lean: "Turning disruption into one workable structure.",
+          watch: "Breaking the frame before it has a chance to help.",
+          move: "Choose one durable action and complete it.",
+          returnCue: "Give the spark a track instead of letting it scatter."
+        },
+        relational_diffused: {
+          read: "You may absorb more from others than you realize. The field may be subtle, emotional, or hard to separate.",
+          lean: "Checking what is actually yours before responding.",
+          watch: "Over-attunement and blurred boundaries.",
+          move: "Name one feeling that belongs to you and one that may belong to the field.",
+          returnCue: "Return to your own center before repairing the room."
+        },
+        relational_threshold: {
+          read: "A connection may reach a decision edge. Do not chase closeness. Name the real crossing.",
+          lean: "Honest timing, clean contact, and direct but paced movement.",
+          watch: "Reacting to distance as if it means the bond is failing.",
+          move: "Ask what actually needs to shift.",
+          returnCue: "Let contact be honest before trying to restore harmony."
+        },
+        threshold_structured: {
+          read: "The edge needs a plan. You may feel ready to cross, but the next step still needs a workable shape.",
+          lean: "Building the next step before forcing the crossing.",
+          watch: "Treating urgency as proof that the door is open.",
+          move: "Write the next move in one concrete sentence.",
+          returnCue: "Let structure pace the crossing."
+        },
+        threshold_release: {
+          read: "Not every door needs to stay open. Some crossings complete by letting the old edge close.",
+          lean: "Closure, release, and clean endings.",
+          watch: "Keeping a threshold active after the moment has passed.",
+          move: "Close one loop that no longer needs your energy.",
+          returnCue: "Return by releasing the door that already served its purpose."
+        },
+        reconstructive_regulated: {
+          read: "Something deeper may need repair, but not everything needs to become a crisis. Let regulation make the rebuild smaller and more honest.",
+          lean: "One real adjustment instead of a full reconstruction.",
+          watch: "Managing symptoms while avoiding the actual weak point.",
+          move: "Repair one thing that will reduce future load.",
+          returnCue: "Let the system feel what is already stable."
+        },
+        reconstructive_structured: {
+          read: "Repair may want form today. This is useful for rebuilding one load-bearing piece without turning every strain into a full overhaul.",
+          lean: "Durable repair, grounded structure, and honest limits.",
+          watch: "Making the new form too heavy to live inside.",
+          move: "Strengthen the one frame that actually matters.",
+          returnCue: "Stop rebuilding once the structure can hold."
+        },
+        integrative_chaotic: {
+          read: "Everything may feel meaningful today. Choose the pattern that actually helps instead of trying to integrate every signal.",
+          lean: "Useful synthesis, not total synthesis.",
+          watch: "Over-meaning and taking in too many layers.",
+          move: "Pick the one thread that changes how you move today.",
+          returnCue: "Let the rest remain unfinished without carrying it."
+        },
+        integrative_release: {
+          read: "Let the story simplify. You do not have to carry every fragment forward.",
+          lean: "Completion, simplification, and clean release.",
+          watch: "Holding old pieces because they still feel meaningful.",
+          move: "Release one fragment that no longer belongs to the current whole.",
+          returnCue: "Return to the larger pattern, not every leftover detail."
+        },
+        diffused_threshold: {
+          read: "The field may ask for a choice before everything feels clear. You do not need perfect definition to choose one boundary.",
+          lean: "One direction, one edge, one practical choice.",
+          watch: "Fog turning into avoidance.",
+          move: "Pick one boundary or direction and let it simplify the field.",
+          returnCue: "Come back to the choice that gives your signal shape."
+        },
+        diffused_structured: {
+          read: "The atmosphere may be wide, but today can help it become clearer. One clean line is enough.",
+          lean: "Gentle structure and simple definition.",
+          watch: "Trying to organize the entire fog.",
+          move: "Give the atmosphere a sentence.",
+          returnCue: "Let one clear line hold the wider field."
+        },
+        regulated_chaotic: {
+          read: "The day may feel disorderly. Slow the signal without freezing it.",
+          lean: "Pacing, containment, and controlled release.",
+          watch: "Over-control when the field gets loud.",
+          move: "Let one piece of movement happen inside a clear limit.",
+          returnCue: "Regulate the load, not the life out of it."
+        },
+        regulated_reconstructive: {
+          read: "Something deeper may need repair. Do not only manage symptoms; allow one honest adjustment.",
+          lean: "Practical repair with steady pacing.",
+          watch: "Bottlenecking pressure until the system has to force change.",
+          move: "Name the one adjustment that would reduce the hidden load.",
+          returnCue: "Let regulation support change instead of preventing it."
+        }
+      };
+
+      const match = library[combo] || fallback;
+
+      return {
+        title: `${primary.name} baseline × ${today.name} field`,
+        read: match.read || fallback.read,
+        lean: match.lean || fallback.lean,
+        watch: match.watch || fallback.watch,
+        move: match.move || fallback.move,
+        returnCue: match.returnCue || fallback.returnCue,
+        pressureLine: `${pressureBand} field pressure. Move with the day, but keep the choice in your hands.`
+      };
     }
 
     function setHeroGlow(modeText, fog, volatility){
@@ -784,6 +1490,34 @@
       }
 
       return `${front}. Current mode is ${String(modeText || "Regulated").toLowerCase()}.`;
+    }
+
+    function renderHarmonicLayer(data){
+      const profile = calculateHarmonicProfile(data);
+
+      setText("primaryHarmonic", `Primary Harmonic: ${profile.primary.display}`);
+      setText("supportHarmonic", profile.support.display);
+      setText("distortionHarmonic", profile.distortion.display);
+      setText("signalQuality", profile.primary.signalQuality);
+      setText("stabilityMethod", profile.primary.stabilityMethod);
+      setText("overloadRisk", profile.primary.overloadRisk);
+      setText("harmonicPlainRead", profile.primary.plainRead);
+
+      setText("todayFieldHarmonic", `Today’s Field: ${profile.today.display}`);
+      setText("todayFieldPlainRead", profile.today.plainRead);
+      setText("systemWeather", profile.weather);
+      setText("fieldPressureRead", `${profile.fieldPressureBand} field pressure (${fmt(profile.fieldPressure)}).`);
+      setText("currentFieldTone", profile.today.coreFunction);
+
+      setText("dailyGuidanceTitle", profile.daily.title);
+      setText("dailyWeatherPill", `System Weather: ${profile.weather}`);
+      setText("dailyRead", profile.daily.read);
+      setText("leanInto", profile.daily.lean);
+      setText("watchFor", profile.daily.watch);
+      setText("oneGoodMove", profile.daily.move);
+      setText("returnCue", profile.daily.returnCue);
+
+      return profile;
     }
 
     function updateUI(data){
@@ -910,6 +1644,8 @@
           venus
         })
       );
+
+      renderHarmonicLayer(data);
 
       setText("envBand", envBandFromMode(environment.environmentMode));
       setText("forecastBand", forecastBandFromState(forecastState));
