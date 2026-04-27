@@ -392,6 +392,135 @@
       letter-spacing:.04em;
     }
 
+    .libraryShell{
+      border:1px solid rgba(103,193,255,.16);
+      border-radius:20px;
+      background:
+        linear-gradient(180deg,rgba(15,27,56,.72),rgba(9,20,47,.58));
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .libraryShell summary{
+      list-style:none;
+      cursor:pointer;
+      padding:18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .libraryShell summary::-webkit-details-marker{
+      display:none;
+    }
+
+    .libraryTitleWrap{
+      display:grid;
+      gap:4px;
+    }
+
+    .libraryTitle{
+      margin:0;
+      color:var(--text);
+      font-size:20px;
+      font-weight:900;
+      line-height:1.2;
+    }
+
+    .librarySubtitle{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .libraryToggle{
+      flex:0 0 auto;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:34px;
+      padding:0 12px;
+      border-radius:999px;
+      border:1px solid rgba(103,193,255,.18);
+      background:rgba(103,193,255,.07);
+      color:var(--blue);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .libraryShell[open] .libraryToggle::after{
+      content:" Close";
+    }
+
+    .libraryShell:not([open]) .libraryToggle::after{
+      content:" Open";
+    }
+
+    .libraryBody{
+      border-top:1px solid rgba(255,255,255,.06);
+      padding:18px;
+      display:grid;
+      gap:14px;
+    }
+
+    .libraryNote{
+      border:1px solid rgba(216,184,76,.18);
+      border-radius:16px;
+      padding:14px;
+      background:rgba(216,184,76,.07);
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.58;
+    }
+
+    .libraryNote strong{
+      color:var(--gold);
+    }
+
+    .harmonicLibraryGrid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+    }
+
+    .harmonicLibraryCard{
+      border:1px solid rgba(255,255,255,.075);
+      border-radius:16px;
+      padding:14px;
+      background:rgba(255,255,255,.03);
+      display:grid;
+      gap:8px;
+      align-content:start;
+      min-height:220px;
+    }
+
+    .harmonicLibraryCard h3{
+      margin:0;
+      color:var(--text);
+      font-size:17px;
+      line-height:1.2;
+    }
+
+    .harmonicLibraryCard p{
+      margin:0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.52;
+    }
+
+    .libraryMiniLabel{
+      color:var(--blue);
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      margin-bottom:-2px;
+    }
+
     .engineDetails{
       border:1px solid rgba(42,60,105,.75);
       border-radius:20px;
@@ -676,16 +805,24 @@
       .profileGrid{grid-template-columns:1fr}
       .profileBlock.wide,
       .profileBlock.full{grid-column:auto}
+      .harmonicLibraryGrid{grid-template-columns:1fr}
     }
 
     @media (max-width: 720px){
       .wrap{padding:14px}
       .hero h1{font-size:36px}
-      .panel,.premiumCard,.profileCard,.engineDetails{border-radius:16px}
+      .panel,.premiumCard,.profileCard,.libraryShell,.engineDetails{border-radius:16px}
       .premiumCard{padding:18px}
       .weatherLine{font-size:28px}
       .todayRead{font-size:15px}
       .profileHeader{display:grid}
+      .libraryShell summary{
+        display:grid;
+        align-items:start;
+      }
+      .libraryToggle{
+        width:fit-content;
+      }
     }
   </style>
 </head>
@@ -843,6 +980,26 @@
             </div>
           </div>
         </section>
+
+        <details class="libraryShell">
+          <summary>
+            <div class="libraryTitleWrap">
+              <h2 class="libraryTitle">Harmonic Library</h2>
+              <p class="librarySubtitle">
+                A quick reference for the 9 harmonic types. Your result appears above; this library explains the wider system.
+              </p>
+            </div>
+            <span class="libraryToggle">Library</span>
+          </summary>
+
+          <div class="libraryBody">
+            <div class="libraryNote">
+              <strong>Expanded layer:</strong> full harmonic library, 81 daily interactions, saved reads, and share cards can become part of Lucy.OS Pro later. V1 keeps the main result first, the library second, and engine details last.
+            </div>
+
+            <div class="harmonicLibraryGrid" id="harmonicLibraryGrid"></div>
+          </div>
+        </details>
 
         <section class="engineDetails">
           <div class="engineHeader">
@@ -1107,6 +1264,46 @@
       if (!el) return;
       const pct = clamp((safeNum(value) / max) * 100, 0, 100);
       el.style.width = pct + "%";
+    }
+
+    function escapeHtml(value){
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function renderHarmonicLibrary(){
+      const mount = document.getElementById("harmonicLibraryGrid");
+      if (!mount) return;
+
+      mount.innerHTML = Object.values(HARMONICS).map(harmonic => `
+        <article class="harmonicLibraryCard">
+          <h3>${escapeHtml(harmonic.label)}</h3>
+
+          <div>
+            <div class="libraryMiniLabel">Plain Read</div>
+            <p>${escapeHtml(harmonic.plainRead)}</p>
+          </div>
+
+          <div>
+            <div class="libraryMiniLabel">Signal Quality</div>
+            <p>${escapeHtml(harmonic.signalQuality)}</p>
+          </div>
+
+          <div>
+            <div class="libraryMiniLabel">Stability Method</div>
+            <p>${escapeHtml(harmonic.stabilityMethod)}</p>
+          </div>
+
+          <div>
+            <div class="libraryMiniLabel">Overload Risk</div>
+            <p>${escapeHtml(harmonic.overloadRisk)}</p>
+          </div>
+        </article>
+      `).join("");
     }
 
     function sortedScoreKeys(scores){
@@ -1756,6 +1953,7 @@
     document.getElementById("ampm").value = "AM";
     document.getElementById("location").value = "Cuero, TX";
 
+    renderHarmonicLibrary();
     calculate();
   </script>
 </body>
