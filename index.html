@@ -4,11 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lucy.OS</title>
+
   <style>
     :root{
       --bg:#09142f;
       --panel:#0f1b38;
       --panel2:#132347;
+      --panel3:#0b1734;
       --line:#2a3c69;
       --lineSoft:rgba(255,255,255,.06);
       --text:#f4f7ff;
@@ -20,15 +22,21 @@
       --violet:#b06cff;
       --gold:#d8b84c;
       --teal:#6fe0d3;
+      --shadow:0 18px 52px rgba(0,0,0,.28);
     }
 
     *{box-sizing:border-box}
+
+    html{
+      scroll-behavior:smooth;
+    }
 
     body{
       margin:0;
       font-family:Arial, sans-serif;
       background:
-        radial-gradient(circle at 50% 0%, rgba(103,193,255,.06), transparent 32%),
+        radial-gradient(circle at 50% 0%, rgba(103,193,255,.08), transparent 32%),
+        radial-gradient(circle at 80% 12%, rgba(176,108,255,.05), transparent 30%),
         linear-gradient(180deg,#071126 0%, #09142f 100%);
       color:var(--text);
     }
@@ -43,8 +51,13 @@
       position:relative;
       text-align:center;
       margin-bottom:22px;
-      padding:18px 18px 14px;
+      padding:22px 18px 18px;
       overflow:hidden;
+      border:1px solid rgba(103,193,255,.12);
+      border-radius:22px;
+      background:
+        linear-gradient(180deg,rgba(15,27,56,.74),rgba(9,20,47,.32));
+      box-shadow:var(--shadow);
     }
 
     .heroGlow{
@@ -60,7 +73,7 @@
     .hero h1{
       position:relative;
       margin:0;
-      font-size:40px;
+      font-size:42px;
       letter-spacing:.4px;
       z-index:1;
     }
@@ -91,6 +104,11 @@
     .panel h2{
       margin:0 0 12px;
       font-size:18px;
+    }
+
+    .inputPanel{
+      position:sticky;
+      top:18px;
     }
 
     label{
@@ -177,6 +195,229 @@
     .err{
       color:#ff9c9c;
       font-weight:700;
+    }
+
+    .mainStack{
+      display:grid;
+      gap:16px;
+    }
+
+    .premiumCard{
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(103,193,255,.24);
+      border-radius:22px;
+      padding:22px;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(103,193,255,.13), transparent 36%),
+        radial-gradient(circle at 86% 20%, rgba(216,184,76,.10), transparent 32%),
+        linear-gradient(180deg,rgba(16,31,64,.98),rgba(12,24,50,.96));
+      box-shadow:
+        0 20px 60px rgba(0,0,0,.30),
+        inset 0 0 0 1px rgba(255,255,255,.025);
+    }
+
+    .premiumCard::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:
+        linear-gradient(135deg,rgba(255,255,255,.035),transparent 38%),
+        radial-gradient(circle at 50% 110%, rgba(103,193,255,.08), transparent 42%);
+    }
+
+    .cardContent{
+      position:relative;
+      z-index:1;
+    }
+
+    .kicker{
+      margin:0 0 8px;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:var(--blue);
+    }
+
+    .weatherLine{
+      margin:0;
+      font-size:clamp(26px,4vw,42px);
+      line-height:1.03;
+      font-weight:900;
+      letter-spacing:-.035em;
+      color:var(--text);
+    }
+
+    .weatherLine span{
+      color:var(--gold);
+    }
+
+    .todayRead{
+      margin:14px 0 0;
+      max-width:850px;
+      color:var(--text);
+      font-size:16px;
+      line-height:1.68;
+    }
+
+    .guidanceGrid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .guidanceBlock{
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:16px;
+      padding:14px;
+      background:rgba(255,255,255,.035);
+    }
+
+    .guidanceBlock.full{
+      grid-column:1 / -1;
+      background:rgba(103,193,255,.06);
+      border-color:rgba(103,193,255,.18);
+    }
+
+    .guidanceLabel{
+      color:var(--muted);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.09em;
+      text-transform:uppercase;
+      margin-bottom:6px;
+    }
+
+    .guidanceText{
+      color:var(--text);
+      font-size:14px;
+      line-height:1.58;
+    }
+
+    .profileCard{
+      border:1px solid rgba(103,193,255,.18);
+      border-radius:20px;
+      padding:18px;
+      background:
+        linear-gradient(180deg,rgba(15,27,56,.96),rgba(13,25,52,.94));
+      box-shadow:var(--shadow);
+    }
+
+    .profileHeader{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:14px;
+    }
+
+    .profileHeader h2{
+      margin:0;
+      font-size:20px;
+    }
+
+    .profileHeader p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .profileGrid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+    }
+
+    .profileBlock{
+      border:1px solid rgba(255,255,255,.075);
+      border-radius:16px;
+      padding:14px;
+      background:rgba(255,255,255,.03);
+      min-height:110px;
+    }
+
+    .profileBlock.wide{
+      grid-column:span 2;
+    }
+
+    .profileBlock.full{
+      grid-column:1 / -1;
+    }
+
+    .profileLabel{
+      color:var(--muted);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.09em;
+      text-transform:uppercase;
+      margin-bottom:7px;
+    }
+
+    .profileValue{
+      color:var(--text);
+      font-size:18px;
+      line-height:1.25;
+      font-weight:900;
+    }
+
+    .profileDesc{
+      color:var(--muted);
+      margin-top:8px;
+      font-size:12px;
+      line-height:1.48;
+    }
+
+    .chipRow{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      min-height:30px;
+      padding:0 10px;
+      border-radius:999px;
+      border:1px solid rgba(103,193,255,.16);
+      background:rgba(103,193,255,.07);
+      color:var(--blue);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.04em;
+    }
+
+    .engineDetails{
+      border:1px solid rgba(42,60,105,.75);
+      border-radius:20px;
+      padding:16px;
+      background:rgba(6,15,34,.40);
+    }
+
+    .engineHeader{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:14px;
+    }
+
+    .engineHeader h2{
+      margin:0;
+      font-size:18px;
+      color:var(--text);
+    }
+
+    .engineHeader p{
+      margin:4px 0 0;
+      color:var(--muted2);
+      font-size:12px;
+      line-height:1.45;
     }
 
     .heroStats{
@@ -376,10 +617,6 @@
     .b-violet{background:rgba(176,108,255,.08); color:#cab1ff; border-color:rgba(176,108,255,.14)}
 
     .softMetric td{
-      opacity:.70;
-    }
-
-    .softMetric .badge{
       opacity:.82;
     }
 
@@ -429,145 +666,40 @@
       border-color:rgba(103,193,255,.16);
     }
 
-    .harmonicPanel,
-    .dailyPanel{
-      margin-bottom:16px;
-      background:rgba(255,255,255,.025);
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:18px;
-    }
-
-    .harmonicGrid{
-      display:grid;
-      grid-template-columns:repeat(3, minmax(0, 1fr));
-      gap:12px;
-      margin-bottom:14px;
-    }
-
-    .harmonicTile{
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:rgba(255,255,255,.025);
-      padding:14px;
-      min-height:92px;
-    }
-
-    .harmonicTile .tileLabel{
-      color:var(--muted);
-      font-size:11px;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      font-weight:800;
-      margin-bottom:8px;
-    }
-
-    .harmonicTile .tileValue{
-      color:var(--text);
-      font-size:18px;
-      line-height:1.16;
-      font-weight:800;
-    }
-
-    .harmonicTile .tileSub{
-      margin-top:8px;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.4;
-    }
-
-    .weatherLine{
-      border:1px solid rgba(103,193,255,.16);
-      background:rgba(103,193,255,.06);
-      border-radius:14px;
-      padding:14px;
-      margin:12px 0 14px;
-      color:var(--text);
-      font-size:16px;
-      line-height:1.4;
-      font-weight:800;
-    }
-
-    .harmonicRows{
-      border-top:1px solid var(--lineSoft);
-    }
-
-    .harmonicRow{
-      display:grid;
-      grid-template-columns:190px 1fr;
-      gap:12px;
-      padding:12px 0;
-      border-bottom:1px solid var(--lineSoft);
-      align-items:start;
-    }
-
-    .harmonicRow strong{
-      font-size:13px;
-      color:var(--text);
-    }
-
-    .harmonicRow span{
-      color:var(--muted);
-      line-height:1.55;
-      font-size:13px;
-    }
-
-    .dailyRead{
-      color:var(--text);
-      font-size:15px;
-      line-height:1.65;
-      margin:0 0 14px;
-    }
-
-    .dailyGrid{
-      display:grid;
-      grid-template-columns:repeat(2, minmax(0, 1fr));
-      gap:12px;
-    }
-
-    .dailyItem{
-      border:1px solid var(--lineSoft);
-      background:rgba(255,255,255,.018);
-      border-radius:14px;
-      padding:13px;
-    }
-
-    .dailyItem strong{
-      display:block;
-      color:var(--muted);
-      font-size:11px;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      margin-bottom:7px;
-    }
-
-    .dailyItem span{
-      color:var(--text);
-      line-height:1.52;
-      font-size:13px;
-    }
-
     @media (max-width: 1120px){
       .grid{grid-template-columns:1fr}
+      .inputPanel{position:static}
       .heroStats{grid-template-columns:1fr}
       .midRow{grid-template-columns:1fr}
       .bottomGrid{grid-template-columns:1fr}
-      .harmonicGrid{grid-template-columns:1fr}
-      .harmonicRow{grid-template-columns:1fr}
-      .dailyGrid{grid-template-columns:1fr}
+      .guidanceGrid{grid-template-columns:1fr}
+      .profileGrid{grid-template-columns:1fr}
+      .profileBlock.wide,
+      .profileBlock.full{grid-column:auto}
+    }
+
+    @media (max-width: 720px){
+      .wrap{padding:14px}
+      .hero h1{font-size:36px}
+      .panel,.premiumCard,.profileCard,.engineDetails{border-radius:16px}
+      .premiumCard{padding:18px}
+      .weatherLine{font-size:28px}
+      .todayRead{font-size:15px}
+      .profileHeader{display:grid}
     }
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <div class="hero">
       <div class="heroGlow" id="heroGlow"></div>
       <h1>Lucy.OS</h1>
-      <p>Astrology-informed system weather</p>
+      <p>Personal field guidance inside the live timing field</p>
     </div>
 
     <div class="grid">
-      <div class="panel">
+      <div class="panel inputPanel">
         <h2>Inputs</h2>
 
         <label>Date of Birth</label>
@@ -614,242 +746,271 @@
         </div>
       </div>
 
-      <div class="panel">
-        <div class="heroStats">
-          <div class="stat">
-            <div class="label">Capacity</div>
-            <div class="big" id="capacityScore">0.00</div>
-            <div class="sub" id="capacityLabel">Available system bandwidth</div>
-            <div class="meter meter-capacity"><span id="capacityBar"></span></div>
-          </div>
+      <div class="mainStack">
+        <section class="premiumCard">
+          <div class="cardContent">
+            <p class="kicker">Today’s System Weather</p>
+            <h2 class="weatherLine" id="systemWeatherLine">
+              Structured baseline <span>×</span> Field loading
+            </h2>
 
-          <div class="stat">
-            <div class="label">Strain</div>
-            <div class="big" id="strainScore">0.00</div>
-            <div class="sub" id="strainLabel">Current active load</div>
-            <div class="meter meter-strain"><span id="strainBar"></span></div>
-          </div>
+            <p class="todayRead" id="dailyTodayRead">
+              Waiting for chart calculation. Lucy.OS will read your baseline harmonic inside the current field.
+            </p>
 
-          <div class="stat">
-            <div class="label">State</div>
-            <div class="big" id="stateText">Regulated</div>
-            <div class="sub" id="stateLabel">Stable with manageable load</div>
-            <div class="stateBadge" id="stateBadge">Regulated</div>
-          </div>
-        </div>
+            <div class="guidanceGrid">
+              <div class="guidanceBlock">
+                <div class="guidanceLabel">What to lean into</div>
+                <div class="guidanceText" id="dailyLeanInto">—</div>
+              </div>
 
-        <div class="midRow">
-          <div class="microCard">
-            <div class="microHeader">
-              <div class="microTitle">Forecast</div>
-            </div>
-            <div class="forecastBig" id="forecastTitle">Forecast: —</div>
-            <div class="forecastSub" id="forecastText">
-              Waiting for current field state.
-            </div>
-          </div>
+              <div class="guidanceBlock">
+                <div class="guidanceLabel">What to watch for</div>
+                <div class="guidanceText" id="dailyWatchFor">—</div>
+              </div>
 
-          <div class="microCard">
-            <div class="microHeader">
-              <div class="microTitle">Sky Data</div>
-              <div class="verifiedBadge" id="skyVerified">Verified</div>
-            </div>
-            <div class="forecastBig" id="skyDataTitle">Chart Loaded</div>
-            <div class="forecastSub" id="skyDataText">
-              Waiting for resolved birth data and ephemeris source confirmation.
-            </div>
-          </div>
-        </div>
+              <div class="guidanceBlock full">
+                <div class="guidanceLabel">One Good Move</div>
+                <div class="guidanceText" id="dailyGoodMove">—</div>
+              </div>
 
-        <section class="harmonicPanel">
-          <div class="summaryTitle">Harmonic Identity Layer</div>
-
-          <div class="harmonicGrid">
-            <div class="harmonicTile">
-              <div class="tileLabel">Primary Harmonic</div>
-              <div class="tileValue" id="primaryHarmonic">—</div>
-              <div class="tileSub">Stable natal / baseline pattern.</div>
-            </div>
-
-            <div class="harmonicTile">
-              <div class="tileLabel">Support Harmonic</div>
-              <div class="tileValue" id="supportHarmonic">—</div>
-              <div class="tileSub">Secondary stabilizer.</div>
-            </div>
-
-            <div class="harmonicTile">
-              <div class="tileLabel">Distortion Harmonic</div>
-              <div class="tileValue" id="distortionHarmonic">—</div>
-              <div class="tileSub">Overload pathway, not a flaw.</div>
-            </div>
-          </div>
-
-          <div class="weatherLine" id="systemWeather">System Weather: —</div>
-
-          <div class="harmonicRows">
-            <div class="harmonicRow">
-              <strong>Today’s Field Harmonic</strong>
-              <span id="todayFieldHarmonic">—</span>
-            </div>
-            <div class="harmonicRow">
-              <strong>Signal Quality</strong>
-              <span id="signalQuality">—</span>
-            </div>
-            <div class="harmonicRow">
-              <strong>Stability Method</strong>
-              <span id="stabilityMethod">—</span>
-            </div>
-            <div class="harmonicRow">
-              <strong>Overload Risk</strong>
-              <span id="overloadRisk">—</span>
-            </div>
-            <div class="harmonicRow">
-              <strong>Plain Read</strong>
-              <span id="harmonicPlainRead">Waiting for harmonic profile.</span>
+              <div class="guidanceBlock full">
+                <div class="guidanceLabel">Return to yourself by</div>
+                <div class="guidanceText" id="dailyReturn">—</div>
+              </div>
             </div>
           </div>
         </section>
 
-        <section class="dailyPanel">
-          <div class="summaryTitle">Daily Guidance</div>
-          <p class="dailyRead" id="dailyTodayRead">Waiting for today’s read.</p>
+        <section class="profileCard">
+          <div class="profileHeader">
+            <div>
+              <h2>Harmonic Profile</h2>
+              <p>Your baseline pattern, stabilizing support, and overload pathway. Today’s field is separate from your Primary Harmonic.</p>
+            </div>
+            <div class="chipRow">
+              <span class="chip" id="profileStateChip">Baseline</span>
+              <span class="chip" id="profileFieldChip">Field: —</span>
+            </div>
+          </div>
 
-          <div class="dailyGrid">
-            <div class="dailyItem">
-              <strong>What to lean into</strong>
-              <span id="dailyLeanInto">—</span>
+          <div class="profileGrid">
+            <div class="profileBlock">
+              <div class="profileLabel">Primary Harmonic</div>
+              <div class="profileValue" id="primaryHarmonic">—</div>
+              <div class="profileDesc">Stable baseline pattern.</div>
             </div>
 
-            <div class="dailyItem">
-              <strong>What to watch for</strong>
-              <span id="dailyWatchFor">—</span>
+            <div class="profileBlock">
+              <div class="profileLabel">Support Harmonic</div>
+              <div class="profileValue" id="supportHarmonic">—</div>
+              <div class="profileDesc">Secondary stabilizer.</div>
             </div>
 
-            <div class="dailyItem">
-              <strong>One good move</strong>
-              <span id="dailyOneMove">—</span>
+            <div class="profileBlock">
+              <div class="profileLabel">Distortion Harmonic</div>
+              <div class="profileValue" id="distortionHarmonic">—</div>
+              <div class="profileDesc">Overload pathway, not a flaw.</div>
             </div>
 
-            <div class="dailyItem">
-              <strong>Return to yourself by</strong>
-              <span id="dailyReturn">—</span>
+            <div class="profileBlock wide">
+              <div class="profileLabel">Signal Quality</div>
+              <div class="profileValue" id="signalQuality">—</div>
+              <div class="profileDesc">The texture and amount of signal your system tends to carry.</div>
+            </div>
+
+            <div class="profileBlock">
+              <div class="profileLabel">Today’s Field Harmonic</div>
+              <div class="profileValue" id="todayFieldHarmonic">—</div>
+              <div class="profileDesc">Current live field pattern.</div>
+            </div>
+
+            <div class="profileBlock wide">
+              <div class="profileLabel">Stability Method</div>
+              <div class="profileValue" id="stabilityMethod">—</div>
+              <div class="profileDesc">How your system returns toward coherence.</div>
+            </div>
+
+            <div class="profileBlock">
+              <div class="profileLabel">Overload Risk</div>
+              <div class="profileValue" id="overloadRisk">—</div>
+              <div class="profileDesc">Where strain tends to collect.</div>
+            </div>
+
+            <div class="profileBlock full">
+              <div class="profileLabel">Plain Read</div>
+              <div class="guidanceText" id="harmonicPlainRead">Waiting for harmonic profile.</div>
             </div>
           </div>
         </section>
 
-        <div class="whyCard">
-          <div class="whyTitle">Why</div>
-          <div class="whyText" id="whyText">Waiting for chart interpretation.</div>
-        </div>
-
-        <div class="summaryTitle">System Summary</div>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Metric</th>
-              <th>Value</th>
-              <th>Band</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Capacity</td>
-              <td id="capVal">0.00</td>
-              <td><span class="badge b-gold">Capacity</span></td>
-            </tr>
-            <tr>
-              <td>Amplified Load</td>
-              <td id="loadVal">0.00</td>
-              <td><span class="badge b-red">Load</span></td>
-            </tr>
-            <tr>
-              <td>Regulation</td>
-              <td id="regVal">0.00</td>
-              <td><span class="badge b-green">Regulation</span></td>
-            </tr>
-            <tr>
-              <td>Effective Load</td>
-              <td id="effVal">0.00</td>
-              <td><span class="badge b-blue">Net</span></td>
-            </tr>
-            <tr class="softMetric">
-              <td>Regulator Average</td>
-              <td id="stabilityVal">0.00</td>
-              <td><span class="badge b-violet">Derived</span></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div class="bottomGrid">
-          <div class="miniPanel">
-            <div class="summaryTitle" style="font-size:13px; margin-bottom:10px;">Active Drivers</div>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Driver</th>
-                  <th>Strength</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Primary Driver</td>
-                  <td id="primaryDriver">—</td>
-                </tr>
-                <tr>
-                  <td>Volatility (Uranus)</td>
-                  <td id="volatilityVal">0.00</td>
-                </tr>
-                <tr>
-                  <td>Fog (Neptune)</td>
-                  <td id="fogVal">0.00</td>
-                </tr>
-                <tr>
-                  <td>Activation (Mars)</td>
-                  <td id="activationVal">0.00</td>
-                </tr>
-              </tbody>
-            </table>
+        <section class="engineDetails">
+          <div class="engineHeader">
+            <div>
+              <h2>Engine Details</h2>
+              <p>Technical state, API confirmation, drivers, stabilizers, and chart debug remain visible here.</p>
+            </div>
+            <div class="metaRow" style="margin-top:0;">
+              <span class="metaPill field" id="envBand">Field: —</span>
+              <span class="metaPill forecast" id="forecastBand">Forecast: —</span>
+            </div>
           </div>
 
-          <div class="miniPanel">
-            <div class="summaryTitle" style="font-size:13px; margin-bottom:10px;">Stabilizers</div>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Regulator</th>
-                  <th>Strength</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Saturn</td>
-                  <td id="saturnVal">0.00</td>
-                </tr>
-                <tr>
-                  <td>Venus</td>
-                  <td id="venusVal">0.00</td>
-                </tr>
-                <tr>
-                  <td>Mercury</td>
-                  <td id="mercuryVal">0.00</td>
-                </tr>
-                <tr>
-                  <td>Current State</td>
-                  <td id="stateCondition">—</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="heroStats">
+            <div class="stat">
+              <div class="label">Capacity</div>
+              <div class="big" id="capacityScore">0.00</div>
+              <div class="sub" id="capacityLabel">Available system bandwidth</div>
+              <div class="meter meter-capacity"><span id="capacityBar"></span></div>
+            </div>
+
+            <div class="stat">
+              <div class="label">Strain</div>
+              <div class="big" id="strainScore">0.00</div>
+              <div class="sub" id="strainLabel">Current active load</div>
+              <div class="meter meter-strain"><span id="strainBar"></span></div>
+            </div>
+
+            <div class="stat">
+              <div class="label">State</div>
+              <div class="big" id="stateText">Regulated</div>
+              <div class="sub" id="stateLabel">Stable with manageable load</div>
+              <div class="stateBadge" id="stateBadge">Regulated</div>
+            </div>
           </div>
-        </div>
 
-        <div class="metaRow">
-          <span class="metaPill field" id="envBand">Field: —</span>
-          <span class="metaPill forecast" id="forecastBand">Forecast: —</span>
-        </div>
+          <div class="midRow">
+            <div class="microCard">
+              <div class="microHeader">
+                <div class="microTitle">Forecast</div>
+              </div>
+              <div class="forecastBig" id="forecastTitle">Forecast: —</div>
+              <div class="forecastSub" id="forecastText">
+                Waiting for forecast state.
+              </div>
+            </div>
 
-        <div class="tiny">
-          Forecast, Regulator Average, harmonic profile, and daily guidance are interpretive layers on top of the current V2.5 engine.
-        </div>
+            <div class="microCard">
+              <div class="microHeader">
+                <div class="microTitle">Sky Data</div>
+                <div class="verifiedBadge" id="skyVerified">Verified</div>
+              </div>
+              <div class="forecastBig" id="skyDataTitle">Chart Loaded</div>
+              <div class="forecastSub" id="skyDataText">
+                Waiting for resolved birth data and ephemeris source confirmation.
+              </div>
+            </div>
+          </div>
+
+          <div class="whyCard">
+            <div class="whyTitle">Why</div>
+            <div class="whyText" id="whyText">Waiting for chart interpretation.</div>
+          </div>
+
+          <div class="summaryTitle">System Summary</div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Value</th>
+                <th>Band</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Capacity</td>
+                <td id="capVal">0.00</td>
+                <td><span class="badge b-gold">Capacity</span></td>
+              </tr>
+              <tr>
+                <td>Amplified Load</td>
+                <td id="loadVal">0.00</td>
+                <td><span class="badge b-red">Load</span></td>
+              </tr>
+              <tr>
+                <td>Regulation</td>
+                <td id="regVal">0.00</td>
+                <td><span class="badge b-green">Regulation</span></td>
+              </tr>
+              <tr>
+                <td>Effective Load</td>
+                <td id="effVal">0.00</td>
+                <td><span class="badge b-blue">Net</span></td>
+              </tr>
+              <tr class="softMetric">
+                <td>Regulator Average</td>
+                <td id="stabilityVal">0.00</td>
+                <td><span class="badge b-violet">Derived</span></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="bottomGrid">
+            <div class="miniPanel">
+              <div class="summaryTitle" style="font-size:13px; margin-bottom:10px;">Active Drivers</div>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Driver</th>
+                    <th>Strength</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Primary Driver</td>
+                    <td id="primaryDriver">—</td>
+                  </tr>
+                  <tr>
+                    <td>Volatility (Uranus)</td>
+                    <td id="volatilityVal">0.00</td>
+                  </tr>
+                  <tr>
+                    <td>Fog (Neptune)</td>
+                    <td id="fogVal">0.00</td>
+                  </tr>
+                  <tr>
+                    <td>Activation (Mars)</td>
+                    <td id="activationVal">0.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="miniPanel">
+              <div class="summaryTitle" style="font-size:13px; margin-bottom:10px;">Stabilizers</div>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Regulator</th>
+                    <th>Strength</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Saturn</td>
+                    <td id="saturnVal">0.00</td>
+                  </tr>
+                  <tr>
+                    <td>Venus</td>
+                    <td id="venusVal">0.00</td>
+                  </tr>
+                  <tr>
+                    <td>Mercury</td>
+                    <td id="mercuryVal">0.00</td>
+                  </tr>
+                  <tr>
+                    <td>Current State</td>
+                    <td id="stateCondition">—</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="tiny">
+            Forecast, regulator average, harmonic routing, and why-line are interpretive layers on top of the current V2.5 engine.
+          </div>
+        </section>
       </div>
     </div>
   </div>
@@ -859,54 +1020,63 @@
 
     const HARMONICS = {
       Structured: {
+        label: "Structured",
         signalQuality: "High, coherent, pattern-seeking, structure-oriented",
         stabilityMethod: "Regulation, sequencing, naming, meaning-making",
         overloadRisk: "Too much signal before the container is finished; pressure outrunning structure",
         plainRead: "This system stabilizes by turning pressure into order. Overload happens when clarity arrives faster than the structure can hold it."
       },
       Contained: {
+        label: "Contained",
         signalQuality: "Deep, internal, cyclical, protected",
         stabilityMethod: "Withdrawal, privacy, inward processing, controlled release",
         overloadRisk: "Emotional compression; signal trapped inside; delayed expression turning into pressure buildup",
         plainRead: "This system stabilizes by pulling signal inward until it feels safe. Overload happens when too much stays unexpressed for too long."
       },
       Chaotic: {
+        label: "Chaotic",
         signalQuality: "High-voltage, mobile, catalytic, nonlinear",
         stabilityMethod: "Movement, disruption, voltage release, rapid shifts",
         overloadRisk: "Scattering, instability, shock cycles, losing continuity",
         plainRead: "This system stabilizes through motion and charge release. Overload happens when the voltage has nowhere to go."
       },
       Relational: {
+        label: "Relational",
         signalQuality: "Attuned, responsive, field-sensitive, relational",
         stabilityMethod: "Contact, mirroring, tone-tracking, repairing the field",
         overloadRisk: "Over-attunement, losing center, attachment loops, emotional fusion",
         plainRead: "This system stabilizes by reading and repairing the space between people. Overload happens when the field becomes too loud or too fused."
       },
       Threshold: {
+        label: "Threshold",
         signalQuality: "Sharp, decisive, activation-based, timing-sensitive",
         stabilityMethod: "Timing, crossings, clean openings, decisive action",
         overloadRisk: "Urgency, rupture, impatience, acting before the field is ready",
         plainRead: "This system stabilizes at turning points. Overload happens when everything feels like a turning point."
       },
       Reconstructive: {
+        label: "Reconstructive",
         signalQuality: "Compressed, transformative, deep-field, pressure-bearing",
-        stabilityMethod: "Breakdown-to-rebuild cycles, pressure integration, reforming structure",
+        stabilityMethod: "Breakdown → rebuild cycles, pressure integration, reforming structure",
         overloadRisk: "Crisis identity, heaviness, repeated collapse loops",
         plainRead: "This system stabilizes by transforming pressure into a stronger form. Overload happens when the system is forced to rebuild too often without rest."
       },
       Integrative: {
+        label: "Integrative",
         signalQuality: "Wide, connective, meaning-oriented, integrative",
         stabilityMethod: "Synthesis, pattern-linking, big-picture coherence",
         overloadRisk: "Over-meaning, abstraction, taking in too many layers at once",
         plainRead: "This system stabilizes by making the scattered field coherent. Overload happens when there are too many pieces to integrate."
       },
       Diffused: {
+        label: "Diffused",
         signalQuality: "Porous, atmospheric, impressionistic, subtle",
         stabilityMethod: "Soft focus, spaciousness, gentle pacing, wide reception",
         overloadRisk: "Fog, overwhelm, boundary loss, unclear direction",
         plainRead: "This system stabilizes by receiving widely before defining. Overload happens when the field is too dense or too demanding."
       },
       Regulated: {
+        label: "Regulated",
         signalQuality: "Measured, paced, controlled, load-aware",
         stabilityMethod: "Timing, containment, emotional management, load control",
         overloadRisk: "Over-control, bottlenecking, emotional restriction, fear of disorder",
@@ -939,252 +1109,24 @@
       el.style.width = pct + "%";
     }
 
-    function topKey(scoreMap){
-      return Object.entries(scoreMap)
-        .sort((a, b) => safeNum(b[1]) - safeNum(a[1]))[0]?.[0] || "Structured";
-    }
-
-    function secondKey(scoreMap, first){
-      return Object.entries(scoreMap)
-        .filter(([key]) => key !== first)
-        .sort((a, b) => safeNum(b[1]) - safeNum(a[1]))[0]?.[0] || "Regulated";
+    function sortedScoreKeys(scores){
+      return Object.entries(scores)
+        .sort((a, b) => b[1] - a[1])
+        .map(([key]) => key);
     }
 
     function addScore(scores, key, value){
       scores[key] = safeNum(scores[key]) + safeNum(value);
     }
 
-    function harmonicBaseScores(){
-      return {
-        Structured: 0,
-        Contained: 0,
-        Chaotic: 0,
-        Relational: 0,
-        Threshold: 0,
-        Reconstructive: 0,
-        Integrative: 0,
-        Diffused: 0,
-        Regulated: 0
-      };
+    function getTopHarmonic(scores, fallback = "Structured"){
+      const sorted = sortedScoreKeys(scores);
+      return sorted[0] || fallback;
     }
 
-    function calculateHarmonics(data){
-      const state = data?.state || {};
-      const baseline = data?.baselineState || {};
-      const p = data?.planetary || {};
-      const env = data?.environment || {};
-      const forecast = data?.forecast || {};
-      const timing = data?.timing || {};
-
-      const sun = safeNum(p.sun);
-      const moon = safeNum(p.moon);
-      const mercury = safeNum(p.mercury);
-      const venus = safeNum(p.venus);
-      const mars = safeNum(p.mars);
-      const jupiter = safeNum(p.jupiter);
-      const saturn = safeNum(p.saturn);
-      const uranus = safeNum(p.uranus);
-      const neptune = safeNum(p.neptune);
-      const pluto = safeNum(p.pluto);
-      const asc = safeNum(p.asc);
-      const mc = safeNum(p.mc);
-
-      const tMoon = safeNum(p.transitMoon);
-      const tMercury = safeNum(p.transitMercury);
-      const tVenus = safeNum(p.transitVenus);
-      const tMars = safeNum(p.transitMars);
-      const tJupiter = safeNum(p.transitJupiter);
-      const tSaturn = safeNum(p.transitSaturn);
-      const tUranus = safeNum(p.transitUranus);
-      const tNeptune = safeNum(p.transitNeptune);
-      const tPluto = safeNum(p.transitPluto);
-
-      const baselineCapacity = safeNum(baseline.capacity, safeNum(state.capacity));
-      const baselineRegulation = safeNum(baseline.regulation);
-      const baselineLoad = safeNum(baseline.amplifiedLoad);
-      const baselineStrain = safeNum(baseline.strain);
-
-      const strain = safeNum(state.strain);
-      const currentLoad = safeNum(state.amplifiedLoad);
-      const currentRegulation = safeNum(state.regulation);
-      const effectiveLoad = safeNum(state.effectiveLoad);
-      const environmentMode = String(env.environmentMode || "").toLowerCase();
-      const forecastState = String(forecast?.now?.state || "").toLowerCase();
-      const timingPressure = safeNum(timing.timingPressure);
-
-      const primaryScores = harmonicBaseScores();
-
-      addScore(primaryScores, "Structured", saturn * 2.4 + mercury * 2.2 + sun * 1.4 + mc * 1.2 + asc * 0.8 + baselineCapacity * 1.5 + baselineRegulation * 1.3);
-      addScore(primaryScores, "Regulated", saturn * 2.0 + mercury * 1.5 + moon * 0.7 + baselineRegulation * 2.2 + Math.max(baselineRegulation - baselineStrain, 0) * 1.2);
-      addScore(primaryScores, "Integrative", jupiter * 1.8 + neptune * 1.0 + moon * 0.8 + sun * 0.8 + Math.max(baselineLoad - baselineRegulation, 0) * 0.8);
-      addScore(primaryScores, "Contained", moon * 1.5 + saturn * 1.2 + neptune * 0.8 + Math.max(0.75 - mars, 0) * 0.8);
-      addScore(primaryScores, "Chaotic", uranus * 2.1 + mars * 1.6 + neptune * 0.8 + Math.max(baselineStrain - 0.65, 0) * 1.3);
-      addScore(primaryScores, "Relational", venus * 2.0 + moon * 1.7 + mercury * 0.7);
-      addScore(primaryScores, "Threshold", mars * 1.6 + uranus * 1.4 + pluto * 1.1 + mc * 0.9);
-      addScore(primaryScores, "Reconstructive", pluto * 2.2 + saturn * 1.4 + mars * 0.8 + Math.max(baselineLoad - baselineCapacity, 0) * 1.4);
-      addScore(primaryScores, "Diffused", neptune * 2.3 + moon * 1.0 + jupiter * 0.8 + Math.max(baselineStrain - baselineRegulation, 0) * 0.8);
-
-      const primary = topKey(primaryScores);
-
-      const supportScores = harmonicBaseScores();
-      addScore(supportScores, "Structured", saturn * 1.6 + mercury * 1.5 + mc * 0.9);
-      addScore(supportScores, "Regulated", saturn * 1.8 + mercury * 1.2 + baselineRegulation * 2.0);
-      addScore(supportScores, "Integrative", jupiter * 1.5 + neptune * 0.8 + moon * 0.7);
-      addScore(supportScores, "Contained", moon * 1.2 + saturn * 1.0 + neptune * 0.7);
-      addScore(supportScores, "Chaotic", uranus * 1.5 + mars * 1.1);
-      addScore(supportScores, "Relational", venus * 1.7 + moon * 1.2);
-      addScore(supportScores, "Threshold", mars * 1.3 + uranus * 1.2 + pluto * 0.8);
-      addScore(supportScores, "Reconstructive", pluto * 1.5 + saturn * 1.0);
-      addScore(supportScores, "Diffused", neptune * 1.6 + moon * 0.8);
-
-      const support = secondKey(supportScores, primary);
-
-      const distortionScores = harmonicBaseScores();
-      addScore(distortionScores, "Diffused", neptune * 1.8 + tNeptune * 2.2 + Math.max(strain - 0.65, 0) * 1.5);
-      addScore(distortionScores, "Chaotic", mars * 1.2 + uranus * 1.5 + tMars * 1.7 + tUranus * 1.8 + Math.max(strain - 0.75, 0) * 1.8);
-      addScore(distortionScores, "Reconstructive", pluto * 1.5 + tPluto * 2.1 + Math.max(currentLoad - baselineCapacity, 0) * 1.8);
-      addScore(distortionScores, "Regulated", saturn * 1.5 + tSaturn * 1.4 + Math.max(currentRegulation - effectiveLoad, 0) * 1.2);
-      addScore(distortionScores, "Threshold", tMars * 1.4 + tUranus * 1.3 + timingPressure * 1.7);
-      addScore(distortionScores, "Integrative", jupiter * 0.8 + tJupiter * 1.0 + neptune * 1.0 + Math.max(strain - 0.70, 0) * 0.8);
-      addScore(distortionScores, "Contained", moon * 0.8 + saturn * 0.9 + Math.max(0.7 - currentRegulation, 0) * 0.7);
-      addScore(distortionScores, "Structured", saturn * 0.7 + mercury * 0.7 + Math.max(currentRegulation - currentLoad, 0) * 0.8);
-      addScore(distortionScores, "Relational", venus * 0.7 + moon * 0.7);
-
-      const distortion = topKey(distortionScores);
-
-      const fieldScores = harmonicBaseScores();
-
-      addScore(fieldScores, "Chaotic", tUranus * 2.3 + tMars * 1.9 + tNeptune * 0.8);
-      addScore(fieldScores, "Threshold", tMars * 1.7 + tUranus * 1.5 + timingPressure * 2.0);
-      addScore(fieldScores, "Reconstructive", tPluto * 2.4 + tSaturn * 1.0 + Math.max(strain - 0.65, 0) * 1.5);
-      addScore(fieldScores, "Diffused", tNeptune * 2.4 + tMoon * 0.9);
-      addScore(fieldScores, "Regulated", tSaturn * 1.8 + tMercury * 1.2 + tVenus * 0.8 + Math.max(currentRegulation - effectiveLoad, 0) * 0.9);
-      addScore(fieldScores, "Relational", tVenus * 1.8 + tMoon * 1.2);
-      addScore(fieldScores, "Integrative", tJupiter * 1.8 + tNeptune * 1.0);
-      addScore(fieldScores, "Structured", tSaturn * 1.2 + tMercury * 1.6);
-      addScore(fieldScores, "Contained", tMoon * 1.1 + tSaturn * 0.9);
-
-      if (environmentMode.includes("diffuse")) addScore(fieldScores, "Diffused", 1.0);
-      if (environmentMode.includes("volatile")) addScore(fieldScores, "Chaotic", 1.0);
-      if (environmentMode.includes("mixed")) addScore(fieldScores, "Threshold", 0.5);
-
-      if (forecastState.includes("overload")) addScore(fieldScores, "Reconstructive", 1.1);
-      if (forecastState.includes("threshold")) addScore(fieldScores, "Threshold", 1.0);
-      if (forecastState.includes("mobilized")) addScore(fieldScores, "Chaotic", 0.8);
-      if (forecastState.includes("regulated")) addScore(fieldScores, "Regulated", 0.8);
-
-      const todayField = topKey(fieldScores);
-      const primaryDef = HARMONICS[primary] || HARMONICS.Structured;
-
-      return {
-        primary,
-        support,
-        distortion,
-        todayField,
-        systemWeather: `${primary} baseline × ${todayField} field`,
-        signalQuality: primaryDef.signalQuality,
-        stabilityMethod: primaryDef.stabilityMethod,
-        overloadRisk: primaryDef.overloadRisk,
-        plainRead: primaryDef.plainRead
-      };
-    }
-
-    function buildDailyGuidance(profile, data){
-      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
-      const primary = profile.primary;
-      const field = profile.todayField;
-
-      let todayRead = `Your ${primary.toLowerCase()} baseline is meeting a ${field.toLowerCase()} field today. Move with the day, but do not let the field overwrite your baseline pattern.`;
-      let leanInto = "One clean, practical adjustment.";
-      let watchFor = "Treating today’s pressure as the whole story.";
-      let oneMove = "Choose one workable step and give it a clear container.";
-      let returnBy = "Naming the real pressure point, then stopping before it becomes the whole field.";
-
-      if (primary === "Structured" && field === "Reconstructive") {
-        todayRead = "Your baseline wants clarity and form, but today may push repair, pressure, or rebuilding. Do not turn normal strain into a full reconstruction project. Choose one honest adjustment and give it a clean container.";
-        leanInto = "Practical repair, clean structure, and one honest correction.";
-        watchFor = "Rebuilding too much at once or treating every strain as a system failure.";
-        oneMove = "Fix the one piece that actually matters today.";
-        returnBy = "Putting the pressure into one container instead of the whole field.";
-      } else if (primary === "Structured" && field === "Chaotic") {
-        todayRead = "Your system may try to organize every signal at once. The field may be loud, mobile, or nonlinear. Catch one useful thread and give it a container.";
-        leanInto = "Clear priorities, short lists, and simple structure.";
-        watchFor = "Chasing every signal just because it feels active.";
-        oneMove = "Write the one thing that actually needs structure today.";
-        returnBy = "Reducing noise before building the next piece.";
-      } else if (primary === "Structured" && field === "Threshold") {
-        todayRead = "Your baseline wants form, but today may bring an edge, choice, or timing pressure. Build the next step before forcing the crossing.";
-        leanInto = "Timing, sequence, and a clear next move.";
-        watchFor = "Rushing the threshold before the container is ready.";
-        oneMove = "Define the next clean step, not the whole path.";
-        returnBy = "Letting structure pace the crossing.";
-      } else if (field === "Diffused") {
-        todayRead = `Your ${primary.toLowerCase()} baseline may feel softened by a diffused field today. Give the atmosphere a sentence before trying to solve it.`;
-        leanInto = "Soft focus, spaciousness, and simple naming.";
-        watchFor = "Fog, boundary loss, or absorbing too much background pressure.";
-        oneMove = "Name one clear line inside the atmosphere.";
-        returnBy = "Separating what is yours from what belongs to the field.";
-      } else if (field === "Regulated") {
-        todayRead = `Today’s field may offer more pacing and containment. Your ${primary.toLowerCase()} baseline can use this as a stabilizing window.`;
-        leanInto = "Steady effort, pacing, and usable limits.";
-        watchFor = "Over-controlling something that only needs rhythm.";
-        oneMove = "Do one measured task fully.";
-        returnBy = "Letting enough be enough.";
-      } else if (field === "Contained") {
-        todayRead = `Today may pull the signal inward. Your ${primary.toLowerCase()} baseline does not need to explain everything outwardly yet.`;
-        leanInto = "Private refinement, quiet processing, and protected work.";
-        watchFor = "Withholding too long or compressing the signal.";
-        oneMove = "Shape one private piece before showing it.";
-        returnBy = "Releasing a small part of the pressure safely.";
-      } else if (field === "Relational") {
-        todayRead = `Today may bring clarity through contact. Your ${primary.toLowerCase()} baseline can stay centered while still reading the personal field.`;
-        leanInto = "Honest contact, simple language, and tone awareness.";
-        watchFor = "Over-attuning or losing your center in someone else’s field.";
-        oneMove = "Say the simple version first.";
-        returnBy = "Coming back to what your system actually knows.";
-      } else if (field === "Integrative") {
-        todayRead = `Today may ask you to connect pieces into a larger pattern. Let the wider read help, but do not absorb every loose end.`;
-        leanInto = "Synthesis, meaning, and clean completion.";
-        watchFor = "Over-meaning or trying to integrate too many layers at once.";
-        oneMove = "Close one loop that is ready to close.";
-        returnBy = "Letting the unfinished pieces stay unfinished for now.";
-      }
-
-      if (stateLabel === "Overloaded") {
-        todayRead += " Since the system reads overloaded, lower the load before adding more decisions.";
-      } else if (stateLabel === "Threshold") {
-        todayRead += " Since the system is near threshold, pace the crossing and avoid stacking pressure.";
-      } else if (stateLabel === "Mobilized") {
-        todayRead += " Because the system is mobilized, use the energy without stacking extra load.";
-      }
-
-      return { todayRead, leanInto, watchFor, oneMove, returnBy };
-    }
-
-    function setHeroGlow(modeText, fog, volatility){
-      const el = document.getElementById("heroGlow");
-      if (!el) return;
-
-      const text = String(modeText || "").toLowerCase();
-      let glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.10), transparent 42%)";
-
-      if (text.includes("overload")) {
-        glow = "radial-gradient(circle at 50% 28%, rgba(255,102,102,.14), transparent 42%)";
-      } else if (text.includes("threshold") || text.includes("strain")) {
-        glow = "radial-gradient(circle at 50% 28%, rgba(216,184,76,.14), transparent 42%)";
-      } else if (text.includes("mobilized") || text.includes("active")) {
-        glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.08), rgba(216,184,76,.10), transparent 48%)";
-      }
-
-      if (safeNum(fog) > 0.72) {
-        glow = "radial-gradient(circle at 50% 28%, rgba(176,108,255,.12), rgba(103,193,255,.05), transparent 48%)";
-      }
-
-      if (safeNum(volatility) > 0.75 && !text.includes("overload")) {
-        glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.12), rgba(176,108,255,.05), transparent 48%)";
-      }
-
-      el.style.background = glow;
+    function getSecondHarmonic(scores, primary, fallback = "Regulated"){
+      const sorted = sortedScoreKeys(scores).filter(key => key !== primary);
+      return sorted[0] || fallback;
     }
 
     function stateLabelFromMode(modeText){
@@ -1225,24 +1167,6 @@
       return `Forecast: ${text || "—"}`;
     }
 
-    function forecastTextFromState(forecastState){
-      const state = String(forecastState || "").toLowerCase();
-
-      if (state.includes("overload")) {
-        return "The current outlook reads as overloaded. Lower the load before adding more pressure.";
-      }
-
-      if (state.includes("threshold")) {
-        return "The current outlook reads as threshold. The field may be near a crossing point, so pacing matters.";
-      }
-
-      if (state.includes("mobilized")) {
-        return "The current outlook reads as mobilized. Energy is available, but it needs pacing and a clear channel.";
-      }
-
-      return "The current outlook reads as regulated. This is better for steady effort than forced intensity.";
-    }
-
     function driverValueFromTaggedList(list, planetName){
       if (!Array.isArray(list)) return null;
       const hit = list.find(item => String(item).toLowerCase().startsWith(String(planetName).toLowerCase()));
@@ -1270,6 +1194,360 @@
       }
 
       return `${front}. Current mode is ${String(modeText || "Regulated").toLowerCase()}.`;
+    }
+
+    function forecastTextFromState(forecastState){
+      const state = String(forecastState || "").toLowerCase();
+
+      if (state.includes("overload")) {
+        return "The current field is carrying more load. Reduce inputs, simplify choices, and avoid stacking pressure.";
+      }
+
+      if (state.includes("threshold")) {
+        return "The current field is near an edge. Move carefully, pace decisions, and do not force the crossing.";
+      }
+
+      if (state.includes("mobilized")) {
+        return "The current field is active. Use the momentum, but keep the load contained and paced.";
+      }
+
+      return "The current field is regulated enough for steady, focused movement.";
+    }
+
+    function setHeroGlow(modeText, fog, volatility){
+      const el = document.getElementById("heroGlow");
+      if (!el) return;
+
+      const text = String(modeText || "").toLowerCase();
+      let glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.10), transparent 42%)";
+
+      if (text.includes("overload")) {
+        glow = "radial-gradient(circle at 50% 28%, rgba(255,102,102,.14), transparent 42%)";
+      } else if (text.includes("threshold") || text.includes("strain")) {
+        glow = "radial-gradient(circle at 50% 28%, rgba(216,184,76,.14), transparent 42%)";
+      } else if (text.includes("mobilized") || text.includes("active")) {
+        glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.08), rgba(216,184,76,.10), transparent 48%)";
+      }
+
+      if (safeNum(fog) > 0.72) {
+        glow = "radial-gradient(circle at 50% 28%, rgba(176,108,255,.12), rgba(103,193,255,.05), transparent 48%)";
+      }
+
+      if (safeNum(volatility) > 0.75 && !text.includes("overload")) {
+        glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.12), rgba(176,108,255,.05), transparent 48%)";
+      }
+
+      el.style.background = glow;
+    }
+
+    function calculateHarmonics(data){
+      const state = data?.state || {};
+      const baselineState = data?.baselineState || {};
+      const planetary = data?.planetary || {};
+      const environment = data?.environment || {};
+      const forecast = data?.forecast || {};
+      const timing = data?.timing || {};
+
+      const sun = safeNum(planetary.sun);
+      const moon = safeNum(planetary.moon);
+      const mercury = safeNum(planetary.mercury);
+      const venus = safeNum(planetary.venus);
+      const mars = safeNum(planetary.mars);
+      const jupiter = safeNum(planetary.jupiter);
+      const saturn = safeNum(planetary.saturn);
+      const uranus = safeNum(planetary.uranus);
+      const neptune = safeNum(planetary.neptune);
+      const pluto = safeNum(planetary.pluto);
+      const asc = safeNum(planetary.asc);
+      const mc = safeNum(planetary.mc);
+
+      const tMoon = safeNum(planetary.transitMoon);
+      const tMercury = safeNum(planetary.transitMercury);
+      const tVenus = safeNum(planetary.transitVenus);
+      const tMars = safeNum(planetary.transitMars);
+      const tJupiter = safeNum(planetary.transitJupiter);
+      const tSaturn = safeNum(planetary.transitSaturn);
+      const tUranus = safeNum(planetary.transitUranus);
+      const tNeptune = safeNum(planetary.transitNeptune);
+      const tPluto = safeNum(planetary.transitPluto);
+
+      const currentStrain = safeNum(state.strain);
+      const currentLoad = safeNum(state.amplifiedLoad);
+      const currentRegulation = safeNum(state.regulation);
+      const baselineCapacity = safeNum(baselineState.capacity);
+      const baselineStrain = safeNum(baselineState.strain);
+      const baselineLoad = safeNum(baselineState.amplifiedLoad);
+      const baselineRegulation = safeNum(baselineState.regulation);
+      const envMode = String(environment.environmentMode || "").toLowerCase();
+      const forecastState = String(forecast?.now?.state || "").toLowerCase();
+      const timingPressure = safeNum(timing.timingPressure);
+
+      const natalScores = {
+        Structured: 0,
+        Contained: 0,
+        Chaotic: 0,
+        Relational: 0,
+        Threshold: 0,
+        Reconstructive: 0,
+        Integrative: 0,
+        Diffused: 0,
+        Regulated: 0
+      };
+
+      addScore(natalScores, "Structured", saturn * 1.40 + mercury * 1.30 + sun * 0.75 + mc * 0.65 + baselineCapacity * 0.85 + baselineRegulation * 0.55);
+      addScore(natalScores, "Contained", moon * 1.05 + saturn * 0.75 + neptune * 0.45 + baselineRegulation * 0.35);
+      addScore(natalScores, "Chaotic", uranus * 1.05 + mars * 0.85 + neptune * 0.35 + baselineStrain * 0.40);
+      addScore(natalScores, "Relational", venus * 1.15 + moon * 0.85 + asc * 0.55);
+      addScore(natalScores, "Threshold", mars * 1.05 + uranus * 0.85 + pluto * 0.45 + mc * 0.45);
+      addScore(natalScores, "Reconstructive", pluto * 1.25 + saturn * 0.80 + baselineLoad * 0.40 + baselineStrain * 0.35);
+      addScore(natalScores, "Integrative", jupiter * 1.10 + neptune * 0.85 + moon * 0.35 + mercury * 0.25);
+      addScore(natalScores, "Diffused", neptune * 1.35 + moon * 0.70 + jupiter * 0.35);
+      addScore(natalScores, "Regulated", saturn * 1.25 + mercury * 0.85 + baselineRegulation * 0.90 + venus * 0.35);
+
+      const primary = getTopHarmonic(natalScores, "Structured");
+      let support = getSecondHarmonic(natalScores, primary, "Regulated");
+
+      if (primary === "Structured") {
+        const regulatedScore = natalScores.Regulated || 0;
+        const integrativeScore = natalScores.Integrative || 0;
+        const secondScore = natalScores[support] || 0;
+
+        if (regulatedScore >= secondScore * 0.88 && integrativeScore >= secondScore * 0.78) {
+          support = "Regulated / Integrative";
+        } else if (regulatedScore >= secondScore * 0.88) {
+          support = "Regulated";
+        } else if (integrativeScore >= secondScore * 0.88) {
+          support = "Integrative";
+        }
+      }
+
+      const fieldScores = {
+        Structured: 0,
+        Contained: 0,
+        Chaotic: 0,
+        Relational: 0,
+        Threshold: 0,
+        Reconstructive: 0,
+        Integrative: 0,
+        Diffused: 0,
+        Regulated: 0
+      };
+
+      addScore(fieldScores, "Structured", tSaturn * 0.90 + tMercury * 0.70);
+      addScore(fieldScores, "Contained", tMoon * 0.65 + tSaturn * 0.55);
+      addScore(fieldScores, "Chaotic", tUranus * 1.30 + tMars * 0.85 + currentStrain * 0.50);
+      addScore(fieldScores, "Relational", tVenus * 1.00 + tMoon * 0.55);
+      addScore(fieldScores, "Threshold", tMars * 1.00 + tUranus * 0.75 + timingPressure * 0.85);
+      addScore(fieldScores, "Reconstructive", tPluto * 1.20 + currentLoad * 0.45 + currentStrain * 0.65);
+      addScore(fieldScores, "Integrative", tJupiter * 0.95 + tNeptune * 0.65);
+      addScore(fieldScores, "Diffused", tNeptune * 1.30 + tMoon * 0.45);
+      addScore(fieldScores, "Regulated", tSaturn * 1.05 + tMercury * 0.75 + currentRegulation * 0.60);
+
+      if (envMode.includes("diffuse") || envMode.includes("volatile")) {
+        addScore(fieldScores, "Diffused", 0.45);
+        addScore(fieldScores, "Chaotic", 0.35);
+      }
+
+      if (forecastState.includes("threshold")) addScore(fieldScores, "Threshold", 0.65);
+      if (forecastState.includes("mobilized")) addScore(fieldScores, "Chaotic", 0.35);
+      if (forecastState.includes("overload")) addScore(fieldScores, "Reconstructive", 0.55);
+
+      const todayField = getTopHarmonic(fieldScores, "Regulated");
+
+      const distortionScores = {
+        Structured: 0,
+        Contained: 0,
+        Chaotic: 0,
+        Relational: 0,
+        Threshold: 0,
+        Reconstructive: 0,
+        Integrative: 0,
+        Diffused: 0,
+        Regulated: 0
+      };
+
+      const regulationRatio = currentLoad > 0 ? currentRegulation / currentLoad : 0;
+      const overloadGap = Math.max(currentStrain - 0.85, 0);
+
+      addScore(distortionScores, "Diffused", neptune * 1.00 + tNeptune * 1.20 + overloadGap * 1.40);
+      addScore(distortionScores, "Chaotic", uranus * 0.70 + tUranus * 1.05 + tMars * 0.65 + overloadGap * 0.80);
+      addScore(distortionScores, "Reconstructive", pluto * 0.85 + tPluto * 1.00 + currentLoad * 0.35 + overloadGap * 1.00);
+      addScore(distortionScores, "Regulated", saturn * 0.75 + tSaturn * 0.65 + regulationRatio * 1.10);
+      addScore(distortionScores, "Threshold", mars * 0.65 + tMars * 0.85 + timingPressure * 0.80);
+      addScore(distortionScores, "Integrative", jupiter * 0.55 + neptune * 0.45 + tJupiter * 0.45 + tNeptune * 0.45);
+      addScore(distortionScores, "Contained", moon * 0.65 + saturn * 0.45);
+      addScore(distortionScores, "Relational", venus * 0.55 + moon * 0.45);
+      addScore(distortionScores, "Structured", mercury * 0.55 + saturn * 0.50);
+
+      let distortion = getTopHarmonic(distortionScores, "Diffused");
+
+      if (primary === "Structured" && distortionScores.Diffused >= distortionScores[distortion] * 0.82) {
+        distortion = "Diffused";
+      }
+
+      return {
+        primary,
+        support,
+        distortion,
+        todayField,
+        natalScores,
+        fieldScores,
+        distortionScores
+      };
+    }
+
+    function getHarmonicBaseName(value){
+      return String(value || "").split("/")[0].trim();
+    }
+
+    function buildDailyGuidance(harmonics, data){
+      const primary = harmonics.primary || "Structured";
+      const field = harmonics.todayField || "Regulated";
+      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
+      const primaryLower = primary.toLowerCase();
+      const fieldLower = field.toLowerCase();
+
+      let read = `Your ${primaryLower} baseline is meeting a ${fieldLower} field today. Let the field inform your pace, but do not let today’s weather rewrite your baseline pattern.`;
+      let lean = "Choose the clearest useful move and keep the day simple.";
+      let watch = "Watch for turning the whole field into something you have to solve at once.";
+      let move = "Pick one pressure point and give it a clean next step.";
+      let ret = "Name what is actually active, then stop before you expand the task.";
+
+      if (primary === "Structured" && field === "Contained") {
+        read = "Your baseline wants clarity and form, but today may pull your signal inward. This is better for shaping one private piece than trying to explain the whole system outwardly.";
+        lean = "Private refinement, simple language, and protecting unfinished work.";
+        watch = "Forcing clarity too soon or getting frustrated because the words are not ready yet.";
+        move = "Finish one small piece instead of organizing the whole field.";
+        ret = "Name the real pressure point, then step away for a bit.";
+      } else if (primary === "Structured" && field === "Chaotic") {
+        read = "Your baseline wants structure, but today may bring extra movement, voltage, or scattered signal. Do not chase every thread. Catch the one that can actually become useful.";
+        lean = "Containment, prioritizing, and turning one signal into one clean form.";
+        watch = "Trying to structure every incoming signal at once.";
+        move = "Choose one useful thread and give it a simple container.";
+        ret = "Reduce inputs and return to the piece that is actually yours to build.";
+      } else if (primary === "Structured" && field === "Threshold") {
+        read = "Your baseline wants form, and today may bring an edge, opening, or decision point. Build the next step before forcing the crossing.";
+        lean = "Clean timing, clear steps, and paced movement.";
+        watch = "Mistaking urgency for the real opening.";
+        move = "Write the next step plainly, then move only as far as the field can hold.";
+        ret = "Come back to sequence: first this, then that.";
+      } else if (primary === "Structured" && field === "Reconstructive") {
+        read = "Your baseline wants clarity and form, but today may push repair, pressure, or rebuilding. Do not turn normal strain into a full reconstruction project.";
+        lean = "Honest repair, one clean adjustment, and practical containment.";
+        watch = "Treating every weak point like it means the whole structure has failed.";
+        move = "Choose one honest adjustment and give it a clean container.";
+        ret = "Remind yourself that one repair is not the same as rebuilding the whole system.";
+      } else if (primary === "Structured" && field === "Diffused") {
+        read = "Your baseline wants clarity, but today’s field may feel atmospheric, subtle, or harder to define. Do not panic if the signal is not crisp yet.";
+        lean = "Soft focus, fewer inputs, and one clear sentence.";
+        watch = "Over-explaining fog or forcing definition before the signal forms.";
+        move = "Give the atmosphere one sentence and let that be enough.";
+        ret = "Come back to the simplest true line.";
+      } else if (primary === "Structured" && field === "Regulated") {
+        read = "Your baseline and the field both support structure, pacing, and clear movement. This is a good day for making one practical piece more workable.";
+        lean = "Clean systems, steady progress, and realistic scope.";
+        watch = "Over-controlling details after the structure is already good enough.";
+        move = "Improve one useful piece and stop before refinement becomes pressure.";
+        ret = "Let good enough be a stabilizing choice.";
+      } else if (primary === "Contained" && field === "Chaotic") {
+        read = "Your baseline processes inwardly, but today may feel louder or more disruptive than usual. Protect your inner field without disappearing completely.";
+        lean = "Lower stimulation, private processing, and slow response.";
+        watch = "Shutting down completely because the field feels too loud.";
+        move = "Create one quiet pocket before responding.";
+        ret = "Come back to your own rhythm before taking in more signal.";
+      } else if (primary === "Contained" && field === "Threshold") {
+        read = "Your baseline needs safety before expression, but today may bring an edge or decision. You do not have to reveal everything to make one clean move.";
+        lean = "Small crossings, honest pacing, and protected expression.";
+        watch = "Waiting forever because the whole field does not feel safe yet.";
+        move = "Take one small step that does not overexpose you.";
+        ret = "Return to privacy without using it as a hiding place.";
+      } else if (primary === "Chaotic" && field === "Regulated") {
+        read = "Your baseline carries movement and charge, while today may slow the field down. Do not fight the container. Use it to channel the voltage.";
+        lean = "Rhythm, pacing, and turning movement into something usable.";
+        watch = "Rebelling against structure just because the day asks for containment.";
+        move = "Put your energy into one durable action.";
+        ret = "Let the container hold the charge instead of killing it.";
+      } else if (primary === "Relational" && field === "Diffused") {
+        read = "Your baseline reads the field between people, and today may make the atmosphere more porous. Check what is actually yours before responding.";
+        lean = "Gentle contact, boundary checks, and slower interpretation.";
+        watch = "Absorbing other people’s tone as if it belongs to you.";
+        move = "Ask: is this mine, theirs, or the shared field?";
+        ret = "Return to your own center before repairing the room.";
+      } else if (primary === "Threshold" && field === "Structured") {
+        read = "Your baseline senses openings and crossings, while today asks for more structure. Build the next step before forcing the movement.";
+        lean = "Planning the crossing, pacing activation, and naming the next move.";
+        watch = "Jumping before the container exists.";
+        move = "Make the path visible before you cross it.";
+        ret = "Come back to the structure that makes movement safer.";
+      } else if (primary === "Reconstructive" && field === "Regulated") {
+        read = "Your baseline knows how to rebuild under pressure, but today may not require a full reconstruction. Let regulation reduce the load first.";
+        lean = "Maintenance, simplification, and one practical repair.";
+        watch = "Turning ordinary strain into a crisis rebuild.";
+        move = "Fix the one part that actually needs attention.";
+        ret = "Let steadiness prove that not everything is breaking.";
+      } else if (primary === "Integrative" && field === "Chaotic") {
+        read = "Your baseline wants the larger pattern, while today may scatter the field. Everything may feel meaningful, but not every signal deserves your energy.";
+        lean = "Choosing the pattern that helps today.";
+        watch = "Trying to integrate every fragment at once.";
+        move = "Pick the one connection that clarifies the rest.";
+        ret = "Let the extra fragments stay outside the center for now.";
+      } else if (primary === "Diffused" && field === "Structured") {
+        read = "Your baseline receives widely, and today offers more form. Do not force the whole atmosphere into a system. Start with one clear line.";
+        lean = "Simple wording, gentle structure, and grounded direction.";
+        watch = "Feeling trapped by structure or avoiding definition entirely.";
+        move = "Give the field one sentence or one boundary.";
+        ret = "Let clarity be small, not total.";
+      } else if (primary === "Regulated" && field === "Chaotic") {
+        read = "Your baseline manages load through pacing, but today may feel disorderly. Slow the signal without freezing it.";
+        lean = "Flexible containment and calm response.";
+        watch = "Trying to control every moving part.";
+        move = "Choose what actually needs regulation and let the rest move.";
+        ret = "Release the pressure to manage the whole field.";
+      }
+
+      if (stateLabel === "Overloaded") {
+        watch = `${watch} Also watch for stacking more input when your system is already carrying enough.`;
+        move = `Reduce scope first. ${move}`;
+      } else if (stateLabel === "Threshold") {
+        move = `Pause at the edge, then choose cleanly. ${move}`;
+      } else if (stateLabel === "Mobilized") {
+        lean = `${lean} Use the available movement, but keep it paced.`;
+      }
+
+      return { read, lean, watch, move, ret };
+    }
+
+    function updateHarmonicUI(data){
+      const harmonics = calculateHarmonics(data);
+      const primaryMeta = HARMONICS[harmonics.primary] || HARMONICS.Structured;
+      const supportBase = getHarmonicBaseName(harmonics.support);
+      const supportMeta = HARMONICS[supportBase] || HARMONICS.Regulated;
+      const distortionMeta = HARMONICS[harmonics.distortion] || HARMONICS.Diffused;
+      const fieldMeta = HARMONICS[harmonics.todayField] || HARMONICS.Regulated;
+
+      const systemWeather = `${primaryMeta.label} baseline × ${fieldMeta.label} field`;
+      const guidance = buildDailyGuidance(harmonics, data);
+
+      setText("systemWeatherLine", systemWeather);
+      setText("dailyTodayRead", guidance.read);
+      setText("dailyLeanInto", guidance.lean);
+      setText("dailyWatchFor", guidance.watch);
+      setText("dailyGoodMove", guidance.move);
+      setText("dailyReturn", guidance.ret);
+
+      setText("primaryHarmonic", primaryMeta.label);
+      setText("supportHarmonic", harmonics.support || supportMeta.label);
+      setText("distortionHarmonic", distortionMeta.label);
+      setText("todayFieldHarmonic", fieldMeta.label);
+      setText("signalQuality", primaryMeta.signalQuality);
+      setText("stabilityMethod", primaryMeta.stabilityMethod);
+      setText("overloadRisk", distortionMeta.overloadRisk);
+      setText("harmonicPlainRead", primaryMeta.plainRead);
+
+      setText("profileStateChip", `${primaryMeta.label} baseline`);
+      setText("profileFieldChip", `Field: ${fieldMeta.label}`);
+
+      return harmonics;
     }
 
     function updateUI(data){
@@ -1320,6 +1598,8 @@
 
       const regulatorAverage = (saturn + venus + mercury) / 3;
 
+      updateHarmonicUI(data);
+
       setText("capacityScore", fmt(capacity));
       setText("capacityLabel", capacityLabelFromValue(capacity));
 
@@ -1349,7 +1629,7 @@
       setText("mercuryVal", fmt(mercury));
       setText("stateCondition", stateLabelFromMode(modeText));
 
-      const forecastState = forecast?.now?.state || "Regulated";
+      const forecastState = forecast?.now?.state || stateLabelFromMode(modeText);
       setText("forecastTitle", forecastState);
       setText("forecastText", forecastTextFromState(forecastState));
 
@@ -1380,25 +1660,6 @@
           ? "Live ephemeris and resolved location confirmed."
           : `Local: ${resolvedTime} • UTC: ${utcDatetime} • ${resolvedLocation} • ${timezoneName}`
       );
-
-      const harmonicProfile = calculateHarmonics(data);
-      const daily = buildDailyGuidance(harmonicProfile, data);
-
-      setText("primaryHarmonic", harmonicProfile.primary);
-      setText("supportHarmonic", harmonicProfile.support);
-      setText("distortionHarmonic", harmonicProfile.distortion);
-      setText("systemWeather", `System Weather: ${harmonicProfile.systemWeather}`);
-      setText("todayFieldHarmonic", harmonicProfile.todayField);
-      setText("signalQuality", harmonicProfile.signalQuality);
-      setText("stabilityMethod", harmonicProfile.stabilityMethod);
-      setText("overloadRisk", harmonicProfile.overloadRisk);
-      setText("harmonicPlainRead", harmonicProfile.plainRead);
-
-      setText("dailyTodayRead", daily.todayRead);
-      setText("dailyLeanInto", daily.leanInto);
-      setText("dailyWatchFor", daily.watchFor);
-      setText("dailyOneMove", daily.oneMove);
-      setText("dailyReturn", daily.returnBy);
 
       setText(
         "whyText",
