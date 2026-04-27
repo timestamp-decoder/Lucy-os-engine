@@ -297,6 +297,99 @@
       line-height:1.58;
     }
 
+    .whyReadDetails{
+      border:1px solid rgba(103,193,255,.15);
+      border-radius:18px;
+      background:
+        linear-gradient(180deg,rgba(15,27,56,.82),rgba(10,22,48,.72));
+      box-shadow:0 14px 38px rgba(0,0,0,.20);
+      overflow:hidden;
+    }
+
+    .whyReadDetails summary{
+      list-style:none;
+      cursor:pointer;
+      padding:16px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      color:var(--text);
+      font-weight:900;
+      letter-spacing:.01em;
+    }
+
+    .whyReadDetails summary::-webkit-details-marker{
+      display:none;
+    }
+
+    .whyReadDetails summary::after{
+      content:"+";
+      width:28px;
+      height:28px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 auto;
+      color:var(--blue);
+      background:rgba(103,193,255,.08);
+      border:1px solid rgba(103,193,255,.16);
+      font-size:18px;
+      line-height:1;
+    }
+
+    .whyReadDetails[open] summary::after{
+      content:"−";
+    }
+
+    .whyReadBody{
+      border-top:1px solid rgba(255,255,255,.06);
+      padding:16px 18px 18px;
+      display:grid;
+      gap:14px;
+    }
+
+    .whySummaryGrid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:10px;
+    }
+
+    .whyMetric{
+      border:1px solid rgba(255,255,255,.07);
+      border-radius:14px;
+      padding:12px;
+      background:rgba(255,255,255,.028);
+      min-height:78px;
+    }
+
+    .whyMetricLabel{
+      color:var(--muted);
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.09em;
+      text-transform:uppercase;
+      margin-bottom:7px;
+    }
+
+    .whyMetricValue{
+      color:var(--text);
+      font-size:14px;
+      line-height:1.35;
+      font-weight:850;
+    }
+
+    .whyExplain{
+      border:1px solid rgba(216,184,76,.14);
+      border-radius:16px;
+      padding:14px;
+      background:rgba(216,184,76,.045);
+      color:var(--text);
+      font-size:14px;
+      line-height:1.7;
+    }
+
     .profileCard{
       border:1px solid rgba(103,193,255,.18);
       border-radius:20px;
@@ -392,72 +485,49 @@
       letter-spacing:.04em;
     }
 
-    .libraryShell{
-      border:1px solid rgba(103,193,255,.16);
+    .libraryDetails{
+      border:1px solid rgba(103,193,255,.14);
       border-radius:20px;
       background:
-        linear-gradient(180deg,rgba(15,27,56,.72),rgba(9,20,47,.58));
+        linear-gradient(180deg,rgba(15,27,56,.88),rgba(11,23,50,.78));
       box-shadow:var(--shadow);
       overflow:hidden;
     }
 
-    .libraryShell summary{
+    .libraryDetails summary{
       list-style:none;
       cursor:pointer;
-      padding:18px;
+      padding:17px 18px;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:14px;
+      gap:12px;
+      font-weight:900;
+      color:var(--text);
     }
 
-    .libraryShell summary::-webkit-details-marker{
+    .libraryDetails summary::-webkit-details-marker{
       display:none;
     }
 
-    .libraryTitleWrap{
-      display:grid;
-      gap:4px;
-    }
-
-    .libraryTitle{
-      margin:0;
-      color:var(--text);
-      font-size:20px;
-      font-weight:900;
-      line-height:1.2;
-    }
-
-    .librarySubtitle{
-      margin:0;
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.5;
-    }
-
-    .libraryToggle{
-      flex:0 0 auto;
+    .libraryDetails summary::after{
+      content:"+";
+      width:28px;
+      height:28px;
+      border-radius:999px;
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      min-height:34px;
-      padding:0 12px;
-      border-radius:999px;
-      border:1px solid rgba(103,193,255,.18);
-      background:rgba(103,193,255,.07);
+      flex:0 0 auto;
       color:var(--blue);
-      font-size:11px;
-      font-weight:900;
-      letter-spacing:.08em;
-      text-transform:uppercase;
+      background:rgba(103,193,255,.08);
+      border:1px solid rgba(103,193,255,.16);
+      font-size:18px;
+      line-height:1;
     }
 
-    .libraryShell[open] .libraryToggle::after{
-      content:" Close";
-    }
-
-    .libraryShell:not([open]) .libraryToggle::after{
-      content:" Open";
+    .libraryDetails[open] summary::after{
+      content:"−";
     }
 
     .libraryBody{
@@ -467,18 +537,11 @@
       gap:14px;
     }
 
-    .libraryNote{
-      border:1px solid rgba(216,184,76,.18);
-      border-radius:16px;
-      padding:14px;
-      background:rgba(216,184,76,.07);
+    .libraryIntro{
       color:var(--muted);
       font-size:13px;
-      line-height:1.58;
-    }
-
-    .libraryNote strong{
-      color:var(--gold);
+      line-height:1.55;
+      max-width:840px;
     }
 
     .harmonicLibraryGrid{
@@ -493,16 +556,14 @@
       padding:14px;
       background:rgba(255,255,255,.03);
       display:grid;
-      gap:8px;
+      gap:11px;
       align-content:start;
-      min-height:220px;
     }
 
     .harmonicLibraryCard h3{
       margin:0;
-      color:var(--text);
+      color:var(--gold);
       font-size:17px;
-      line-height:1.2;
     }
 
     .harmonicLibraryCard p{
@@ -516,9 +577,9 @@
       color:var(--blue);
       font-size:10px;
       font-weight:900;
-      letter-spacing:.08em;
+      letter-spacing:.10em;
       text-transform:uppercase;
-      margin-bottom:-2px;
+      margin-bottom:5px;
     }
 
     .engineDetails{
@@ -805,24 +866,19 @@
       .profileGrid{grid-template-columns:1fr}
       .profileBlock.wide,
       .profileBlock.full{grid-column:auto}
+      .whySummaryGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
       .harmonicLibraryGrid{grid-template-columns:1fr}
     }
 
     @media (max-width: 720px){
       .wrap{padding:14px}
       .hero h1{font-size:36px}
-      .panel,.premiumCard,.profileCard,.libraryShell,.engineDetails{border-radius:16px}
+      .panel,.premiumCard,.profileCard,.engineDetails,.whyReadDetails,.libraryDetails{border-radius:16px}
       .premiumCard{padding:18px}
       .weatherLine{font-size:28px}
       .todayRead{font-size:15px}
       .profileHeader{display:grid}
-      .libraryShell summary{
-        display:grid;
-        align-items:start;
-      }
-      .libraryToggle{
-        width:fit-content;
-      }
+      .whySummaryGrid{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -919,6 +975,57 @@
           </div>
         </section>
 
+        <details class="whyReadDetails">
+          <summary>Why This Read?</summary>
+          <div class="whyReadBody">
+            <div class="whySummaryGrid">
+              <div class="whyMetric">
+                <div class="whyMetricLabel">Baseline</div>
+                <div class="whyMetricValue" id="whyBaseline">—</div>
+              </div>
+
+              <div class="whyMetric">
+                <div class="whyMetricLabel">Field</div>
+                <div class="whyMetricValue" id="whyField">—</div>
+              </div>
+
+              <div class="whyMetric">
+                <div class="whyMetricLabel">State</div>
+                <div class="whyMetricValue" id="whyState">—</div>
+              </div>
+
+              <div class="whyMetric">
+                <div class="whyMetricLabel">Load</div>
+                <div class="whyMetricValue" id="whyLoad">—</div>
+              </div>
+
+              <div class="whyMetric">
+                <div class="whyMetricLabel">Capacity</div>
+                <div class="whyMetricValue" id="whyCapacity">—</div>
+              </div>
+
+              <div class="whyMetric">
+                <div class="whyMetricLabel">Regulation</div>
+                <div class="whyMetricValue" id="whyRegulation">—</div>
+              </div>
+
+              <div class="whyMetric">
+                <div class="whyMetricLabel">Primary Driver</div>
+                <div class="whyMetricValue" id="whyPrimaryDriver">—</div>
+              </div>
+
+              <div class="whyMetric">
+                <div class="whyMetricLabel">Distortion Pathway</div>
+                <div class="whyMetricValue" id="whyDistortion">—</div>
+              </div>
+            </div>
+
+            <div class="whyExplain" id="whyReadExplanation">
+              Waiting for chart calculation.
+            </div>
+          </div>
+        </details>
+
         <section class="profileCard">
           <div class="profileHeader">
             <div>
@@ -981,22 +1088,12 @@
           </div>
         </section>
 
-        <details class="libraryShell">
-          <summary>
-            <div class="libraryTitleWrap">
-              <h2 class="libraryTitle">Harmonic Library</h2>
-              <p class="librarySubtitle">
-                A quick reference for the 9 harmonic types. Your result appears above; this library explains the wider system.
-              </p>
-            </div>
-            <span class="libraryToggle">Library</span>
-          </summary>
-
+        <details class="libraryDetails">
+          <summary>Open Harmonic Library</summary>
           <div class="libraryBody">
-            <div class="libraryNote">
-              <strong>Expanded layer:</strong> full harmonic library, 81 daily interactions, saved reads, and share cards can become part of Lucy.OS Pro later. V1 keeps the main result first, the library second, and engine details last.
-            </div>
-
+            <p class="libraryIntro">
+              The Harmonic Library is a reference layer for the nine Lucy.OS harmonic types. Your main result stays above; this section is here when you want to understand the wider type language.
+            </p>
             <div class="harmonicLibraryGrid" id="harmonicLibraryGrid"></div>
           </div>
         </details>
@@ -1266,46 +1363,6 @@
       el.style.width = pct + "%";
     }
 
-    function escapeHtml(value){
-      return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    function renderHarmonicLibrary(){
-      const mount = document.getElementById("harmonicLibraryGrid");
-      if (!mount) return;
-
-      mount.innerHTML = Object.values(HARMONICS).map(harmonic => `
-        <article class="harmonicLibraryCard">
-          <h3>${escapeHtml(harmonic.label)}</h3>
-
-          <div>
-            <div class="libraryMiniLabel">Plain Read</div>
-            <p>${escapeHtml(harmonic.plainRead)}</p>
-          </div>
-
-          <div>
-            <div class="libraryMiniLabel">Signal Quality</div>
-            <p>${escapeHtml(harmonic.signalQuality)}</p>
-          </div>
-
-          <div>
-            <div class="libraryMiniLabel">Stability Method</div>
-            <p>${escapeHtml(harmonic.stabilityMethod)}</p>
-          </div>
-
-          <div>
-            <div class="libraryMiniLabel">Overload Risk</div>
-            <p>${escapeHtml(harmonic.overloadRisk)}</p>
-          </div>
-        </article>
-      `).join("");
-    }
-
     function sortedScoreKeys(scores){
       return Object.entries(scores)
         .sort((a, b) => b[1] - a[1])
@@ -1364,6 +1421,28 @@
       return `Forecast: ${text || "—"}`;
     }
 
+    function loadBandFromValue(load){
+      const value = safeNum(load);
+      if (value < 0.45) return "low load";
+      if (value < 0.75) return "moderate load";
+      if (value < 1.00) return "high load";
+      return "overloaded";
+    }
+
+    function capacityBandFromValue(capacity){
+      const value = safeNum(capacity);
+      if (value < 0.55) return "limited capacity";
+      if (value < 0.85) return "decent capacity";
+      return "strong capacity";
+    }
+
+    function regulationBandFromValue(regulation){
+      const value = safeNum(regulation);
+      if (value < 0.40) return "low regulation";
+      if (value < 0.70) return "moderate regulation";
+      return "strong regulation";
+    }
+
     function driverValueFromTaggedList(list, planetName){
       if (!Array.isArray(list)) return null;
       const hit = list.find(item => String(item).toLowerCase().startsWith(String(planetName).toLowerCase()));
@@ -1409,6 +1488,37 @@
       }
 
       return "The current field is regulated enough for steady, focused movement.";
+    }
+
+    function renderHarmonicLibrary(){
+      const grid = document.getElementById("harmonicLibraryGrid");
+      if (!grid) return;
+
+      grid.innerHTML = Object.values(HARMONICS).map(harmonic => `
+        <article class="harmonicLibraryCard">
+          <h3>${harmonic.label}</h3>
+
+          <div>
+            <div class="libraryMiniLabel">Signal Quality</div>
+            <p>${harmonic.signalQuality}</p>
+          </div>
+
+          <div>
+            <div class="libraryMiniLabel">Stability Method</div>
+            <p>${harmonic.stabilityMethod}</p>
+          </div>
+
+          <div>
+            <div class="libraryMiniLabel">Overload Risk</div>
+            <p>${harmonic.overloadRisk}</p>
+          </div>
+
+          <div>
+            <div class="libraryMiniLabel">Plain Read</div>
+            <p>${harmonic.plainRead}</p>
+          </div>
+        </article>
+      `).join("");
     }
 
     function setHeroGlow(modeText, fog, volatility){
@@ -1714,6 +1824,55 @@
       return { read, lean, watch, move, ret };
     }
 
+    function buildWhyReadExplanation(harmonics, data){
+      const primary = harmonics.primary || "Structured";
+      const field = harmonics.todayField || "Regulated";
+      const distortion = harmonics.distortion || "Diffused";
+      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
+      const driver = primaryDriverName(data);
+      const state = data?.state || {};
+      const loadBand = loadBandFromValue(state.amplifiedLoad);
+      const capacityBand = capacityBandFromValue(state.capacity);
+      const regulationBand = regulationBandFromValue(state.regulation);
+
+      const driverText = driver && driver !== "—"
+        ? `${driver} may point to the strongest active pressure in the field.`
+        : "The primary driver is still resolving from the current chart data.";
+
+      if (
+        primary === "Structured" &&
+        field === "Reconstructive" &&
+        String(driver).toLowerCase().includes("pluto")
+      ) {
+        return `This means the system is functioning, but carrying enough pressure that adding more inputs could make it over-rebuild. Pluto may point to deeper repair pressure, while the Structured baseline tries to solve pressure through order. The best move is not total reconstruction — it is one clean repair.`;
+      }
+
+      if (primary === "Structured" && field === "Reconstructive") {
+        return `This means the system may be trying to repair or strengthen something while still wanting clarity and order. With ${loadBand}, ${capacityBand}, and ${regulationBand}, the best move is to choose one honest adjustment instead of treating every weak point like the whole structure is broken.`;
+      }
+
+      return `This read comes from a ${primary} baseline meeting a ${field} field while the system is in a ${stateLabel.toLowerCase()} state. The load band reads as ${loadBand}, capacity reads as ${capacityBand}, and regulation reads as ${regulationBand}. ${driverText} The distortion pathway is ${distortion}, which shows where pressure may collect if the field becomes too loaded.`;
+    }
+
+    function updateWhyThisReadUI(harmonics, data){
+      const state = data?.state || {};
+      const primary = harmonics.primary || "Structured";
+      const field = harmonics.todayField || "Regulated";
+      const distortion = harmonics.distortion || "Diffused";
+      const currentState = stateLabelFromMode(state.mode || "");
+      const driver = primaryDriverName(data);
+
+      setText("whyBaseline", primary);
+      setText("whyField", field);
+      setText("whyState", currentState);
+      setText("whyLoad", loadBandFromValue(state.amplifiedLoad));
+      setText("whyCapacity", capacityBandFromValue(state.capacity));
+      setText("whyRegulation", regulationBandFromValue(state.regulation));
+      setText("whyPrimaryDriver", driver);
+      setText("whyDistortion", distortion);
+      setText("whyReadExplanation", buildWhyReadExplanation(harmonics, data));
+    }
+
     function updateHarmonicUI(data){
       const harmonics = calculateHarmonics(data);
       const primaryMeta = HARMONICS[harmonics.primary] || HARMONICS.Structured;
@@ -1743,6 +1902,8 @@
 
       setText("profileStateChip", `${primaryMeta.label} baseline`);
       setText("profileFieldChip", `Field: ${fieldMeta.label}`);
+
+      updateWhyThisReadUI(harmonics, data);
 
       return harmonics;
     }
