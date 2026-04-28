@@ -1478,6 +1478,11 @@
 
                 <div class="shareCardMiniGrid">
                   <div class="shareCardMini">
+                    <div class="shareCardLabel">Why Today Feels This Way</div>
+                    <div class="shareCardRead" id="shareCardDriverNote">Waiting for driver note.</div>
+                  </div>
+
+                  <div class="shareCardMini">
                     <div class="shareCardLabel">One Good Move</div>
                     <div class="shareCardRead" id="shareCardGoodMove">—</div>
                   </div>
@@ -1755,6 +1760,7 @@
     let latestSharePayload = {
       systemWeather: "Structured baseline × Field loading",
       todayRead: "Waiting for daily read.",
+      driverNote: "Waiting for driver note.",
       goodMove: "—",
       returnText: "—",
       primary: "Structured",
@@ -2474,6 +2480,36 @@
         watch = "Carrying the whole emotional system because you can see how the pieces connect.";
         move = "Clarify one shared pattern without taking full responsibility for it.";
         ret = "Return to your part of the field, not the whole field.";
+      } else if (primary === "Threshold" && field === "Contained") {
+        read = "Your baseline senses edges and openings, while today may pull the field inward. The crossing may still be real, but it may need privacy, preparation, or a quieter first move.";
+        lean = "Protected timing, small crossings, and letting the next step form before announcing it.";
+        watch = "Pushing for outward movement before the inner field has caught up.";
+        move = "Choose one private preparation step that makes the threshold cleaner.";
+        ret = "Return to the edge without forcing it open.";
+      } else if (primary === "Threshold" && field === "Chaotic") {
+        read = "Your baseline is already sensitive to turning points, and today may add extra charge or disruption. The edge may feel louder than it is. Slow the reaction before you cross.";
+        lean = "Focused activation, clean timing, and movement that has a target.";
+        watch = "Letting intensity make every opening feel urgent.";
+        move = "Discharge enough energy to choose the right door, not every door.";
+        ret = "Come back to the real threshold underneath the noise.";
+      } else if (primary === "Threshold" && field === "Relational") {
+        read = "Your baseline reads crossings, while today may bring those crossings through contact, tone, or a relationship field. A conversation may show what is ready, but it does not have to become a dramatic pivot.";
+        lean = "Honest timing, clean contact, and naming what point the connection has reached.";
+        watch = "Using the relationship as proof that you must act immediately.";
+        move = "Say the simple truth, then give the field room to answer.";
+        ret = "Return to your own timing before reacting to someone else’s signal.";
+      } else if (primary === "Threshold" && field === "Integrative") {
+        read = "Your baseline senses the edge, while today may widen the meaning around it. The larger pattern can help, but too much meaning may blur the clean next move.";
+        lean = "Meaning that clarifies timing, not meaning that delays action.";
+        watch = "Trying to understand every layer before making one clean crossing.";
+        move = "Name the pattern, then choose the next step that is actually ready.";
+        ret = "Come back to the one crossing that matters today.";
+      } else if (primary === "Threshold" && field === "Diffused") {
+        read = "Your baseline wants a clear edge, but today may feel foggy, soft, or undefined. You may not get a perfect signal before you need to choose one small direction.";
+        lean = "Gentle boundaries, small decisions, and reducing the spread.";
+        watch = "Waiting for total clarity or pushing through fog too fast.";
+        move = "Choose one low-risk direction that makes the field less vague.";
+        ret = "Return to the smallest clear edge you can actually feel.";
       } else if (primary === "Threshold" && field === "Reconstructive") {
         read = "Your baseline senses crossings, and today may add repair pressure. The edge may be real, but the move does not have to become a full rebuild.";
         lean = "Precise change, honest repair, and crossing only what is ready.";
@@ -2492,6 +2528,36 @@
         watch = "Jumping before the container exists.";
         move = "Make the path visible before you cross it.";
         ret = "Come back to the structure that makes movement safer.";
+      } else if (primary === "Reconstructive" && field === "Contained") {
+        read = "Your baseline knows how to rebuild under pressure, while today may pull the repair process inward. The work may be real, but it may need privacy before action.";
+        lean = "Private repair, protected honesty, and one careful adjustment.";
+        watch = "Holding repair pressure inside until it becomes heavier than necessary.";
+        move = "Name one weak point quietly and decide the smallest safe repair.";
+        ret = "Let the repair have a container before it becomes a crisis.";
+      } else if (primary === "Reconstructive" && field === "Relational") {
+        read = "Your baseline rebuilds through pressure, while today may bring repair through contact or relationship. Something may need honesty, but the whole bond does not need to be rebuilt at once.";
+        lean = "Specific repair, truthful tone, and trust rebuilt through small actions.";
+        watch = "Reading one relational strain as proof that everything is broken.";
+        move = "Ask what one adjustment would make the connection more workable.";
+        ret = "Return to the repairable piece, not the whole history.";
+      } else if (primary === "Reconstructive" && field === "Threshold") {
+        read = "Your baseline transforms pressure, and today may bring a crossing point. This can be useful, but the threshold needs a clean container before you rebuild around it.";
+        lean = "Timed repair, clear decisions, and changing only what is actually ready.";
+        watch = "Turning an opening into a full overhaul before the field can support it.";
+        move = "Cross one practical threshold that strengthens the structure.";
+        ret = "Come back to timing before you deepen the repair.";
+      } else if (primary === "Reconstructive" && field === "Integrative") {
+        read = "Your baseline rebuilds what pressure exposes, while today may connect more meaning around the repair. Let the pattern teach you without making every old piece part of today’s rebuild.";
+        lean = "Meaningful repair, clean synthesis, and learning from the pressure.";
+        watch = "Pulling too many layers into one repair until the work feels endless.";
+        move = "Extract one lesson and turn it into one concrete adjustment.";
+        ret = "Return to the piece that can actually be rebuilt now.";
+      } else if (primary === "Reconstructive" && field === "Diffused") {
+        read = "Your baseline works through deep repair, while today may make the field softer, foggier, or harder to define. Do not rebuild from unclear pressure.";
+        lean = "Gentle sorting, rest, and waiting for the real weak point to show itself.";
+        watch = "Treating vague discomfort like a full structural failure.";
+        move = "Separate unclear atmosphere from the one repair you can name.";
+        ret = "Come back to what is concrete, repairable, and present.";
       } else if (primary === "Reconstructive" && field === "Chaotic") {
         read = "Your baseline knows how to rebuild, while today may add movement, disruption, or scattered pressure. Let the energy reveal what needs repair without turning it into a crisis.";
         lean = "Controlled movement, practical repair, and releasing pressure safely.";
@@ -2510,6 +2576,36 @@
         watch = "Turning ordinary strain into a crisis rebuild.";
         move = "Fix the one part that actually needs attention.";
         ret = "Let steadiness prove that not everything is breaking.";
+      } else if (primary === "Integrative" && field === "Structured") {
+        read = "Your baseline wants the larger pattern, while today may offer form and sequence. Let structure make the meaning useful instead of shrinking it.";
+        lean = "Clear frameworks, practical synthesis, and one organized next step.";
+        watch = "Trying to fit every layer into the structure before anything can move.";
+        move = "Turn one big pattern into one usable outline.";
+        ret = "Come back to the form that helps the meaning land.";
+      } else if (primary === "Integrative" && field === "Contained") {
+        read = "Your baseline gathers many pieces, while today may pull the field inward. The meaning may need quiet before it becomes clear.";
+        lean = "Private synthesis, slower reflection, and protecting unfinished meaning.";
+        watch = "Filling the quiet with too many interpretations.";
+        move = "Let one connection settle privately before sharing or expanding it.";
+        ret = "Return to the meaning that brings steadiness, not more pressure.";
+      } else if (primary === "Integrative" && field === "Relational") {
+        read = "Your baseline connects patterns, while today may bring those patterns through people, tone, or shared field. Let contact clarify meaning without making you responsible for everyone’s layer.";
+        lean = "Shared understanding, clean contact, and naming the pattern simply.";
+        watch = "Absorbing the whole relational field because you can see how it connects.";
+        move = "Name one shared pattern and keep responsibility proportional.";
+        ret = "Come back to your part of the meaning.";
+      } else if (primary === "Integrative" && field === "Threshold") {
+        read = "Your baseline wants to integrate the whole picture, while today may ask for a crossing before every piece is resolved. The move can still be wise if it is small and clean.";
+        lean = "Decisions that simplify the pattern and make the next step clearer.";
+        watch = "Delaying the crossing because you want total integration first.";
+        move = "Choose the one step that resolves the most pressure without forcing everything.";
+        ret = "Return to the pattern that is ready, not the pattern that is still forming.";
+      } else if (primary === "Integrative" && field === "Reconstructive") {
+        read = "Your baseline gathers meaning, while today may bring repair pressure. Let the repair teach you, but do not turn every piece of history into today’s work.";
+        lean = "Meaningful repair, honest synthesis, and one concrete change.";
+        watch = "Making the rebuild too large because every layer connects.";
+        move = "Extract one lesson and apply it to one real pressure point.";
+        ret = "Come back to the present repair, not the entire story.";
       } else if (primary === "Integrative" && field === "Diffused") {
         read = "Your baseline wants to gather the pieces, while today may make the field wider, softer, or less defined. Do not try to make meaning from everything at once.";
         lean = "Soft sorting, fewer inputs, and letting unclear pieces remain loose.";
@@ -2528,6 +2624,36 @@
         watch = "Trying to integrate every fragment at once.";
         move = "Pick the one connection that clarifies the rest.";
         ret = "Let the extra fragments stay outside the center for now.";
+      } else if (primary === "Diffused" && field === "Contained") {
+        read = "Your baseline receives widely, while today may pull the field inward. This can help reduce noise, but too much retreat may make the signal harder to define.";
+        lean = "Quiet boundaries, low input, and letting impressions settle.";
+        watch = "Drifting into isolation or holding the whole atmosphere inside.";
+        move = "Choose one private grounding action that gives the field a soft edge.";
+        ret = "Return to the body before trying to interpret the whole atmosphere.";
+      } else if (primary === "Diffused" && field === "Chaotic") {
+        read = "Your baseline is porous, and today may add charge, movement, or disruption. The field can scatter quickly, so give your attention one gentle anchor.";
+        lean = "Simple grounding, fewer inputs, and movement that stays contained.";
+        watch = "Following every ripple until the day loses shape.";
+        move = "Pick one physical or practical anchor before responding to more signal.";
+        ret = "Come back to one place, one task, or one breath.";
+      } else if (primary === "Diffused" && field === "Relational") {
+        read = "Your baseline receives widely, while today may bring contact and tone into focus. You may pick up more than people are saying, so check what is actually yours.";
+        lean = "Gentle connection, clear boundaries, and slow interpretation.";
+        watch = "Absorbing someone else’s mood as if it is your instruction.";
+        move = "Name what you feel, then separate yours from theirs.";
+        ret = "Return to your own center before repairing the shared field.";
+      } else if (primary === "Diffused" && field === "Reconstructive") {
+        read = "Your baseline is subtle and wide, while today may bring repair pressure. Do not rebuild from fog. Wait for the repair point to become clear enough to name.";
+        lean = "Soft sorting, rest, and one concrete repair if it becomes visible.";
+        watch = "Treating vague pressure like proof that everything needs fixing.";
+        move = "Ask what is actually broken, what is only unclear, and what can wait.";
+        ret = "Come back to the repair you can name, not the pressure you can only feel.";
+      } else if (primary === "Diffused" && field === "Integrative") {
+        read = "Your baseline receives widely, while today may connect meaning across the field. This can be rich, but it may also become too much if every impression turns into a pattern.";
+        lean = "Gentle synthesis, fewer layers, and one useful meaning.";
+        watch = "Making meaning from every atmosphere, symbol, or emotional signal.";
+        move = "Choose one insight that helps you move more calmly today.";
+        ret = "Let the rest stay open without needing to resolve it.";
       } else if (primary === "Diffused" && field === "Threshold") {
         read = "Your baseline receives widely, while today may ask for a choice, boundary, or crossing. You do not need total clarity to choose one direction.";
         lean = "Small decisions, simple boundaries, and gentle commitment.";
@@ -2546,6 +2672,36 @@
         watch = "Feeling trapped by structure or avoiding definition entirely.";
         move = "Give the field one sentence or one boundary.";
         ret = "Let clarity be small, not total.";
+      } else if (primary === "Regulated" && field === "Contained") {
+        read = "Your baseline manages pressure through pacing, while today may pull the field inward. This can support calm sorting, but it can also become too much holding.";
+        lean = "Quiet regulation, simple routines, and protected emotional pacing.";
+        watch = "Managing everything privately until the pressure has nowhere to go.";
+        move = "Release one small piece of pressure safely before it bottlenecks.";
+        ret = "Let containment support regulation without turning into restriction.";
+      } else if (primary === "Regulated" && field === "Relational") {
+        read = "Your baseline stabilizes through pacing, while today may bring contact, tone, or repair into focus. Let connection be steady rather than overly managed.";
+        lean = "Paced communication, calm repair, and clear agreements.";
+        watch = "Trying to control the relational field so nothing gets messy.";
+        move = "Make one simple contact point clearer without managing the whole exchange.";
+        ret = "Return to steady presence, not emotional control.";
+      } else if (primary === "Regulated" && field === "Threshold") {
+        read = "Your baseline prefers pacing and control, while today may bring an edge or decision point. The threshold may be real, but it does not need to be rushed or over-managed.";
+        lean = "Measured decisions, clean timing, and preparing before crossing.";
+        watch = "Delaying too long because movement feels less safe than management.";
+        move = "Choose one small crossing that your system can actually hold.";
+        ret = "Let pacing support movement instead of preventing it.";
+      } else if (primary === "Regulated" && field === "Integrative") {
+        read = "Your baseline regulates load, while today may widen the meaning or connect more layers. Let the pattern inform you, but keep the amount manageable.";
+        lean = "Practical synthesis, paced reflection, and one usable insight.";
+        watch = "Trying to manage every layer of meaning until the day becomes heavy.";
+        move = "Choose one insight and turn it into one regulated action.";
+        ret = "Return to the amount of meaning your system can hold today.";
+      } else if (primary === "Regulated" && field === "Diffused") {
+        read = "Your baseline likes pacing and control, while today may feel softer, foggier, or harder to define. Do not over-control the fog. Give it a gentle boundary.";
+        lean = "Soft structure, fewer inputs, and simple nervous-system pacing.";
+        watch = "Tightening too much because the field feels unclear.";
+        move = "Set one light boundary and let the rest remain undefined for now.";
+        ret = "Come back to gentle rhythm instead of hard control.";
       } else if (primary === "Regulated" && field === "Reconstructive") {
         read = "Your baseline manages pressure through pacing, while today may bring repair or rebuilding pressure. Do not only manage symptoms; allow one honest adjustment.";
         lean = "Measured repair, controlled honesty, and practical change.";
@@ -2576,6 +2732,86 @@
       }
 
       return { read, lean, watch, move, ret };
+    }
+
+    function buildDriverNote(data, harmonics, fieldTrend){
+      const driver = primaryDriverName(data);
+      const field = harmonics?.todayField || "Regulated";
+      const trend = fieldTrend?.trend || "Stable";
+      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
+      const planetary = data?.planetary || {};
+
+      const volatility = safeNum(
+        planetary.uranus,
+        driverValueFromTaggedList(data?.telemetry?.topDrivers, "Uranus")
+      );
+      const fog = safeNum(
+        planetary.neptune,
+        driverValueFromTaggedList(data?.telemetry?.topDrivers, "Neptune")
+      );
+      const activation = safeNum(
+        planetary.mars,
+        driverValueFromTaggedList(data?.telemetry?.topDrivers, "Mars")
+      );
+
+      const cleanDriver = driver && driver !== "—" ? driver : "The strongest current driver";
+      const driverLower = String(cleanDriver).toLowerCase();
+
+      let note = `${cleanDriver} may be shaping how today’s field lands in your system. With a ${field.toLowerCase()} field and a ${trend.toLowerCase()} trend, keep the read practical and choose one manageable next move.`;
+
+      if (driverLower.includes("pluto")) {
+        note = "Pluto may make the pressure feel deeper, heavier, or more fundamental today. Treat it as a signal for one honest repair, not proof that the whole system has to be rebuilt.";
+      } else if (driverLower.includes("mars")) {
+        note = "Mars may raise activation, urgency, or heat today. Use the extra charge for one clear action instead of letting it push the whole field faster than it needs to go.";
+      } else if (driverLower.includes("uranus")) {
+        note = "Uranus may add movement, disruption, or sudden signal today. Let the change show you what needs attention without reacting to every spark.";
+      } else if (driverLower.includes("neptune")) {
+        note = "Neptune may make the field feel more porous, foggy, or emotionally blended today. Reduce extra input and look for one simple true line.";
+      } else if (driverLower.includes("saturn")) {
+        note = "Saturn may add pressure, limits, or structure today. Use the container to simplify the load instead of turning every limit into a blockage.";
+      } else if (driverLower.includes("venus")) {
+        note = "Venus may bring tone, contact, comfort, or relational regulation into focus today. Let steadiness and repair matter more than perfect control.";
+      } else if (driverLower.includes("mercury")) {
+        note = "Mercury may sharpen language, interpretation, and decision-making today. Name the signal plainly, then stop before analysis becomes extra load.";
+      } else if (driverLower.includes("moon")) {
+        note = "The Moon may make the field more responsive, emotional, or body-led today. Let the signal settle before turning it into a conclusion.";
+      } else if (driverLower.includes("jupiter")) {
+        note = "Jupiter may widen the field, add meaning, or increase scale today. Let the larger pattern help, but do not make the day carry every possibility.";
+      } else if (driverLower.includes("sun")) {
+        note = "The Sun may bring identity, focus, or visibility into the field today. Let the signal clarify direction without forcing the whole self to prove something.";
+      }
+
+      if (field === "Reconstructive" && !driverLower.includes("pluto")) {
+        note += " Because the field is reconstructive, focus on one repair that is actually present.";
+      } else if (field === "Threshold" && !driverLower.includes("mars")) {
+        note += " Because the field is near a threshold, pause before crossing and choose the next step cleanly.";
+      } else if (field === "Diffused" && !driverLower.includes("neptune")) {
+        note += " Because the field is diffused, fewer inputs may help the real signal stand out.";
+      } else if (field === "Chaotic" && !driverLower.includes("uranus")) {
+        note += " Because the field is charged, give the movement one safe container.";
+      }
+
+      if (stateLabel === "Overloaded") {
+        note += " Since the system reads overloaded, reduce scope before adding more interpretation.";
+      } else if (stateLabel === "Threshold") {
+        note += " Since the system reads near threshold, move carefully and avoid forcing the timing.";
+      } else if (stateLabel === "Mobilized") {
+        note += " Since the system reads mobilized, use the momentum without stacking demands.";
+      }
+
+      if (fog >= 0.72 && !driverLower.includes("neptune")) {
+        note += " A higher fog signal can make things feel less defined, so simple language helps.";
+      }
+
+      if (activation >= 0.72 && !driverLower.includes("mars")) {
+        note += " A higher activation signal can make the body want to move faster than the field is ready for.";
+      }
+
+      if (volatility >= 0.72 && !driverLower.includes("uranus")) {
+        note += " A higher volatility signal can make changes feel sudden, so keep the response contained.";
+      }
+
+      return note;
     }
 
     function renderHarmonicLibrary(activePrimary = "", activeField = ""){
@@ -2643,10 +2879,11 @@
       setText("whyConfigText", explanation);
     }
 
-    function updateShareUI({ systemWeather, todayRead, goodMove, returnText, primary, field, state }){
+    function updateShareUI({ systemWeather, todayRead, driverNote, goodMove, returnText, primary, field, state }){
       latestSharePayload = {
         systemWeather,
         todayRead,
+        driverNote,
         goodMove,
         returnText,
         primary,
@@ -2664,6 +2901,7 @@
 
       setText("shareCardWeather", systemWeather);
       setText("shareCardTodayRead", todayRead);
+      setText("shareCardDriverNote", driverNote);
       setText("shareCardGoodMove", goodMove);
       setText("shareCardReturn", returnText);
     }
@@ -2677,6 +2915,9 @@
         "",
         "Today’s Read:",
         latestSharePayload.todayRead,
+        "",
+        "Why Today Feels This Way:",
+        latestSharePayload.driverNote,
         "",
         "One Good Move:",
         latestSharePayload.goodMove,
@@ -2763,6 +3004,7 @@
       const systemWeather = `${primaryMeta.label} baseline × ${fieldMeta.label} field`;
       const guidance = buildDailyGuidance(harmonics, data);
       const driver = primaryDriverName(data);
+      const driverNote = buildDriverNote(data, harmonics, fieldTrend);
 
       setText("systemWeatherLine", systemWeather);
       setText("dailyTodayRead", guidance.read);
@@ -2792,6 +3034,7 @@
       updateShareUI({
         systemWeather,
         todayRead: guidance.read,
+        driverNote,
         goodMove: guidance.move,
         returnText: guidance.ret,
         primary: primaryMeta.label,
