@@ -162,31 +162,6 @@
       line-height:1.45;
     }
 
-    .leftStack{
-      display:grid;
-      gap:12px;
-      margin-top:14px;
-    }
-
-    .statusBlock{
-      padding:14px;
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:rgba(255,255,255,.02);
-      font-size:12px;
-      line-height:1.55;
-      color:var(--muted);
-    }
-
-    .statusBlock strong{
-      color:var(--text);
-      display:block;
-      margin-bottom:6px;
-      font-size:11px;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-    }
-
     .ok{
       color:var(--green);
       font-weight:700;
@@ -313,89 +288,7 @@
       color:var(--gold);
     }
 
-    .outlookCard{
-      border:1px solid rgba(103,193,255,.18);
-      border-radius:20px;
-      padding:18px;
-      background:
-        radial-gradient(circle at 14% 0%, rgba(103,193,255,.08), transparent 34%),
-        linear-gradient(180deg,rgba(15,27,56,.95),rgba(12,24,50,.92));
-      box-shadow:var(--shadow);
-    }
-
-    .outlookHeader{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:14px;
-      margin-bottom:14px;
-    }
-
-    .outlookHeader h2{
-      margin:0;
-      font-size:20px;
-    }
-
-    .outlookHeader p{
-      margin:4px 0 0;
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.5;
-    }
-
-    .outlookGrid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:12px;
-    }
-
-    .outlookBlock{
-      border:1px solid rgba(255,255,255,.075);
-      border-radius:16px;
-      padding:14px;
-      background:rgba(255,255,255,.03);
-      min-height:116px;
-    }
-
-    .outlookBlock.full{
-      grid-column:1 / -1;
-      background:rgba(103,193,255,.045);
-      border-color:rgba(103,193,255,.13);
-    }
-
-    .outlookLabel{
-      color:var(--muted);
-      font-size:11px;
-      font-weight:900;
-      letter-spacing:.10em;
-      text-transform:uppercase;
-      margin-bottom:7px;
-    }
-
-    .outlookValue{
-      color:var(--text);
-      font-size:18px;
-      font-weight:900;
-      line-height:1.25;
-    }
-
-    .outlookText{
-      color:var(--muted);
-      margin-top:8px;
-      font-size:12px;
-      line-height:1.55;
-    }
-
-    .outlookNote{
-      margin-top:12px;
-      color:var(--muted2);
-      font-size:11px;
-      line-height:1.5;
-      border-top:1px solid rgba(255,255,255,.07);
-      padding-top:12px;
-    }
-
-    .profileCard{
+    .liteSummaryCard{
       border:1px solid rgba(103,193,255,.18);
       border-radius:20px;
       padding:18px;
@@ -404,7 +297,7 @@
       box-shadow:var(--shadow);
     }
 
-    .profileHeader{
+    .liteSummaryHeader{
       display:flex;
       align-items:flex-start;
       justify-content:space-between;
@@ -412,25 +305,25 @@
       margin-bottom:14px;
     }
 
-    .profileHeader h2{
+    .liteSummaryHeader h2{
       margin:0;
       font-size:20px;
     }
 
-    .profileHeader p{
+    .liteSummaryHeader p{
       margin:4px 0 0;
       color:var(--muted);
       font-size:13px;
       line-height:1.5;
     }
 
-    .profileGrid{
+    .liteSummaryGrid{
       display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
+      grid-template-columns:repeat(2,minmax(0,1fr));
       gap:12px;
     }
 
-    .profileBlock{
+    .liteSummaryBlock{
       border:1px solid rgba(255,255,255,.075);
       border-radius:16px;
       padding:14px;
@@ -438,15 +331,11 @@
       min-height:110px;
     }
 
-    .profileBlock.wide{
-      grid-column:span 2;
-    }
-
-    .profileBlock.full{
+    .liteSummaryBlock.full{
       grid-column:1 / -1;
     }
 
-    .profileLabel{
+    .liteSummaryLabel{
       color:var(--muted);
       font-size:11px;
       font-weight:800;
@@ -455,14 +344,14 @@
       margin-bottom:7px;
     }
 
-    .profileValue{
+    .liteSummaryValue{
       color:var(--text);
       font-size:18px;
       line-height:1.25;
       font-weight:900;
     }
 
-    .profileDesc{
+    .liteSummaryDesc{
       color:var(--muted);
       margin-top:8px;
       font-size:12px;
@@ -490,55 +379,53 @@
       letter-spacing:.04em;
     }
 
-    .whyReadCard{
-      border:1px solid rgba(103,193,255,.15);
+    .upgradeCard{
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(216,184,76,.20);
       border-radius:20px;
-      padding:18px;
-      background:linear-gradient(180deg,rgba(15,27,56,.90),rgba(11,23,52,.86));
+      padding:20px;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(216,184,76,.10), transparent 34%),
+        radial-gradient(circle at 88% 10%, rgba(103,193,255,.08), transparent 34%),
+        linear-gradient(180deg,rgba(15,27,56,.96),rgba(11,23,52,.92));
       box-shadow:var(--shadow);
     }
 
-    .whyReadGrid{
-      display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
-      gap:10px;
-      margin-top:14px;
-    }
-
-    .whyMini{
-      border:1px solid rgba(255,255,255,.07);
-      border-radius:14px;
-      padding:12px;
-      background:rgba(255,255,255,.026);
-    }
-
-    .whyMini.full{
-      grid-column:1 / -1;
-    }
-
-    .whyMiniLabel{
-      color:var(--muted);
-      font-size:10px;
-      font-weight:900;
-      letter-spacing:.10em;
-      text-transform:uppercase;
-      margin-bottom:6px;
-    }
-
-    .whyMiniValue{
+    .upgradeCard h2{
+      margin:0;
+      font-size:22px;
       color:var(--text);
-      font-size:14px;
-      font-weight:800;
-      line-height:1.35;
     }
 
-    .whyExplain{
-      margin-top:14px;
-      border-top:1px solid rgba(255,255,255,.07);
-      padding-top:14px;
+    .upgradeCard p{
+      margin:8px 0 0;
       color:var(--muted);
+      font-size:14px;
+      line-height:1.6;
+      max-width:860px;
+    }
+
+    .upgradeButton{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:auto;
+      min-height:42px;
+      margin-top:16px;
+      padding:0 16px;
+      border-radius:999px;
+      background:linear-gradient(180deg,#d8b84c,#a98622);
+      color:#071126;
       font-size:13px;
-      line-height:1.65;
+      font-weight:900;
+      text-decoration:none;
+      border:1px solid rgba(216,184,76,.28);
+      box-shadow:0 10px 24px rgba(0,0,0,.18);
+    }
+
+    .upgradeButton:hover{
+      filter:brightness(1.06);
     }
 
     .shareSection{
@@ -762,375 +649,11 @@
       line-height:1.4;
     }
 
-    .librarySection{
-      border:1px solid rgba(103,193,255,.15);
-      border-radius:20px;
-      background:rgba(6,15,34,.36);
-      overflow:hidden;
-    }
-
-    .librarySection summary{
-      cursor:pointer;
-      list-style:none;
-      padding:18px;
-      color:var(--text);
-      font-size:18px;
-      font-weight:900;
-    }
-
-    .librarySection summary::-webkit-details-marker{
-      display:none;
-    }
-
-    .librarySection summary::after{
-      content:" +";
-      color:var(--muted);
-    }
-
-    .librarySection[open] summary::after{
-      content:" -";
-    }
-
-    .libraryBody{
-      border-top:1px solid rgba(255,255,255,.07);
-      padding:18px;
-    }
-
-    .libraryIntro{
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.55;
-      margin:0 0 14px;
-    }
-
-    .libraryGrid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:12px;
-    }
-
-    .libraryCard{
-      border:1px solid rgba(255,255,255,.075);
-      border-radius:16px;
-      padding:14px;
-      background:rgba(255,255,255,.026);
-      display:grid;
-      gap:8px;
-    }
-
-    .libraryCard.active{
-      border-color:rgba(103,193,255,.32);
-      background:
-        linear-gradient(180deg,rgba(103,193,255,.09),rgba(255,255,255,.025));
-      box-shadow:inset 0 0 0 1px rgba(103,193,255,.08);
-    }
-
-    .libraryCard h3{
-      margin:0;
-      color:var(--gold);
-      font-size:16px;
-      line-height:1.2;
-    }
-
-    .libraryCard p{
-      margin:0;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.5;
-    }
-
-    .libraryCard strong{
-      color:var(--text);
-    }
-
-    .engineDetails{
-      border:1px solid rgba(42,60,105,.75);
-      border-radius:20px;
-      padding:16px;
-      background:rgba(6,15,34,.40);
-    }
-
-    .engineHeader{
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:14px;
-      margin-bottom:14px;
-    }
-
-    .engineHeader h2{
-      margin:0;
-      font-size:18px;
-      color:var(--text);
-    }
-
-    .engineHeader p{
-      margin:4px 0 0;
-      color:var(--muted2);
-      font-size:12px;
-      line-height:1.45;
-    }
-
-    .heroStats{
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      gap:14px;
-      margin-bottom:14px;
-    }
-
-    .stat{
-      background:rgba(255,255,255,.025);
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:16px;
-      min-height:138px;
-    }
-
-    .stat .label{
-      font-size:11px;
-      color:var(--muted);
-      text-transform:uppercase;
-      letter-spacing:.08em;
-    }
-
-    .big{
-      font-size:30px;
-      font-weight:800;
-      margin-top:8px;
-      line-height:1.05;
-    }
-
-    .sub{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:8px;
-      line-height:1.4;
-    }
-
-    .meter{
-      margin-top:12px;
-      height:10px;
-      width:100%;
-      border-radius:999px;
-      background:#081126;
-      border:1px solid var(--line);
-      overflow:hidden;
-    }
-
-    .meter > span{
-      display:block;
-      height:100%;
-      width:0%;
-      transition:width .35s ease;
-    }
-
-    .meter-capacity > span{
-      background:linear-gradient(90deg,#67c1ff,#a1d8ff,#d8b84c);
-    }
-
-    .meter-strain > span{
-      background:linear-gradient(90deg,#67d26f,#d8b84c,#ff6666);
-    }
-
-    .stateBadge{
-      display:inline-block;
-      margin-top:12px;
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:700;
-      background:rgba(103,193,255,.10);
-      color:var(--blue);
-      border:1px solid rgba(103,193,255,.18);
-    }
-
-    .midRow{
-      display:grid;
-      grid-template-columns:1.15fr .85fr;
-      gap:14px;
-      margin-bottom:14px;
-    }
-
-    .microCard{
-      background:rgba(255,255,255,.025);
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:14px 16px;
-      min-height:126px;
-    }
-
-    .microHeader{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      margin-bottom:8px;
-    }
-
-    .microTitle{
-      font-size:11px;
-      color:var(--muted);
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      font-weight:700;
-    }
-
-    .verifiedBadge{
-      display:inline-flex;
-      align-items:center;
-      padding:4px 8px;
-      border-radius:999px;
-      font-size:10px;
-      font-weight:700;
-      color:var(--teal);
-      background:rgba(103,193,255,.08);
-      border:1px solid rgba(103,193,255,.14);
-      white-space:nowrap;
-    }
-
-    .forecastBig{
-      font-size:18px;
-      font-weight:800;
-      margin:2px 0 6px;
-    }
-
-    .forecastSub{
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.45;
-    }
-
-    .whyCard{
-      margin-bottom:16px;
-      background:rgba(255,255,255,.025);
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:18px;
-    }
-
-    .whyTitle{
-      font-size:11px;
-      color:var(--muted);
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      font-weight:700;
-      margin-bottom:8px;
-    }
-
-    .whyText{
-      font-size:13px;
-      color:var(--text);
-      line-height:1.72;
-    }
-
-    .summaryTitle{
-      margin:0 0 10px;
-      font-size:14px;
-      color:var(--text);
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      font-weight:800;
-    }
-
-    .table{
-      width:100%;
-      border-collapse:collapse;
-      font-size:13px;
-    }
-
-    .table th,.table td{
-      padding:11px 8px;
-      border-bottom:1px solid var(--lineSoft);
-      text-align:left;
-      vertical-align:middle;
-    }
-
-    .table th{
-      color:var(--muted);
-      font-size:11px;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-    }
-
-    .badge{
-      display:inline-block;
-      padding:5px 8px;
-      border-radius:999px;
-      font-size:11px;
-      font-weight:700;
-      border:1px solid transparent;
-    }
-
-    .b-blue{background:rgba(103,193,255,.12); color:var(--blue); border-color:rgba(103,193,255,.22)}
-    .b-red{background:rgba(255,102,102,.12); color:var(--red); border-color:rgba(255,102,102,.22)}
-    .b-green{background:rgba(103,210,111,.12); color:var(--green); border-color:rgba(103,210,111,.22)}
-    .b-gold{background:rgba(216,184,76,.12); color:var(--gold); border-color:rgba(216,184,76,.22)}
-    .b-violet{background:rgba(176,108,255,.08); color:#cab1ff; border-color:rgba(176,108,255,.14)}
-
-    .softMetric td{
-      opacity:.82;
-    }
-
-    .bottomGrid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:14px;
-      margin-top:14px;
-    }
-
-    .miniPanel{
-      background:rgba(255,255,255,.025);
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:16px;
-    }
-
-    .metaRow{
-      display:flex;
-      gap:8px;
-      align-items:center;
-      flex-wrap:wrap;
-      margin-top:16px;
-    }
-
-    .metaPill{
-      display:inline-flex;
-      align-items:center;
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:11px;
-      font-weight:700;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.03);
-      color:var(--muted);
-    }
-
-    .metaPill.field{
-      color:#c27cff;
-      background:rgba(176,108,255,.10);
-      border-color:rgba(176,108,255,.16);
-    }
-
-    .metaPill.forecast{
-      color:#6fc0ff;
-      background:rgba(103,193,255,.10);
-      border-color:rgba(103,193,255,.16);
-    }
-
     @media (max-width: 1120px){
       .grid{grid-template-columns:1fr}
       .inputPanel{position:static}
-      .heroStats{grid-template-columns:1fr}
-      .midRow{grid-template-columns:1fr}
-      .bottomGrid{grid-template-columns:1fr}
       .guidanceGrid{grid-template-columns:1fr}
-      .profileGrid{grid-template-columns:1fr}
-      .profileBlock.wide,
-      .profileBlock.full{grid-column:auto}
-      .outlookGrid{grid-template-columns:1fr}
-      .whyReadGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .whyMini.full{grid-column:1 / -1}
-      .libraryGrid{grid-template-columns:1fr}
+      .liteSummaryGrid{grid-template-columns:1fr}
       .shareIntro{
         display:grid;
       }
@@ -1143,13 +666,12 @@
     @media (max-width: 720px){
       .wrap{padding:14px}
       .hero h1{font-size:36px}
-      .panel,.premiumCard,.profileCard,.engineDetails,.whyReadCard,.shareSection,.outlookCard{border-radius:16px}
+      .panel,.premiumCard,.liteSummaryCard,.upgradeCard,.shareSection{border-radius:16px}
       .premiumCard{padding:18px}
       .weatherLine{font-size:28px}
       .todayRead{font-size:15px}
       .todayOutlookLine{border-radius:14px}
-      .profileHeader,.outlookHeader{display:grid}
-      .whyReadGrid{grid-template-columns:1fr}
+      .liteSummaryHeader{display:grid}
       .shareCardInner{padding:22px}
       .shareCardTop{
         display:grid;
@@ -1199,23 +721,6 @@
         <div class="tiny">
           Birth location resolves timezone, angles, and houses for accurate chart input.
         </div>
-
-        <div class="leftStack">
-          <div class="statusBlock">
-            <strong>API Status</strong>
-            <div id="apiStatus">Waiting for calculation.</div>
-          </div>
-
-          <div class="statusBlock">
-            <strong>Chart Input</strong>
-            <div id="resolvedInput">No resolved birth data yet.</div>
-          </div>
-
-          <div class="statusBlock">
-            <strong>Chart Debug</strong>
-            <div id="chartDebug">Awaiting first chart load.</div>
-          </div>
-        </div>
       </div>
 
       <div class="mainStack">
@@ -1258,184 +763,45 @@
           </div>
         </section>
 
-        <section class="outlookCard">
-          <div class="outlookHeader">
+        <section class="liteSummaryCard">
+          <div class="liteSummaryHeader">
             <div>
-              <h2>Current Outlook</h2>
-              <p>Live-field guidance using the current forecast shell. Future projection will be upgraded later.</p>
+              <h2>Lite Harmonic Summary</h2>
+              <p>Your baseline harmonic and today’s active field, kept simple for the public/free version.</p>
             </div>
             <div class="chipRow" style="margin-top:0;">
-              <span class="chip" id="outlookStateChip">State: —</span>
-              <span class="chip" id="outlookFieldChip">Field: —</span>
+              <span class="chip" id="liteSummaryStateChip">Baseline</span>
+              <span class="chip" id="liteSummaryFieldChip">Field: —</span>
             </div>
           </div>
 
-          <div class="outlookGrid">
-            <div class="outlookBlock">
-              <div class="outlookLabel">Now</div>
-              <div class="outlookValue" id="outlookNowState">—</div>
-              <div class="outlookText" id="outlookNowText">Waiting for live state.</div>
+          <div class="liteSummaryGrid">
+            <div class="liteSummaryBlock">
+              <div class="liteSummaryLabel">Primary Harmonic</div>
+              <div class="liteSummaryValue" id="primaryHarmonic">—</div>
+              <div class="liteSummaryDesc">Stable baseline pattern.</div>
             </div>
 
-            <div class="outlookBlock">
-              <div class="outlookLabel">Next 6 Hours</div>
-              <div class="outlookValue" id="outlookShortState">—</div>
-              <div class="outlookText" id="outlookShortText">Waiting for next 6 hours outlook.</div>
+            <div class="liteSummaryBlock">
+              <div class="liteSummaryLabel">Today’s Field Harmonic</div>
+              <div class="liteSummaryValue" id="todayFieldHarmonic">—</div>
+              <div class="liteSummaryDesc">Current live field pattern.</div>
             </div>
 
-            <div class="outlookBlock">
-              <div class="outlookLabel">Next 24 Hours</div>
-              <div class="outlookValue" id="outlook24State">—</div>
-              <div class="outlookText" id="outlook24Text">Waiting for next-day outlook.</div>
-            </div>
-
-            <div class="outlookBlock full">
-              <div class="outlookLabel">Field Direction</div>
-              <div class="outlookValue" id="outlookDirectionTitle">—</div>
-              <div class="outlookText" id="outlookDirectionText">Waiting for field direction.</div>
-            </div>
-          </div>
-
-          <div class="outlookNote">
-            Current Outlook uses the live-field forecast shell only. Separate +6 and +24 hour projections will be added in a later backend pass.
-          </div>
-        </section>
-
-        <section class="profileCard">
-          <div class="profileHeader">
-            <div>
-              <h2>Harmonic Profile</h2>
-              <p>Your baseline pattern, stabilizing support, and overload pathway. Today’s field is separate from your Primary Harmonic.</p>
-            </div>
-            <div class="chipRow">
-              <span class="chip" id="profileStateChip">Baseline</span>
-              <span class="chip" id="profileFieldChip">Field: —</span>
-            </div>
-          </div>
-
-          <div class="profileGrid">
-            <div class="profileBlock">
-              <div class="profileLabel">Primary Harmonic</div>
-              <div class="profileValue" id="primaryHarmonic">—</div>
-              <div class="profileDesc">Stable baseline pattern.</div>
-            </div>
-
-            <div class="profileBlock">
-              <div class="profileLabel">Support Harmonic</div>
-              <div class="profileValue" id="supportHarmonic">—</div>
-              <div class="profileDesc">Secondary stabilizer.</div>
-            </div>
-
-            <div class="profileBlock">
-              <div class="profileLabel">Distortion Harmonic</div>
-              <div class="profileValue" id="distortionHarmonic">—</div>
-              <div class="profileDesc">Overload pathway, not a flaw.</div>
-            </div>
-
-            <div class="profileBlock wide">
-              <div class="profileLabel">Signal Quality</div>
-              <div class="profileValue" id="signalQuality">—</div>
-              <div class="profileDesc">The texture and amount of signal your system tends to carry.</div>
-            </div>
-
-            <div class="profileBlock">
-              <div class="profileLabel">Today’s Field Harmonic</div>
-              <div class="profileValue" id="todayFieldHarmonic">—</div>
-              <div class="profileDesc">Current live field pattern.</div>
-            </div>
-
-            <div class="profileBlock wide">
-              <div class="profileLabel">Stability Method</div>
-              <div class="profileValue" id="stabilityMethod">—</div>
-              <div class="profileDesc">How your system returns toward coherence.</div>
-            </div>
-
-            <div class="profileBlock">
-              <div class="profileLabel">Overload Risk</div>
-              <div class="profileValue" id="overloadRisk">—</div>
-              <div class="profileDesc">Where strain tends to collect.</div>
-            </div>
-
-            <div class="profileBlock full">
-              <div class="profileLabel">Plain Read</div>
+            <div class="liteSummaryBlock full">
+              <div class="liteSummaryLabel">Plain Read</div>
               <div class="guidanceText" id="harmonicPlainRead">Waiting for harmonic profile.</div>
             </div>
           </div>
         </section>
 
-        <section class="whyReadCard">
-          <div class="profileHeader" style="margin-bottom:0;">
-            <div>
-              <h2>Why This Read?</h2>
-              <p>A compact explanation of the current configuration behind the daily guidance.</p>
-            </div>
-          </div>
-
-          <div class="whyReadGrid">
-            <div class="whyMini">
-              <div class="whyMiniLabel">Baseline</div>
-              <div class="whyMiniValue" id="whyBaseline">—</div>
-            </div>
-
-            <div class="whyMini">
-              <div class="whyMiniLabel">Field</div>
-              <div class="whyMiniValue" id="whyField">—</div>
-            </div>
-
-            <div class="whyMini">
-              <div class="whyMiniLabel">State</div>
-              <div class="whyMiniValue" id="whyState">—</div>
-            </div>
-
-            <div class="whyMini">
-              <div class="whyMiniLabel">Primary Driver</div>
-              <div class="whyMiniValue" id="whyDriver">—</div>
-            </div>
-
-            <div class="whyMini">
-              <div class="whyMiniLabel">Load</div>
-              <div class="whyMiniValue" id="whyLoad">—</div>
-            </div>
-
-            <div class="whyMini">
-              <div class="whyMiniLabel">Capacity</div>
-              <div class="whyMiniValue" id="whyCapacity">—</div>
-            </div>
-
-            <div class="whyMini">
-              <div class="whyMiniLabel">Regulation</div>
-              <div class="whyMiniValue" id="whyRegulation">—</div>
-            </div>
-
-            <div class="whyMini">
-              <div class="whyMiniLabel">Distortion Pathway</div>
-              <div class="whyMiniValue" id="whyDistortion">—</div>
-            </div>
-
-            <div class="whyMini">
-              <div class="whyMiniLabel">Direction</div>
-              <div class="whyMiniValue" id="whyDirection">—</div>
-            </div>
-
-            <div class="whyMini">
-              <div class="whyMiniLabel">Peak Timing</div>
-              <div class="whyMiniValue" id="whyPeakTiming">Later backend pass</div>
-            </div>
-
-            <div class="whyMini">
-              <div class="whyMiniLabel">Moonstamp Modifier</div>
-              <div class="whyMiniValue" id="whyMoonstampModifier">Later integration</div>
-            </div>
-
-            <div class="whyMini full">
-              <div class="whyMiniLabel">Rationale</div>
-              <div class="whyMiniValue" id="whyRationale">Waiting for rationale.</div>
-            </div>
-          </div>
-
-          <div class="whyExplain" id="whyConfigText">
-            Waiting for configuration.
-          </div>
+        <section class="upgradeCard">
+          <h2>Unlock Lucy.OS Pro</h2>
+          <p>
+            Go deeper with your support harmonic, distortion pathway, full why-this-read explanation,
+            driver library, engine details, and expanded timing layers.
+          </p>
+          <a class="upgradeButton" href="lucy-os-pro.html">Open Lucy.OS Pro</a>
         </section>
 
         <section class="shareSection">
@@ -1503,185 +869,6 @@
             </div>
 
             <div id="shareStatus" class="shareStatus"></div>
-          </div>
-        </section>
-
-        <details class="librarySection">
-          <summary>Open Harmonic Library</summary>
-          <div class="libraryBody">
-            <p class="libraryIntro">
-              The library is here for context. Your result comes first; the library simply shows the full 9-harmonic vocabulary.
-            </p>
-
-            <div class="libraryGrid" id="harmonicLibraryGrid"></div>
-          </div>
-        </details>
-
-        <section class="engineDetails">
-          <div class="engineHeader">
-            <div>
-              <h2>Engine Details</h2>
-              <p>Technical state, API confirmation, drivers, stabilizers, and chart debug remain visible here.</p>
-            </div>
-            <div class="metaRow" style="margin-top:0;">
-              <span class="metaPill field" id="envBand">Field: —</span>
-              <span class="metaPill forecast" id="forecastBand">Forecast: —</span>
-            </div>
-          </div>
-
-          <div class="heroStats">
-            <div class="stat">
-              <div class="label">Capacity</div>
-              <div class="big" id="capacityScore">0.00</div>
-              <div class="sub" id="capacityLabel">Available system bandwidth</div>
-              <div class="meter meter-capacity"><span id="capacityBar"></span></div>
-            </div>
-
-            <div class="stat">
-              <div class="label">Strain</div>
-              <div class="big" id="strainScore">0.00</div>
-              <div class="sub" id="strainLabel">Current active load</div>
-              <div class="meter meter-strain"><span id="strainBar"></span></div>
-            </div>
-
-            <div class="stat">
-              <div class="label">State</div>
-              <div class="big" id="stateText">Regulated</div>
-              <div class="sub" id="stateLabel">Stable with manageable load</div>
-              <div class="stateBadge" id="stateBadge">Regulated</div>
-            </div>
-          </div>
-
-          <div class="midRow">
-            <div class="microCard">
-              <div class="microHeader">
-                <div class="microTitle">Forecast</div>
-              </div>
-              <div class="forecastBig" id="forecastTitle">Forecast: —</div>
-              <div class="forecastSub" id="forecastText">
-                Waiting for forecast state.
-              </div>
-            </div>
-
-            <div class="microCard">
-              <div class="microHeader">
-                <div class="microTitle">Sky Data</div>
-                <div class="verifiedBadge" id="skyVerified">Verified</div>
-              </div>
-              <div class="forecastBig" id="skyDataTitle">Chart Loaded</div>
-              <div class="forecastSub" id="skyDataText">
-                Waiting for resolved birth data and ephemeris source confirmation.
-              </div>
-            </div>
-          </div>
-
-          <div class="whyCard">
-            <div class="whyTitle">Why</div>
-            <div class="whyText" id="whyText">Waiting for chart interpretation.</div>
-          </div>
-
-          <div class="summaryTitle">System Summary</div>
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Metric</th>
-                <th>Value</th>
-                <th>Band</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Capacity</td>
-                <td id="capVal">0.00</td>
-                <td><span class="badge b-gold">Capacity</span></td>
-              </tr>
-              <tr>
-                <td>Amplified Load</td>
-                <td id="loadVal">0.00</td>
-                <td><span class="badge b-red">Load</span></td>
-              </tr>
-              <tr>
-                <td>Regulation</td>
-                <td id="regVal">0.00</td>
-                <td><span class="badge b-green">Regulation</span></td>
-              </tr>
-              <tr>
-                <td>Effective Load</td>
-                <td id="effVal">0.00</td>
-                <td><span class="badge b-blue">Net</span></td>
-              </tr>
-              <tr class="softMetric">
-                <td>Regulator Average</td>
-                <td id="stabilityVal">0.00</td>
-                <td><span class="badge b-violet">Derived</span></td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div class="bottomGrid">
-            <div class="miniPanel">
-              <div class="summaryTitle" style="font-size:13px; margin-bottom:10px;">Active Drivers</div>
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Driver</th>
-                    <th>Strength</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Primary Driver</td>
-                    <td id="primaryDriver">—</td>
-                  </tr>
-                  <tr>
-                    <td>Volatility (Uranus)</td>
-                    <td id="volatilityVal">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Fog (Neptune)</td>
-                    <td id="fogVal">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Activation (Mars)</td>
-                    <td id="activationVal">0.00</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div class="miniPanel">
-              <div class="summaryTitle" style="font-size:13px; margin-bottom:10px;">Stabilizers</div>
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Regulator</th>
-                    <th>Strength</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Saturn</td>
-                    <td id="saturnVal">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Venus</td>
-                    <td id="venusVal">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Mercury</td>
-                    <td id="mercuryVal">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Current State</td>
-                    <td id="stateCondition">—</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class="tiny">
-            Forecast, regulator average, harmonic routing, and why-line are interpretive layers on top of the current V2.5 engine.
           </div>
         </section>
       </div>
@@ -1777,20 +964,9 @@
       return Number.isFinite(n) ? n : fallback;
     }
 
-    function fmt(v){
-      return safeNum(v).toFixed(2);
-    }
-
     function setText(id, value){
       const el = document.getElementById(id);
       if (el) el.textContent = value;
-    }
-
-    function setBar(id, value, max = 1.2){
-      const el = document.getElementById(id);
-      if (!el) return;
-      const pct = clamp((safeNum(value) / max) * 100, 0, 100);
-      el.style.width = pct + "%";
     }
 
     function slugify(value){
@@ -1829,34 +1005,16 @@
       return "Regulated";
     }
 
-    function stateHelperFromMode(modeText){
-      const text = String(modeText || "").toLowerCase();
-      if (text.includes("overload")) return "System is carrying more than it can comfortably regulate";
-      if (text.includes("threshold") || text.includes("strain")) return "Load is approaching capacity";
-      if (text.includes("mobilized") || text.includes("active")) return "Elevated activity, still functioning";
-      return "Stable with manageable load";
-    }
-
-    function strainLabelFromStrain(strain){
-      const s = safeNum(strain);
-      if (s < 0.60) return "Current active load";
-      if (s < 0.85) return "Moderate active load";
-      if (s < 1.00) return "High strain";
-      return "Critical load";
-    }
-
-    function capacityLabelFromValue(){
-      return "Available system bandwidth";
-    }
-
-    function envBandFromMode(envMode){
-      const text = String(envMode || "").trim();
-      return `Field: ${text || "—"}`;
-    }
-
-    function forecastBandFromState(forecastState){
-      const text = String(forecastState || "").trim();
-      return `Forecast: ${text || "—"}`;
+    function fieldPhraseFromHarmonic(field){
+      if (field === "Reconstructive") return "repair pressure";
+      if (field === "Chaotic") return "movement pressure";
+      if (field === "Threshold") return "edge pressure";
+      if (field === "Diffused") return "diffusion pressure";
+      if (field === "Contained") return "inward pressure";
+      if (field === "Relational") return "contact pressure";
+      if (field === "Integrative") return "meaning pressure";
+      if (field === "Structured") return "structure support";
+      return "field pressure";
     }
 
     function driverValueFromTaggedList(list, planetName){
@@ -1869,93 +1027,6 @@
 
     function primaryDriverName(data){
       return data?.telemetry?.primaryDriver || "—";
-    }
-
-    function loadBandFromValue(load){
-      const value = safeNum(load);
-      if (value < 0.45) return "Low";
-      if (value < 0.75) return "Moderate";
-      if (value < 1.00) return "High";
-      return "Overloaded";
-    }
-
-    function capacityBandFromValue(capacity){
-      const value = safeNum(capacity);
-      if (value < 0.55) return "Limited";
-      if (value < 0.85) return "Decent";
-      return "Strong";
-    }
-
-    function regulationBandFromValue(regulation){
-      const value = safeNum(regulation);
-      if (value < 0.40) return "Low";
-      if (value < 0.70) return "Moderate";
-      return "Strong";
-    }
-
-    function buildWhyText({ modeText, primaryDriver, fog, activation, mercury, saturn, venus }) {
-      const parts = [];
-
-      if (safeNum(fog) >= 0.65) parts.push("Neptune is increasing diffusion");
-      if (safeNum(activation) >= 0.65) parts.push("Mars is raising activation");
-      if (safeNum(mercury) >= 0.65) parts.push("Mercury is improving signal clarity");
-      if (safeNum(saturn) >= 0.65) parts.push("Saturn is adding constraint");
-      if (safeNum(venus) >= 0.65) parts.push("Venus is supporting regulation");
-
-      let front = parts.slice(0, 3).join(" + ");
-      if (!front) {
-        front = `${primaryDriver || "Current drivers"} are within stable operating range`;
-      }
-
-      return `${front}. Current mode is ${String(modeText || "Regulated").toLowerCase()}.`;
-    }
-
-    function forecastTextFromState(forecastState){
-      const state = String(forecastState || "").toLowerCase();
-
-      if (state.includes("overload")) {
-        return "The current field is carrying more load. Reduce inputs, simplify choices, and avoid stacking pressure.";
-      }
-
-      if (state.includes("threshold")) {
-        return "The current field is near an edge. Move carefully, pace decisions, and do not force the crossing.";
-      }
-
-      if (state.includes("mobilized")) {
-        return "The current field is active. Use the momentum, but keep the load contained and paced.";
-      }
-
-      return "The current field is regulated enough for steady, focused movement.";
-    }
-
-    function outlookTextFromState(forecastState, horizonLabel){
-      const state = String(forecastState || "").toLowerCase();
-
-      if (state.includes("overload")) {
-        return `${horizonLabel} reads as overloaded. Reduce extra input, simplify choices, and do not add unnecessary pressure.`;
-      }
-
-      if (state.includes("threshold")) {
-        return `${horizonLabel} reads near an edge. Pause before crossing and choose one clean move.`;
-      }
-
-      if (state.includes("mobilized")) {
-        return `${horizonLabel} reads active. Use the available momentum, but avoid stacking too many demands.`;
-      }
-
-      return `${horizonLabel} reads steady enough for paced action, simple focus, and clean follow-through.`;
-    }
-
-    function fieldPhraseFromHarmonic(field){
-      if (field === "Reconstructive") return "repair pressure";
-      if (field === "Chaotic") return "movement pressure";
-      if (field === "Threshold") return "edge pressure";
-      if (field === "Diffused") return "diffusion pressure";
-      if (field === "Contained") return "inward pressure";
-      if (field === "Relational") return "contact pressure";
-      if (field === "Integrative") return "meaning pressure";
-      if (field === "Structured") return "structure support";
-      return "field pressure";
     }
 
     function calculateFieldTrend(data, harmonics){
@@ -1995,98 +1066,6 @@
         fieldPhrase,
         rationale
       };
-    }
-
-    function buildFieldDirectionText(harmonics, data){
-      const field = harmonics?.todayField || "Regulated";
-      const driver = primaryDriverName(data);
-      const driverText = driver && driver !== "—" ? ` ${driver} is the strongest active driver.` : "";
-
-      if (field === "Reconstructive") {
-        return {
-          title: "Repair pressure is active",
-          text: `Reconstructive pressure is active, but this does not mean collapse. Choose one repair rather than rebuilding the whole system.${driverText}`
-        };
-      }
-
-      if (field === "Chaotic") {
-        return {
-          title: "Extra movement is active",
-          text: `The field may feel more mobile, scattered, or charged. Let movement happen, but give it one clean container.${driverText}`
-        };
-      }
-
-      if (field === "Threshold") {
-        return {
-          title: "The field is near an edge",
-          text: `The field may bring openings, decisions, or crossings. Do not rush the threshold. Name the next step before moving.${driverText}`
-        };
-      }
-
-      if (field === "Diffused") {
-        return {
-          title: "The field is more atmospheric",
-          text: `The field may feel subtle, foggy, or harder to define. Reduce inputs and look for one simple true line.${driverText}`
-        };
-      }
-
-      if (field === "Contained") {
-        return {
-          title: "The field is pulling inward",
-          text: `The field favors privacy, inward processing, and protected formation. Let the signal shape quietly before forcing it outward.${driverText}`
-        };
-      }
-
-      if (field === "Relational") {
-        return {
-          title: "Contact is part of the field",
-          text: `The field may clarify through tone, contact, or repair. Stay centered before trying to read or fix the room.${driverText}`
-        };
-      }
-
-      if (field === "Integrative") {
-        return {
-          title: "Meaning is gathering",
-          text: `The field may connect pieces and widen the pattern. Integrate what helps today without carrying every fragment.${driverText}`
-        };
-      }
-
-      if (field === "Structured") {
-        return {
-          title: "Structure is available",
-          text: `The field supports form, sequence, and practical order. Use the container, but do not over-tighten it.${driverText}`
-        };
-      }
-
-      return {
-        title: "Stable field",
-        text: `The field is readable enough to pace your next move. Keep the guidance practical and avoid turning the whole day into a problem to solve.${driverText}`
-      };
-    }
-
-    function updateOutlookUI(data, harmonics){
-      const forecast = data?.forecast || {};
-      const nowState = forecast?.now?.state || stateLabelFromMode(data?.state?.mode || "");
-      const plus6State = forecast?.plus6?.state || nowState;
-      const plus24State = forecast?.plus24?.state || nowState;
-      const field = harmonics?.todayField || "—";
-      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
-      const direction = buildFieldDirectionText(harmonics, data);
-
-      setText("outlookStateChip", `State: ${stateLabel}`);
-      setText("outlookFieldChip", `Field: ${field}`);
-
-      setText("outlookNowState", nowState);
-      setText("outlookNowText", outlookTextFromState(nowState, "Now"));
-
-      setText("outlookShortState", plus6State);
-      setText("outlookShortText", outlookTextFromState(plus6State, "Next 6 hours"));
-
-      setText("outlook24State", plus24State);
-      setText("outlook24Text", outlookTextFromState(plus24State, "Next 24 hours"));
-
-      setText("outlookDirectionTitle", direction.title);
-      setText("outlookDirectionText", direction.text);
     }
 
     function setHeroGlow(modeText, fog, volatility){
@@ -2269,10 +1248,6 @@
         fieldScores,
         distortionScores
       };
-    }
-
-    function getHarmonicBaseName(value){
-      return String(value || "").split("/")[0].trim();
     }
 
     function buildDailyGuidance(harmonics, data){
@@ -2504,7 +1479,9 @@
         watch = "Carrying the whole emotional system because you can see how the pieces connect.";
         move = "Clarify one shared pattern without taking full responsibility for it.";
         ret = "Return to your part of the field, not the whole field.";
-      } else if (primary === "Threshold" && field === "Threshold") {
+      }
+
+      else if (primary === "Threshold" && field === "Threshold") {
         read = "Your threshold baseline is meeting a threshold field today. The sense of edge, opening, or decision may be stronger, so timing matters more than speed.";
         lean = "Clean timing, small crossings, and naming the actual decision point.";
         watch = "Treating every feeling of pressure like it means act now.";
@@ -2868,75 +1845,6 @@
       return note;
     }
 
-    function renderHarmonicLibrary(activePrimary = "", activeField = ""){
-      const grid = document.getElementById("harmonicLibraryGrid");
-      if (!grid) return;
-
-      grid.innerHTML = Object.entries(HARMONICS).map(([key, item]) => {
-        const activeClass = key === activePrimary || key === activeField ? "active" : "";
-        const activeLabel = key === activePrimary
-          ? "Primary baseline"
-          : key === activeField
-            ? "Today’s field"
-            : "";
-
-        return `
-          <article class="libraryCard ${activeClass}">
-            <h3>${item.label}${activeLabel ? ` · ${activeLabel}` : ""}</h3>
-            <p><strong>Signal Quality:</strong> ${item.signalQuality}</p>
-            <p><strong>Stability Method:</strong> ${item.stabilityMethod}</p>
-            <p><strong>Overload Risk:</strong> ${item.overloadRisk}</p>
-            <p>${item.plainRead}</p>
-          </article>
-        `;
-      }).join("");
-    }
-
-    function updateWhyReadUI(harmonics, data, fieldTrend){
-      const state = data?.state || {};
-      const primary = harmonics.primary || "Structured";
-      const field = harmonics.todayField || "Regulated";
-      const currentState = stateLabelFromMode(state.mode || "");
-      const driver = primaryDriverName(data);
-      const loadBand = loadBandFromValue(state.amplifiedLoad);
-      const capacityBand = capacityBandFromValue(state.capacity);
-      const regulationBand = regulationBandFromValue(state.regulation);
-      const distortion = harmonics.distortion || "Diffused";
-
-      setText("whyBaseline", primary);
-      setText("whyField", field);
-      setText("whyState", currentState);
-      setText("whyDriver", driver);
-      setText("whyLoad", loadBand);
-      setText("whyCapacity", capacityBand);
-      setText("whyRegulation", regulationBand);
-      setText("whyDistortion", distortion);
-      setText("whyDirection", fieldTrend.trend);
-      setText("whyRationale", fieldTrend.rationale);
-      setText("whyPeakTiming", "Later backend pass");
-      setText("whyMoonstampModifier", "Later integration");
-
-      let explanation = `This read comes from a ${primary} baseline meeting a ${field} field while the current state is ${currentState.toLowerCase()}. Load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. ${fieldTrend.rationale}`;
-
-      if (primary === "Structured" && field === "Reconstructive") {
-        explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${primary} baseline wants order, sequence, and meaning, while the ${field} field pushes repair pressure. ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild.`;
-      }
-
-      if (currentState === "Threshold" && loadBand === "Overloaded" && capacityBand === "Decent") {
-        explanation += " Load is reading overloaded, but the system still has usable capacity. This is an edge, not a collapse.";
-      }
-
-      if (String(driver).toLowerCase().includes("pluto")) {
-        explanation += " Pluto as the primary driver can make the pressure feel fundamental, but the guidance is still to avoid treating every weak point like the whole system is broken.";
-      }
-
-      if (distortion === field) {
-        explanation += ` The distortion pathway matches today’s field, so the same pattern that is active today can become the overload route if the load keeps stacking.`;
-      }
-
-      setText("whyConfigText", explanation);
-    }
-
     function updateShareUI({ systemWeather, todayRead, driverNote, goodMove, returnText, primary, field, state }){
       latestSharePayload = {
         systemWeather,
@@ -3052,9 +1960,6 @@
     function updateHarmonicUI(data){
       const harmonics = calculateHarmonics(data);
       const primaryMeta = HARMONICS[harmonics.primary] || HARMONICS.Structured;
-      const supportBase = getHarmonicBaseName(harmonics.support);
-      const supportMeta = HARMONICS[supportBase] || HARMONICS.Regulated;
-      const distortionMeta = HARMONICS[harmonics.distortion] || HARMONICS.Diffused;
       const fieldMeta = HARMONICS[harmonics.todayField] || HARMONICS.Regulated;
       const currentState = stateLabelFromMode(data?.state?.mode || "");
       const fieldTrend = calculateFieldTrend(data, harmonics);
@@ -3076,19 +1981,12 @@
       );
 
       setText("primaryHarmonic", primaryMeta.label);
-      setText("supportHarmonic", harmonics.support || supportMeta.label);
-      setText("distortionHarmonic", distortionMeta.label);
       setText("todayFieldHarmonic", fieldMeta.label);
-      setText("signalQuality", primaryMeta.signalQuality);
-      setText("stabilityMethod", primaryMeta.stabilityMethod);
-      setText("overloadRisk", distortionMeta.overloadRisk);
       setText("harmonicPlainRead", primaryMeta.plainRead);
 
-      setText("profileStateChip", `${primaryMeta.label} baseline`);
-      setText("profileFieldChip", `Field: ${fieldMeta.label}`);
+      setText("liteSummaryStateChip", `${primaryMeta.label} baseline`);
+      setText("liteSummaryFieldChip", `Field: ${fieldMeta.label}`);
 
-      updateOutlookUI(data, harmonics);
-      updateWhyReadUI(harmonics, data, fieldTrend);
       updateShareUI({
         systemWeather,
         todayRead: guidance.read,
@@ -3100,30 +1998,16 @@
         state: currentState
       });
 
-      renderHarmonicLibrary(primaryMeta.label, fieldMeta.label);
-
       return harmonics;
     }
 
     function updateUI(data){
-      console.log("Lucy.OS response:", data);
+      console.log("Lucy.OS Lite response:", data);
 
       const state = data?.state || {};
       const telemetry = data?.telemetry || {};
-      const environment = data?.environment || {};
-      const forecast = data?.forecast || {};
       const planetary = data?.planetary || {};
-      const inputResolved = data?.inputResolved || {};
-      const ephemeris = data?.ephemeris || {};
-
-      const capacity = safeNum(state.capacity);
-      const strain = safeNum(state.strain);
-      const load = safeNum(state.amplifiedLoad);
-      const regulation = safeNum(state.regulation);
-      const effective = safeNum(state.effectiveLoad);
       const modeText = state.mode || "Regulated";
-
-      const effectiveDisplay = Math.min(effective, Math.max(capacity * 1.15, 1.10));
 
       const volatility = safeNum(
         planetary.uranus,
@@ -3133,126 +2017,8 @@
         planetary.neptune,
         driverValueFromTaggedList(telemetry.topDrivers, "Neptune")
       );
-      const activation = safeNum(
-        planetary.mars,
-        driverValueFromTaggedList(telemetry.topDrivers, "Mars")
-      );
-
-      const saturn = safeNum(
-        planetary.saturn,
-        driverValueFromTaggedList(telemetry.topRegulators, "Saturn")
-      );
-      const venus = safeNum(
-        planetary.venus,
-        driverValueFromTaggedList(telemetry.topRegulators, "Venus")
-      );
-      const mercury = safeNum(
-        planetary.mercury,
-        driverValueFromTaggedList(telemetry.topRegulators, "Mercury")
-      );
-
-      const regulatorAverage = (saturn + venus + mercury) / 3;
 
       updateHarmonicUI(data);
-
-      setText("capacityScore", fmt(capacity));
-      setText("capacityLabel", capacityLabelFromValue(capacity));
-
-      setText("strainScore", fmt(strain));
-      setText("strainLabel", strainLabelFromStrain(strain));
-
-      setText("stateText", stateLabelFromMode(modeText));
-      setText("stateLabel", stateHelperFromMode(modeText));
-      setText("stateBadge", stateLabelFromMode(modeText));
-
-      setBar("capacityBar", capacity, 1.2);
-      setBar("strainBar", strain, 1.2);
-
-      setText("capVal", fmt(capacity));
-      setText("loadVal", fmt(load));
-      setText("regVal", fmt(regulation));
-      setText("effVal", fmt(effectiveDisplay));
-      setText("stabilityVal", fmt(regulatorAverage));
-
-      setText("primaryDriver", primaryDriverName(data));
-      setText("volatilityVal", fmt(volatility));
-      setText("fogVal", fmt(fog));
-      setText("activationVal", fmt(activation));
-
-      setText("saturnVal", fmt(saturn));
-      setText("venusVal", fmt(venus));
-      setText("mercuryVal", fmt(mercury));
-      setText("stateCondition", stateLabelFromMode(modeText));
-
-      const forecastState = forecast?.now?.state || stateLabelFromMode(modeText);
-      setText("forecastTitle", forecastState);
-      setText("forecastText", forecastTextFromState(forecastState));
-
-      const resolvedLocation =
-        inputResolved.resolvedLocation ||
-        inputResolved.locationResolved ||
-        "—";
-
-      const resolvedTime =
-        inputResolved.localTimeResolved ||
-        inputResolved.local_time_resolved ||
-        "—";
-
-      const timezoneName =
-        inputResolved.timezoneName ||
-        inputResolved.timezone_name ||
-        "—";
-
-      const utcDatetime =
-        ephemeris.utcDatetime ||
-        ephemeris.utc_datetime ||
-        "—";
-
-      setText("skyDataTitle", ephemeris.source ? "Verified" : "Pending");
-      setText(
-        "skyDataText",
-        ephemeris.source
-          ? "Live ephemeris and resolved location confirmed."
-          : `Local: ${resolvedTime} • UTC: ${utcDatetime} • ${resolvedLocation} • ${timezoneName}`
-      );
-
-      setText(
-        "whyText",
-        buildWhyText({
-          modeText: stateLabelFromMode(modeText),
-          primaryDriver: primaryDriverName(data),
-          fog,
-          activation,
-          mercury,
-          saturn,
-          venus
-        })
-      );
-
-      setText("envBand", envBandFromMode(environment.environmentMode));
-      setText("forecastBand", forecastBandFromState(forecastState));
-
-      setText(
-        "resolvedInput",
-        `Local: ${resolvedTime} | UTC: ${utcDatetime} | Place: ${resolvedLocation} | TZ: ${timezoneName}`
-      );
-
-      setText(
-        "apiStatus",
-        `OK • ${ephemeris.source || "API"} • ${ephemeris.mode || "natal"}`
-      );
-      document.getElementById("apiStatus").className = "ok";
-
-      const sunDeg = data?._longitudesDeg?.sun ?? "—";
-      const moonDeg = data?._longitudesDeg?.moon ?? "—";
-      const ascDeg = data?.angles?.asc ?? "—";
-      const mcDeg = data?.angles?.mc ?? "—";
-
-      setText(
-        "chartDebug",
-        `JD: ${ephemeris.jdUt || ephemeris.jd_ut || "—"} | Sun: ${sunDeg} | Moon: ${moonDeg} | ASC: ${ascDeg} | MC: ${mcDeg}`
-      );
-
       setHeroGlow(modeText, fog, volatility);
     }
 
@@ -3274,9 +2040,6 @@
         btn.disabled = true;
         btn.textContent = "Calculating...";
 
-        setText("apiStatus", "Calculating...");
-        document.getElementById("apiStatus").className = "";
-
         const response = await fetch(API_URL, {
           method: "POST",
           headers: {
@@ -3294,8 +2057,6 @@
         updateUI(data);
       } catch (err) {
         console.error(err);
-        setText("apiStatus", `Error • ${err.message}`);
-        document.getElementById("apiStatus").className = "err";
         alert("Calculation failed. Check API deployment or payload.");
       } finally {
         const btn = document.getElementById("calcBtn");
@@ -3313,7 +2074,6 @@
     document.getElementById("ampm").value = "AM";
     document.getElementById("location").value = "Cuero, TX";
 
-    renderHarmonicLibrary();
     calculate();
   </script>
 
