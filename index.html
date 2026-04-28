@@ -1297,7 +1297,7 @@
           </div>
 
           <div class="outlookNote">
-            Current outlook uses the live-field forecast shell. Separate +6 and +24 hour projection will be added in a later backend pass.
+            Current Outlook uses the live-field forecast shell only. Separate +6 and +24 hour projections will be added in a later backend pass.
           </div>
         </section>
 
@@ -1947,15 +1947,15 @@
     }
 
     function fieldPhraseFromHarmonic(field){
-      if (field === "Reconstructive") return "Repair pressure active";
-      if (field === "Chaotic") return "Movement pressure active";
-      if (field === "Threshold") return "Edge pressure active";
-      if (field === "Diffused") return "Diffusion pressure active";
-      if (field === "Contained") return "Inward pressure active";
-      if (field === "Relational") return "Contact pressure active";
-      if (field === "Integrative") return "Meaning pressure active";
-      if (field === "Structured") return "Structure support active";
-      return "Field stable";
+      if (field === "Reconstructive") return "repair pressure";
+      if (field === "Chaotic") return "movement pressure";
+      if (field === "Threshold") return "edge pressure";
+      if (field === "Diffused") return "diffusion pressure";
+      if (field === "Contained") return "inward pressure";
+      if (field === "Relational") return "contact pressure";
+      if (field === "Integrative") return "meaning pressure";
+      if (field === "Structured") return "structure support";
+      return "field pressure";
     }
 
     function calculateFieldTrend(data, harmonics){
@@ -1981,7 +1981,7 @@
         field === "Threshold"
       ) {
         trend = "Intensifying";
-        rationale = `${driver} is increasing ${fieldPhrase.toLowerCase()}; trend reads as intensifying.`;
+        rationale = `${driver} is increasing ${fieldPhrase}; trend reads as intensifying.`;
       } else if (modeLabel === "Mobilized" || strain >= 0.60 || load >= 0.75) {
         trend = "Active";
         rationale = `The field is active but still workable; ${driver} is the strongest driver.`;
@@ -2516,7 +2516,6 @@
         watch = "Pushing for outward movement before the inner field has caught up.";
         move = "Choose one private preparation step that makes the threshold cleaner.";
         ret = "Return to the edge without forcing it open.";
-
       } else if (primary === "Threshold" && field === "Chaotic") {
         read = "Your baseline is already sensitive to turning points, and today may add extra charge or disruption. The edge may feel louder than it is. Slow the reaction before you cross.";
         lean = "Focused activation, clean timing, and movement that has a target.";
@@ -2921,6 +2920,10 @@
 
       if (primary === "Structured" && field === "Reconstructive") {
         explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${primary} baseline wants order, sequence, and meaning, while the ${field} field pushes repair pressure. ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild.`;
+      }
+
+      if (currentState === "Threshold" && loadBand === "Overloaded" && capacityBand === "Decent") {
+        explanation += " Load is reading overloaded, but the system still has usable capacity. This is an edge, not a collapse.";
       }
 
       if (String(driver).toLowerCase().includes("pluto")) {
