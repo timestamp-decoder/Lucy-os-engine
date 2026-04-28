@@ -297,6 +297,88 @@
       line-height:1.58;
     }
 
+    .outlookCard{
+      border:1px solid rgba(103,193,255,.18);
+      border-radius:20px;
+      padding:18px;
+      background:
+        radial-gradient(circle at 14% 0%, rgba(103,193,255,.08), transparent 34%),
+        linear-gradient(180deg,rgba(15,27,56,.95),rgba(12,24,50,.92));
+      box-shadow:var(--shadow);
+    }
+
+    .outlookHeader{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:14px;
+    }
+
+    .outlookHeader h2{
+      margin:0;
+      font-size:20px;
+    }
+
+    .outlookHeader p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .outlookGrid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+    }
+
+    .outlookBlock{
+      border:1px solid rgba(255,255,255,.075);
+      border-radius:16px;
+      padding:14px;
+      background:rgba(255,255,255,.03);
+      min-height:116px;
+    }
+
+    .outlookBlock.full{
+      grid-column:1 / -1;
+      background:rgba(103,193,255,.045);
+      border-color:rgba(103,193,255,.13);
+    }
+
+    .outlookLabel{
+      color:var(--muted);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      margin-bottom:7px;
+    }
+
+    .outlookValue{
+      color:var(--text);
+      font-size:18px;
+      font-weight:900;
+      line-height:1.25;
+    }
+
+    .outlookText{
+      color:var(--muted);
+      margin-top:8px;
+      font-size:12px;
+      line-height:1.55;
+    }
+
+    .outlookNote{
+      margin-top:12px;
+      color:var(--muted2);
+      font-size:11px;
+      line-height:1.5;
+      border-top:1px solid rgba(255,255,255,.07);
+      padding-top:12px;
+    }
+
     .profileCard{
       border:1px solid rgba(103,193,255,.18);
       border-radius:20px;
@@ -1025,6 +1107,7 @@
       .profileGrid{grid-template-columns:1fr}
       .profileBlock.wide,
       .profileBlock.full{grid-column:auto}
+      .outlookGrid{grid-template-columns:1fr}
       .whyReadGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
       .libraryGrid{grid-template-columns:1fr}
       .shareIntro{
@@ -1039,11 +1122,11 @@
     @media (max-width: 720px){
       .wrap{padding:14px}
       .hero h1{font-size:36px}
-      .panel,.premiumCard,.profileCard,.engineDetails,.whyReadCard,.shareSection{border-radius:16px}
+      .panel,.premiumCard,.profileCard,.engineDetails,.whyReadCard,.shareSection,.outlookCard{border-radius:16px}
       .premiumCard{padding:18px}
       .weatherLine{font-size:28px}
       .todayRead{font-size:15px}
-      .profileHeader{display:grid}
+      .profileHeader,.outlookHeader{display:grid}
       .whyReadGrid{grid-template-columns:1fr}
       .shareCardInner{padding:22px}
       .shareCardTop{
@@ -1146,6 +1229,49 @@
                 <div class="guidanceText" id="dailyReturn">—</div>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section class="outlookCard">
+          <div class="outlookHeader">
+            <div>
+              <h2>Current Outlook</h2>
+              <p>Live-field guidance using the current forecast shell. Future projection will be upgraded later.</p>
+            </div>
+            <div class="chipRow" style="margin-top:0;">
+              <span class="chip" id="outlookStateChip">State: —</span>
+              <span class="chip" id="outlookFieldChip">Field: —</span>
+            </div>
+          </div>
+
+          <div class="outlookGrid">
+            <div class="outlookBlock">
+              <div class="outlookLabel">Now</div>
+              <div class="outlookValue" id="outlookNowState">—</div>
+              <div class="outlookText" id="outlookNowText">Waiting for live state.</div>
+            </div>
+
+            <div class="outlookBlock">
+              <div class="outlookLabel">Short Horizon</div>
+              <div class="outlookValue" id="outlookShortState">—</div>
+              <div class="outlookText" id="outlookShortText">Waiting for short-horizon outlook.</div>
+            </div>
+
+            <div class="outlookBlock">
+              <div class="outlookLabel">Next 24 Hours</div>
+              <div class="outlookValue" id="outlook24State">—</div>
+              <div class="outlookText" id="outlook24Text">Waiting for next-day outlook.</div>
+            </div>
+
+            <div class="outlookBlock full">
+              <div class="outlookLabel">Field Direction</div>
+              <div class="outlookValue" id="outlookDirectionTitle">—</div>
+              <div class="outlookText" id="outlookDirectionText">Waiting for field direction.</div>
+            </div>
+          </div>
+
+          <div class="outlookNote">
+            Outlook is based on the current live field. True +6/+24 projection will be added in a later backend pass.
           </div>
         </section>
 
@@ -1750,6 +1876,117 @@
       return "The current field is regulated enough for steady, focused movement.";
     }
 
+    function outlookTextFromState(forecastState, horizonLabel){
+      const state = String(forecastState || "").toLowerCase();
+
+      if (state.includes("overload")) {
+        return `${horizonLabel} reads as overloaded. Reduce extra input, simplify choices, and do not add unnecessary pressure.`;
+      }
+
+      if (state.includes("threshold")) {
+        return `${horizonLabel} reads near an edge. Pause before crossing and choose one clean move.`;
+      }
+
+      if (state.includes("mobilized")) {
+        return `${horizonLabel} reads active. Use the available momentum, but avoid stacking too many demands.`;
+      }
+
+      return `${horizonLabel} reads steady enough for paced action, simple focus, and clean follow-through.`;
+    }
+
+    function buildFieldDirectionText(harmonics, data){
+      const field = harmonics?.todayField || "Regulated";
+      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
+      const driver = primaryDriverName(data);
+      const driverText = driver && driver !== "—" ? ` ${driver} is the strongest active driver.` : "";
+
+      if (field === "Reconstructive") {
+        return {
+          title: "Repair pressure is active",
+          text: `Reconstructive pressure is active, but this does not mean collapse. Choose one repair rather than rebuilding the whole system.${driverText}`
+        };
+      }
+
+      if (field === "Chaotic") {
+        return {
+          title: "Extra movement is active",
+          text: `The field may feel more mobile, scattered, or charged. Let movement happen, but give it one clean container.${driverText}`
+        };
+      }
+
+      if (field === "Threshold") {
+        return {
+          title: "The field is near an edge",
+          text: `The field may bring openings, decisions, or crossings. Do not rush the threshold. Name the next step before moving.${driverText}`
+        };
+      }
+
+      if (field === "Diffused") {
+        return {
+          title: "The field is more atmospheric",
+          text: `The field may feel subtle, foggy, or harder to define. Reduce inputs and look for one simple true line.${driverText}`
+        };
+      }
+
+      if (field === "Contained") {
+        return {
+          title: "The field is pulling inward",
+          text: `The field favors privacy, inward processing, and protected formation. Let the signal shape quietly before forcing it outward.${driverText}`
+        };
+      }
+
+      if (field === "Relational") {
+        return {
+          title: "Contact is part of the field",
+          text: `The field may clarify through tone, contact, or repair. Stay centered before trying to read or fix the room.${driverText}`
+        };
+      }
+
+      if (field === "Integrative") {
+        return {
+          title: "Meaning is gathering",
+          text: `The field may connect pieces and widen the pattern. Integrate what helps today without carrying every fragment.${driverText}`
+        };
+      }
+
+      if (field === "Structured") {
+        return {
+          title: "Structure is available",
+          text: `The field supports form, sequence, and practical order. Use the container, but do not over-tighten it.${driverText}`
+        };
+      }
+
+      return {
+        title: `${stateLabel} field`,
+        text: `The field is readable enough to pace your next move. Keep the guidance practical and avoid turning the whole day into a problem to solve.${driverText}`
+      };
+    }
+
+    function updateOutlookUI(data, harmonics){
+      const forecast = data?.forecast || {};
+      const nowState = forecast?.now?.state || stateLabelFromMode(data?.state?.mode || "");
+      const plus6State = forecast?.plus6?.state || nowState;
+      const plus24State = forecast?.plus24?.state || nowState;
+      const field = harmonics?.todayField || "—";
+      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
+      const direction = buildFieldDirectionText(harmonics, data);
+
+      setText("outlookStateChip", `State: ${stateLabel}`);
+      setText("outlookFieldChip", `Field: ${field}`);
+
+      setText("outlookNowState", nowState);
+      setText("outlookNowText", outlookTextFromState(nowState, "Now"));
+
+      setText("outlookShortState", plus6State);
+      setText("outlookShortText", outlookTextFromState(plus6State, "Short horizon"));
+
+      setText("outlook24State", plus24State);
+      setText("outlook24Text", outlookTextFromState(plus24State, "Next 24 hours"));
+
+      setText("outlookDirectionTitle", direction.title);
+      setText("outlookDirectionText", direction.text);
+    }
+
     function setHeroGlow(modeText, fog, volatility){
       const el = document.getElementById("heroGlow");
       if (!el) return;
@@ -2252,6 +2489,7 @@
       setText("profileStateChip", `${primaryMeta.label} baseline`);
       setText("profileFieldChip", `Field: ${fieldMeta.label}`);
 
+      updateOutlookUI(data, harmonics);
       updateWhyReadUI(harmonics, data);
       updateShareUI({
         systemWeather,
