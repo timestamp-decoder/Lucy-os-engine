@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lucy.OS</title>
+  <title>Lucy.OS Pro</title>
 
   <style>
     :root{
@@ -1167,7 +1167,7 @@
     <div class="hero">
       <div class="heroGlow" id="heroGlow"></div>
       <h1>Lucy.OS</h1>
-      <p>Personal field guidance inside the live timing field</p>
+      <p>Full personal field guidance inside the live timing field</p>
     </div>
 
     <div class="grid">
@@ -1219,6 +1219,7 @@
       </div>
 
       <div class="mainStack">
+
         <section class="premiumCard">
           <div class="cardContent">
             <p class="kicker">Today’s System Weather</p>
@@ -1456,7 +1457,7 @@
             <div id="lucyShareCard" class="shareCard">
               <div class="shareCardInner">
                 <div class="shareCardTop">
-                  <span>Lucy.OS</span>
+                  <span>Lucy.OS Pro</span>
                   <span>Personal Field Guidance</span>
                 </div>
 
@@ -1493,7 +1494,7 @@
                   </div>
                 </div>
 
-                <div class="shareFooter">Personal field guidance · Lucy.OS</div>
+                <div class="shareFooter">Personal field guidance · Lucy.OS Pro</div>
               </div>
             </div>
 
@@ -1510,7 +1511,7 @@
           <summary>Open Harmonic Library</summary>
           <div class="libraryBody">
             <p class="libraryIntro">
-              The library is here for context. Your result comes first; the library simply shows the full 9-harmonic vocabulary.
+              The Pro library is here for context. Your result comes first; the library shows the full 9-harmonic vocabulary.
             </p>
 
             <div class="libraryGrid" id="harmonicLibraryGrid"></div>
@@ -2966,7 +2967,7 @@
 
     function getShareText(){
       return [
-        "Lucy.OS",
+        "Lucy.OS Pro",
         "",
         "Today’s System Weather:",
         latestSharePayload.systemWeather,
@@ -2983,7 +2984,7 @@
         "Return to yourself by:",
         latestSharePayload.returnText,
         "",
-        "Personal field guidance · Lucy.OS"
+        "Personal field guidance · Lucy.OS Pro"
       ].join("\n");
     }
 
@@ -3028,8 +3029,8 @@
             return;
           }
 
-          const weatherSlug = slugify(latestSharePayload.systemWeather || "lucy-os");
-          const filename = weatherSlug ? `lucy-os-${weatherSlug}.png` : "lucy-os-share-card.png";
+          const weatherSlug = slugify(latestSharePayload.systemWeather || "lucy-os-pro");
+          const filename = weatherSlug ? `lucy-os-pro-${weatherSlug}.png` : "lucy-os-pro-share-card.png";
 
           const url = URL.createObjectURL(blob);
           const link = document.createElement("a");
@@ -3044,7 +3045,7 @@
           if (status) status.textContent = "Saved share card.";
         }, "image/png");
       } catch (error) {
-        console.error("Could not save Lucy.OS share card.", error);
+        console.error("Could not save Lucy.OS Pro share card.", error);
         if (status) status.textContent = "Image save failed. You can still screenshot the card.";
       }
     }
@@ -3106,7 +3107,7 @@
     }
 
     function updateUI(data){
-      console.log("Lucy.OS response:", data);
+      console.log("Lucy.OS Pro response:", data);
 
       const state = data?.state || {};
       const telemetry = data?.telemetry || {};
