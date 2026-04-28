@@ -379,6 +379,52 @@
       letter-spacing:.04em;
     }
 
+    .nodeCard{
+      border:1px solid rgba(103,193,255,.15);
+      border-radius:20px;
+      padding:18px;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(103,193,255,.07), transparent 34%),
+        linear-gradient(180deg,rgba(15,27,56,.92),rgba(11,23,52,.88));
+      box-shadow:var(--shadow);
+    }
+
+    .nodeCard h2{
+      margin:0;
+      font-size:20px;
+    }
+
+    .nodeCard p{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+
+    .nodeGrid{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:14px;
+    }
+
+    .nodeChip{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:32px;
+      padding:0 11px;
+      border-radius:999px;
+      border:1px solid rgba(216,184,76,.20);
+      background:rgba(216,184,76,.07);
+      color:var(--gold);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
     .upgradeCard{
       position:relative;
       overflow:hidden;
@@ -666,7 +712,7 @@
     @media (max-width: 720px){
       .wrap{padding:14px}
       .hero h1{font-size:36px}
-      .panel,.premiumCard,.liteSummaryCard,.upgradeCard,.shareSection{border-radius:16px}
+      .panel,.premiumCard,.liteSummaryCard,.nodeCard,.upgradeCard,.shareSection{border-radius:16px}
       .premiumCard{padding:18px}
       .weatherLine{font-size:28px}
       .todayRead{font-size:15px}
@@ -702,7 +748,7 @@
         <div class="row2">
           <div>
             <label>Time of Birth</label>
-            <input id="tob" type="text" placeholder="6:20" />
+            <input id="tob" type="text" placeholder="9:15" />
           </div>
           <div>
             <label>AM / PM</label>
@@ -714,7 +760,7 @@
         </div>
 
         <label>Birth Location</label>
-        <input id="location" type="text" placeholder="Cuero, TX" />
+        <input id="location" type="text" placeholder="Portland, OR" />
 
         <button id="calcBtn">Calculate</button>
 
@@ -792,6 +838,23 @@
               <div class="liteSummaryLabel">Plain Read</div>
               <div class="guidanceText" id="harmonicPlainRead">Waiting for harmonic profile.</div>
             </div>
+          </div>
+        </section>
+
+        <section class="nodeCard">
+          <h2>The 9 Harmonic Nodes</h2>
+          <p>Lucy.OS reads your baseline through 9 harmonic identity patterns.</p>
+
+          <div class="nodeGrid">
+            <span class="nodeChip">Structured</span>
+            <span class="nodeChip">Contained</span>
+            <span class="nodeChip">Chaotic</span>
+            <span class="nodeChip">Relational</span>
+            <span class="nodeChip">Threshold</span>
+            <span class="nodeChip">Reconstructive</span>
+            <span class="nodeChip">Integrative</span>
+            <span class="nodeChip">Diffused</span>
+            <span class="nodeChip">Regulated</span>
           </div>
         </section>
 
@@ -1425,7 +1488,9 @@
         watch = "Letting scattered atmosphere pull your energy in too many directions.";
         move = "Pick one grounding action before following another signal.";
         ret = "Come back to the body and the nearest practical step.";
-      } else if (primary === "Relational" && field === "Relational") {
+      }
+
+      else if (primary === "Relational" && field === "Relational") {
         read = "Your relational baseline is meeting a relational field today. Contact, tone, and shared atmosphere may matter more, but your center still needs to stay separate from the room.";
         lean = "Clean contact, steady tone, and honest repair without over-reading.";
         watch = "Absorbing the whole shared field because you can feel it.";
@@ -1454,7 +1519,7 @@
         lean = "Clear agreements, simple language, and practical relational structure.";
         watch = "Turning a living connection into a rigid set of rules.";
         move = "Name one boundary, agreement, or expectation plainly.";
-        ret = "Come back to the human contact underneath the structure.";
+        ret = "Come back to the personal contact underneath the structure.";
       } else if (primary === "Relational" && field === "Contained") {
         read = "Your baseline stabilizes through connection, while today may pull the field inward. Someone may need space, privacy, or slower contact without it meaning the bond is failing.";
         lean = "Respectful distance, gentle check-ins, and slower interpretation.";
@@ -1479,9 +1544,7 @@
         watch = "Carrying the whole emotional system because you can see how the pieces connect.";
         move = "Clarify one shared pattern without taking full responsibility for it.";
         ret = "Return to your part of the field, not the whole field.";
-      }
-
-      else if (primary === "Threshold" && field === "Threshold") {
+      } else if (primary === "Threshold" && field === "Threshold") {
         read = "Your threshold baseline is meeting a threshold field today. The sense of edge, opening, or decision may be stronger, so timing matters more than speed.";
         lean = "Clean timing, small crossings, and naming the actual decision point.";
         watch = "Treating every feeling of pressure like it means act now.";
@@ -2069,10 +2132,10 @@
     document.getElementById("saveShareCardBtn").addEventListener("click", saveShareCard);
     document.getElementById("copyShareTextBtn").addEventListener("click", copyShareText);
 
-    document.getElementById("dob").value = "1980-11-21";
-    document.getElementById("tob").value = "6:20";
+    document.getElementById("dob").value = "1992-04-18";
+    document.getElementById("tob").value = "9:15";
     document.getElementById("ampm").value = "AM";
-    document.getElementById("location").value = "Cuero, TX";
+    document.getElementById("location").value = "Portland, OR";
 
     calculate();
   </script>
