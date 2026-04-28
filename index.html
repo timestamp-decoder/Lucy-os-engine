@@ -2354,6 +2354,30 @@
         watch = "Waiting forever because the whole field does not feel safe yet.";
         move = "Take one small step that does not overexpose you.";
         ret = "Return to privacy without using it as a hiding place.";
+      } else if (primary === "Contained" && field === "Relational") {
+        read = "Your baseline processes inwardly, while today may bring more attention to contact, tone, or relational feedback. Let connection inform you without pulling more out of you than you are ready to share.";
+        lean = "Gentle contact, protected honesty, and slow relational pacing.";
+        watch = "Letting someone else’s need for closeness override your own timing.";
+        move = "Offer one honest signal without overexposing the whole inner field.";
+        ret = "Return to your private center before deciding what else to share.";
+      } else if (primary === "Contained" && field === "Reconstructive") {
+        read = "Your baseline holds signal inside, while today may bring repair pressure. Something may need adjustment, but it does not have to be processed all at once or exposed before it is ready.";
+        lean = "Private repair, careful honesty, and one manageable adjustment.";
+        watch = "Letting pressure build silently until it feels heavier than it is.";
+        move = "Name one thing that needs repair, even if you keep the work private for now.";
+        ret = "Let repair happen in a protected container, not through emotional flooding.";
+      } else if (primary === "Contained" && field === "Integrative") {
+        read = "Your baseline works inwardly, while today may widen the pattern and connect more layers. Let meaning gather slowly instead of forcing every private piece into one big conclusion.";
+        lean = "Quiet synthesis, private reflection, and gentle pattern-linking.";
+        watch = "Over-interpreting inner signals before they have settled.";
+        move = "Write down one connection that feels useful and leave the rest open.";
+        ret = "Come back to the part of the pattern that actually brings relief.";
+      } else if (primary === "Contained" && field === "Regulated") {
+        read = "Your baseline already prefers protected processing, and today may support pacing, containment, and quieter regulation. This is useful for sorting pressure without forcing action too soon.";
+        lean = "Privacy, pacing, simple routines, and emotional containment.";
+        watch = "Using containment to delay a small step that is actually ready.";
+        move = "Choose one small regulated action that does not violate your privacy.";
+        ret = "Let pacing protect you without letting it freeze the whole field.";
       } else if (primary === "Chaotic" && field === "Threshold") {
         read = "Your baseline carries movement and charge, and today may add an edge or crossing point. Use the activation, but do not let urgency decide for you.";
         lean = "Focused motion, clean timing, and one decisive channel for the charge.";
@@ -2372,6 +2396,36 @@
         watch = "Rebelling against structure just because the day asks for containment.";
         move = "Put your energy into one durable action.";
         ret = "Let the container hold the charge instead of killing it.";
+      } else if (primary === "Chaotic" && field === "Structured") {
+        read = "Your baseline moves through charge, speed, and disruption, while today may offer more structure. The structure does not have to trap the voltage; it can give the energy somewhere useful to go.";
+        lean = "Practical containers, visible steps, and channeling movement into form.";
+        watch = "Rejecting structure because it feels like it will kill momentum.";
+        move = "Put one moving piece into a simple plan or container.";
+        ret = "Let structure carry the charge instead of fighting it.";
+      } else if (primary === "Chaotic" && field === "Contained") {
+        read = "Your baseline wants movement, while today may pull the field inward. This can feel frustrating, but it may also help the charge settle before it turns reactive.";
+        lean = "Quiet movement, lower stimulation, and contained release.";
+        watch = "Pushing against the slowdown until the pressure spikes.";
+        move = "Find one safe way to discharge energy without escalating the field.";
+        ret = "Let inwardness settle the voltage before you act.";
+      } else if (primary === "Chaotic" && field === "Relational") {
+        read = "Your baseline carries quick movement and disruption, while today may bring the relational field into focus. Let contact ground the energy without using other people as the release point.";
+        lean = "Clean contact, honest tone, and energy that stays accountable.";
+        watch = "Letting charge spill into the relationship before you know what it is.";
+        move = "Name the energy before you aim it at a person or conversation.";
+        ret = "Return to your own charge first, then re-enter contact more cleanly.";
+      } else if (primary === "Chaotic" && field === "Integrative") {
+        read = "Your baseline moves through charge and disruption, while today may widen the field and connect more meaning. Not every spark needs to become a full pattern.";
+        lean = "Useful connections, creative movement, and letting one insight organize the rest.";
+        watch = "Trying to make meaning from every burst of signal.";
+        move = "Choose the one connection that turns the energy into something usable.";
+        ret = "Let extra sparks pass without needing to integrate them all.";
+      } else if (primary === "Chaotic" && field === "Diffused") {
+        read = "Your baseline carries movement, while today may feel more porous, foggy, or uncontained. This can scatter energy if you do not give it a gentle boundary.";
+        lean = "Low-friction structure, soft grounding, and fewer inputs.";
+        watch = "Letting scattered atmosphere pull your energy in too many directions.";
+        move = "Pick one grounding action before following another signal.";
+        ret = "Come back to the body and the nearest practical step.";
       } else if (primary === "Relational" && field === "Threshold") {
         read = "Your baseline reads connection, and today may bring a decision edge in the relational field. Do not chase closeness; name the real crossing.";
         lean = "Clear contact, honest timing, and letting the bond show what is ready.";
@@ -2390,6 +2444,36 @@
         watch = "Absorbing other people’s tone as if it belongs to you.";
         move = "Ask: is this mine, theirs, or the shared field?";
         ret = "Return to your own center before repairing the room.";
+      } else if (primary === "Relational" && field === "Structured") {
+        read = "Your baseline reads tone, contact, and the space between people, while today may offer clearer structure. Let structure clarify the relationship without making it cold or over-defined.";
+        lean = "Clear agreements, simple language, and practical relational structure.";
+        watch = "Turning a living connection into a rigid set of rules.";
+        move = "Name one boundary, agreement, or expectation plainly.";
+        ret = "Come back to the human contact underneath the structure.";
+      } else if (primary === "Relational" && field === "Contained") {
+        read = "Your baseline stabilizes through connection, while today may pull the field inward. Someone may need space, privacy, or slower contact without it meaning the bond is failing.";
+        lean = "Respectful distance, gentle check-ins, and slower interpretation.";
+        watch = "Reading withdrawal as rejection before the field has spoken clearly.";
+        move = "Give the connection room without abandoning it.";
+        ret = "Return to your own center instead of chasing the signal.";
+      } else if (primary === "Relational" && field === "Chaotic") {
+        read = "Your baseline reads the relational field, while today may add movement, charge, or disruption. The room may feel louder than usual, so respond to what is real, not every ripple.";
+        lean = "Calm contact, clean tone, and slowing the relational signal down.";
+        watch = "Reacting to charge before you know whether it belongs to you, them, or the shared field.";
+        move = "Pause before answering the loudest signal.";
+        ret = "Come back to steady contact rather than emotional weather.";
+      } else if (primary === "Relational" && field === "Reconstructive") {
+        read = "Your baseline stabilizes through connection, while today may bring repair pressure into the relational field. Something may need honesty, but not every tension needs a full relationship rebuild.";
+        lean = "Clean repair, truthful contact, and one specific adjustment.";
+        watch = "Treating one relational weak point like the whole bond is broken.";
+        move = "Name the one repair that would make the connection more workable.";
+        ret = "Return to trust-building actions, not total relational analysis.";
+      } else if (primary === "Relational" && field === "Integrative") {
+        read = "Your baseline reads connection, while today may widen the meaning around the bond or shared field. This can help you understand the pattern, as long as you do not absorb everyone’s layer as your own.";
+        lean = "Meaningful contact, pattern recognition, and shared understanding.";
+        watch = "Carrying the whole emotional system because you can see how the pieces connect.";
+        move = "Clarify one shared pattern without taking full responsibility for it.";
+        ret = "Return to your part of the field, not the whole field.";
       } else if (primary === "Threshold" && field === "Reconstructive") {
         read = "Your baseline senses crossings, and today may add repair pressure. The edge may be real, but the move does not have to become a full rebuild.";
         lean = "Precise change, honest repair, and crossing only what is ready.";
