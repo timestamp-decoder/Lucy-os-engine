@@ -297,99 +297,6 @@
       line-height:1.58;
     }
 
-    .whyReadDetails{
-      border:1px solid rgba(103,193,255,.15);
-      border-radius:18px;
-      background:
-        linear-gradient(180deg,rgba(15,27,56,.82),rgba(10,22,48,.72));
-      box-shadow:0 14px 38px rgba(0,0,0,.20);
-      overflow:hidden;
-    }
-
-    .whyReadDetails summary{
-      list-style:none;
-      cursor:pointer;
-      padding:16px 18px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      color:var(--text);
-      font-weight:900;
-      letter-spacing:.01em;
-    }
-
-    .whyReadDetails summary::-webkit-details-marker{
-      display:none;
-    }
-
-    .whyReadDetails summary::after{
-      content:"+";
-      width:28px;
-      height:28px;
-      border-radius:999px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      flex:0 0 auto;
-      color:var(--blue);
-      background:rgba(103,193,255,.08);
-      border:1px solid rgba(103,193,255,.16);
-      font-size:18px;
-      line-height:1;
-    }
-
-    .whyReadDetails[open] summary::after{
-      content:"−";
-    }
-
-    .whyReadBody{
-      border-top:1px solid rgba(255,255,255,.06);
-      padding:16px 18px 18px;
-      display:grid;
-      gap:14px;
-    }
-
-    .whySummaryGrid{
-      display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
-      gap:10px;
-    }
-
-    .whyMetric{
-      border:1px solid rgba(255,255,255,.07);
-      border-radius:14px;
-      padding:12px;
-      background:rgba(255,255,255,.028);
-      min-height:78px;
-    }
-
-    .whyMetricLabel{
-      color:var(--muted);
-      font-size:10px;
-      font-weight:800;
-      letter-spacing:.09em;
-      text-transform:uppercase;
-      margin-bottom:7px;
-    }
-
-    .whyMetricValue{
-      color:var(--text);
-      font-size:14px;
-      line-height:1.35;
-      font-weight:850;
-    }
-
-    .whyExplain{
-      border:1px solid rgba(216,184,76,.14);
-      border-radius:16px;
-      padding:14px;
-      background:rgba(216,184,76,.045);
-      color:var(--text);
-      font-size:14px;
-      line-height:1.7;
-    }
-
     .profileCard{
       border:1px solid rgba(103,193,255,.18);
       border-radius:20px;
@@ -485,262 +392,353 @@
       letter-spacing:.04em;
     }
 
+    .whyReadCard{
+      border:1px solid rgba(103,193,255,.15);
+      border-radius:20px;
+      padding:18px;
+      background:linear-gradient(180deg,rgba(15,27,56,.90),rgba(11,23,52,.86));
+      box-shadow:var(--shadow);
+    }
+
+    .whyReadGrid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .whyMini{
+      border:1px solid rgba(255,255,255,.07);
+      border-radius:14px;
+      padding:12px;
+      background:rgba(255,255,255,.026);
+    }
+
+    .whyMiniLabel{
+      color:var(--muted);
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      margin-bottom:6px;
+    }
+
+    .whyMiniValue{
+      color:var(--text);
+      font-size:14px;
+      font-weight:800;
+      line-height:1.35;
+    }
+
+    .whyExplain{
+      margin-top:14px;
+      border-top:1px solid rgba(255,255,255,.07);
+      padding-top:14px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.65;
+    }
+
     .shareSection{
-      border:1px solid rgba(103,193,255,.18);
+      border:1px solid rgba(216,184,76,.18);
       border-radius:20px;
       padding:18px;
       background:
-        linear-gradient(180deg,rgba(15,27,56,.92),rgba(10,22,48,.82));
+        radial-gradient(circle at 18% 0%, rgba(216,184,76,.08), transparent 34%),
+        linear-gradient(180deg,rgba(15,27,56,.94),rgba(11,23,52,.92));
       box-shadow:var(--shadow);
-      display:grid;
-      gap:14px;
     }
 
-    .shareHeader{
+    .shareIntro{
       display:flex;
       justify-content:space-between;
       gap:14px;
       align-items:flex-start;
+      margin-bottom:14px;
     }
 
-    .shareHeader h2{
+    .shareIntro h2{
       margin:0;
       font-size:20px;
     }
 
-    .shareHeader p{
+    .shareIntro p{
       margin:4px 0 0;
       color:var(--muted);
       font-size:13px;
       line-height:1.5;
     }
 
-    .shareCard{
-      position:relative;
-      overflow:hidden;
-      border:1px solid rgba(216,184,76,.28);
-      border-radius:22px;
-      padding:22px;
-      min-height:430px;
-      background:
-        radial-gradient(circle at 18% 0%, rgba(103,193,255,.16), transparent 36%),
-        radial-gradient(circle at 92% 12%, rgba(216,184,76,.16), transparent 34%),
-        linear-gradient(180deg,#102146,#091832);
-      box-shadow:
-        0 18px 52px rgba(0,0,0,.30),
-        inset 0 0 0 1px rgba(255,255,255,.025);
-      display:grid;
-      gap:16px;
-      align-content:start;
-    }
-
-    .shareCard::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      background:
-        linear-gradient(135deg,rgba(255,255,255,.04),transparent 34%),
-        radial-gradient(circle at 50% 115%, rgba(103,193,255,.08), transparent 42%);
-    }
-
-    .shareInner{
-      position:relative;
-      z-index:1;
-      display:grid;
-      gap:16px;
-    }
-
-    .shareTop{
+    .shareIntroChips{
       display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      color:var(--muted);
-      font-size:11px;
-      font-weight:900;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-    }
-
-    .shareBrand{
-      color:var(--blue);
-    }
-
-    .shareWeather{
-      border-top:1px solid rgba(255,255,255,.08);
-      border-bottom:1px solid rgba(255,255,255,.08);
-      padding:16px 0;
-      display:grid;
       gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      min-width:220px;
     }
 
-    .shareWeatherLabel{
-      color:var(--muted);
-      font-size:11px;
-      font-weight:900;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-    }
-
-    .shareWeatherLine{
-      color:var(--gold);
-      font-size:clamp(26px,4.2vw,42px);
-      line-height:1.03;
-      font-weight:950;
-      letter-spacing:-.04em;
-    }
-
-    .shareReadBlock{
-      display:grid;
-      gap:6px;
-    }
-
-    .shareLabel{
+    .shareChip{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:30px;
+      padding:0 10px;
+      border-radius:999px;
+      border:1px solid rgba(103,193,255,.18);
+      background:rgba(103,193,255,.075);
       color:var(--blue);
       font-size:10px;
       font-weight:900;
-      letter-spacing:.12em;
+      letter-spacing:.08em;
       text-transform:uppercase;
+      white-space:nowrap;
     }
 
-    .shareText{
-      color:var(--text);
-      font-size:14px;
-      line-height:1.62;
+    .shareChip.gold{
+      border-color:rgba(216,184,76,.22);
+      background:rgba(216,184,76,.08);
+      color:var(--gold);
     }
 
-    .shareMoveGrid{
+    .shareChip.violet{
+      border-color:rgba(176,108,255,.20);
+      background:rgba(176,108,255,.08);
+      color:#cab1ff;
+    }
+
+    .shareExportFrame{
+      width:100%;
+      max-width:720px;
+      margin:0 auto;
+    }
+
+    .shareCard{
+      width:100%;
+      border:1px solid rgba(216,184,76,.28);
+      border-radius:20px;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(103,193,255,.14), transparent 34%),
+        radial-gradient(circle at 88% 10%, rgba(216,184,76,.13), transparent 34%),
+        linear-gradient(145deg,#122246 0%, #0d1b39 58%, #0a1732 100%);
+      box-shadow:
+        0 22px 62px rgba(0,0,0,.34),
+        inset 0 0 0 1px rgba(255,255,255,.025);
+    }
+
+    .shareCardInner{
+      padding:30px;
       display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
+      gap:18px;
     }
 
-    .shareMiniBlock{
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:15px;
-      padding:13px;
-      background:rgba(255,255,255,.035);
-    }
-
-    .shareFooter{
-      margin-top:auto;
+    .shareCardTop{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      align-items:center;
+      padding-bottom:14px;
+      border-bottom:1px solid rgba(255,255,255,.08);
       color:var(--muted);
       font-size:11px;
       font-weight:900;
-      letter-spacing:.10em;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+    }
+
+    .shareCardTop span:first-child{
+      color:var(--blue);
+    }
+
+    .shareCardChips{
+      display:flex;
+      gap:7px;
+      flex-wrap:wrap;
+      margin-top:-2px;
+    }
+
+    .shareCardChip{
+      display:inline-flex;
+      align-items:center;
+      min-height:26px;
+      padding:0 9px;
+      border-radius:999px;
+      border:1px solid rgba(103,193,255,.16);
+      background:rgba(103,193,255,.07);
+      color:var(--blue);
+      font-size:9px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      max-width:100%;
+    }
+
+    .shareCardChip.gold{
+      color:var(--gold);
+      border-color:rgba(216,184,76,.22);
+      background:rgba(216,184,76,.08);
+    }
+
+    .shareCardChip.violet{
+      color:#cab1ff;
+      border-color:rgba(176,108,255,.18);
+      background:rgba(176,108,255,.08);
+    }
+
+    .shareCardSection{
+      display:grid;
+      gap:8px;
+      padding-top:2px;
+    }
+
+    .shareCardLabel{
+      color:var(--blue);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+    }
+
+    .shareCardWeather{
+      color:var(--gold);
+      font-size:clamp(30px,5vw,46px);
+      line-height:1.02;
+      font-weight:950;
+      letter-spacing:-.05em;
+      padding-bottom:8px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      overflow-wrap:anywhere;
+    }
+
+    .shareCardRead{
+      color:var(--text);
+      font-size:17px;
+      line-height:1.62;
+      overflow-wrap:break-word;
+    }
+
+    .shareCardMiniGrid{
+      display:grid;
+      gap:12px;
+      margin-top:2px;
+    }
+
+    .shareCardMini{
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:16px;
+      padding:14px;
+      background:rgba(255,255,255,.035);
+    }
+
+    .shareCardMini .shareCardRead{
+      font-size:16px;
+      line-height:1.55;
+    }
+
+    .shareFooter{
+      padding-top:2px;
+      color:var(--muted);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.14em;
       text-transform:uppercase;
     }
 
     .shareActions{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:10px;
+      gap:12px;
+      margin-top:14px;
     }
 
     .shareStatus{
       min-height:18px;
+      margin-top:10px;
       color:var(--blue);
       font-size:12px;
-      line-height:1.45;
-      font-weight:700;
+      font-weight:800;
+      line-height:1.4;
     }
 
-    .libraryDetails{
-      border:1px solid rgba(103,193,255,.14);
+    .librarySection{
+      border:1px solid rgba(103,193,255,.15);
       border-radius:20px;
-      background:
-        linear-gradient(180deg,rgba(15,27,56,.88),rgba(11,23,50,.78));
-      box-shadow:var(--shadow);
+      background:rgba(6,15,34,.36);
       overflow:hidden;
     }
 
-    .libraryDetails summary{
-      list-style:none;
+    .librarySection summary{
       cursor:pointer;
-      padding:17px 18px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      font-weight:900;
+      list-style:none;
+      padding:18px;
       color:var(--text);
+      font-size:18px;
+      font-weight:900;
     }
 
-    .libraryDetails summary::-webkit-details-marker{
+    .librarySection summary::-webkit-details-marker{
       display:none;
     }
 
-    .libraryDetails summary::after{
-      content:"+";
-      width:28px;
-      height:28px;
-      border-radius:999px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      flex:0 0 auto;
-      color:var(--blue);
-      background:rgba(103,193,255,.08);
-      border:1px solid rgba(103,193,255,.16);
-      font-size:18px;
-      line-height:1;
+    .librarySection summary::after{
+      content:" +";
+      color:var(--muted);
     }
 
-    .libraryDetails[open] summary::after{
-      content:"−";
+    .librarySection[open] summary::after{
+      content:" -";
     }
 
     .libraryBody{
-      border-top:1px solid rgba(255,255,255,.06);
+      border-top:1px solid rgba(255,255,255,.07);
       padding:18px;
-      display:grid;
-      gap:14px;
     }
 
     .libraryIntro{
       color:var(--muted);
       font-size:13px;
       line-height:1.55;
-      max-width:840px;
+      margin:0 0 14px;
     }
 
-    .harmonicLibraryGrid{
+    .libraryGrid{
       display:grid;
       grid-template-columns:repeat(3,minmax(0,1fr));
       gap:12px;
     }
 
-    .harmonicLibraryCard{
+    .libraryCard{
       border:1px solid rgba(255,255,255,.075);
       border-radius:16px;
       padding:14px;
-      background:rgba(255,255,255,.03);
+      background:rgba(255,255,255,.026);
       display:grid;
-      gap:11px;
-      align-content:start;
+      gap:8px;
     }
 
-    .harmonicLibraryCard h3{
+    .libraryCard.active{
+      border-color:rgba(103,193,255,.32);
+      background:
+        linear-gradient(180deg,rgba(103,193,255,.09),rgba(255,255,255,.025));
+      box-shadow:inset 0 0 0 1px rgba(103,193,255,.08);
+    }
+
+    .libraryCard h3{
       margin:0;
       color:var(--gold);
-      font-size:17px;
+      font-size:16px;
+      line-height:1.2;
     }
 
-    .harmonicLibraryCard p{
+    .libraryCard p{
       margin:0;
       color:var(--muted);
       font-size:12px;
-      line-height:1.52;
+      line-height:1.5;
     }
 
-    .libraryMiniLabel{
-      color:var(--blue);
-      font-size:10px;
-      font-weight:900;
-      letter-spacing:.10em;
-      text-transform:uppercase;
-      margin-bottom:5px;
+    .libraryCard strong{
+      color:var(--text);
     }
 
     .engineDetails{
@@ -1027,23 +1025,34 @@
       .profileGrid{grid-template-columns:1fr}
       .profileBlock.wide,
       .profileBlock.full{grid-column:auto}
-      .whySummaryGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .harmonicLibraryGrid{grid-template-columns:1fr}
-      .shareMoveGrid{grid-template-columns:1fr}
+      .whyReadGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .libraryGrid{grid-template-columns:1fr}
+      .shareIntro{
+        display:grid;
+      }
+      .shareIntroChips{
+        justify-content:flex-start;
+        min-width:0;
+      }
     }
 
     @media (max-width: 720px){
       .wrap{padding:14px}
       .hero h1{font-size:36px}
-      .panel,.premiumCard,.profileCard,.engineDetails,.whyReadDetails,.libraryDetails,.shareSection{border-radius:16px}
+      .panel,.premiumCard,.profileCard,.engineDetails,.whyReadCard,.shareSection{border-radius:16px}
       .premiumCard{padding:18px}
       .weatherLine{font-size:28px}
       .todayRead{font-size:15px}
-      .profileHeader,.shareHeader{display:grid}
-      .whySummaryGrid{grid-template-columns:1fr}
+      .profileHeader{display:grid}
+      .whyReadGrid{grid-template-columns:1fr}
+      .shareCardInner{padding:22px}
+      .shareCardTop{
+        display:grid;
+        gap:8px;
+      }
+      .shareCardWeather{font-size:34px}
+      .shareCardRead{font-size:15px}
       .shareActions{grid-template-columns:1fr}
-      .shareCard{padding:18px; border-radius:18px}
-      .shareWeatherLine{font-size:28px}
     }
   </style>
 </head>
@@ -1140,57 +1149,6 @@
           </div>
         </section>
 
-        <details class="whyReadDetails">
-          <summary>Why This Read?</summary>
-          <div class="whyReadBody">
-            <div class="whySummaryGrid">
-              <div class="whyMetric">
-                <div class="whyMetricLabel">Baseline</div>
-                <div class="whyMetricValue" id="whyBaseline">—</div>
-              </div>
-
-              <div class="whyMetric">
-                <div class="whyMetricLabel">Field</div>
-                <div class="whyMetricValue" id="whyField">—</div>
-              </div>
-
-              <div class="whyMetric">
-                <div class="whyMetricLabel">State</div>
-                <div class="whyMetricValue" id="whyState">—</div>
-              </div>
-
-              <div class="whyMetric">
-                <div class="whyMetricLabel">Load</div>
-                <div class="whyMetricValue" id="whyLoad">—</div>
-              </div>
-
-              <div class="whyMetric">
-                <div class="whyMetricLabel">Capacity</div>
-                <div class="whyMetricValue" id="whyCapacity">—</div>
-              </div>
-
-              <div class="whyMetric">
-                <div class="whyMetricLabel">Regulation</div>
-                <div class="whyMetricValue" id="whyRegulation">—</div>
-              </div>
-
-              <div class="whyMetric">
-                <div class="whyMetricLabel">Primary Driver</div>
-                <div class="whyMetricValue" id="whyPrimaryDriver">—</div>
-              </div>
-
-              <div class="whyMetric">
-                <div class="whyMetricLabel">Distortion Pathway</div>
-                <div class="whyMetricValue" id="whyDistortion">—</div>
-              </div>
-            </div>
-
-            <div class="whyExplain" id="whyReadExplanation">
-              Waiting for chart calculation.
-            </div>
-          </div>
-        </details>
-
         <section class="profileCard">
           <div class="profileHeader">
             <div>
@@ -1253,66 +1211,132 @@
           </div>
         </section>
 
-        <section class="shareSection">
-          <div class="shareHeader">
+        <section class="whyReadCard">
+          <div class="profileHeader" style="margin-bottom:0;">
             <div>
-              <h2>Share Card</h2>
-              <p>A compact visual version of today’s Lucy.OS read. It shares the guidance, not the full engine.</p>
-            </div>
-            <span class="chip">Daily Read</span>
-          </div>
-
-          <div id="lucyShareCard" class="shareCard">
-            <div class="shareInner">
-              <div class="shareTop">
-                <span class="shareBrand">Lucy.OS</span>
-                <span>Personal Field Guidance</span>
-              </div>
-
-              <div class="shareWeather">
-                <div class="shareWeatherLabel">Today’s System Weather</div>
-                <div class="shareWeatherLine" id="shareSystemWeatherLine">Structured baseline × Field loading</div>
-              </div>
-
-              <div class="shareReadBlock">
-                <div class="shareLabel">Today’s Read</div>
-                <div class="shareText" id="shareTodayRead">
-                  Waiting for chart calculation.
-                </div>
-              </div>
-
-              <div class="shareMoveGrid">
-                <div class="shareMiniBlock">
-                  <div class="shareLabel">One Good Move</div>
-                  <div class="shareText" id="shareGoodMove">—</div>
-                </div>
-
-                <div class="shareMiniBlock">
-                  <div class="shareLabel">Return to yourself by</div>
-                  <div class="shareText" id="shareReturn">—</div>
-                </div>
-              </div>
-
-              <div class="shareFooter">Personal field guidance · Lucy.OS</div>
+              <h2>Why This Read?</h2>
+              <p>A compact explanation of the current configuration behind the daily guidance.</p>
             </div>
           </div>
 
-          <div class="shareActions">
-            <button id="saveShareCardBtn" type="button">Save Share Card</button>
-            <button id="copyShareTextBtn" type="button">Copy Share Text</button>
+          <div class="whyReadGrid">
+            <div class="whyMini">
+              <div class="whyMiniLabel">Baseline</div>
+              <div class="whyMiniValue" id="whyBaseline">—</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">Field</div>
+              <div class="whyMiniValue" id="whyField">—</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">State</div>
+              <div class="whyMiniValue" id="whyState">—</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">Primary Driver</div>
+              <div class="whyMiniValue" id="whyDriver">—</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">Load</div>
+              <div class="whyMiniValue" id="whyLoad">—</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">Capacity</div>
+              <div class="whyMiniValue" id="whyCapacity">—</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">Regulation</div>
+              <div class="whyMiniValue" id="whyRegulation">—</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">Distortion Pathway</div>
+              <div class="whyMiniValue" id="whyDistortion">—</div>
+            </div>
           </div>
 
-          <div id="shareStatus" class="shareStatus"></div>
+          <div class="whyExplain" id="whyConfigText">
+            Waiting for configuration.
+          </div>
         </section>
 
-        <details class="libraryDetails">
+        <section class="shareSection">
+          <div class="shareIntro">
+            <div>
+              <h2>Share Card</h2>
+              <p>Save or copy the daily guidance layer. This card shows the field read, not the full engine.</p>
+            </div>
+
+            <div class="shareIntroChips">
+              <span class="shareChip gold" id="shareBaselineChip">Baseline: —</span>
+              <span class="shareChip" id="shareFieldChip">Field: —</span>
+              <span class="shareChip violet" id="shareStateChip">State: —</span>
+            </div>
+          </div>
+
+          <div class="shareExportFrame">
+            <div id="lucyShareCard" class="shareCard">
+              <div class="shareCardInner">
+                <div class="shareCardTop">
+                  <span>Lucy.OS</span>
+                  <span>Personal Field Guidance</span>
+                </div>
+
+                <div class="shareCardChips">
+                  <span class="shareCardChip gold" id="shareCardBaselineChip">Baseline: —</span>
+                  <span class="shareCardChip" id="shareCardFieldChip">Field: —</span>
+                  <span class="shareCardChip violet" id="shareCardStateChip">State: —</span>
+                </div>
+
+                <div class="shareCardSection">
+                  <div class="shareCardLabel">Today’s System Weather</div>
+                  <div class="shareCardWeather" id="shareCardWeather">Structured baseline × Field loading</div>
+                </div>
+
+                <div class="shareCardSection">
+                  <div class="shareCardLabel">Today’s Read</div>
+                  <div class="shareCardRead" id="shareCardTodayRead">Waiting for daily read.</div>
+                </div>
+
+                <div class="shareCardMiniGrid">
+                  <div class="shareCardMini">
+                    <div class="shareCardLabel">One Good Move</div>
+                    <div class="shareCardRead" id="shareCardGoodMove">—</div>
+                  </div>
+
+                  <div class="shareCardMini">
+                    <div class="shareCardLabel">Return to yourself by</div>
+                    <div class="shareCardRead" id="shareCardReturn">—</div>
+                  </div>
+                </div>
+
+                <div class="shareFooter">Personal field guidance · Lucy.OS</div>
+              </div>
+            </div>
+
+            <div class="shareActions">
+              <button id="saveShareCardBtn" type="button">Save Share Card</button>
+              <button id="copyShareTextBtn" type="button">Copy Share Text</button>
+            </div>
+
+            <div id="shareStatus" class="shareStatus"></div>
+          </div>
+        </section>
+
+        <details class="librarySection">
           <summary>Open Harmonic Library</summary>
           <div class="libraryBody">
             <p class="libraryIntro">
-              The library gives the 9 harmonic types as a reference layer. Your result stays first; the library is here only when you want more context.
+              The library is here for context. Your result comes first; the library simply shows the full 9-harmonic vocabulary.
             </p>
 
-            <div id="harmonicLibraryGrid" class="harmonicLibraryGrid"></div>
+            <div class="libraryGrid" id="harmonicLibraryGrid"></div>
           </div>
         </details>
 
@@ -1556,6 +1580,16 @@
       }
     };
 
+    let latestSharePayload = {
+      systemWeather: "Structured baseline × Field loading",
+      todayRead: "Waiting for daily read.",
+      goodMove: "—",
+      returnText: "—",
+      primary: "Structured",
+      field: "—",
+      state: "—"
+    };
+
     function clamp(v, min, max){
       return Math.max(min, Math.min(max, v));
     }
@@ -1574,16 +1608,19 @@
       if (el) el.textContent = value;
     }
 
-    function getText(id){
-      const el = document.getElementById(id);
-      return el ? el.textContent.trim() : "";
-    }
-
     function setBar(id, value, max = 1.2){
       const el = document.getElementById(id);
       if (!el) return;
       const pct = clamp((safeNum(value) / max) * 100, 0, 100);
       el.style.width = pct + "%";
+    }
+
+    function slugify(value){
+      return String(value || "")
+        .toLowerCase()
+        .replace(/×/g, "x")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
     }
 
     function sortedScoreKeys(scores){
@@ -1644,28 +1681,6 @@
       return `Forecast: ${text || "—"}`;
     }
 
-    function loadBandFromValue(load){
-      const value = safeNum(load);
-      if (value < 0.45) return "low load";
-      if (value < 0.75) return "moderate load";
-      if (value < 1.00) return "high load";
-      return "overloaded";
-    }
-
-    function capacityBandFromValue(capacity){
-      const value = safeNum(capacity);
-      if (value < 0.55) return "limited capacity";
-      if (value < 0.85) return "decent capacity";
-      return "strong capacity";
-    }
-
-    function regulationBandFromValue(regulation){
-      const value = safeNum(regulation);
-      if (value < 0.40) return "low regulation";
-      if (value < 0.70) return "moderate regulation";
-      return "strong regulation";
-    }
-
     function driverValueFromTaggedList(list, planetName){
       if (!Array.isArray(list)) return null;
       const hit = list.find(item => String(item).toLowerCase().startsWith(String(planetName).toLowerCase()));
@@ -1676,6 +1691,28 @@
 
     function primaryDriverName(data){
       return data?.telemetry?.primaryDriver || "—";
+    }
+
+    function loadBandFromValue(load){
+      const value = safeNum(load);
+      if (value < 0.45) return "Low";
+      if (value < 0.75) return "Moderate";
+      if (value < 1.00) return "High";
+      return "Overloaded";
+    }
+
+    function capacityBandFromValue(capacity){
+      const value = safeNum(capacity);
+      if (value < 0.55) return "Limited";
+      if (value < 0.85) return "Decent";
+      return "Strong";
+    }
+
+    function regulationBandFromValue(regulation){
+      const value = safeNum(regulation);
+      if (value < 0.40) return "Low";
+      if (value < 0.70) return "Moderate";
+      return "Strong";
     }
 
     function buildWhyText({ modeText, primaryDriver, fog, activation, mercury, saturn, venus }) {
@@ -1711,37 +1748,6 @@
       }
 
       return "The current field is regulated enough for steady, focused movement.";
-    }
-
-    function renderHarmonicLibrary(){
-      const grid = document.getElementById("harmonicLibraryGrid");
-      if (!grid) return;
-
-      grid.innerHTML = Object.values(HARMONICS).map(harmonic => `
-        <article class="harmonicLibraryCard">
-          <h3>${harmonic.label}</h3>
-
-          <div>
-            <div class="libraryMiniLabel">Signal Quality</div>
-            <p>${harmonic.signalQuality}</p>
-          </div>
-
-          <div>
-            <div class="libraryMiniLabel">Stability Method</div>
-            <p>${harmonic.stabilityMethod}</p>
-          </div>
-
-          <div>
-            <div class="libraryMiniLabel">Overload Risk</div>
-            <p>${harmonic.overloadRisk}</p>
-          </div>
-
-          <div>
-            <div class="libraryMiniLabel">Plain Read</div>
-            <p>${harmonic.plainRead}</p>
-          </div>
-        </article>
-      `).join("");
     }
 
     function setHeroGlow(modeText, fog, volatility){
@@ -2047,87 +2053,107 @@
       return { read, lean, watch, move, ret };
     }
 
-    function buildWhyReadExplanation(harmonics, data){
+    function renderHarmonicLibrary(activePrimary = "", activeField = ""){
+      const grid = document.getElementById("harmonicLibraryGrid");
+      if (!grid) return;
+
+      grid.innerHTML = Object.entries(HARMONICS).map(([key, item]) => {
+        const activeClass = key === activePrimary || key === activeField ? "active" : "";
+        const activeLabel = key === activePrimary
+          ? "Primary baseline"
+          : key === activeField
+            ? "Today’s field"
+            : "";
+
+        return `
+          <article class="libraryCard ${activeClass}">
+            <h3>${item.label}${activeLabel ? ` · ${activeLabel}` : ""}</h3>
+            <p><strong>Signal Quality:</strong> ${item.signalQuality}</p>
+            <p><strong>Stability Method:</strong> ${item.stabilityMethod}</p>
+            <p><strong>Overload Risk:</strong> ${item.overloadRisk}</p>
+            <p>${item.plainRead}</p>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function updateWhyReadUI(harmonics, data){
+      const state = data?.state || {};
       const primary = harmonics.primary || "Structured";
       const field = harmonics.todayField || "Regulated";
-      const distortion = harmonics.distortion || "Diffused";
-      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
+      const currentState = stateLabelFromMode(state.mode || "");
       const driver = primaryDriverName(data);
-      const state = data?.state || {};
       const loadBand = loadBandFromValue(state.amplifiedLoad);
       const capacityBand = capacityBandFromValue(state.capacity);
       const regulationBand = regulationBandFromValue(state.regulation);
-
-      const driverText = driver && driver !== "—"
-        ? `${driver} may point to the strongest active pressure in the field.`
-        : "The primary driver is still resolving from the current chart data.";
-
-      if (
-        primary === "Structured" &&
-        field === "Reconstructive" &&
-        String(driver).toLowerCase().includes("pluto")
-      ) {
-        return `This means the system is functioning, but carrying enough pressure that adding more inputs could make it over-rebuild. Pluto may point to deeper repair pressure, while the Structured baseline tries to solve pressure through order. The best move is not total reconstruction — it is one clean repair.`;
-      }
-
-      if (primary === "Structured" && field === "Reconstructive") {
-        return `This means the system may be trying to repair or strengthen something while still wanting clarity and order. With ${loadBand}, ${capacityBand}, and ${regulationBand}, the best move is to choose one honest adjustment instead of treating every weak point like the whole structure is broken.`;
-      }
-
-      return `This read comes from a ${primary} baseline meeting a ${field} field while the system is in a ${stateLabel.toLowerCase()} state. The load band reads as ${loadBand}, capacity reads as ${capacityBand}, and regulation reads as ${regulationBand}. ${driverText} The distortion pathway is ${distortion}, which shows where pressure may collect if the field becomes too loaded.`;
-    }
-
-    function updateWhyThisReadUI(harmonics, data){
-      const state = data?.state || {};
-      const primary = harmonics.primary || "Structured";
-      const field = harmonics.todayField || "Regulated";
       const distortion = harmonics.distortion || "Diffused";
-      const currentState = stateLabelFromMode(state.mode || "");
-      const driver = primaryDriverName(data);
 
       setText("whyBaseline", primary);
       setText("whyField", field);
       setText("whyState", currentState);
-      setText("whyLoad", loadBandFromValue(state.amplifiedLoad));
-      setText("whyCapacity", capacityBandFromValue(state.capacity));
-      setText("whyRegulation", regulationBandFromValue(state.regulation));
-      setText("whyPrimaryDriver", driver);
+      setText("whyDriver", driver);
+      setText("whyLoad", loadBand);
+      setText("whyCapacity", capacityBand);
+      setText("whyRegulation", regulationBand);
       setText("whyDistortion", distortion);
-      setText("whyReadExplanation", buildWhyReadExplanation(harmonics, data));
+
+      let explanation = `This read comes from a ${primary} baseline meeting a ${field} field while the current state is ${currentState.toLowerCase()}. Load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}.`;
+
+      if (primary === "Structured" && field === "Reconstructive") {
+        explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${primary} baseline wants order, sequence, and meaning, while the ${field} field pushes repair pressure. The best move is one honest adjustment, not a full rebuild.`;
+      }
+
+      if (String(driver).toLowerCase().includes("pluto")) {
+        explanation += " Pluto as the primary driver can make the pressure feel fundamental, but the guidance is still to avoid treating every weak point like the whole system is broken.";
+      }
+
+      if (distortion === field) {
+        explanation += ` The distortion pathway matches today’s field, so the same pattern that is active today can become the overload route if the load keeps stacking.`;
+      }
+
+      setText("whyConfigText", explanation);
     }
 
-    function updateShareCardUI(){
-      const systemWeather = getText("systemWeatherLine") || "Structured baseline × Field loading";
-      const todayRead = getText("dailyTodayRead") || "Waiting for chart calculation.";
-      const goodMove = getText("dailyGoodMove") || "—";
-      const returnText = getText("dailyReturn") || "—";
+    function updateShareUI({ systemWeather, todayRead, goodMove, returnText, primary, field, state }){
+      latestSharePayload = {
+        systemWeather,
+        todayRead,
+        goodMove,
+        returnText,
+        primary,
+        field,
+        state
+      };
 
-      setText("shareSystemWeatherLine", systemWeather);
-      setText("shareTodayRead", todayRead);
-      setText("shareGoodMove", goodMove);
-      setText("shareReturn", returnText);
+      setText("shareBaselineChip", `${primary} Baseline`);
+      setText("shareFieldChip", `${field} Field`);
+      setText("shareStateChip", `${state} State`);
+
+      setText("shareCardBaselineChip", `${primary} Baseline`);
+      setText("shareCardFieldChip", `${field} Field`);
+      setText("shareCardStateChip", `${state} State`);
+
+      setText("shareCardWeather", systemWeather);
+      setText("shareCardTodayRead", todayRead);
+      setText("shareCardGoodMove", goodMove);
+      setText("shareCardReturn", returnText);
     }
 
     function getShareText(){
-      const systemWeather = getText("shareSystemWeatherLine") || "Structured baseline × Field loading";
-      const todayRead = getText("shareTodayRead") || "Waiting for chart calculation.";
-      const goodMove = getText("shareGoodMove") || "—";
-      const returnText = getText("shareReturn") || "—";
-
       return [
         "Lucy.OS",
         "",
         "Today’s System Weather:",
-        systemWeather,
+        latestSharePayload.systemWeather,
         "",
         "Today’s Read:",
-        todayRead,
+        latestSharePayload.todayRead,
         "",
         "One Good Move:",
-        goodMove,
+        latestSharePayload.goodMove,
         "",
         "Return to yourself by:",
-        returnText,
+        latestSharePayload.returnText,
         "",
         "Personal field guidance · Lucy.OS"
       ].join("\n");
@@ -2174,9 +2200,12 @@
             return;
           }
 
+          const weatherSlug = slugify(latestSharePayload.systemWeather || "lucy-os");
+          const filename = weatherSlug ? `lucy-os-${weatherSlug}.png` : "lucy-os-share-card.png";
+
           const url = URL.createObjectURL(blob);
           const link = document.createElement("a");
-          link.download = "lucy-os-share-card.png";
+          link.download = filename;
           link.href = url;
           document.body.appendChild(link);
           link.click();
@@ -2199,6 +2228,7 @@
       const supportMeta = HARMONICS[supportBase] || HARMONICS.Regulated;
       const distortionMeta = HARMONICS[harmonics.distortion] || HARMONICS.Diffused;
       const fieldMeta = HARMONICS[harmonics.todayField] || HARMONICS.Regulated;
+      const currentState = stateLabelFromMode(data?.state?.mode || "");
 
       const systemWeather = `${primaryMeta.label} baseline × ${fieldMeta.label} field`;
       const guidance = buildDailyGuidance(harmonics, data);
@@ -2222,8 +2252,18 @@
       setText("profileStateChip", `${primaryMeta.label} baseline`);
       setText("profileFieldChip", `Field: ${fieldMeta.label}`);
 
-      updateWhyThisReadUI(harmonics, data);
-      updateShareCardUI();
+      updateWhyReadUI(harmonics, data);
+      updateShareUI({
+        systemWeather,
+        todayRead: guidance.read,
+        goodMove: guidance.move,
+        returnText: guidance.ret,
+        primary: primaryMeta.label,
+        field: fieldMeta.label,
+        state: currentState
+      });
+
+      renderHarmonicLibrary(primaryMeta.label, fieldMeta.label);
 
       return harmonics;
     }
@@ -2437,7 +2477,6 @@
     document.getElementById("location").value = "Cuero, TX";
 
     renderHarmonicLibrary();
-    updateShareCardUI();
     calculate();
   </script>
 
