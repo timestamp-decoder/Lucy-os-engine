@@ -297,6 +297,22 @@
       line-height:1.58;
     }
 
+    .todayOutlookLine{
+      margin-top:14px;
+      border:1px solid rgba(216,184,76,.18);
+      background:rgba(216,184,76,.055);
+      color:var(--text);
+      border-radius:999px;
+      padding:10px 13px;
+      font-size:12px;
+      font-weight:800;
+      line-height:1.4;
+    }
+
+    .todayOutlookLine span{
+      color:var(--gold);
+    }
+
     .outlookCard{
       border:1px solid rgba(103,193,255,.18);
       border-radius:20px;
@@ -494,6 +510,10 @@
       border-radius:14px;
       padding:12px;
       background:rgba(255,255,255,.026);
+    }
+
+    .whyMini.full{
+      grid-column:1 / -1;
     }
 
     .whyMiniLabel{
@@ -1109,6 +1129,7 @@
       .profileBlock.full{grid-column:auto}
       .outlookGrid{grid-template-columns:1fr}
       .whyReadGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .whyMini.full{grid-column:1 / -1}
       .libraryGrid{grid-template-columns:1fr}
       .shareIntro{
         display:grid;
@@ -1126,6 +1147,7 @@
       .premiumCard{padding:18px}
       .weatherLine{font-size:28px}
       .todayRead{font-size:15px}
+      .todayOutlookLine{border-radius:14px}
       .profileHeader,.outlookHeader{display:grid}
       .whyReadGrid{grid-template-columns:1fr}
       .shareCardInner{padding:22px}
@@ -1229,6 +1251,10 @@
                 <div class="guidanceText" id="dailyReturn">—</div>
               </div>
             </div>
+
+            <div class="todayOutlookLine" id="todayOutlookLine">
+              Current Outlook: <span>Trend: —</span> · Driver: — · —
+            </div>
           </div>
         </section>
 
@@ -1252,9 +1278,9 @@
             </div>
 
             <div class="outlookBlock">
-              <div class="outlookLabel">Short Horizon</div>
+              <div class="outlookLabel">Next 6 Hours</div>
               <div class="outlookValue" id="outlookShortState">—</div>
-              <div class="outlookText" id="outlookShortText">Waiting for short-horizon outlook.</div>
+              <div class="outlookText" id="outlookShortText">Waiting for next 6 hours outlook.</div>
             </div>
 
             <div class="outlookBlock">
@@ -1271,7 +1297,7 @@
           </div>
 
           <div class="outlookNote">
-            Outlook is based on the current live field. True +6/+24 projection will be added in a later backend pass.
+            Current outlook uses the live-field forecast shell. Separate +6 and +24 hour projection will be added in a later backend pass.
           </div>
         </section>
 
@@ -1384,6 +1410,26 @@
             <div class="whyMini">
               <div class="whyMiniLabel">Distortion Pathway</div>
               <div class="whyMiniValue" id="whyDistortion">—</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">Direction</div>
+              <div class="whyMiniValue" id="whyDirection">—</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">Peak Timing</div>
+              <div class="whyMiniValue" id="whyPeakTiming">Later backend pass</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">Moonstamp Modifier</div>
+              <div class="whyMiniValue" id="whyMoonstampModifier">Later integration</div>
+            </div>
+
+            <div class="whyMini full">
+              <div class="whyMiniLabel">Rationale</div>
+              <div class="whyMiniValue" id="whyRationale">Waiting for rationale.</div>
             </div>
           </div>
 
@@ -1894,9 +1940,59 @@
       return `${horizonLabel} reads steady enough for paced action, simple focus, and clean follow-through.`;
     }
 
+    function fieldPhraseFromHarmonic(field){
+      if (field === "Reconstructive") return "Repair pressure active";
+      if (field === "Chaotic") return "Movement pressure active";
+      if (field === "Threshold") return "Edge pressure active";
+      if (field === "Diffused") return "Diffusion pressure active";
+      if (field === "Contained") return "Inward pressure active";
+      if (field === "Relational") return "Contact pressure active";
+      if (field === "Integrative") return "Meaning pressure active";
+      if (field === "Structured") return "Structure support active";
+      return "Field stable";
+    }
+
+    function calculateFieldTrend(data, harmonics){
+      const state = data?.state || {};
+      const field = harmonics?.todayField || "Regulated";
+      const modeLabel = stateLabelFromMode(state.mode || "");
+      const strain = safeNum(state.strain);
+      const load = safeNum(state.amplifiedLoad);
+      const regulation = safeNum(state.regulation);
+      const driver = primaryDriverName(data);
+      const fieldPhrase = fieldPhraseFromHarmonic(field);
+
+      let trend = "Stable";
+      let rationale = "Regulation is holding the load; trend reads as stable.";
+
+      if (modeLabel === "Overloaded" || strain >= 1.0) {
+        trend = "Intensifying";
+        rationale = `${driver} is increasing pressure while load is already high; trend reads as intensifying.`;
+      } else if (
+        modeLabel === "Threshold" ||
+        strain >= 0.85 ||
+        field === "Reconstructive" ||
+        field === "Threshold"
+      ) {
+        trend = "Intensifying";
+        rationale = `${driver} is increasing ${fieldPhrase.toLowerCase()}; trend reads as intensifying.`;
+      } else if (modeLabel === "Mobilized" || strain >= 0.60 || load >= 0.75) {
+        trend = "Active";
+        rationale = `The field is active but still workable; ${driver} is the strongest driver.`;
+      } else if (regulation >= 0.50 && strain < 0.55) {
+        trend = "Easing";
+        rationale = "Regulation is holding more of the load; trend reads as easing.";
+      }
+
+      return {
+        trend,
+        fieldPhrase,
+        rationale
+      };
+    }
+
     function buildFieldDirectionText(harmonics, data){
       const field = harmonics?.todayField || "Regulated";
-      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
       const driver = primaryDriverName(data);
       const driverText = driver && driver !== "—" ? ` ${driver} is the strongest active driver.` : "";
 
@@ -1957,7 +2053,7 @@
       }
 
       return {
-        title: `${stateLabel} field`,
+        title: "Stable field",
         text: `The field is readable enough to pace your next move. Keep the guidance practical and avoid turning the whole day into a problem to solve.${driverText}`
       };
     }
@@ -1978,7 +2074,7 @@
       setText("outlookNowText", outlookTextFromState(nowState, "Now"));
 
       setText("outlookShortState", plus6State);
-      setText("outlookShortText", outlookTextFromState(plus6State, "Short horizon"));
+      setText("outlookShortText", outlookTextFromState(plus6State, "Next 6 hours"));
 
       setText("outlook24State", plus24State);
       setText("outlook24Text", outlookTextFromState(plus24State, "Next 24 hours"));
@@ -2314,7 +2410,7 @@
       }).join("");
     }
 
-    function updateWhyReadUI(harmonics, data){
+    function updateWhyReadUI(harmonics, data, fieldTrend){
       const state = data?.state || {};
       const primary = harmonics.primary || "Structured";
       const field = harmonics.todayField || "Regulated";
@@ -2333,11 +2429,15 @@
       setText("whyCapacity", capacityBand);
       setText("whyRegulation", regulationBand);
       setText("whyDistortion", distortion);
+      setText("whyDirection", fieldTrend.trend);
+      setText("whyRationale", fieldTrend.rationale);
+      setText("whyPeakTiming", "Later backend pass");
+      setText("whyMoonstampModifier", "Later integration");
 
-      let explanation = `This read comes from a ${primary} baseline meeting a ${field} field while the current state is ${currentState.toLowerCase()}. Load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}.`;
+      let explanation = `This read comes from a ${primary} baseline meeting a ${field} field while the current state is ${currentState.toLowerCase()}. Load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. ${fieldTrend.rationale}`;
 
       if (primary === "Structured" && field === "Reconstructive") {
-        explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${primary} baseline wants order, sequence, and meaning, while the ${field} field pushes repair pressure. The best move is one honest adjustment, not a full rebuild.`;
+        explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${primary} baseline wants order, sequence, and meaning, while the ${field} field pushes repair pressure. ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild.`;
       }
 
       if (String(driver).toLowerCase().includes("pluto")) {
@@ -2466,9 +2566,11 @@
       const distortionMeta = HARMONICS[harmonics.distortion] || HARMONICS.Diffused;
       const fieldMeta = HARMONICS[harmonics.todayField] || HARMONICS.Regulated;
       const currentState = stateLabelFromMode(data?.state?.mode || "");
+      const fieldTrend = calculateFieldTrend(data, harmonics);
 
       const systemWeather = `${primaryMeta.label} baseline × ${fieldMeta.label} field`;
       const guidance = buildDailyGuidance(harmonics, data);
+      const driver = primaryDriverName(data);
 
       setText("systemWeatherLine", systemWeather);
       setText("dailyTodayRead", guidance.read);
@@ -2476,6 +2578,10 @@
       setText("dailyWatchFor", guidance.watch);
       setText("dailyGoodMove", guidance.move);
       setText("dailyReturn", guidance.ret);
+      setText(
+        "todayOutlookLine",
+        `Current Outlook: Trend: ${fieldTrend.trend} · Driver: ${driver} · ${fieldTrend.fieldPhrase}`
+      );
 
       setText("primaryHarmonic", primaryMeta.label);
       setText("supportHarmonic", harmonics.support || supportMeta.label);
@@ -2490,7 +2596,7 @@
       setText("profileFieldChip", `Field: ${fieldMeta.label}`);
 
       updateOutlookUI(data, harmonics);
-      updateWhyReadUI(harmonics, data);
+      updateWhyReadUI(harmonics, data, fieldTrend);
       updateShareUI({
         systemWeather,
         todayRead: guidance.read,
