@@ -162,6 +162,13 @@
       line-height:1.45;
     }
 
+    .routeTiny{
+      font-size:11px;
+      color:var(--muted2);
+      margin-top:10px;
+      line-height:1.45;
+    }
+
     .ok{
       color:var(--green);
       font-weight:700;
@@ -409,6 +416,24 @@
       letter-spacing:.04em;
     }
 
+    .chip.gold{
+      border-color:rgba(216,184,76,.26);
+      background:rgba(216,184,76,.09);
+      color:var(--gold);
+    }
+
+    .chip.field{
+      border-color:rgba(103,193,255,.22);
+      background:rgba(103,193,255,.08);
+      color:var(--blue);
+    }
+
+    .chip.violet{
+      border-color:rgba(176,108,255,.24);
+      background:rgba(176,108,255,.09);
+      color:#cab1ff;
+    }
+
     .nodeCard{
       border:1px solid rgba(103,193,255,.15);
       border-radius:20px;
@@ -626,6 +651,12 @@
       color:var(--gold);
     }
 
+    .shareChip.field{
+      border-color:rgba(103,193,255,.22);
+      background:rgba(103,193,255,.08);
+      color:var(--blue);
+    }
+
     .shareChip.violet{
       border-color:rgba(176,108,255,.20);
       background:rgba(176,108,255,.08);
@@ -703,6 +734,12 @@
       color:var(--gold);
       border-color:rgba(216,184,76,.22);
       background:rgba(216,184,76,.08);
+    }
+
+    .shareCardChip.field{
+      color:var(--blue);
+      border-color:rgba(103,193,255,.18);
+      background:rgba(103,193,255,.08);
     }
 
     .shareCardChip.violet{
@@ -916,8 +953,8 @@
               <p>Your baseline harmonic and today’s active field, kept simple for the public/free version.</p>
             </div>
             <div class="chipRow" style="margin-top:0;">
-              <span class="chip" id="liteSummaryStateChip">Baseline</span>
-              <span class="chip" id="liteSummaryFieldChip">Field: —</span>
+              <span class="chip gold" id="liteSummaryStateChip">Baseline</span>
+              <span class="chip field" id="liteSummaryFieldChip">Field: —</span>
             </div>
           </div>
 
@@ -946,15 +983,15 @@
           <p>Lucy.OS reads your baseline through 9 harmonic identity patterns.</p>
 
           <div class="nodeGrid">
-            <span class="nodeChip">Structured</span>
-            <span class="nodeChip">Contained</span>
-            <span class="nodeChip">Chaotic</span>
-            <span class="nodeChip">Relational</span>
-            <span class="nodeChip">Threshold</span>
-            <span class="nodeChip">Reconstructive</span>
-            <span class="nodeChip">Integrative</span>
-            <span class="nodeChip">Diffused</span>
-            <span class="nodeChip">Regulated</span>
+            <span class="nodeChip">⬡ Structured</span>
+            <span class="nodeChip">◐ Contained</span>
+            <span class="nodeChip">⚡ Chaotic</span>
+            <span class="nodeChip">∞ Relational</span>
+            <span class="nodeChip">⟡ Threshold</span>
+            <span class="nodeChip">◆ Reconstructive</span>
+            <span class="nodeChip">◎ Integrative</span>
+            <span class="nodeChip">≋ Diffused</span>
+            <span class="nodeChip">◉ Regulated</span>
           </div>
         </section>
 
@@ -997,6 +1034,7 @@
             driver library, engine details, and expanded timing layers.
           </p>
           <a class="upgradeButton" href="lucy-os-pro.html">Open Lucy.OS Pro</a>
+          <div class="routeTiny">Public route will move to TimestampDecoder.com after Pro access is wired.</div>
         </section>
 
         <section class="shareSection">
@@ -1008,7 +1046,7 @@
 
             <div class="shareIntroChips">
               <span class="shareChip gold" id="shareBaselineChip">Baseline: —</span>
-              <span class="shareChip" id="shareFieldChip">Field: —</span>
+              <span class="shareChip field" id="shareFieldChip">Field: —</span>
               <span class="shareChip violet" id="shareStateChip">State: —</span>
             </div>
           </div>
@@ -1023,7 +1061,7 @@
 
                 <div class="shareCardChips">
                   <span class="shareCardChip gold" id="shareCardBaselineChip">Baseline: —</span>
-                  <span class="shareCardChip" id="shareCardFieldChip">Field: —</span>
+                  <span class="shareCardChip field" id="shareCardFieldChip">Field: —</span>
                   <span class="shareCardChip violet" id="shareCardStateChip">State: —</span>
                 </div>
 
@@ -1162,6 +1200,25 @@
     function setText(id, value){
       const el = document.getElementById(id);
       if (el) el.textContent = value;
+    }
+
+    function harmonicSymbol(name){
+      const symbols = {
+        Structured: "⬡",
+        Contained: "◐",
+        Chaotic: "⚡",
+        Relational: "∞",
+        Threshold: "⟡",
+        Reconstructive: "◆",
+        Integrative: "◎",
+        Diffused: "≋",
+        Regulated: "◉"
+      };
+      return symbols[name] || "•";
+    }
+
+    function harmonicLabel(name){
+      return `${harmonicSymbol(name)} ${name}`;
     }
 
     function slugify(value){
@@ -1597,9 +1654,7 @@
         watch = "Creating a bigger break than the situation actually needs.";
         move = "Use the charge to fix one weak point, not to rebuild the whole field.";
         ret = "Let movement serve repair instead of becoming the pressure.";
-      }
-
-      else if (primary === "Chaotic" && field === "Regulated") {
+      } else if (primary === "Chaotic" && field === "Regulated") {
         read = "Your baseline carries movement and charge, while today may slow the field down. Do not fight the container. Use it to channel the voltage.";
         lean = "Rhythm, pacing, and turning movement into something usable.";
         watch = "Rebelling against structure just because the day asks for containment.";
@@ -2016,12 +2071,12 @@
         state
       };
 
-      setText("shareBaselineChip", `${primary} Baseline`);
-      setText("shareFieldChip", `${field} Field`);
+      setText("shareBaselineChip", `${harmonicSymbol(primary)} ${primary} Baseline`);
+      setText("shareFieldChip", `${harmonicSymbol(field)} ${field} Field`);
       setText("shareStateChip", `${state} State`);
 
-      setText("shareCardBaselineChip", `${primary} Baseline`);
-      setText("shareCardFieldChip", `${field} Field`);
+      setText("shareCardBaselineChip", `${harmonicSymbol(primary)} ${primary} Baseline`);
+      setText("shareCardFieldChip", `${harmonicSymbol(field)} ${field} Field`);
       setText("shareCardStateChip", `${state} State`);
 
       setText("shareCardWeather", systemWeather);
@@ -2123,7 +2178,9 @@
       const currentState = stateLabelFromMode(data?.state?.mode || "");
       const fieldTrend = calculateFieldTrend(data, harmonics);
 
-      const systemWeather = `${primaryMeta.label} baseline × ${fieldMeta.label} field`;
+      const primaryLabel = `${harmonicSymbol(primaryMeta.label)} ${primaryMeta.label}`;
+      const fieldLabel = `${harmonicSymbol(fieldMeta.label)} ${fieldMeta.label}`;
+      const systemWeather = `${primaryLabel} baseline × ${fieldLabel} field`;
       const guidance = buildDailyGuidance(harmonics, data);
       const rawDriver = primaryDriverName(data);
       const driver = publicDriverName(rawDriver);
@@ -2140,13 +2197,13 @@
         `Current Outlook: Trend: ${fieldTrend.trend} · Driver: ${driver} · ${fieldTrend.fieldPhrase}`
       );
 
-      setText("primaryHarmonic", primaryMeta.label);
-      setText("todayFieldHarmonic", fieldMeta.label);
+      setText("primaryHarmonic", primaryLabel);
+      setText("todayFieldHarmonic", fieldLabel);
       setText("harmonicPlainRead", primaryMeta.plainRead);
       setText("liteWhyTodayText", driverNote);
 
-      setText("liteSummaryStateChip", `${primaryMeta.label} baseline`);
-      setText("liteSummaryFieldChip", `Field: ${fieldMeta.label}`);
+      setText("liteSummaryStateChip", `${primaryLabel} baseline`);
+      setText("liteSummaryFieldChip", `${fieldLabel} field`);
 
       updateShareUI({
         systemWeather,
