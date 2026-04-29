@@ -846,8 +846,35 @@
     .engineDetails{
       border:1px solid rgba(42,60,105,.75);
       border-radius:20px;
-      padding:16px;
       background:rgba(6,15,34,.40);
+      overflow:hidden;
+    }
+
+    .engineDetails summary{
+      cursor:pointer;
+      list-style:none;
+      padding:18px;
+      color:var(--text);
+      font-size:18px;
+      font-weight:900;
+    }
+
+    .engineDetails summary::-webkit-details-marker{
+      display:none;
+    }
+
+    .engineDetails summary::after{
+      content:" +";
+      color:var(--muted);
+    }
+
+    .engineDetails[open] summary::after{
+      content:" -";
+    }
+
+    .engineBody{
+      border-top:1px solid rgba(255,255,255,.07);
+      padding:16px;
     }
 
     .engineHeader{
@@ -1180,7 +1207,7 @@
         <div class="row2">
           <div>
             <label>Time of Birth</label>
-            <input id="tob" type="text" placeholder="6:20" />
+            <input id="tob" type="text" placeholder="9:15" />
           </div>
           <div>
             <label>AM / PM</label>
@@ -1192,7 +1219,7 @@
         </div>
 
         <label>Birth Location</label>
-        <input id="location" type="text" placeholder="Cuero, TX" />
+        <input id="location" type="text" placeholder="Portland, OR" />
 
         <button id="calcBtn">Calculate</button>
 
@@ -1479,7 +1506,7 @@
 
                 <div class="shareCardMiniGrid">
                   <div class="shareCardMini">
-                    <div class="shareCardLabel">Why Today Feels This Way</div>
+                    <div class="shareCardLabel">Today’s Driver</div>
                     <div class="shareCardRead" id="shareCardDriverNote">Waiting for driver note.</div>
                   </div>
 
@@ -1518,173 +1545,176 @@
           </div>
         </details>
 
-        <section class="engineDetails">
-          <div class="engineHeader">
-            <div>
-              <h2>Engine Details</h2>
-              <p>Technical state, API confirmation, drivers, stabilizers, and chart debug remain visible here.</p>
-            </div>
-            <div class="metaRow" style="margin-top:0;">
-              <span class="metaPill field" id="envBand">Field: —</span>
-              <span class="metaPill forecast" id="forecastBand">Forecast: —</span>
-            </div>
-          </div>
-
-          <div class="heroStats">
-            <div class="stat">
-              <div class="label">Capacity</div>
-              <div class="big" id="capacityScore">0.00</div>
-              <div class="sub" id="capacityLabel">Available system bandwidth</div>
-              <div class="meter meter-capacity"><span id="capacityBar"></span></div>
-            </div>
-
-            <div class="stat">
-              <div class="label">Strain</div>
-              <div class="big" id="strainScore">0.00</div>
-              <div class="sub" id="strainLabel">Current active load</div>
-              <div class="meter meter-strain"><span id="strainBar"></span></div>
-            </div>
-
-            <div class="stat">
-              <div class="label">State</div>
-              <div class="big" id="stateText">Regulated</div>
-              <div class="sub" id="stateLabel">Stable with manageable load</div>
-              <div class="stateBadge" id="stateBadge">Regulated</div>
-            </div>
-          </div>
-
-          <div class="midRow">
-            <div class="microCard">
-              <div class="microHeader">
-                <div class="microTitle">Forecast</div>
+        <details class="engineDetails">
+          <summary>Open Engine Details</summary>
+          <div class="engineBody">
+            <div class="engineHeader">
+              <div>
+                <h2>Engine Details</h2>
+                <p>Technical state, API confirmation, drivers, stabilizers, and chart debug remain visible here.</p>
               </div>
-              <div class="forecastBig" id="forecastTitle">Forecast: —</div>
-              <div class="forecastSub" id="forecastText">
-                Waiting for forecast state.
+              <div class="metaRow" style="margin-top:0;">
+                <span class="metaPill field" id="envBand">Field: —</span>
+                <span class="metaPill forecast" id="forecastBand">Forecast: —</span>
               </div>
             </div>
 
-            <div class="microCard">
-              <div class="microHeader">
-                <div class="microTitle">Sky Data</div>
-                <div class="verifiedBadge" id="skyVerified">Verified</div>
+            <div class="heroStats">
+              <div class="stat">
+                <div class="label">Capacity</div>
+                <div class="big" id="capacityScore">0.00</div>
+                <div class="sub" id="capacityLabel">Available system bandwidth</div>
+                <div class="meter meter-capacity"><span id="capacityBar"></span></div>
               </div>
-              <div class="forecastBig" id="skyDataTitle">Chart Loaded</div>
-              <div class="forecastSub" id="skyDataText">
-                Waiting for resolved birth data and ephemeris source confirmation.
+
+              <div class="stat">
+                <div class="label">Strain</div>
+                <div class="big" id="strainScore">0.00</div>
+                <div class="sub" id="strainLabel">Current active load</div>
+                <div class="meter meter-strain"><span id="strainBar"></span></div>
+              </div>
+
+              <div class="stat">
+                <div class="label">State</div>
+                <div class="big" id="stateText">Regulated</div>
+                <div class="sub" id="stateLabel">Stable with manageable load</div>
+                <div class="stateBadge" id="stateBadge">Regulated</div>
               </div>
             </div>
-          </div>
 
-          <div class="whyCard">
-            <div class="whyTitle">Why</div>
-            <div class="whyText" id="whyText">Waiting for chart interpretation.</div>
-          </div>
+            <div class="midRow">
+              <div class="microCard">
+                <div class="microHeader">
+                  <div class="microTitle">Forecast</div>
+                </div>
+                <div class="forecastBig" id="forecastTitle">Forecast: —</div>
+                <div class="forecastSub" id="forecastText">
+                  Waiting for forecast state.
+                </div>
+              </div>
 
-          <div class="summaryTitle">System Summary</div>
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Metric</th>
-                <th>Value</th>
-                <th>Band</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Capacity</td>
-                <td id="capVal">0.00</td>
-                <td><span class="badge b-gold">Capacity</span></td>
-              </tr>
-              <tr>
-                <td>Amplified Load</td>
-                <td id="loadVal">0.00</td>
-                <td><span class="badge b-red">Load</span></td>
-              </tr>
-              <tr>
-                <td>Regulation</td>
-                <td id="regVal">0.00</td>
-                <td><span class="badge b-green">Regulation</span></td>
-              </tr>
-              <tr>
-                <td>Effective Load</td>
-                <td id="effVal">0.00</td>
-                <td><span class="badge b-blue">Net</span></td>
-              </tr>
-              <tr class="softMetric">
-                <td>Regulator Average</td>
-                <td id="stabilityVal">0.00</td>
-                <td><span class="badge b-violet">Derived</span></td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div class="bottomGrid">
-            <div class="miniPanel">
-              <div class="summaryTitle" style="font-size:13px; margin-bottom:10px;">Active Drivers</div>
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Driver</th>
-                    <th>Strength</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Primary Driver</td>
-                    <td id="primaryDriver">—</td>
-                  </tr>
-                  <tr>
-                    <td>Volatility (Uranus)</td>
-                    <td id="volatilityVal">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Fog (Neptune)</td>
-                    <td id="fogVal">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Activation (Mars)</td>
-                    <td id="activationVal">0.00</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="microCard">
+                <div class="microHeader">
+                  <div class="microTitle">Sky Data</div>
+                  <div class="verifiedBadge" id="skyVerified">Verified</div>
+                </div>
+                <div class="forecastBig" id="skyDataTitle">Chart Loaded</div>
+                <div class="forecastSub" id="skyDataText">
+                  Waiting for resolved birth data and ephemeris source confirmation.
+                </div>
+              </div>
             </div>
 
-            <div class="miniPanel">
-              <div class="summaryTitle" style="font-size:13px; margin-bottom:10px;">Stabilizers</div>
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Regulator</th>
-                    <th>Strength</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Saturn</td>
-                    <td id="saturnVal">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Venus</td>
-                    <td id="venusVal">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Mercury</td>
-                    <td id="mercuryVal">0.00</td>
-                  </tr>
-                  <tr>
-                    <td>Current State</td>
-                    <td id="stateCondition">—</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="whyCard">
+              <div class="whyTitle">Why</div>
+              <div class="whyText" id="whyText">Waiting for chart interpretation.</div>
+            </div>
+
+            <div class="summaryTitle">System Summary</div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th>Value</th>
+                  <th>Band</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Capacity</td>
+                  <td id="capVal">0.00</td>
+                  <td><span class="badge b-gold">Capacity</span></td>
+                </tr>
+                <tr>
+                  <td>Amplified Load</td>
+                  <td id="loadVal">0.00</td>
+                  <td><span class="badge b-red">Load</span></td>
+                </tr>
+                <tr>
+                  <td>Regulation</td>
+                  <td id="regVal">0.00</td>
+                  <td><span class="badge b-green">Regulation</span></td>
+                </tr>
+                <tr>
+                  <td>Effective Load</td>
+                  <td id="effVal">0.00</td>
+                  <td><span class="badge b-blue">Net</span></td>
+                </tr>
+                <tr class="softMetric">
+                  <td>Regulator Average</td>
+                  <td id="stabilityVal">0.00</td>
+                  <td><span class="badge b-violet">Derived</span></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="bottomGrid">
+              <div class="miniPanel">
+                <div class="summaryTitle" style="font-size:13px; margin-bottom:10px;">Active Drivers</div>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Driver</th>
+                      <th>Strength</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Primary Driver</td>
+                      <td id="primaryDriver">—</td>
+                    </tr>
+                    <tr>
+                      <td>Volatility (Uranus)</td>
+                      <td id="volatilityVal">0.00</td>
+                    </tr>
+                    <tr>
+                      <td>Fog (Neptune)</td>
+                      <td id="fogVal">0.00</td>
+                    </tr>
+                    <tr>
+                      <td>Activation (Mars)</td>
+                      <td id="activationVal">0.00</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="miniPanel">
+                <div class="summaryTitle" style="font-size:13px; margin-bottom:10px;">Stabilizers</div>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Regulator</th>
+                      <th>Strength</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Saturn</td>
+                      <td id="saturnVal">0.00</td>
+                    </tr>
+                    <tr>
+                      <td>Venus</td>
+                      <td id="venusVal">0.00</td>
+                    </tr>
+                    <tr>
+                      <td>Mercury</td>
+                      <td id="mercuryVal">0.00</td>
+                    </tr>
+                    <tr>
+                      <td>Current State</td>
+                      <td id="stateCondition">—</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="tiny">
+              Forecast, regulator average, harmonic routing, and why-line are interpretive layers on top of the current V2.5 engine.
             </div>
           </div>
-
-          <div class="tiny">
-            Forecast, regulator average, harmonic routing, and why-line are interpretive layers on top of the current V2.5 engine.
-          </div>
-        </section>
+        </details>
       </div>
     </div>
   </div>
@@ -1703,6 +1733,7 @@
       Contained: {
         label: "Contained",
         signalQuality: "Deep, internal, cyclical, protected",
+
         stabilityMethod: "Withdrawal, privacy, inward processing, controlled release",
         overloadRisk: "Emotional compression; signal trapped inside; delayed expression turning into pressure buildup",
         plainRead: "This system stabilizes by pulling signal inward until it feels safe. Overload happens when too much stays unexpressed for too long."
@@ -1872,6 +1903,30 @@
       return data?.telemetry?.primaryDriver || "—";
     }
 
+    function publicDriverName(driver){
+      const text = String(driver || "").trim();
+
+      if (!text || text === "—") return "The strongest current driver";
+
+      const lower = text.toLowerCase();
+
+      if (
+        lower === "mc" ||
+        lower.startsWith("mc ") ||
+        lower.startsWith("mc(") ||
+        lower.includes("midheaven")
+      ) return "Life Direction";
+
+      if (
+        lower === "asc" ||
+        lower.startsWith("asc ") ||
+        lower.startsWith("asc(") ||
+        lower.includes("ascendant")
+      ) return "Personal Orientation";
+
+      return text;
+    }
+
     function loadBandFromValue(load){
       const value = safeNum(load);
       if (value < 0.45) return "Low";
@@ -1966,7 +2021,7 @@
       const strain = safeNum(state.strain);
       const load = safeNum(state.amplifiedLoad);
       const regulation = safeNum(state.regulation);
-      const driver = primaryDriverName(data);
+      const driver = publicDriverName(primaryDriverName(data));
       const fieldPhrase = fieldPhraseFromHarmonic(field);
 
       let trend = "Stable";
@@ -2000,7 +2055,7 @@
 
     function buildFieldDirectionText(harmonics, data){
       const field = harmonics?.todayField || "Regulated";
-      const driver = primaryDriverName(data);
+      const driver = publicDriverName(primaryDriverName(data));
       const driverText = driver && driver !== "—" ? ` ${driver} is the strongest active driver.` : "";
 
       if (field === "Reconstructive") {
@@ -2234,6 +2289,7 @@
         Structured: 0,
         Contained: 0,
         Chaotic: 0,
+
         Relational: 0,
         Threshold: 0,
         Reconstructive: 0,
@@ -2480,7 +2536,7 @@
         lean = "Clear agreements, simple language, and practical relational structure.";
         watch = "Turning a living connection into a rigid set of rules.";
         move = "Name one boundary, agreement, or expectation plainly.";
-        ret = "Come back to the human contact underneath the structure.";
+        ret = "Come back to the personal contact underneath the structure.";
       } else if (primary === "Relational" && field === "Contained") {
         read = "Your baseline stabilizes through connection, while today may pull the field inward. Someone may need space, privacy, or slower contact without it meaning the bond is failing.";
         lean = "Respectful distance, gentle check-ins, and slower interpretation.";
@@ -2564,6 +2620,7 @@
         lean = "Honest repair, durable simplification, and strengthening one weak point.";
         watch = "Turning every strain into proof that the whole system needs reconstruction.";
         move = "Choose the one repair that would reduce the most pressure.";
+
         ret = "Return to what can actually be repaired today.";
       } else if (primary === "Reconstructive" && field === "Contained") {
         read = "Your baseline knows how to rebuild under pressure, while today may pull the repair process inward. The work may be real, but it may need privacy before action.";
@@ -2790,7 +2847,7 @@
     }
 
     function buildDriverNote(data, harmonics, fieldTrend){
-      const driver = primaryDriverName(data);
+      const driver = publicDriverName(primaryDriverName(data));
       const field = harmonics?.todayField || "Regulated";
       const trend = fieldTrend?.trend || "Stable";
       const stateLabel = stateLabelFromMode(data?.state?.mode || "");
@@ -2898,7 +2955,7 @@
       const primary = harmonics.primary || "Structured";
       const field = harmonics.todayField || "Regulated";
       const currentState = stateLabelFromMode(state.mode || "");
-      const driver = primaryDriverName(data);
+      const driver = publicDriverName(primaryDriverName(data));
       const loadBand = loadBandFromValue(state.amplifiedLoad);
       const capacityBand = capacityBandFromValue(state.capacity);
       const regulationBand = regulationBandFromValue(state.regulation);
@@ -2975,7 +3032,7 @@
         "Today’s Read:",
         latestSharePayload.todayRead,
         "",
-        "Why Today Feels This Way:",
+        "Today’s Driver:",
         latestSharePayload.driverNote,
         "",
         "One Good Move:",
@@ -3062,7 +3119,7 @@
 
       const systemWeather = `${primaryMeta.label} baseline × ${fieldMeta.label} field`;
       const guidance = buildDailyGuidance(harmonics, data);
-      const driver = primaryDriverName(data);
+      const driver = publicDriverName(primaryDriverName(data));
       const driverNote = buildDriverNote(data, harmonics, fieldTrend);
 
       setText("systemWeatherLine", systemWeather);
@@ -3309,10 +3366,10 @@
     document.getElementById("saveShareCardBtn").addEventListener("click", saveShareCard);
     document.getElementById("copyShareTextBtn").addEventListener("click", copyShareText);
 
-    document.getElementById("dob").value = "1980-11-21";
-    document.getElementById("tob").value = "6:20";
+    document.getElementById("dob").value = "1992-04-18";
+    document.getElementById("tob").value = "9:15";
     document.getElementById("ampm").value = "AM";
-    document.getElementById("location").value = "Cuero, TX";
+    document.getElementById("location").value = "Portland, OR";
 
     renderHarmonicLibrary();
     calculate();
