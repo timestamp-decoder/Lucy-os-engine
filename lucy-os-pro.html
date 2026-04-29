@@ -1844,6 +1844,42 @@
       }
     };
 
+    const HARMONIC_SCORE_WEIGHTS = {
+      natal: {
+        Structured: 5.50,
+        Contained: 2.60,
+        Chaotic: 2.65,
+        Relational: 2.55,
+        Threshold: 2.80,
+        Reconstructive: 2.80,
+        Integrative: 2.55,
+        Diffused: 2.40,
+        Regulated: 3.35
+      },
+      field: {
+        Structured: 1.60,
+        Contained: 1.20,
+        Chaotic: 2.65,
+        Relational: 1.55,
+        Threshold: 2.60,
+        Reconstructive: 2.30,
+        Integrative: 1.60,
+        Diffused: 1.75,
+        Regulated: 2.40
+      },
+      distortion: {
+        Structured: 1.05,
+        Contained: 1.10,
+        Chaotic: 3.20,
+        Relational: 1.00,
+        Threshold: 2.30,
+        Reconstructive: 3.20,
+        Integrative: 1.90,
+        Diffused: 3.60,
+        Regulated: 2.50
+      }
+    };
+
     let latestSharePayload = {
       systemWeather: "Structured baseline × Field loading",
       todayRead: "Waiting for daily read.",
@@ -1888,7 +1924,6 @@
         Relational: "∞",
         Threshold: "⟡",
         Reconstructive: "◆",
-
         Integrative: "◎",
         Diffused: "≋",
         Regulated: "◉"
@@ -1923,6 +1958,17 @@
 
     function addScore(scores, key, value){
       scores[key] = safeNum(scores[key]) + safeNum(value);
+    }
+
+    function normalizeScores(scores, weights){
+      const normalized = {};
+
+      Object.keys(scores).forEach(key => {
+        const divisor = safeNum(weights?.[key], 1);
+        normalized[key] = divisor > 0 ? safeNum(scores[key]) / divisor : safeNum(scores[key]);
+      });
+
+      return normalized;
     }
 
     function getTopHarmonic(scores, fallback = "Structured"){
@@ -2317,13 +2363,15 @@
       addScore(natalScores, "Diffused", neptune * 1.35 + moon * 0.70 + jupiter * 0.35);
       addScore(natalScores, "Regulated", saturn * 1.25 + mercury * 0.85 + baselineRegulation * 0.90 + venus * 0.35);
 
-      const primary = getTopHarmonic(natalScores, "Structured");
-      let support = getSecondHarmonic(natalScores, primary, "Regulated");
+      const normalizedNatalScores = normalizeScores(natalScores, HARMONIC_SCORE_WEIGHTS.natal);
+
+      const primary = getTopHarmonic(normalizedNatalScores, "Structured");
+      let support = getSecondHarmonic(normalizedNatalScores, primary, "Regulated");
 
       if (primary === "Structured") {
-        const regulatedScore = natalScores.Regulated || 0;
-        const integrativeScore = natalScores.Integrative || 0;
-        const secondScore = natalScores[support] || 0;
+        const regulatedScore = normalizedNatalScores.Regulated || 0;
+        const integrativeScore = normalizedNatalScores.Integrative || 0;
+        const secondScore = normalizedNatalScores[support] || 0;
 
         if (regulatedScore >= secondScore * 0.88 && integrativeScore >= secondScore * 0.78) {
           support = "Regulated / Integrative";
@@ -2365,7 +2413,19 @@
       if (forecastState.includes("mobilized")) addScore(fieldScores, "Chaotic", 0.35);
       if (forecastState.includes("overload")) addScore(fieldScores, "Reconstructive", 0.55);
 
-      const todayField = getTopHarmonic(fieldScores, "Regulated");
+      const fieldWeights = { ...HARMONIC_SCORE_WEIGHTS.field };
+
+      if (envMode.includes("diffuse") || envMode.includes("volatile")) {
+        fieldWeights.Diffused += 0.45;
+        fieldWeights.Chaotic += 0.35;
+      }
+
+      if (forecastState.includes("threshold")) fieldWeights.Threshold += 0.65;
+      if (forecastState.includes("mobilized")) fieldWeights.Chaotic += 0.35;
+      if (forecastState.includes("overload")) fieldWeights.Reconstructive += 0.55;
+
+      const normalizedFieldScores = normalizeScores(fieldScores, fieldWeights);
+      const todayField = getTopHarmonic(normalizedFieldScores, "Regulated");
 
       const distortionScores = {
         Structured: 0,
@@ -2392,9 +2452,18 @@
       addScore(distortionScores, "Relational", venus * 0.55 + moon * 0.45);
       addScore(distortionScores, "Structured", mercury * 0.55 + saturn * 0.50);
 
-      let distortion = getTopHarmonic(distortionScores, "Diffused");
+      const distortionWeights = { ...HARMONIC_SCORE_WEIGHTS.distortion };
 
-      if (primary === "Structured" && distortionScores.Diffused >= distortionScores[distortion] * 0.82) {
+      if (overloadGap > 0) {
+        distortionWeights.Diffused += 1.40;
+        distortionWeights.Chaotic += 0.80;
+        distortionWeights.Reconstructive += 1.00;
+      }
+
+      const normalizedDistortionScores = normalizeScores(distortionScores, distortionWeights);
+      let distortion = getTopHarmonic(normalizedDistortionScores, "Diffused");
+
+      if (primary === "Structured" && normalizedDistortionScores.Diffused >= normalizedDistortionScores[distortion] * 0.82) {
         distortion = "Diffused";
       }
 
@@ -2404,8 +2473,11 @@
         distortion,
         todayField,
         natalScores,
+        normalizedNatalScores,
         fieldScores,
-        distortionScores
+        normalizedFieldScores,
+        distortionScores,
+        normalizedDistortionScores
       };
     }
 
@@ -2595,6 +2667,7 @@
         watch = "Absorbing the whole shared field because you can feel it.";
         move = "Name one relational signal plainly and keep responsibility proportional.";
         ret = "Return to your own center before trying to repair the connection.";
+
       } else if (primary === "Relational" && field === "Threshold") {
         read = "Your baseline reads connection, and today may bring a decision edge in the relational field. Do not chase closeness; name the real crossing.";
         lean = "Clear contact, honest timing, and letting the bond show what is ready.";
@@ -3303,7 +3376,19 @@
 
       const regulatorAverage = (saturn + venus + mercury) / 3;
 
-      updateHarmonicUI(data);
+      const harmonics = updateHarmonicUI(data);
+      console.log("Lucy.OS normalized harmonic scores:", {
+        primary: harmonics.primary,
+        support: harmonics.support,
+        distortion: harmonics.distortion,
+        todayField: harmonics.todayField,
+        natalScores: harmonics.natalScores,
+        normalizedNatalScores: harmonics.normalizedNatalScores,
+        fieldScores: harmonics.fieldScores,
+        normalizedFieldScores: harmonics.normalizedFieldScores,
+        distortionScores: harmonics.distortionScores,
+        normalizedDistortionScores: harmonics.normalizedDistortionScores
+      });
 
       setText("capacityScore", fmt(capacity));
       setText("capacityLabel", capacityLabelFromValue(capacity));
@@ -3453,6 +3538,103 @@
         btn.textContent = "Calculate";
       }
     }
+
+    function randomHarmonicTestData() {
+      const r = () => Math.random();
+
+      return {
+        state: {
+          strain: r(),
+          amplifiedLoad: r(),
+          regulation: r(),
+          effectiveLoad: r(),
+          capacity: r(),
+          mode: "Regulated"
+        },
+        baselineState: {
+          capacity: r(),
+          strain: r(),
+          amplifiedLoad: r(),
+          regulation: r()
+        },
+        planetary: {
+          sun: r(),
+          moon: r(),
+          mercury: r(),
+          venus: r(),
+          mars: r(),
+          jupiter: r(),
+          saturn: r(),
+          uranus: r(),
+          neptune: r(),
+          pluto: r(),
+          asc: r(),
+          mc: r(),
+          transitMoon: r(),
+          transitMercury: r(),
+          transitVenus: r(),
+          transitMars: r(),
+          transitJupiter: r(),
+          transitSaturn: r(),
+          transitUranus: r(),
+          transitNeptune: r(),
+          transitPluto: r()
+        },
+        environment: {
+          environmentMode: ""
+        },
+        forecast: {
+          now: {
+            state: "Regulated"
+          }
+        },
+        timing: {
+          timingPressure: r()
+        }
+      };
+    }
+
+    function runSyntheticHarmonicBalanceTest(count = 10000) {
+      const primaryCounts = {};
+      const supportCounts = {};
+      const fieldCounts = {};
+      const distortionCounts = {};
+
+      Object.keys(HARMONICS).forEach(key => {
+        primaryCounts[key] = 0;
+        supportCounts[key] = 0;
+        fieldCounts[key] = 0;
+        distortionCounts[key] = 0;
+      });
+
+      for (let i = 0; i < count; i++) {
+        const result = calculateHarmonics(randomHarmonicTestData());
+
+        primaryCounts[result.primary] = (primaryCounts[result.primary] || 0) + 1;
+
+        const supportBase = getHarmonicBaseName(result.support);
+        supportCounts[supportBase] = (supportCounts[supportBase] || 0) + 1;
+
+        fieldCounts[result.todayField] = (fieldCounts[result.todayField] || 0) + 1;
+        distortionCounts[result.distortion] = (distortionCounts[result.distortion] || 0) + 1;
+      }
+
+      console.table({
+        Primary: primaryCounts,
+        Support: supportCounts,
+        Field: fieldCounts,
+        Distortion: distortionCounts
+      });
+
+      return {
+        primaryCounts,
+        supportCounts,
+        fieldCounts,
+        distortionCounts
+      };
+    }
+
+    window.runSyntheticHarmonicBalanceTest = runSyntheticHarmonicBalanceTest;
 
     document.getElementById("calcBtn").addEventListener("click", calculate);
     document.getElementById("saveShareCardBtn").addEventListener("click", saveShareCard);
