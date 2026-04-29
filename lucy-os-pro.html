@@ -47,6 +47,30 @@
       padding:24px;
     }
 
+    .backLink{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      width:auto;
+      min-height:34px;
+      margin:0 0 14px;
+      padding:0 12px;
+      border-radius:999px;
+      border:1px solid rgba(103,193,255,.16);
+      background:rgba(103,193,255,.055);
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+      text-decoration:none;
+      letter-spacing:.02em;
+    }
+
+    .backLink:hover{
+      color:var(--blue);
+      border-color:rgba(103,193,255,.28);
+      background:rgba(103,193,255,.085);
+    }
+
     .hero{
       position:relative;
       text-align:center;
@@ -490,6 +514,24 @@
       letter-spacing:.04em;
     }
 
+    .chip.gold{
+      border-color:rgba(216,184,76,.26);
+      background:rgba(216,184,76,.09);
+      color:var(--gold);
+    }
+
+    .chip.field{
+      border-color:rgba(103,193,255,.22);
+      background:rgba(103,193,255,.08);
+      color:var(--blue);
+    }
+
+    .chip.violet{
+      border-color:rgba(176,108,255,.24);
+      background:rgba(176,108,255,.09);
+      color:#cab1ff;
+    }
+
     .whyReadCard{
       border:1px solid rgba(103,193,255,.15);
       border-radius:20px;
@@ -602,6 +644,12 @@
       color:var(--gold);
     }
 
+    .shareChip.field{
+      border-color:rgba(103,193,255,.22);
+      background:rgba(103,193,255,.08);
+      color:var(--blue);
+    }
+
     .shareChip.violet{
       border-color:rgba(176,108,255,.20);
       background:rgba(176,108,255,.08);
@@ -679,6 +727,12 @@
       color:var(--gold);
       border-color:rgba(216,184,76,.22);
       background:rgba(216,184,76,.08);
+    }
+
+    .shareCardChip.field{
+      color:var(--blue);
+      border-color:rgba(103,193,255,.18);
+      background:rgba(103,193,255,.08);
     }
 
     .shareCardChip.violet{
@@ -1191,9 +1245,11 @@
 
 <body>
   <div class="wrap">
+    <a class="backLink" href="index.html">← Back to Lucy.OS Lite</a>
+
     <div class="hero">
       <div class="heroGlow" id="heroGlow"></div>
-      <h1>Lucy.OS</h1>
+      <h1>Lucy.OS Pro</h1>
       <p>Full personal field guidance inside the live timing field</p>
     </div>
 
@@ -1293,8 +1349,8 @@
               <p>Live-field guidance using the current forecast shell. Future projection will be upgraded later.</p>
             </div>
             <div class="chipRow" style="margin-top:0;">
-              <span class="chip" id="outlookStateChip">State: —</span>
-              <span class="chip" id="outlookFieldChip">Field: —</span>
+              <span class="chip violet" id="outlookStateChip">State: —</span>
+              <span class="chip field" id="outlookFieldChip">Field: —</span>
             </div>
           </div>
 
@@ -1336,8 +1392,8 @@
               <p>Your baseline pattern, stabilizing support, and overload pathway. Today’s field is separate from your Primary Harmonic.</p>
             </div>
             <div class="chipRow">
-              <span class="chip" id="profileStateChip">Baseline</span>
-              <span class="chip" id="profileFieldChip">Field: —</span>
+              <span class="chip gold" id="profileStateChip">Baseline</span>
+              <span class="chip field" id="profileFieldChip">Field: —</span>
             </div>
           </div>
 
@@ -1475,7 +1531,7 @@
 
             <div class="shareIntroChips">
               <span class="shareChip gold" id="shareBaselineChip">Baseline: —</span>
-              <span class="shareChip" id="shareFieldChip">Field: —</span>
+              <span class="shareChip field" id="shareFieldChip">Field: —</span>
               <span class="shareChip violet" id="shareStateChip">State: —</span>
             </div>
           </div>
@@ -1490,7 +1546,7 @@
 
                 <div class="shareCardChips">
                   <span class="shareCardChip gold" id="shareCardBaselineChip">Baseline: —</span>
-                  <span class="shareCardChip" id="shareCardFieldChip">Field: —</span>
+                  <span class="shareCardChip field" id="shareCardFieldChip">Field: —</span>
                   <span class="shareCardChip violet" id="shareCardStateChip">State: —</span>
                 </div>
 
@@ -1733,7 +1789,6 @@
       Contained: {
         label: "Contained",
         signalQuality: "Deep, internal, cyclical, protected",
-
         stabilityMethod: "Withdrawal, privacy, inward processing, controlled release",
         overloadRisk: "Emotional compression; signal trapped inside; delayed expression turning into pressure buildup",
         plainRead: "This system stabilizes by pulling signal inward until it feels safe. Overload happens when too much stays unexpressed for too long."
@@ -1823,6 +1878,33 @@
       if (!el) return;
       const pct = clamp((safeNum(value) / max) * 100, 0, 100);
       el.style.width = pct + "%";
+    }
+
+    function harmonicSymbol(name){
+      const symbols = {
+        Structured: "⬡",
+        Contained: "◐",
+        Chaotic: "⚡",
+        Relational: "∞",
+        Threshold: "⟡",
+        Reconstructive: "◆",
+
+        Integrative: "◎",
+        Diffused: "≋",
+        Regulated: "◉"
+      };
+      return symbols[name] || "•";
+    }
+
+    function harmonicLabel(name){
+      if (!name) return "—";
+      const parts = String(name).split("/").map(part => part.trim()).filter(Boolean);
+
+      if (parts.length > 1) {
+        return parts.map(part => `${harmonicSymbol(part)} ${part}`).join(" / ");
+      }
+
+      return `${harmonicSymbol(name)} ${name}`;
     }
 
     function slugify(value){
@@ -2129,8 +2211,8 @@
       const stateLabel = stateLabelFromMode(data?.state?.mode || "");
       const direction = buildFieldDirectionText(harmonics, data);
 
-      setText("outlookStateChip", `State: ${stateLabel}`);
-      setText("outlookFieldChip", `Field: ${field}`);
+      setText("outlookStateChip", `${stateLabel} State`);
+      setText("outlookFieldChip", `${harmonicLabel(field)} Field`);
 
       setText("outlookNowState", nowState);
       setText("outlookNowText", outlookTextFromState(nowState, "Now"));
@@ -2289,7 +2371,6 @@
         Structured: 0,
         Contained: 0,
         Chaotic: 0,
-
         Relational: 0,
         Threshold: 0,
         Reconstructive: 0,
@@ -2405,6 +2486,7 @@
         watch = "Holding everything inside until the pressure becomes harder to name.";
         move = "Let one small piece of the inner field become visible or workable.";
         ret = "Return to privacy as a container, not a hiding place.";
+
       } else if (primary === "Contained" && field === "Structured") {
         read = "Your baseline processes inwardly, and today may offer more structure. This can help you shape what has been private without forcing it into full visibility.";
         lean = "Gentle organization, protected planning, and quiet structure.";
@@ -2620,7 +2702,6 @@
         lean = "Honest repair, durable simplification, and strengthening one weak point.";
         watch = "Turning every strain into proof that the whole system needs reconstruction.";
         move = "Choose the one repair that would reduce the most pressure.";
-
         ret = "Return to what can actually be repaired today.";
       } else if (primary === "Reconstructive" && field === "Contained") {
         read = "Your baseline knows how to rebuild under pressure, while today may pull the repair process inward. The work may be real, but it may need privacy before action.";
@@ -2736,6 +2817,7 @@
         watch = "Drifting into isolation or holding the whole atmosphere inside.";
         move = "Choose one private grounding action that gives the field a soft edge.";
         ret = "Return to the body before trying to interpret the whole atmosphere.";
+
       } else if (primary === "Diffused" && field === "Chaotic") {
         read = "Your baseline is porous, and today may add charge, movement, or disruption. The field can scatter quickly, so give your attention one gentle anchor.";
         lean = "Simple grounding, fewer inputs, and movement that stays contained.";
@@ -2940,7 +3022,7 @@
 
         return `
           <article class="libraryCard ${activeClass}">
-            <h3>${item.label}${activeLabel ? ` · ${activeLabel}` : ""}</h3>
+            <h3>${harmonicLabel(item.label)}${activeLabel ? ` · ${activeLabel}` : ""}</h3>
             <p><strong>Signal Quality:</strong> ${item.signalQuality}</p>
             <p><strong>Stability Method:</strong> ${item.stabilityMethod}</p>
             <p><strong>Overload Risk:</strong> ${item.overloadRisk}</p>
@@ -2961,23 +3043,23 @@
       const regulationBand = regulationBandFromValue(state.regulation);
       const distortion = harmonics.distortion || "Diffused";
 
-      setText("whyBaseline", primary);
-      setText("whyField", field);
+      setText("whyBaseline", harmonicLabel(primary));
+      setText("whyField", harmonicLabel(field));
       setText("whyState", currentState);
       setText("whyDriver", driver);
       setText("whyLoad", loadBand);
       setText("whyCapacity", capacityBand);
       setText("whyRegulation", regulationBand);
-      setText("whyDistortion", distortion);
+      setText("whyDistortion", harmonicLabel(distortion));
       setText("whyDirection", fieldTrend.trend);
       setText("whyRationale", fieldTrend.rationale);
       setText("whyPeakTiming", "Later backend pass");
       setText("whyMoonstampModifier", "Later integration");
 
-      let explanation = `This read comes from a ${primary} baseline meeting a ${field} field while the current state is ${currentState.toLowerCase()}. Load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. ${fieldTrend.rationale}`;
+      let explanation = `This read comes from a ${harmonicLabel(primary)} baseline meeting a ${harmonicLabel(field)} field while the current state is ${currentState.toLowerCase()}. Load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. ${fieldTrend.rationale}`;
 
       if (primary === "Structured" && field === "Reconstructive") {
-        explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${primary} baseline wants order, sequence, and meaning, while the ${field} field pushes repair pressure. ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild.`;
+        explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${harmonicLabel(primary)} baseline wants order, sequence, and meaning, while the ${harmonicLabel(field)} field pushes repair pressure. ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild.`;
       }
 
       if (currentState === "Threshold" && loadBand === "Overloaded" && capacityBand === "Decent") {
@@ -2989,7 +3071,7 @@
       }
 
       if (distortion === field) {
-        explanation += ` The distortion pathway matches today’s field, so the same pattern that is active today can become the overload route if the load keeps stacking.`;
+        explanation += " The distortion pathway matches today’s field, so the same pattern that is active today can become the overload route if the load keeps stacking.";
       }
 
       setText("whyConfigText", explanation);
@@ -3007,12 +3089,12 @@
         state
       };
 
-      setText("shareBaselineChip", `${primary} Baseline`);
-      setText("shareFieldChip", `${field} Field`);
+      setText("shareBaselineChip", `${harmonicLabel(primary)} Baseline`);
+      setText("shareFieldChip", `${harmonicLabel(field)} Field`);
       setText("shareStateChip", `${state} State`);
 
-      setText("shareCardBaselineChip", `${primary} Baseline`);
-      setText("shareCardFieldChip", `${field} Field`);
+      setText("shareCardBaselineChip", `${harmonicLabel(primary)} Baseline`);
+      setText("shareCardFieldChip", `${harmonicLabel(field)} Field`);
       setText("shareCardStateChip", `${state} State`);
 
       setText("shareCardWeather", systemWeather);
@@ -3117,7 +3199,17 @@
       const currentState = stateLabelFromMode(data?.state?.mode || "");
       const fieldTrend = calculateFieldTrend(data, harmonics);
 
-      const systemWeather = `${primaryMeta.label} baseline × ${fieldMeta.label} field`;
+      const primaryLabel = harmonicLabel(primaryMeta.label);
+      const supportLabel = harmonics.support && String(harmonics.support).includes("/")
+        ? String(harmonics.support)
+            .split("/")
+            .map(part => harmonicLabel(part.trim()))
+            .join(" / ")
+        : harmonicLabel(supportMeta.label);
+      const distortionLabel = harmonicLabel(distortionMeta.label);
+      const fieldLabel = harmonicLabel(fieldMeta.label);
+
+      const systemWeather = `${primaryLabel} baseline × ${fieldLabel} field`;
       const guidance = buildDailyGuidance(harmonics, data);
       const driver = publicDriverName(primaryDriverName(data));
       const driverNote = buildDriverNote(data, harmonics, fieldTrend);
@@ -3133,17 +3225,17 @@
         `Current Outlook: Trend: ${fieldTrend.trend} · Driver: ${driver} · ${fieldTrend.fieldPhrase}`
       );
 
-      setText("primaryHarmonic", primaryMeta.label);
-      setText("supportHarmonic", harmonics.support || supportMeta.label);
-      setText("distortionHarmonic", distortionMeta.label);
-      setText("todayFieldHarmonic", fieldMeta.label);
+      setText("primaryHarmonic", primaryLabel);
+      setText("supportHarmonic", supportLabel);
+      setText("distortionHarmonic", distortionLabel);
+      setText("todayFieldHarmonic", fieldLabel);
       setText("signalQuality", primaryMeta.signalQuality);
       setText("stabilityMethod", primaryMeta.stabilityMethod);
       setText("overloadRisk", distortionMeta.overloadRisk);
       setText("harmonicPlainRead", primaryMeta.plainRead);
 
-      setText("profileStateChip", `${primaryMeta.label} baseline`);
-      setText("profileFieldChip", `Field: ${fieldMeta.label}`);
+      setText("profileStateChip", `${primaryLabel} baseline`);
+      setText("profileFieldChip", `${fieldLabel} field`);
 
       updateOutlookUI(data, harmonics);
       updateWhyReadUI(harmonics, data, fieldTrend);
