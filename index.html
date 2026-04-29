@@ -288,6 +288,36 @@
       color:var(--gold);
     }
 
+    .liteWhyCard{
+      border:1px solid rgba(216,184,76,.18);
+      border-radius:20px;
+      padding:18px;
+      background:
+        radial-gradient(circle at 14% 0%, rgba(216,184,76,.08), transparent 34%),
+        linear-gradient(180deg,rgba(15,27,56,.95),rgba(12,24,50,.92));
+      box-shadow:var(--shadow);
+    }
+
+    .liteWhyCard h2{
+      margin:0;
+      font-size:20px;
+    }
+
+    .liteWhyCard p{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.65;
+      max-width:900px;
+    }
+
+    .liteWhyText{
+      margin-top:12px;
+      color:var(--text);
+      font-size:14px;
+      line-height:1.65;
+    }
+
     .liteSummaryCard{
       border:1px solid rgba(103,193,255,.18);
       border-radius:20px;
@@ -423,6 +453,67 @@
       letter-spacing:.06em;
       text-transform:uppercase;
       white-space:nowrap;
+    }
+
+    .proPreviewCard{
+      border:1px solid rgba(216,184,76,.18);
+      border-radius:20px;
+      padding:20px;
+      background:
+        radial-gradient(circle at 16% 0%, rgba(216,184,76,.09), transparent 34%),
+        radial-gradient(circle at 88% 6%, rgba(103,193,255,.07), transparent 34%),
+        linear-gradient(180deg,rgba(15,27,56,.94),rgba(11,23,52,.90));
+      box-shadow:var(--shadow);
+    }
+
+    .proPreviewCard h2{
+      margin:0;
+      font-size:22px;
+    }
+
+    .proPreviewIntro{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.6;
+      max-width:880px;
+    }
+
+    .proPreviewGrid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      margin-top:16px;
+    }
+
+    .proPreviewItem{
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:16px;
+      padding:14px;
+      background:rgba(255,255,255,.035);
+    }
+
+    .proPreviewItem h3{
+      margin:0;
+      color:var(--gold);
+      font-size:14px;
+      line-height:1.3;
+    }
+
+    .proPreviewItem p{
+      margin:7px 0 0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+
+    .proPreviewFooter{
+      margin-top:14px;
+      color:var(--blue);
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
     }
 
     .upgradeCard{
@@ -700,6 +791,7 @@
       .inputPanel{position:static}
       .guidanceGrid{grid-template-columns:1fr}
       .liteSummaryGrid{grid-template-columns:1fr}
+      .proPreviewGrid{grid-template-columns:1fr}
       .shareIntro{
         display:grid;
       }
@@ -712,7 +804,7 @@
     @media (max-width: 720px){
       .wrap{padding:14px}
       .hero h1{font-size:36px}
-      .panel,.premiumCard,.liteSummaryCard,.nodeCard,.upgradeCard,.shareSection{border-radius:16px}
+      .panel,.premiumCard,.liteWhyCard,.liteSummaryCard,.nodeCard,.proPreviewCard,.upgradeCard,.shareSection{border-radius:16px}
       .premiumCard{padding:18px}
       .weatherLine{font-size:28px}
       .todayRead{font-size:15px}
@@ -809,10 +901,18 @@
           </div>
         </section>
 
+        <section class="liteWhyCard">
+          <h2>Why Today Feels This Way</h2>
+          <p>Lite keeps the explanation simple: the current driver, today’s field, and the active trend behind the read.</p>
+          <div class="liteWhyText" id="liteWhyTodayText">
+            Waiting for today’s driver note.
+          </div>
+        </section>
+
         <section class="liteSummaryCard">
           <div class="liteSummaryHeader">
             <div>
-              <h2>Lite Harmonic Summary</h2>
+              <h2>Today’s Harmonic Summary</h2>
               <p>Your baseline harmonic and today’s active field, kept simple for the public/free version.</p>
             </div>
             <div class="chipRow" style="margin-top:0;">
@@ -856,6 +956,38 @@
             <span class="nodeChip">Diffused</span>
             <span class="nodeChip">Regulated</span>
           </div>
+        </section>
+
+        <section class="proPreviewCard">
+          <h2>What Pro Unlocks</h2>
+          <p class="proPreviewIntro">
+            Lite gives you today’s baseline, field, and one practical move.
+            Pro opens the full operating layer behind the read.
+          </p>
+
+          <div class="proPreviewGrid">
+            <div class="proPreviewItem">
+              <h3>Harmonic Profile</h3>
+              <p>Primary, support, and distortion harmonics — how your system stabilizes, assists itself, and overloads.</p>
+            </div>
+
+            <div class="proPreviewItem">
+              <h3>Driver Library</h3>
+              <p>Readable explanations for the live timing drivers shaping the day’s field.</p>
+            </div>
+
+            <div class="proPreviewItem">
+              <h3>Why This Read</h3>
+              <p>A clearer breakdown of why the system gave this guidance today.</p>
+            </div>
+
+            <div class="proPreviewItem">
+              <h3>Engine Details</h3>
+              <p>Technical state, capacity, strain, forecast, and chart debug for users who want the deeper instrument panel.</p>
+            </div>
+          </div>
+
+          <div class="proPreviewFooter">Lite is the daily read. Pro is the operating manual.</div>
         </section>
 
         <section class="upgradeCard">
@@ -1465,7 +1597,9 @@
         watch = "Creating a bigger break than the situation actually needs.";
         move = "Use the charge to fix one weak point, not to rebuild the whole field.";
         ret = "Let movement serve repair instead of becoming the pressure.";
-      } else if (primary === "Chaotic" && field === "Regulated") {
+      }
+
+      else if (primary === "Chaotic" && field === "Regulated") {
         read = "Your baseline carries movement and charge, while today may slow the field down. Do not fight the container. Use it to channel the voltage.";
         lean = "Rhythm, pacing, and turning movement into something usable.";
         watch = "Rebelling against structure just because the day asks for containment.";
@@ -2009,6 +2143,7 @@
       setText("primaryHarmonic", primaryMeta.label);
       setText("todayFieldHarmonic", fieldMeta.label);
       setText("harmonicPlainRead", primaryMeta.plainRead);
+      setText("whyTodayFeelsText", driverNote);
 
       setText("liteSummaryStateChip", `${primaryMeta.label} baseline`);
       setText("liteSummaryFieldChip", `Field: ${fieldMeta.label}`);
