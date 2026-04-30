@@ -1859,6 +1859,7 @@
       field: {
         Structured: 1.60,
         Contained: 1.20,
+
         Chaotic: 2.65,
         Relational: 1.55,
         Threshold: 2.60,
@@ -2370,6 +2371,7 @@
 
       if (primary === "Structured") {
         const regulatedScore = normalizedNatalScores.Regulated || 0;
+
         const integrativeScore = normalizedNatalScores.Integrative || 0;
         const secondScore = normalizedNatalScores[support] || 0;
 
@@ -3637,7 +3639,190 @@
       };
     }
 
+    function runAstrologyCalibrationTest() {
+      const baseData = () => ({
+        state: {
+          strain: 0.30,
+          amplifiedLoad: 0.35,
+          regulation: 0.45,
+          effectiveLoad: 0.25,
+          capacity: 0.55,
+          mode: "Regulated"
+        },
+        baselineState: {
+          capacity: 0.40,
+          strain: 0.25,
+          amplifiedLoad: 0.25,
+          regulation: 0.40
+        },
+        planetary: {
+          sun: 0.20,
+          moon: 0.20,
+          mercury: 0.20,
+          venus: 0.20,
+          mars: 0.20,
+          jupiter: 0.20,
+          saturn: 0.20,
+          uranus: 0.20,
+          neptune: 0.20,
+          pluto: 0.20,
+          asc: 0.20,
+          mc: 0.20,
+          transitMoon: 0.20,
+          transitMercury: 0.20,
+          transitVenus: 0.20,
+          transitMars: 0.20,
+          transitJupiter: 0.20,
+          transitSaturn: 0.20,
+          transitUranus: 0.20,
+          transitNeptune: 0.20,
+          transitPluto: 0.20
+        },
+        environment: {
+          environmentMode: ""
+        },
+        forecast: {
+          now: {
+            state: "Regulated"
+          }
+        },
+        timing: {
+          timingPressure: 0.20
+        }
+      });
+
+      const cases = [
+        {
+          name: "Structured Case",
+          expected: ["Structured", "Regulated"],
+          build: () => {
+            const data = baseData();
+            data.planetary.saturn = 0.95;
+            data.planetary.mercury = 0.95;
+            data.planetary.sun = 0.60;
+            data.planetary.mc = 0.90;
+            data.baselineState.capacity = 0.90;
+            data.baselineState.regulation = 0.75;
+            return data;
+          }
+        },
+        {
+          name: "Contained Case",
+          expected: ["Contained"],
+          build: () => {
+            const data = baseData();
+            data.planetary.moon = 0.95;
+            data.planetary.saturn = 0.90;
+            data.planetary.neptune = 0.55;
+            data.baselineState.regulation = 0.55;
+            return data;
+          }
+        },
+        {
+          name: "Chaotic Case",
+          expected: ["Chaotic"],
+          build: () => {
+            const data = baseData();
+            data.planetary.uranus = 0.95;
+            data.planetary.mars = 0.92;
+            data.planetary.neptune = 0.35;
+            data.baselineState.strain = 0.40;
+            return data;
+          }
+        },
+        {
+          name: "Relational Case",
+          expected: ["Relational"],
+          build: () => {
+            const data = baseData();
+            data.planetary.venus = 0.95;
+            data.planetary.moon = 0.90;
+            data.planetary.asc = 0.92;
+            return data;
+          }
+        },
+        {
+          name: "Threshold Case",
+          expected: ["Threshold", "Chaotic"],
+          build: () => {
+            const data = baseData();
+            data.planetary.mars = 0.95;
+            data.planetary.uranus = 0.92;
+            data.planetary.pluto = 0.60;
+            data.planetary.mc = 0.90;
+            return data;
+          }
+        },
+        {
+          name: "Reconstructive Case",
+          expected: ["Reconstructive"],
+          build: () => {
+            const data = baseData();
+            data.planetary.pluto = 0.95;
+            data.planetary.saturn = 0.92;
+            data.baselineState.amplifiedLoad = 0.55;
+            data.baselineState.strain = 0.55;
+            return data;
+          }
+        },
+        {
+          name: "Integrative Case",
+          expected: ["Integrative", "Diffused"],
+          build: () => {
+            const data = baseData();
+            data.planetary.jupiter = 0.95;
+            data.planetary.neptune = 0.92;
+            data.planetary.mercury = 0.55;
+            data.planetary.moon = 0.55;
+            return data;
+          }
+        },
+        {
+          name: "Diffused Case",
+          expected: ["Diffused"],
+          build: () => {
+            const data = baseData();
+            data.planetary.neptune = 0.95;
+            data.planetary.moon = 0.92;
+            data.planetary.jupiter = 0.60;
+            return data;
+          }
+        },
+        {
+          name: "Regulated Case",
+          expected: ["Regulated", "Structured"],
+          build: () => {
+            const data = baseData();
+            data.planetary.saturn = 0.95;
+            data.planetary.mercury = 0.92;
+            data.planetary.venus = 0.55;
+            data.baselineState.regulation = 0.95;
+            return data;
+          }
+        }
+      ];
+
+      const results = cases.map(testCase => {
+        const result = calculateHarmonics(testCase.build());
+        const passed = testCase.expected.includes(result.primary);
+
+        return {
+          case: testCase.name,
+          expected: testCase.expected.join(" or "),
+          actualPrimary: result.primary,
+          support: result.support,
+          distortion: result.distortion,
+          todayField: result.todayField,
+          passFail: passed ? "PASS" : "FAIL"
+        };
+      });
+
+      console.table(results);
+      return results;
+    }
+
     window.runSyntheticHarmonicBalanceTest = runSyntheticHarmonicBalanceTest;
+    window.runAstrologyCalibrationTest = runAstrologyCalibrationTest;
 
     document.getElementById("calcBtn").addEventListener("click", calculate);
     document.getElementById("saveShareCardBtn").addEventListener("click", saveShareCard);
