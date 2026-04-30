@@ -1848,10 +1848,10 @@
       natal: {
         Structured: 5.50,
         Contained: 2.60,
-        Chaotic: 2.65,
+        Chaotic: 2.40,
         Relational: 2.55,
         Threshold: 2.80,
-        Reconstructive: 2.80,
+        Reconstructive: 2.40,
         Integrative: 2.55,
         Diffused: 2.40,
         Regulated: 3.35
@@ -2355,10 +2355,10 @@
 
       addScore(natalScores, "Structured", saturn * 1.40 + mercury * 1.30 + sun * 0.75 + mc * 0.65 + baselineCapacity * 0.85 + baselineRegulation * 0.55);
       addScore(natalScores, "Contained", moon * 1.05 + saturn * 0.75 + neptune * 0.45 + baselineRegulation * 0.35);
-      addScore(natalScores, "Chaotic", uranus * 1.05 + mars * 0.85 + neptune * 0.35 + baselineStrain * 0.40);
+      addScore(natalScores, "Chaotic", uranus * 1.05 + mars * 0.85 + neptune * 0.35 + baselineStrain * 0.15);
       addScore(natalScores, "Relational", venus * 1.15 + moon * 0.85 + asc * 0.55);
       addScore(natalScores, "Threshold", mars * 1.05 + uranus * 0.85 + pluto * 0.45 + mc * 0.45);
-      addScore(natalScores, "Reconstructive", pluto * 1.25 + saturn * 0.80 + baselineLoad * 0.40 + baselineStrain * 0.35);
+      addScore(natalScores, "Reconstructive", pluto * 1.25 + saturn * 0.80 + baselineLoad * 0.20 + baselineStrain * 0.15);
       addScore(natalScores, "Integrative", jupiter * 1.10 + neptune * 0.85 + moon * 0.35 + mercury * 0.25);
       addScore(natalScores, "Diffused", neptune * 1.35 + moon * 0.70 + jupiter * 0.35);
       addScore(natalScores, "Regulated", saturn * 1.25 + mercury * 0.85 + baselineRegulation * 0.90 + venus * 0.35);
@@ -2439,7 +2439,9 @@
         Regulated: 0
       };
 
-      const regulationRatio = currentLoad > 0 ? currentRegulation / currentLoad : 0;
+      const regulationRatio = currentLoad > 0.15
+        ? clamp(currentRegulation / currentLoad, 0, 1.25)
+        : currentRegulation;
       const overloadGap = Math.max(currentStrain - 0.85, 0);
 
       addScore(distortionScores, "Diffused", neptune * 1.00 + tNeptune * 1.20 + overloadGap * 1.40);
@@ -2667,7 +2669,6 @@
         watch = "Absorbing the whole shared field because you can feel it.";
         move = "Name one relational signal plainly and keep responsibility proportional.";
         ret = "Return to your own center before trying to repair the connection.";
-
       } else if (primary === "Relational" && field === "Threshold") {
         read = "Your baseline reads connection, and today may bring a decision edge in the relational field. Do not chase closeness; name the real crossing.";
         lean = "Clear contact, honest timing, and letting the bond show what is ready.";
@@ -2692,6 +2693,7 @@
         watch = "Turning a living connection into a rigid set of rules.";
         move = "Name one boundary, agreement, or expectation plainly.";
         ret = "Come back to the personal contact underneath the structure.";
+
       } else if (primary === "Relational" && field === "Contained") {
         read = "Your baseline stabilizes through connection, while today may pull the field inward. Someone may need space, privacy, or slower contact without it meaning the bond is failing.";
         lean = "Respectful distance, gentle check-ins, and slower interpretation.";
@@ -3330,6 +3332,7 @@
 
     function updateUI(data){
       console.log("Lucy.OS Pro response:", data);
+      window.lastLucyData = data;
 
       const state = data?.state || {};
       const telemetry = data?.telemetry || {};
