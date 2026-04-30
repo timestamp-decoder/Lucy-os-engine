@@ -1846,20 +1846,19 @@
 
     const HARMONIC_SCORE_WEIGHTS = {
       natal: {
-        Structured: 5.50,
-        Contained: 2.60,
-        Chaotic: 2.40,
+        Structured: 4.10,
+        Contained: 2.25,
+        Chaotic: 2.25,
         Relational: 2.55,
         Threshold: 2.80,
-        Reconstructive: 2.40,
+        Reconstructive: 2.05,
         Integrative: 2.55,
         Diffused: 2.40,
-        Regulated: 3.35
+        Regulated: 2.45
       },
       field: {
         Structured: 1.60,
         Contained: 1.20,
-
         Chaotic: 2.65,
         Relational: 1.55,
         Threshold: 2.60,
@@ -2335,8 +2334,6 @@
       const currentLoad = safeNum(state.amplifiedLoad);
       const currentRegulation = safeNum(state.regulation);
       const baselineCapacity = safeNum(baselineState.capacity);
-      const baselineStrain = safeNum(baselineState.strain);
-      const baselineLoad = safeNum(baselineState.amplifiedLoad);
       const baselineRegulation = safeNum(baselineState.regulation);
       const envMode = String(environment.environmentMode || "").toLowerCase();
       const forecastState = String(forecast?.now?.state || "").toLowerCase();
@@ -2356,10 +2353,10 @@
 
       addScore(natalScores, "Structured", saturn * 1.40 + mercury * 1.30 + sun * 0.75 + mc * 0.65 + baselineCapacity * 0.85 + baselineRegulation * 0.55);
       addScore(natalScores, "Contained", moon * 1.05 + saturn * 0.75 + neptune * 0.45 + baselineRegulation * 0.35);
-      addScore(natalScores, "Chaotic", uranus * 1.05 + mars * 0.85 + neptune * 0.35 + baselineStrain * 0.15);
+      addScore(natalScores, "Chaotic", uranus * 1.05 + mars * 0.85 + neptune * 0.35);
       addScore(natalScores, "Relational", venus * 1.15 + moon * 0.85 + asc * 0.55);
       addScore(natalScores, "Threshold", mars * 1.05 + uranus * 0.85 + pluto * 0.45 + mc * 0.45);
-      addScore(natalScores, "Reconstructive", pluto * 1.25 + saturn * 0.80 + baselineLoad * 0.20 + baselineStrain * 0.15);
+      addScore(natalScores, "Reconstructive", pluto * 1.25 + saturn * 0.80);
       addScore(natalScores, "Integrative", jupiter * 1.10 + neptune * 0.85 + moon * 0.35 + mercury * 0.25);
       addScore(natalScores, "Diffused", neptune * 1.35 + moon * 0.70 + jupiter * 0.35);
       addScore(natalScores, "Regulated", saturn * 1.25 + mercury * 0.85 + baselineRegulation * 0.90 + venus * 0.35);
@@ -2371,7 +2368,6 @@
 
       if (primary === "Structured") {
         const regulatedScore = normalizedNatalScores.Regulated || 0;
-
         const integrativeScore = normalizedNatalScores.Integrative || 0;
         const secondScore = normalizedNatalScores[support] || 0;
 
@@ -2605,6 +2601,7 @@
         watch = "Over-interpreting inner signals before they have settled.";
         move = "Write down one connection that feels useful and leave the rest open.";
         ret = "Come back to the part of the pattern that actually brings relief.";
+
       } else if (primary === "Contained" && field === "Regulated") {
         read = "Your baseline already prefers protected processing, and today may support pacing, containment, and quieter regulation. This is useful for sorting pressure without forcing action too soon.";
         lean = "Privacy, pacing, simple routines, and emotional containment.";
