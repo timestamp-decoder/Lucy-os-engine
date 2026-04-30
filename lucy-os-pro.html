@@ -514,6 +514,7 @@
       font-size:18px;
       line-height:1.25;
       font-weight:900;
+      overflow-wrap:anywhere;
     }
 
     .profileDesc{
@@ -528,6 +529,7 @@
       gap:8px;
       flex-wrap:wrap;
       margin-top:12px;
+      align-items:center;
     }
 
     .chip{
@@ -542,6 +544,10 @@
       font-size:11px;
       font-weight:800;
       letter-spacing:.04em;
+      line-height:1.25;
+      white-space:normal;
+      max-width:100%;
+      overflow-wrap:anywhere;
     }
 
     .chip.gold{
@@ -662,6 +668,7 @@
       font-size:14px;
       font-weight:800;
       line-height:1.35;
+      overflow-wrap:anywhere;
     }
 
     .whyExplain{
@@ -725,7 +732,10 @@
       font-weight:900;
       letter-spacing:.08em;
       text-transform:uppercase;
-      white-space:nowrap;
+      white-space:normal;
+      line-height:1.25;
+      max-width:100%;
+      overflow-wrap:anywhere;
     }
 
     .shareChip.gold{
@@ -871,6 +881,9 @@
       letter-spacing:.08em;
       text-transform:uppercase;
       max-width:100%;
+      white-space:normal;
+      line-height:1.25;
+      overflow-wrap:anywhere;
     }
 
     .shareCardChip.gold{
@@ -1440,6 +1453,9 @@
       .todayRead{font-size:15px}
       .todayOutlookLine{border-radius:14px}
       .profileHeader,.outlookHeader{display:grid}
+      .profileBlock{min-height:auto}
+      .profileValue{font-size:17px}
+      .chip,.shareChip{min-height:28px; padding:6px 9px}
       .whyReadGrid{grid-template-columns:1fr}
       .shareCardInner{padding:22px}
       .shareCardTop{
@@ -2179,6 +2195,10 @@
       return `<span class="harmonicName h-${harmonicClass(name)}">${name}</span>`;
     }
 
+    function harmonicInline(name, suffix = ""){
+      return `${harmonicLabel(name)}${suffix ? `&nbsp;${suffix}` : ""}`;
+    }
+
     function chipClass(name, fallback = ""){
       const base = getHarmonicBaseName(name);
       const cls = harmonicClass(base);
@@ -2515,7 +2535,7 @@
       setText("outlookStateChip", `${stateLabel} State`);
       applyChipClass("outlookStateChip", "chip violet", "");
 
-      setHTML("outlookFieldChip", `${harmonicLabel(field)} Field`);
+      setHTML("outlookFieldChip", `Field:&nbsp;${harmonicLabel(field)}`);
       applyChipClass("outlookFieldChip", "chip field", field);
 
       setText("outlookNowState", nowState);
@@ -3027,6 +3047,7 @@
         watch = "Trying to secure the relationship instead of reading the threshold clearly.";
         move = "Say the simple truth about what point the connection has reached.";
         ret = "Return to your center before responding to the other person’s signal.";
+
       } else if (primary === "Relational" && field === "Regulated") {
         read = "Your signal architecture stabilizes through contact, while today may support steadier pacing. This is a good field for calmer repair, clearer agreements, or less reactive connection.";
         lean = "Steady contact, simple repair, and paced communication.";
@@ -3099,7 +3120,6 @@
         watch = "Trying to understand every layer before making one clean crossing.";
         move = "Name the pattern, then choose the next step that is actually ready.";
         ret = "Come back to the one crossing that matters today.";
-
       } else if (primary === "Threshold" && field === "Diffused") {
         read = "Your signal architecture wants a clear edge, but today may feel foggy, soft, or undefined. You may not get a perfect signal before you need to choose one small direction.";
         lean = "Gentle boundaries, small decisions, and reducing the spread.";
@@ -3448,7 +3468,7 @@
 
         return `
           <article class="libraryCard ${activeClass}">
-            <h3>${harmonicLabel(item.label)}${activeLabel ? ` · ${activeLabel}` : ""}</h3>
+            <h3>${harmonicLabel(item.label)}${activeLabel ? `&nbsp;· ${activeLabel}` : ""}</h3>
             <p><strong>Signal Quality:</strong> ${item.signalQuality}</p>
             <p><strong>Stability Method:</strong> ${item.stabilityMethod}</p>
             <p><strong>Overload Risk:</strong> ${item.overloadRisk}</p>
@@ -3522,13 +3542,13 @@
         motionStyle
       };
 
-      setHTML("shareBaselineChip", `${harmonicLabel(primary)} Signal`);
-      setHTML("shareFieldChip", `${harmonicLabel(field)} Field`);
-      setText("shareStateChip", `${state} State`);
+      setHTML("shareBaselineChip", `Signal:&nbsp;${harmonicLabel(primary)}`);
+      setHTML("shareFieldChip", `Field:&nbsp;${harmonicLabel(field)}`);
+      setText("shareStateChip", `State: ${state}`);
 
-      setHTML("shareCardBaselineChip", `${harmonicLabel(primary)} Signal`);
-      setHTML("shareCardFieldChip", `${harmonicLabel(field)} Field`);
-      setText("shareCardStateChip", `${state} State`);
+      setHTML("shareCardBaselineChip", `Signal:&nbsp;${harmonicLabel(primary)}`);
+      setHTML("shareCardFieldChip", `Field:&nbsp;${harmonicLabel(field)}`);
+      setText("shareCardStateChip", `State: ${state}`);
 
       applyChipClass("shareBaselineChip", "shareChip", primary);
       applyChipClass("shareFieldChip", "shareChip", field);
@@ -3656,7 +3676,7 @@
       const fieldLabel = harmonicLabel(fieldMeta.label);
 
       const systemWeather = `${harmonicText(primaryMeta.label)} signal architecture × ${harmonicText(fieldMeta.label)} field`;
-      const systemWeatherHTML = `${primaryLabel} signal architecture <span>×</span> ${fieldLabel} field`;
+      const systemWeatherHTML = `${primaryLabel}&nbsp;signal architecture <span>×</span> ${fieldLabel}&nbsp;field`;
       const guidance = buildDailyGuidance(harmonics, data);
       const driver = publicDriverName(primaryDriverName(data));
       const driverNote = buildDriverNote(data, harmonics, fieldTrend);
@@ -3682,8 +3702,8 @@
       setText("overloadRisk", distortionMeta.overloadRisk);
       setText("harmonicPlainRead", primaryMeta.plainRead);
 
-      setHTML("profileStateChip", `${primaryLabel} signal architecture`);
-      setHTML("profileFieldChip", `${fieldLabel} field`);
+      setHTML("profileStateChip", `${primaryLabel}&nbsp;signal architecture`);
+      setHTML("profileFieldChip", `${fieldLabel}&nbsp;field`);
       applyChipClass("profileStateChip", "chip", primaryMeta.label);
       applyChipClass("profileFieldChip", "chip", fieldMeta.label);
 
