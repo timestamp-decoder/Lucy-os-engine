@@ -1814,6 +1814,7 @@
         overloadRisk: "Urgency, rupture, impatience, acting before the field is ready",
         plainRead: "This system stabilizes at turning points. Overload happens when everything feels like a turning point."
       },
+
       Reconstructive: {
         label: "Reconstructive",
         signalQuality: "Compressed, transformative, deep-field, pressure-bearing",
@@ -2363,7 +2364,42 @@
 
       const normalizedNatalScores = normalizeScores(natalScores, HARMONIC_SCORE_WEIGHTS.natal);
 
-      const primary = getTopHarmonic(normalizedNatalScores, "Structured");
+      let primary = getTopHarmonic(normalizedNatalScores, "Structured");
+
+      /*
+        Stable-baseline near-tie override.
+
+        Purpose:
+        If an activation-heavy harmonic barely wins as Primary,
+        but Structured is close behind and the chart has real natal
+        structure support, classify Primary as Structured instead.
+
+        This keeps Chaotic / Threshold alive as real signal movement
+        without flattening activation into baseline identity too quickly.
+      */
+      const structuredScore = normalizedNatalScores.Structured || 0;
+      const chaoticScore = normalizedNatalScores.Chaotic || 0;
+      const thresholdScore = normalizedNatalScores.Threshold || 0;
+
+      const structuredSupport =
+        saturn >= 0.55 &&
+        mercury >= 0.55 &&
+        mc >= 0.45;
+
+      const chaoticBarelyWins =
+        primary === "Chaotic" &&
+        structuredScore >= chaoticScore * 0.88 &&
+        structuredSupport;
+
+      const thresholdBarelyWins =
+        primary === "Threshold" &&
+        structuredScore >= thresholdScore * 0.88 &&
+        structuredSupport;
+
+      if (chaoticBarelyWins || thresholdBarelyWins) {
+        primary = "Structured";
+      }
+
       let support = getSecondHarmonic(normalizedNatalScores, primary, "Regulated");
 
       if (primary === "Structured") {
@@ -2662,6 +2698,7 @@
         ret = "Come back to the body and the nearest practical step.";
       } else if (primary === "Relational" && field === "Relational") {
         read = "Your relational baseline is meeting a relational field today. Contact, tone, and shared atmosphere may matter more, but your center still needs to stay separate from the room.";
+
         lean = "Clean contact, steady tone, and honest repair without over-reading.";
         watch = "Absorbing the whole shared field because you can feel it.";
         move = "Name one relational signal plainly and keep responsibility proportional.";
