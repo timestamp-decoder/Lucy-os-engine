@@ -1533,7 +1533,7 @@
           <div class="cardContent">
             <p class="kicker">Today’s System Weather</p>
             <h2 class="weatherLine" id="systemWeatherLine">
-              Structured signal architecture <span>×</span> Field loading
+              Structured signal architecture<br><span>meeting a</span> live field
             </h2>
 
             <p class="todayRead" id="dailyTodayRead">
@@ -1789,7 +1789,7 @@
 
                 <div class="shareCardSection">
                   <div class="shareCardLabel">Today’s System Weather</div>
-                  <div class="shareCardWeather" id="shareCardWeather">Structured signal architecture × Field loading</div>
+                  <div class="shareCardWeather" id="shareCardWeather">Structured signal architecture meeting a live field</div>
                 </div>
 
                 <div class="shareCardSection">
@@ -2123,7 +2123,7 @@
     };
 
     let latestSharePayload = {
-      systemWeather: "Structured signal architecture × Field loading",
+      systemWeather: "Structured signal architecture meeting a live field",
       todayRead: "Waiting for daily read.",
       driverNote: "Waiting for driver note.",
       goodMove: "—",
@@ -3675,8 +3675,8 @@
       const distortionLabel = harmonicLabel(distortionMeta.label);
       const fieldLabel = harmonicLabel(fieldMeta.label);
 
-      const systemWeather = `${harmonicText(primaryMeta.label)} signal architecture × ${harmonicText(fieldMeta.label)} field`;
-      const systemWeatherHTML = `${primaryLabel}&nbsp;signal architecture <span>×</span> ${fieldLabel}&nbsp;field`;
+      const systemWeather = `${harmonicText(primaryMeta.label)} signal architecture meeting a ${harmonicText(fieldMeta.label)} field`;
+      const systemWeatherHTML = `${primaryLabel}&nbsp;signal architecture<br><span>meeting a</span> ${fieldLabel}&nbsp;field`;
       const guidance = buildDailyGuidance(harmonics, data);
       const driver = publicDriverName(primaryDriverName(data));
       const driverNote = buildDriverNote(data, harmonics, fieldTrend);
