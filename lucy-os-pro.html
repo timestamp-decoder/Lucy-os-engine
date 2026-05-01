@@ -293,6 +293,15 @@
       color:var(--gold);
     }
 
+    .weatherExplain{
+      margin:10px 0 0;
+      color:var(--muted2);
+      font-size:12px;
+      line-height:1.45;
+      font-weight:700;
+      letter-spacing:.01em;
+    }
+
     .harmonicName{
       font-weight:950;
     }
@@ -1450,6 +1459,7 @@
       .panel,.premiumCard,.profileCard,.engineDetails,.whyReadCard,.shareSection,.outlookCard{border-radius:16px}
       .premiumCard{padding:18px}
       .weatherLine{font-size:28px}
+      .weatherExplain{font-size:11px}
       .todayRead{font-size:15px}
       .todayOutlookLine{border-radius:14px}
       .profileHeader,.outlookHeader{display:grid}
@@ -1535,6 +1545,7 @@
             <h2 class="weatherLine" id="systemWeatherLine">
               Structured signal architecture<br><span>meeting a</span> live field
             </h2>
+            <p class="weatherExplain">Signal architecture = your root pattern. Current field = what today is activating.</p>
 
             <p class="todayRead" id="dailyTodayRead">
               Waiting for chart calculation. Lucy.OS will read your root signal architecture inside the current field.
@@ -3454,6 +3465,77 @@
       return note;
     }
 
+    function buildShortDriverNote(data, harmonics, fieldTrend){
+      const driver = publicDriverName(primaryDriverName(data));
+      const field = harmonics?.todayField || "Regulated";
+      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
+      const planetary = data?.planetary || {};
+
+      const fog = safeNum(
+        planetary.neptune,
+        driverValueFromTaggedList(data?.telemetry?.topDrivers, "Neptune")
+      );
+      const activation = safeNum(
+        planetary.mars,
+        driverValueFromTaggedList(data?.telemetry?.topDrivers, "Mars")
+      );
+
+      const cleanDriver = driver && driver !== "—" ? driver : "The strongest current driver";
+      const driverLower = String(cleanDriver).toLowerCase();
+
+      let note = `${cleanDriver} may shape how today’s field lands. Choose one manageable next move.`;
+
+      if (driverLower.includes("pluto")) {
+        note = "Pluto may make the pressure feel deeper or more fundamental today. Use the charge for one honest repair, not a full rebuild.";
+      } else if (driverLower.includes("mars")) {
+        note = "Mars may raise activation or urgency today. Use the extra charge for one clear action, not a faster whole field.";
+      } else if (driverLower.includes("uranus")) {
+        note = "Uranus may add movement or sudden signal today. Let the change show one useful adjustment without reacting to every spark.";
+      } else if (driverLower.includes("neptune")) {
+        note = "Neptune may make the field feel foggier or more blended today. Reduce input and look for one simple true line.";
+      } else if (driverLower.includes("saturn")) {
+        note = "Saturn may add pressure, limits, or structure today. Use the container to simplify the load.";
+      } else if (driverLower.includes("venus")) {
+        note = "Venus may bring tone, contact, or relational regulation into focus today. Let steadiness and repair lead.";
+      } else if (driverLower.includes("mercury")) {
+        note = "Mercury may sharpen language and interpretation today. Name the signal plainly, then stop before analysis becomes extra load.";
+      } else if (driverLower.includes("moon")) {
+        note = "The Moon may make the field more responsive or body-led today. Let the signal settle before turning it into a conclusion.";
+      } else if (driverLower.includes("jupiter")) {
+        note = "Jupiter may widen the field or add meaning today. Let the larger pattern help without making the day carry everything.";
+      } else if (driverLower.includes("sun")) {
+        note = "The Sun may bring identity, focus, or visibility into the field today. Let the signal clarify direction without forcing proof.";
+      }
+
+      if (field === "Reconstructive" && !driverLower.includes("pluto")) {
+        note += " Focus on one repair that is actually present.";
+      } else if (field === "Threshold" && !driverLower.includes("mars")) {
+        note += " Pause before crossing and choose the next step cleanly.";
+      } else if (field === "Diffused" && !driverLower.includes("neptune")) {
+        note += " Fewer inputs can help the real signal stand out.";
+      } else if (field === "Chaotic" && !driverLower.includes("uranus")) {
+        note += " Give the movement one safe container.";
+      }
+
+      if (stateLabel === "Overloaded") {
+        note += " Since the system reads overloaded, reduce scope first.";
+      } else if (stateLabel === "Threshold") {
+        note += " Since the system reads near threshold, move carefully.";
+      } else if (stateLabel === "Mobilized") {
+        note += " Because the system is mobilized, keep momentum paced.";
+      }
+
+      if (fog >= 0.72 && !driverLower.includes("neptune")) {
+        note += " Simple language helps.";
+      }
+
+      if (activation >= 0.72 && !driverLower.includes("mars")) {
+        note += " Do not let the body outrun the field.";
+      }
+
+      return note;
+    }
+
     function renderHarmonicLibrary(activePrimary = "", activeField = ""){
       const grid = document.getElementById("harmonicLibraryGrid");
       if (!grid) return;
@@ -3463,7 +3545,7 @@
         const activeLabel = key === activePrimary
           ? "Root signal architecture"
           : key === activeField
-            ? "Today’s field"
+            ? "Current field"
             : "";
 
         return `
@@ -3489,6 +3571,7 @@
       const capacityBand = capacityBandFromValue(state.capacity);
       const regulationBand = regulationBandFromValue(state.regulation);
       const distortion = harmonics.distortion || "Diffused";
+      const driverNote = buildDriverNote(data, harmonics, fieldTrend);
 
       setHTML("whyBaseline", harmonicLabel(primary));
       setHTML("whyField", harmonicLabel(field));
@@ -3504,14 +3587,14 @@
       setText("whyPeakTiming", "Later backend pass");
       setText("whyMoonstampModifier", "Later integration");
 
-      let explanation = `This read comes from a ${harmonicText(primary)} signal architecture meeting a ${harmonicText(field)} field while the current state is ${currentState.toLowerCase()}. Motion Style is ${harmonicText(motionStyle).toLowerCase()}, which describes how the signal moves when activated. Load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. ${fieldTrend.rationale}`;
+      let explanation = `This read comes from a ${harmonicText(primary)} signal architecture meeting a ${harmonicText(field)} field while the current state is ${currentState.toLowerCase()}. Motion Style is ${harmonicText(motionStyle).toLowerCase()}, which describes how the signal moves when activated. Load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. ${fieldTrend.rationale} ${driverNote}`;
 
       if (primary === "Chaotic" && field === "Reconstructive") {
-        explanation = `This does not mean the person is chaotic as a lifestyle or identity. It means the root signal moves quickly, nonlinearly, and toward pressure points. The ${harmonicText(field)} field adds repair pressure, so the best move is one honest adjustment, not a full rebuild. Motion Style is ${harmonicText(motionStyle).toLowerCase()}, which gives activation a home outside the Support layer.`;
+        explanation = `This does not mean the person is chaotic as a lifestyle or identity. It means the root signal moves quickly, nonlinearly, and toward pressure points. The ${harmonicText(field)} field adds repair pressure, so the best move is one honest adjustment, not a full rebuild. Motion Style is ${harmonicText(motionStyle).toLowerCase()}, which gives activation a home outside the Support layer. ${driverNote}`;
       }
 
       if (primary === "Structured" && field === "Reconstructive") {
-        explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${harmonicText(primary)} signal architecture wants order, sequence, and meaning, while the ${harmonicText(field)} field pushes repair pressure. ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild.`;
+        explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${harmonicText(primary)} signal architecture wants order, sequence, and meaning, while the ${harmonicText(field)} field pushes repair pressure. ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild. ${driverNote}`;
       }
 
       if (currentState === "Threshold" && loadBand === "Overloaded" && capacityBand === "Decent") {
@@ -3679,7 +3762,7 @@
       const systemWeatherHTML = `${primaryLabel}&nbsp;signal architecture<br><span>meeting a</span> ${fieldLabel}&nbsp;field`;
       const guidance = buildDailyGuidance(harmonics, data);
       const driver = publicDriverName(primaryDriverName(data));
-      const driverNote = buildDriverNote(data, harmonics, fieldTrend);
+      const shareDriverNote = buildShortDriverNote(data, harmonics, fieldTrend);
 
       setHTML("systemWeatherLine", systemWeatherHTML);
       setText("dailyTodayRead", guidance.read);
@@ -3712,7 +3795,7 @@
       updateShareUI({
         systemWeather,
         todayRead: guidance.read,
-        driverNote,
+        driverNote: shareDriverNote,
         goodMove: guidance.move,
         returnText: guidance.ret,
         primary: primaryMeta.label,
