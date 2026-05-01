@@ -59,7 +59,7 @@
     .wrap{
       max-width:1380px;
       margin:0 auto;
-      padding:24px;
+      padding:18px 24px 24px;
     }
 
     .backLink{
@@ -67,8 +67,8 @@
       align-items:center;
       gap:6px;
       width:auto;
-      min-height:34px;
-      margin:0 0 14px;
+      min-height:32px;
+      margin:0 0 10px;
       padding:0 12px;
       border-radius:999px;
       border:1px solid rgba(103,193,255,.16);
@@ -89,46 +89,46 @@
     .hero{
       position:relative;
       text-align:center;
-      margin-bottom:22px;
-      padding:22px 18px 18px;
+      margin-bottom:16px;
+      padding:14px 18px 12px;
       overflow:hidden;
-      border:1px solid rgba(103,193,255,.12);
-      border-radius:22px;
+      border:1px solid rgba(103,193,255,.10);
+      border-radius:20px;
       background:
-        linear-gradient(180deg,rgba(15,27,56,.74),rgba(9,20,47,.32));
-      box-shadow:var(--shadow);
+        linear-gradient(180deg,rgba(15,27,56,.56),rgba(9,20,47,.22));
+      box-shadow:0 12px 34px rgba(0,0,0,.20);
     }
 
     .heroGlow{
       position:absolute;
       inset:0;
       pointer-events:none;
-      opacity:.95;
+      opacity:.85;
       transition:background .35s ease;
       background:
-        radial-gradient(circle at 50% 28%, rgba(103,193,255,.10), transparent 42%);
+        radial-gradient(circle at 50% 28%, rgba(103,193,255,.08), transparent 42%);
     }
 
     .hero h1{
       position:relative;
       margin:0;
-      font-size:42px;
-      letter-spacing:.4px;
+      font-size:34px;
+      letter-spacing:.2px;
       z-index:1;
     }
 
     .hero p{
       position:relative;
-      margin:8px 0 0;
+      margin:6px 0 0;
       color:var(--muted);
-      font-size:14px;
+      font-size:13px;
       z-index:1;
     }
 
     .grid{
       display:grid;
       grid-template-columns:360px 1fr;
-      gap:20px;
+      gap:18px;
       align-items:start;
     }
 
@@ -147,7 +147,7 @@
 
     .inputPanel{
       position:sticky;
-      top:18px;
+      top:16px;
     }
 
     label{
@@ -246,7 +246,7 @@
       overflow:hidden;
       border:1px solid rgba(103,193,255,.24);
       border-radius:22px;
-      padding:22px;
+      padding:24px;
       background:
         radial-gradient(circle at 18% 0%, rgba(103,193,255,.13), transparent 36%),
         radial-gradient(circle at 86% 20%, rgba(216,184,76,.10), transparent 32%),
@@ -282,10 +282,10 @@
 
     .weatherLine{
       margin:0;
-      font-size:clamp(26px,4vw,42px);
-      line-height:1.03;
+      font-size:clamp(28px,3.8vw,44px);
+      line-height:1.02;
       font-weight:900;
-      letter-spacing:-.035em;
+      letter-spacing:-.04em;
       color:var(--text);
     }
 
@@ -317,7 +317,7 @@
     .pairingExplain span{
       display:inline-flex;
       align-items:center;
-      min-height:28px;
+      min-height:30px;
       padding:6px 10px;
       border-radius:999px;
       border:1px solid rgba(255,255,255,.08);
@@ -328,6 +328,48 @@
     .pairingExplain strong{
       color:var(--text);
       font-weight:900;
+    }
+
+    .motionStrip{
+      display:grid;
+      grid-template-columns:minmax(170px,.42fr) 1fr;
+      gap:10px;
+      margin-top:14px;
+      border:1px solid rgba(216,184,76,.20);
+      border-radius:16px;
+      background:
+        linear-gradient(135deg,rgba(216,184,76,.075),rgba(103,193,255,.045));
+      padding:12px;
+    }
+
+    .motionMini{
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;
+      background:rgba(255,255,255,.035);
+      padding:11px 12px;
+    }
+
+    .motionMiniLabel{
+      color:var(--muted);
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      margin-bottom:6px;
+    }
+
+    .motionMiniValue{
+      color:var(--text);
+      font-size:15px;
+      font-weight:900;
+      line-height:1.25;
+    }
+
+    .motionMiniText{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.48;
+      font-weight:700;
     }
 
     .harmonicName{
@@ -346,8 +388,8 @@
     .h-steady{color:var(--h-steady)}
 
     .todayRead{
-      margin:14px 0 0;
-      max-width:850px;
+      margin:15px 0 0;
+      max-width:880px;
       color:var(--text);
       font-size:16px;
       line-height:1.68;
@@ -1482,8 +1524,15 @@
     }
 
     @media (max-width: 720px){
-      .wrap{padding:14px}
-      .hero h1{font-size:36px}
+      .wrap{padding:12px 14px 14px}
+      .backLink{margin-bottom:8px}
+      .hero{
+        margin-bottom:12px;
+        padding:12px 14px 10px;
+        border-radius:16px;
+      }
+      .hero h1{font-size:30px}
+      .hero p{font-size:12px}
       .panel,.premiumCard,.profileCard,.engineDetails,.whyReadCard,.shareSection,.outlookCard{border-radius:16px}
       .premiumCard{padding:18px}
       .weatherLine{font-size:28px}
@@ -1495,6 +1544,10 @@
       }
       .pairingExplain span{
         border-radius:12px;
+      }
+      .motionStrip{
+        grid-template-columns:1fr;
+        border-radius:14px;
       }
       .todayRead{font-size:15px}
       .todayOutlookLine{border-radius:14px}
@@ -1586,6 +1639,17 @@
               <span><strong>Root pattern:</strong>&nbsp;—</span>
               <span><strong>Current field:</strong>&nbsp;—</span>
               <span><strong>Meaning:</strong>&nbsp;—</span>
+            </div>
+
+            <div class="motionStrip">
+              <div class="motionMini">
+                <div class="motionMiniLabel">Motion Style</div>
+                <div class="motionMiniValue" id="topMotionStyle">—</div>
+              </div>
+              <div class="motionMini">
+                <div class="motionMiniLabel">How to read it</div>
+                <div class="motionMiniText" id="topMotionStyleRead">Waiting for motion style read.</div>
+              </div>
             </div>
 
             <p class="todayRead" id="dailyTodayRead">
@@ -2106,6 +2170,7 @@
   </div>
 
   <script>
+
     const API_URL = "/api/chart_inputs";
 
     const HARMONICS = {
@@ -2972,15 +3037,6 @@
       }
 
       if (
-        distortion === "Structured" ||
-        distortion === "Regulated" ||
-        primary === "Structured" ||
-        primary === "Regulated"
-      ) {
-        return highLoad && lowRegulation ? "rupture" : "overStructuring";
-      }
-
-      if (
         distortion === "Diffused" ||
         distortion === "Integrative" ||
         primary === "Diffused" ||
@@ -2998,6 +3054,15 @@
         (highLoad && field === "Threshold")
       ) {
         return lowRegulation || highLoad ? "rupture" : "scatter";
+      }
+
+      if (
+        distortion === "Structured" ||
+        distortion === "Regulated" ||
+        primary === "Structured" ||
+        primary === "Regulated"
+      ) {
+        return highLoad && lowRegulation ? "rupture" : "overStructuring";
       }
 
       if (primary === "Reconstructive" || field === "Reconstructive" || distortion === "Reconstructive") {
@@ -3073,17 +3138,6 @@
 
       let primary = getTopHarmonic(normalizedNatalScores, "Structured");
 
-      /*
-        Stable-signal-architecture near-tie override.
-
-        Purpose:
-        If an activation-heavy harmonic barely wins as Primary,
-        but Structured is extremely close behind and the chart has real natal
-        structure support, classify Primary as Structured instead.
-
-        This keeps Chaotic / Threshold alive as real Motion Style
-        without flattening activation into root signal architecture too quickly.
-      */
       const structuredScore = normalizedNatalScores.Structured || 0;
       const chaoticScore = normalizedNatalScores.Chaotic || 0;
       const thresholdScore = normalizedNatalScores.Threshold || 0;
@@ -4220,6 +4274,10 @@
         `<span><strong>Current field:</strong>&nbsp;${fieldLabel}</span>` +
         `<span><strong>Meaning:</strong>&nbsp;${pairingMeaning}</span>`
       );
+
+      setHTML("topMotionStyle", motionStyleLabel);
+      setText("topMotionStyleRead", motionStyleRead);
+
       setText("dailyTodayRead", guidance.read);
       setText("dailyLeanInto", guidance.lean);
       setText("dailyWatchFor", guidance.watch);
