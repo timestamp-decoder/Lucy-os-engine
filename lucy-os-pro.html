@@ -1823,7 +1823,7 @@
             </div>
 
             <div class="todayOutlookLine" id="todayOutlookLine">
-              Current Outlook: <span>Trend: —</span> · Driver: — · —
+              Current Field Direction: <span>Trend: —</span> · Driver: — · —
             </div>
           </div>
         </section>
@@ -1867,7 +1867,7 @@
           </div>
 
           <div class="outlookNote">
-            Current Outlook uses the live-field forecast shell only. Separate +6 and +24 hour projections will be added in a later backend pass.
+            Current Field Direction uses the live-field forecast shell only. Separate +6 and +24 hour projections will be added in a later backend pass.
           </div>
         </section>
 
@@ -4461,7 +4461,7 @@
       setText("dailyReturn", guidance.ret);
       setText(
         "todayOutlookLine",
-        `Current Outlook: Trend: ${fieldTrend.trend} · Driver: ${driver} · ${fieldTrend.fieldPhrase}`
+        `Current Field Direction: Trend: ${fieldTrend.trend} · Driver: ${driver} · ${fieldTrend.fieldPhrase}`
       );
 
       setHTML("primaryHarmonic", primaryLabel);
