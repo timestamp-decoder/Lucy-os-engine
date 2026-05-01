@@ -1,1 +1,4250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lucy.OS Pro</title>
 
+  <style>
+    :root{
+      --bg:#09142f;
+      --panel:#0f1b38;
+      --panel2:#132347;
+      --panel3:#0b1734;
+      --line:#2a3c69;
+      --lineSoft:rgba(255,255,255,.06);
+      --text:#f4f7ff;
+      --muted:#aab7d6;
+      --muted2:#7f8fb8;
+      --blue:#67c1ff;
+      --red:#ff6666;
+      --green:#67d26f;
+      --violet:#b06cff;
+      --gold:#d8b84c;
+      --teal:#6fe0d3;
+      --amber:#f1b84b;
+      --rose:#ff9bb7;
+      --pearl:#d8edf0;
+      --lavender:#cbb7ff;
+      --shadow:0 18px 52px rgba(0,0,0,.28);
+
+      --h-structured:#d8b84c;
+      --h-contained:#d8edf0;
+      --h-chaotic:#67c1ff;
+      --h-relational:#ff9bb7;
+      --h-threshold:#f1b84b;
+      --h-reconstructive:#b06cff;
+      --h-integrative:#dfeaff;
+      --h-diffused:#cbb7ff;
+      --h-regulated:#6fe0d3;
+      --h-steady:#aab7d6;
+    }
+
+    *{box-sizing:border-box}
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      margin:0;
+      font-family:Arial, sans-serif;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(103,193,255,.08), transparent 32%),
+        radial-gradient(circle at 80% 12%, rgba(176,108,255,.05), transparent 30%),
+        linear-gradient(180deg,#071126 0%, #09142f 100%);
+      color:var(--text);
+    }
+
+    .wrap{
+      max-width:1380px;
+      margin:0 auto;
+      padding:24px;
+    }
+
+    .backLink{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      width:auto;
+      min-height:34px;
+      margin:0 0 14px;
+      padding:0 12px;
+      border-radius:999px;
+      border:1px solid rgba(103,193,255,.16);
+      background:rgba(103,193,255,.055);
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+      text-decoration:none;
+      letter-spacing:.02em;
+    }
+
+    .backLink:hover{
+      color:var(--blue);
+      border-color:rgba(103,193,255,.28);
+      background:rgba(103,193,255,.085);
+    }
+
+    .hero{
+      position:relative;
+      text-align:center;
+      margin-bottom:22px;
+      padding:22px 18px 18px;
+      overflow:hidden;
+      border:1px solid rgba(103,193,255,.12);
+      border-radius:22px;
+      background:
+        linear-gradient(180deg,rgba(15,27,56,.74),rgba(9,20,47,.32));
+      box-shadow:var(--shadow);
+    }
+
+    .heroGlow{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.95;
+      transition:background .35s ease;
+      background:
+        radial-gradient(circle at 50% 28%, rgba(103,193,255,.10), transparent 42%);
+    }
+
+    .hero h1{
+      position:relative;
+      margin:0;
+      font-size:42px;
+      letter-spacing:.4px;
+      z-index:1;
+    }
+
+    .hero p{
+      position:relative;
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:14px;
+      z-index:1;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:20px;
+      align-items:start;
+    }
+
+    .panel{
+      background:linear-gradient(180deg,var(--panel),var(--panel2));
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:0 10px 30px rgba(0,0,0,.20);
+    }
+
+    .panel h2{
+      margin:0 0 12px;
+      font-size:18px;
+    }
+
+    .inputPanel{
+      position:sticky;
+      top:18px;
+    }
+
+    label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin:10px 0 6px;
+    }
+
+    input, select, button{
+      width:100%;
+      border-radius:10px;
+      border:1px solid var(--line);
+      background:#0b1734;
+      color:var(--text);
+      padding:12px;
+      font-size:14px;
+    }
+
+    input::placeholder{
+      color:var(--muted2);
+    }
+
+    .row2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    button{
+      margin-top:14px;
+      background:linear-gradient(180deg,#1d5cff,#3f86ff);
+      border:none;
+      cursor:pointer;
+      font-weight:700;
+    }
+
+    button:hover{
+      filter:brightness(1.08);
+    }
+
+    button:disabled{
+      opacity:.72;
+      cursor:wait;
+    }
+
+    .tiny{
+      font-size:11px;
+      color:var(--muted);
+      margin-top:10px;
+      line-height:1.45;
+    }
+
+    .leftStack{
+      display:grid;
+      gap:12px;
+      margin-top:14px;
+    }
+
+    .statusBlock{
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:rgba(255,255,255,.02);
+      font-size:12px;
+      line-height:1.55;
+      color:var(--muted);
+    }
+
+    .statusBlock strong{
+      color:var(--text);
+      display:block;
+      margin-bottom:6px;
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .ok{
+      color:var(--green);
+      font-weight:700;
+    }
+
+    .err{
+      color:#ff9c9c;
+      font-weight:700;
+    }
+
+    .mainStack{
+      display:grid;
+      gap:16px;
+    }
+
+    .premiumCard{
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(103,193,255,.24);
+      border-radius:22px;
+      padding:22px;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(103,193,255,.13), transparent 36%),
+        radial-gradient(circle at 86% 20%, rgba(216,184,76,.10), transparent 32%),
+        linear-gradient(180deg,rgba(16,31,64,.98),rgba(12,24,50,.96));
+      box-shadow:
+        0 20px 60px rgba(0,0,0,.30),
+        inset 0 0 0 1px rgba(255,255,255,.025);
+    }
+
+    .premiumCard::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:
+        linear-gradient(135deg,rgba(255,255,255,.035),transparent 38%),
+        radial-gradient(circle at 50% 110%, rgba(103,193,255,.08), transparent 42%);
+    }
+
+    .cardContent{
+      position:relative;
+      z-index:1;
+    }
+
+    .kicker{
+      margin:0 0 8px;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:var(--blue);
+    }
+
+    .weatherLine{
+      margin:0;
+      font-size:clamp(26px,4vw,42px);
+      line-height:1.03;
+      font-weight:900;
+      letter-spacing:-.035em;
+      color:var(--text);
+    }
+
+    .weatherLine span{
+      color:var(--gold);
+    }
+
+    .harmonicName{
+      font-weight:950;
+    }
+
+    .h-structured{color:var(--h-structured)}
+    .h-contained{color:var(--h-contained)}
+    .h-chaotic{color:var(--h-chaotic)}
+    .h-relational{color:var(--h-relational)}
+    .h-threshold{color:var(--h-threshold)}
+    .h-reconstructive{color:var(--h-reconstructive)}
+    .h-integrative{color:var(--h-integrative)}
+    .h-diffused{color:var(--h-diffused)}
+    .h-regulated{color:var(--h-regulated)}
+    .h-steady{color:var(--h-steady)}
+
+    .todayRead{
+      margin:14px 0 0;
+      max-width:850px;
+      color:var(--text);
+      font-size:16px;
+      line-height:1.68;
+    }
+
+    .guidanceGrid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .guidanceBlock{
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:16px;
+      padding:14px;
+      background:rgba(255,255,255,.035);
+    }
+
+    .guidanceBlock.full{
+      grid-column:1 / -1;
+      background:rgba(103,193,255,.06);
+      border-color:rgba(103,193,255,.18);
+    }
+
+    .guidanceLabel{
+      color:var(--muted);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.09em;
+      text-transform:uppercase;
+      margin-bottom:6px;
+    }
+
+    .guidanceText{
+      color:var(--text);
+      font-size:14px;
+      line-height:1.58;
+    }
+
+    .todayOutlookLine{
+      margin-top:14px;
+      border:1px solid rgba(216,184,76,.18);
+      background:rgba(216,184,76,.055);
+      color:var(--text);
+      border-radius:999px;
+      padding:10px 13px;
+      font-size:12px;
+      font-weight:800;
+      line-height:1.4;
+    }
+
+    .todayOutlookLine span{
+      color:var(--gold);
+    }
+
+    .outlookCard{
+      border:1px solid rgba(103,193,255,.18);
+      border-radius:20px;
+      padding:18px;
+      background:
+        radial-gradient(circle at 14% 0%, rgba(103,193,255,.08), transparent 34%),
+        linear-gradient(180deg,rgba(15,27,56,.95),rgba(12,24,50,.92));
+      box-shadow:var(--shadow);
+    }
+
+    .outlookHeader{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:14px;
+    }
+
+    .outlookHeader h2{
+      margin:0;
+      font-size:20px;
+    }
+
+    .outlookHeader p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .outlookGrid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+    }
+
+    .outlookBlock{
+      border:1px solid rgba(255,255,255,.075);
+      border-radius:16px;
+      padding:14px;
+      background:rgba(255,255,255,.03);
+      min-height:116px;
+    }
+
+    .outlookBlock.full{
+      grid-column:1 / -1;
+      background:rgba(103,193,255,.045);
+      border-color:rgba(103,193,255,.13);
+    }
+
+    .outlookLabel{
+      color:var(--muted);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      margin-bottom:7px;
+    }
+
+    .outlookValue{
+      color:var(--text);
+      font-size:18px;
+      font-weight:900;
+      line-height:1.25;
+    }
+
+    .outlookText{
+      color:var(--muted);
+      margin-top:8px;
+      font-size:12px;
+      line-height:1.55;
+    }
+
+    .outlookNote{
+      margin-top:12px;
+      color:var(--muted2);
+      font-size:11px;
+      line-height:1.5;
+      border-top:1px solid rgba(255,255,255,.07);
+      padding-top:12px;
+    }
+
+    .profileCard{
+      border:1px solid rgba(103,193,255,.18);
+      border-radius:20px;
+      padding:18px;
+      background:
+        linear-gradient(180deg,rgba(15,27,56,.96),rgba(13,25,52,.94));
+      box-shadow:var(--shadow);
+    }
+
+    .profileHeader{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:14px;
+    }
+
+    .profileHeader h2{
+      margin:0;
+      font-size:20px;
+    }
+
+    .profileHeader p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .profileGrid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+    }
+
+    .profileBlock{
+      border:1px solid rgba(255,255,255,.075);
+      border-radius:16px;
+      padding:14px;
+      background:rgba(255,255,255,.03);
+      min-height:110px;
+    }
+
+    .profileBlock.wide{
+      grid-column:span 2;
+    }
+
+    .profileBlock.full{
+      grid-column:1 / -1;
+    }
+
+    .profileLabel{
+      color:var(--muted);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.09em;
+      text-transform:uppercase;
+      margin-bottom:7px;
+    }
+
+    .profileValue{
+      color:var(--text);
+      font-size:18px;
+      line-height:1.25;
+      font-weight:900;
+      overflow-wrap:anywhere;
+    }
+
+    .profileDesc{
+      color:var(--muted);
+      margin-top:8px;
+      font-size:12px;
+      line-height:1.48;
+    }
+
+    .chipRow{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:12px;
+      align-items:center;
+    }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      min-height:30px;
+      padding:0 10px;
+      border-radius:999px;
+      border:1px solid rgba(103,193,255,.16);
+      background:rgba(103,193,255,.07);
+      color:var(--blue);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.04em;
+      line-height:1.25;
+      white-space:normal;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+
+    .chip.gold{
+      border-color:rgba(216,184,76,.26);
+      background:rgba(216,184,76,.09);
+      color:var(--gold);
+    }
+
+    .chip.field{
+      border-color:rgba(103,193,255,.22);
+      background:rgba(103,193,255,.08);
+      color:var(--blue);
+    }
+
+    .chip.violet{
+      border-color:rgba(176,108,255,.24);
+      background:rgba(176,108,255,.09);
+      color:#cab1ff;
+    }
+
+    .chip.structured{
+      border-color:rgba(216,184,76,.28);
+      background:rgba(216,184,76,.09);
+      color:var(--h-structured);
+    }
+
+    .chip.contained{
+      border-color:rgba(216,237,240,.22);
+      background:rgba(216,237,240,.07);
+      color:var(--h-contained);
+    }
+
+    .chip.chaotic{
+      border-color:rgba(103,193,255,.28);
+      background:rgba(103,193,255,.09);
+      color:var(--h-chaotic);
+    }
+
+    .chip.relational{
+      border-color:rgba(255,155,183,.24);
+      background:rgba(255,155,183,.08);
+      color:var(--h-relational);
+    }
+
+    .chip.threshold{
+      border-color:rgba(241,184,75,.26);
+      background:rgba(241,184,75,.08);
+      color:var(--h-threshold);
+    }
+
+    .chip.reconstructive{
+      border-color:rgba(176,108,255,.26);
+      background:rgba(176,108,255,.09);
+      color:var(--h-reconstructive);
+    }
+
+    .chip.integrative{
+      border-color:rgba(223,234,255,.22);
+      background:rgba(223,234,255,.07);
+      color:var(--h-integrative);
+    }
+
+    .chip.diffused{
+      border-color:rgba(203,183,255,.24);
+      background:rgba(203,183,255,.08);
+      color:var(--h-diffused);
+    }
+
+    .chip.regulated{
+      border-color:rgba(111,224,211,.24);
+      background:rgba(111,224,211,.08);
+      color:var(--h-regulated);
+    }
+
+    .chip.steady{
+      border-color:rgba(170,183,214,.20);
+      background:rgba(170,183,214,.06);
+      color:var(--h-steady);
+    }
+
+    .whyReadCard{
+      border:1px solid rgba(103,193,255,.15);
+      border-radius:20px;
+      padding:18px;
+      background:linear-gradient(180deg,rgba(15,27,56,.90),rgba(11,23,52,.86));
+      box-shadow:var(--shadow);
+    }
+
+    .whyReadGrid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .whyMini{
+      border:1px solid rgba(255,255,255,.07);
+      border-radius:14px;
+      padding:12px;
+      background:rgba(255,255,255,.026);
+    }
+
+    .whyMini.full{
+      grid-column:1 / -1;
+    }
+
+    .whyMiniLabel{
+      color:var(--muted);
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      margin-bottom:6px;
+    }
+
+    .whyMiniValue{
+      color:var(--text);
+      font-size:14px;
+      font-weight:800;
+      line-height:1.35;
+      overflow-wrap:anywhere;
+    }
+
+    .whyExplain{
+      margin-top:14px;
+      border-top:1px solid rgba(255,255,255,.07);
+      padding-top:14px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.65;
+    }
+
+    .shareSection{
+      border:1px solid rgba(216,184,76,.18);
+      border-radius:20px;
+      padding:18px;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(216,184,76,.08), transparent 34%),
+        linear-gradient(180deg,rgba(15,27,56,.94),rgba(11,23,52,.92));
+      box-shadow:var(--shadow);
+    }
+
+    .shareIntro{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      align-items:flex-start;
+      margin-bottom:14px;
+    }
+
+    .shareIntro h2{
+      margin:0;
+      font-size:20px;
+    }
+
+    .shareIntro p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .shareIntroChips{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      min-width:220px;
+    }
+
+    .shareChip{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:30px;
+      padding:0 10px;
+      border-radius:999px;
+      border:1px solid rgba(103,193,255,.18);
+      background:rgba(103,193,255,.075);
+      color:var(--blue);
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      white-space:normal;
+      line-height:1.25;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+
+    .shareChip.gold{
+      border-color:rgba(216,184,76,.22);
+      background:rgba(216,184,76,.08);
+      color:var(--gold);
+    }
+
+    .shareChip.field{
+      border-color:rgba(103,193,255,.22);
+      background:rgba(103,193,255,.08);
+      color:var(--blue);
+    }
+
+    .shareChip.violet{
+      border-color:rgba(176,108,255,.20);
+      background:rgba(176,108,255,.08);
+      color:#cab1ff;
+    }
+
+    .shareChip.structured{
+      border-color:rgba(216,184,76,.26);
+      background:rgba(216,184,76,.08);
+      color:var(--h-structured);
+    }
+
+    .shareChip.contained{
+      border-color:rgba(216,237,240,.22);
+      background:rgba(216,237,240,.07);
+      color:var(--h-contained);
+    }
+
+    .shareChip.chaotic{
+      border-color:rgba(103,193,255,.26);
+      background:rgba(103,193,255,.08);
+      color:var(--h-chaotic);
+    }
+
+    .shareChip.relational{
+      border-color:rgba(255,155,183,.22);
+      background:rgba(255,155,183,.07);
+      color:var(--h-relational);
+    }
+
+    .shareChip.threshold{
+      border-color:rgba(241,184,75,.24);
+      background:rgba(241,184,75,.08);
+      color:var(--h-threshold);
+    }
+
+    .shareChip.reconstructive{
+      border-color:rgba(176,108,255,.24);
+      background:rgba(176,108,255,.08);
+      color:var(--h-reconstructive);
+    }
+
+    .shareChip.integrative{
+      border-color:rgba(223,234,255,.22);
+      background:rgba(223,234,255,.07);
+      color:var(--h-integrative);
+    }
+
+    .shareChip.diffused{
+      border-color:rgba(203,183,255,.22);
+      background:rgba(203,183,255,.07);
+      color:var(--h-diffused);
+    }
+
+    .shareChip.regulated{
+      border-color:rgba(111,224,211,.22);
+      background:rgba(111,224,211,.07);
+      color:var(--h-regulated);
+    }
+
+    .shareChip.steady{
+      border-color:rgba(170,183,214,.18);
+      background:rgba(170,183,214,.06);
+      color:var(--h-steady);
+    }
+
+    .shareExportFrame{
+      width:100%;
+      max-width:720px;
+      margin:0 auto;
+    }
+
+    .shareCard{
+      width:100%;
+      border:1px solid rgba(216,184,76,.28);
+      border-radius:20px;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(103,193,255,.14), transparent 34%),
+        radial-gradient(circle at 88% 10%, rgba(216,184,76,.13), transparent 34%),
+        linear-gradient(145deg,#122246 0%, #0d1b39 58%, #0a1732 100%);
+      box-shadow:
+        0 22px 62px rgba(0,0,0,.34),
+        inset 0 0 0 1px rgba(255,255,255,.025);
+    }
+
+    .shareCardInner{
+      padding:30px;
+      display:grid;
+      gap:18px;
+    }
+
+    .shareCardTop{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      align-items:center;
+      padding-bottom:14px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      color:var(--muted);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+    }
+
+    .shareCardTop span:first-child{
+      color:var(--blue);
+    }
+
+    .shareCardChips{
+      display:flex;
+      gap:7px;
+      flex-wrap:wrap;
+      margin-top:-2px;
+    }
+
+    .shareCardChip{
+      display:inline-flex;
+      align-items:center;
+      min-height:26px;
+      padding:0 9px;
+      border-radius:999px;
+      border:1px solid rgba(103,193,255,.16);
+      background:rgba(103,193,255,.07);
+      color:var(--blue);
+      font-size:9px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      max-width:100%;
+      white-space:normal;
+      line-height:1.25;
+      overflow-wrap:anywhere;
+    }
+
+    .shareCardChip.gold{
+      color:var(--gold);
+      border-color:rgba(216,184,76,.22);
+      background:rgba(216,184,76,.08);
+    }
+
+    .shareCardChip.field{
+      color:var(--blue);
+      border-color:rgba(103,193,255,.18);
+      background:rgba(103,193,255,.08);
+    }
+
+    .shareCardChip.violet{
+      color:#cab1ff;
+      border-color:rgba(176,108,255,.18);
+      background:rgba(176,108,255,.08);
+    }
+
+    .shareCardChip.structured{
+      color:var(--h-structured);
+      border-color:rgba(216,184,76,.22);
+      background:rgba(216,184,76,.08);
+    }
+
+    .shareCardChip.contained{
+      color:var(--h-contained);
+      border-color:rgba(216,237,240,.18);
+      background:rgba(216,237,240,.06);
+    }
+
+    .shareCardChip.chaotic{
+      color:var(--h-chaotic);
+      border-color:rgba(103,193,255,.20);
+      background:rgba(103,193,255,.07);
+    }
+
+    .shareCardChip.relational{
+      color:var(--h-relational);
+      border-color:rgba(255,155,183,.18);
+      background:rgba(255,155,183,.06);
+    }
+
+    .shareCardChip.threshold{
+      color:var(--h-threshold);
+      border-color:rgba(241,184,75,.20);
+      background:rgba(241,184,75,.07);
+    }
+
+    .shareCardChip.reconstructive{
+      color:var(--h-reconstructive);
+      border-color:rgba(176,108,255,.20);
+      background:rgba(176,108,255,.07);
+    }
+
+    .shareCardChip.integrative{
+      color:var(--h-integrative);
+      border-color:rgba(223,234,255,.18);
+      background:rgba(223,234,255,.06);
+    }
+
+    .shareCardChip.diffused{
+      color:var(--h-diffused);
+      border-color:rgba(203,183,255,.18);
+      background:rgba(203,183,255,.06);
+    }
+
+    .shareCardChip.regulated{
+      color:var(--h-regulated);
+      border-color:rgba(111,224,211,.18);
+      background:rgba(111,224,211,.06);
+    }
+
+    .shareCardChip.steady{
+      color:var(--h-steady);
+      border-color:rgba(170,183,214,.18);
+      background:rgba(170,183,214,.06);
+    }
+
+    .shareCardSection{
+      display:grid;
+      gap:8px;
+      padding-top:2px;
+    }
+
+    .shareCardLabel{
+      color:var(--blue);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+    }
+
+    .shareCardWeather{
+      color:var(--gold);
+      font-size:clamp(30px,5vw,46px);
+      line-height:1.02;
+      font-weight:950;
+      letter-spacing:-.05em;
+      padding-bottom:8px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      overflow-wrap:anywhere;
+    }
+
+    .shareCardRead{
+      color:var(--text);
+      font-size:17px;
+      line-height:1.62;
+      overflow-wrap:break-word;
+    }
+
+    .shareCardMiniGrid{
+      display:grid;
+      gap:12px;
+      margin-top:2px;
+    }
+
+    .shareCardMini{
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:16px;
+      padding:14px;
+      background:rgba(255,255,255,.035);
+    }
+
+    .shareCardMini .shareCardRead{
+      font-size:16px;
+      line-height:1.55;
+    }
+
+    .shareFooter{
+      padding-top:2px;
+      color:var(--muted);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+    }
+
+    .shareActions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:14px;
+    }
+
+    .shareStatus{
+      min-height:18px;
+      margin-top:10px;
+      color:var(--blue);
+      font-size:12px;
+      font-weight:800;
+      line-height:1.4;
+    }
+
+    .librarySection{
+      border:1px solid rgba(103,193,255,.15);
+      border-radius:20px;
+      background:rgba(6,15,34,.36);
+      overflow:hidden;
+    }
+
+    .librarySection summary{
+      cursor:pointer;
+      list-style:none;
+      padding:18px;
+      color:var(--text);
+      font-size:18px;
+      font-weight:900;
+    }
+
+    .librarySection summary::-webkit-details-marker{
+      display:none;
+    }
+
+    .librarySection summary::after{
+      content:" +";
+      color:var(--muted);
+    }
+
+    .librarySection[open] summary::after{
+      content:" -";
+    }
+
+    .libraryBody{
+      border-top:1px solid rgba(255,255,255,.07);
+      padding:18px;
+    }
+
+    .libraryIntro{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+      margin:0 0 14px;
+    }
+
+    .libraryGrid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+    }
+
+    .libraryCard{
+      border:1px solid rgba(255,255,255,.075);
+      border-radius:16px;
+      padding:14px;
+      background:rgba(255,255,255,.026);
+      display:grid;
+      gap:8px;
+    }
+
+    .libraryCard.active{
+      border-color:rgba(103,193,255,.32);
+      background:
+        linear-gradient(180deg,rgba(103,193,255,.09),rgba(255,255,255,.025));
+      box-shadow:inset 0 0 0 1px rgba(103,193,255,.08);
+    }
+
+    .libraryCard h3{
+      margin:0;
+      color:var(--gold);
+      font-size:16px;
+      line-height:1.2;
+    }
+
+    .libraryCard p{
+      margin:0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+
+    .libraryCard strong{
+      color:var(--text);
+    }
+
+    .engineDetails{
+      border:1px solid rgba(42,60,105,.75);
+      border-radius:20px;
+      background:rgba(6,15,34,.40);
+      overflow:hidden;
+    }
+
+    .engineDetails summary{
+      cursor:pointer;
+      list-style:none;
+      padding:18px;
+      color:var(--text);
+      font-size:18px;
+      font-weight:900;
+    }
+
+    .engineDetails summary::-webkit-details-marker{
+      display:none;
+    }
+
+    .engineDetails summary::after{
+      content:" +";
+      color:var(--muted);
+    }
+
+    .engineDetails[open] summary::after{
+      content:" -";
+    }
+
+    .engineBody{
+      border-top:1px solid rgba(255,255,255,.07);
+      padding:16px;
+    }
+
+    .engineHeader{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:14px;
+    }
+
+    .engineHeader h2{
+      margin:0;
+      font-size:18px;
+      color:var(--text);
+    }
+
+    .engineHeader p{
+      margin:4px 0 0;
+      color:var(--muted2);
+      font-size:12px;
+      line-height:1.45;
+    }
+
+    .heroStats{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:14px;
+      margin-bottom:14px;
+    }
+
+    .stat{
+      background:rgba(255,255,255,.025);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      min-height:138px;
+    }
+
+    .stat .label{
+      font-size:11px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .big{
+      font-size:30px;
+      font-weight:800;
+      margin-top:8px;
+      line-height:1.05;
+    }
+
+    .sub{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:8px;
+      line-height:1.4;
+    }
+
+    .meter{
+      margin-top:12px;
+      height:10px;
+      width:100%;
+      border-radius:999px;
+      background:#081126;
+      border:1px solid var(--line);
+      overflow:hidden;
+    }
+
+    .meter > span{
+      display:block;
+      height:100%;
+      width:0%;
+      transition:width .35s ease;
+    }
+
+    .meter-capacity > span{
+      background:linear-gradient(90deg,#67c1ff,#a1d8ff,#d8b84c);
+    }
+
+    .meter-strain > span{
+      background:linear-gradient(90deg,#67d26f,#d8b84c,#ff6666);
+    }
+
+    .stateBadge{
+      display:inline-block;
+      margin-top:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      background:rgba(103,193,255,.10);
+      color:var(--blue);
+      border:1px solid rgba(103,193,255,.18);
+    }
+
+    .midRow{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:14px;
+      margin-bottom:14px;
+    }
+
+    .microCard{
+      background:rgba(255,255,255,.025);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px 16px;
+      min-height:126px;
+    }
+
+    .microHeader{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:8px;
+    }
+
+    .microTitle{
+      font-size:11px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-weight:700;
+    }
+
+    .verifiedBadge{
+      display:inline-flex;
+      align-items:center;
+      padding:4px 8px;
+      border-radius:999px;
+      font-size:10px;
+      font-weight:700;
+      color:var(--teal);
+      background:rgba(103,193,255,.08);
+      border:1px solid rgba(103,193,255,.14);
+      white-space:nowrap;
+    }
+
+    .forecastBig{
+      font-size:18px;
+      font-weight:800;
+      margin:2px 0 6px;
+    }
+
+    .forecastSub{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .whyCard{
+      margin-bottom:16px;
+      background:rgba(255,255,255,.025);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px;
+    }
+
+    .whyTitle{
+      font-size:11px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-weight:700;
+      margin-bottom:8px;
+    }
+
+    .whyText{
+      font-size:13px;
+      color:var(--text);
+      line-height:1.72;
+    }
+
+    .summaryTitle{
+      margin:0 0 10px;
+      font-size:14px;
+      color:var(--text);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-weight:800;
+    }
+
+    .table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:13px;
+    }
+
+    .table th,.table td{
+      padding:11px 8px;
+      border-bottom:1px solid var(--lineSoft);
+      text-align:left;
+      vertical-align:middle;
+    }
+
+    .table th{
+      color:var(--muted);
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .badge{
+      display:inline-block;
+      padding:5px 8px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:700;
+      border:1px solid transparent;
+    }
+
+    .b-blue{background:rgba(103,193,255,.12); color:var(--blue); border-color:rgba(103,193,255,.22)}
+    .b-red{background:rgba(255,102,102,.12); color:var(--red); border-color:rgba(255,102,102,.22)}
+    .b-green{background:rgba(103,210,111,.12); color:var(--green); border-color:rgba(103,210,111,.22)}
+    .b-gold{background:rgba(216,184,76,.12); color:var(--gold); border-color:rgba(216,184,76,.22)}
+    .b-violet{background:rgba(176,108,255,.08); color:#cab1ff; border-color:rgba(176,108,255,.14)}
+
+    .softMetric td{
+      opacity:.82;
+    }
+
+    .bottomGrid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-top:14px;
+    }
+
+    .miniPanel{
+      background:rgba(255,255,255,.025);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+    }
+
+    .metaRow{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top:16px;
+    }
+
+    .metaPill{
+      display:inline-flex;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:700;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+      color:var(--muted);
+    }
+
+    .metaPill.field{
+      color:#c27cff;
+      background:rgba(176,108,255,.10);
+      border-color:rgba(176,108,255,.16);
+    }
+
+    .metaPill.forecast{
+      color:#6fc0ff;
+      background:rgba(103,193,255,.10);
+      border-color:rgba(103,193,255,.16);
+    }
+
+    @media (max-width: 1120px){
+      .grid{grid-template-columns:1fr}
+      .inputPanel{position:static}
+      .heroStats{grid-template-columns:1fr}
+      .midRow{grid-template-columns:1fr}
+      .bottomGrid{grid-template-columns:1fr}
+      .guidanceGrid{grid-template-columns:1fr}
+      .profileGrid{grid-template-columns:1fr}
+      .profileBlock.wide,
+      .profileBlock.full{grid-column:auto}
+      .outlookGrid{grid-template-columns:1fr}
+      .whyReadGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .whyMini.full{grid-column:1 / -1}
+      .libraryGrid{grid-template-columns:1fr}
+      .shareIntro{
+        display:grid;
+      }
+      .shareIntroChips{
+        justify-content:flex-start;
+        min-width:0;
+      }
+    }
+
+    @media (max-width: 720px){
+      .wrap{padding:14px}
+      .hero h1{font-size:36px}
+      .panel,.premiumCard,.profileCard,.engineDetails,.whyReadCard,.shareSection,.outlookCard{border-radius:16px}
+      .premiumCard{padding:18px}
+      .weatherLine{font-size:28px}
+      .todayRead{font-size:15px}
+      .todayOutlookLine{border-radius:14px}
+      .profileHeader,.outlookHeader{display:grid}
+      .profileBlock{min-height:auto}
+      .profileValue{font-size:17px}
+      .chip,.shareChip{min-height:28px; padding:6px 9px}
+      .whyReadGrid{grid-template-columns:1fr}
+      .shareCardInner{padding:22px}
+      .shareCardTop{
+        display:grid;
+        gap:8px;
+      }
+      .shareCardWeather{font-size:34px}
+      .shareCardRead{font-size:15px}
+      .shareActions{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <a class="backLink" href="index.html">← Back to Lucy.OS Lite</a>
+
+    <div class="hero">
+      <div class="heroGlow" id="heroGlow"></div>
+      <h1>Lucy.OS Pro</h1>
+      <p>Full personal field guidance inside the live timing field</p>
+    </div>
+
+    <div class="grid">
+      <div class="panel inputPanel">
+        <h2>Inputs</h2>
+
+        <label>Date of Birth</label>
+        <input id="dob" type="date" />
+
+        <div class="row2">
+          <div>
+            <label>Time of Birth</label>
+            <input id="tob" type="text" placeholder="9:15" />
+          </div>
+          <div>
+            <label>AM / PM</label>
+            <select id="ampm">
+              <option>AM</option>
+              <option>PM</option>
+            </select>
+          </div>
+        </div>
+
+        <label>Birth Location</label>
+        <input id="location" type="text" placeholder="Portland, OR" />
+
+        <button id="calcBtn">Calculate</button>
+
+        <div class="tiny">
+          Birth location resolves timezone, angles, and houses for accurate chart input.
+        </div>
+
+        <div class="leftStack">
+          <div class="statusBlock">
+            <strong>API Status</strong>
+            <div id="apiStatus">Waiting for calculation.</div>
+          </div>
+
+          <div class="statusBlock">
+            <strong>Chart Input</strong>
+            <div id="resolvedInput">No resolved birth data yet.</div>
+          </div>
+
+          <div class="statusBlock">
+            <strong>Chart Debug</strong>
+            <div id="chartDebug">Awaiting first chart load.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mainStack">
+
+        <section class="premiumCard">
+          <div class="cardContent">
+            <p class="kicker">Today’s System Weather</p>
+            <h2 class="weatherLine" id="systemWeatherLine">
+              Structured signal architecture <span>×</span> Field loading
+            </h2>
+
+            <p class="todayRead" id="dailyTodayRead">
+              Waiting for chart calculation. Lucy.OS will read your root signal architecture inside the current field.
+            </p>
+
+            <div class="guidanceGrid">
+              <div class="guidanceBlock">
+                <div class="guidanceLabel">What to lean into</div>
+                <div class="guidanceText" id="dailyLeanInto">—</div>
+              </div>
+
+              <div class="guidanceBlock">
+                <div class="guidanceLabel">What to watch for</div>
+                <div class="guidanceText" id="dailyWatchFor">—</div>
+              </div>
+
+              <div class="guidanceBlock full">
+                <div class="guidanceLabel">One Good Move</div>
+                <div class="guidanceText" id="dailyGoodMove">—</div>
+              </div>
+
+              <div class="guidanceBlock full">
+                <div class="guidanceLabel">Return to yourself by</div>
+                <div class="guidanceText" id="dailyReturn">—</div>
+              </div>
+            </div>
+
+            <div class="todayOutlookLine" id="todayOutlookLine">
+              Current Outlook: <span>Trend: —</span> · Driver: — · —
+            </div>
+          </div>
+        </section>
+
+        <section class="outlookCard">
+          <div class="outlookHeader">
+            <div>
+              <h2>Current Outlook</h2>
+              <p>Live-field guidance using the current forecast shell. Future projection will be upgraded later.</p>
+            </div>
+            <div class="chipRow" style="margin-top:0;">
+              <span class="chip violet" id="outlookStateChip">State: —</span>
+              <span class="chip field" id="outlookFieldChip">Field: —</span>
+            </div>
+          </div>
+
+          <div class="outlookGrid">
+            <div class="outlookBlock">
+              <div class="outlookLabel">Now</div>
+              <div class="outlookValue" id="outlookNowState">—</div>
+              <div class="outlookText" id="outlookNowText">Waiting for live state.</div>
+            </div>
+
+            <div class="outlookBlock">
+              <div class="outlookLabel">Next 6 Hours</div>
+              <div class="outlookValue" id="outlookShortState">—</div>
+              <div class="outlookText" id="outlookShortText">Waiting for next 6 hours outlook.</div>
+            </div>
+
+            <div class="outlookBlock">
+              <div class="outlookLabel">Next 24 Hours</div>
+              <div class="outlookValue" id="outlook24State">—</div>
+              <div class="outlookText" id="outlook24Text">Waiting for next-day outlook.</div>
+            </div>
+
+            <div class="outlookBlock full">
+              <div class="outlookLabel">Field Direction</div>
+              <div class="outlookValue" id="outlookDirectionTitle">—</div>
+              <div class="outlookText" id="outlookDirectionText">Waiting for field direction.</div>
+            </div>
+          </div>
+
+          <div class="outlookNote">
+            Current Outlook uses the live-field forecast shell only. Separate +6 and +24 hour projections will be added in a later backend pass.
+          </div>
+        </section>
+
+        <section class="profileCard">
+          <div class="profileHeader">
+            <div>
+              <h2>Harmonic Profile</h2>
+              <p>Your root signal architecture, stabilizing support, motion style, and overload pathway. Today’s field is current weather, not identity.</p>
+            </div>
+            <div class="chipRow">
+              <span class="chip gold" id="profileStateChip">Signal Architecture</span>
+              <span class="chip field" id="profileFieldChip">Field: —</span>
+            </div>
+          </div>
+
+          <div class="profileGrid">
+            <div class="profileBlock">
+              <div class="profileLabel">Primary Harmonic</div>
+              <div class="profileValue" id="primaryHarmonic">—</div>
+              <div class="profileDesc">Root signal architecture.</div>
+            </div>
+
+            <div class="profileBlock">
+              <div class="profileLabel">Support Harmonic</div>
+              <div class="profileValue" id="supportHarmonic">—</div>
+              <div class="profileDesc">Secondary stabilizer.</div>
+            </div>
+
+            <div class="profileBlock">
+              <div class="profileLabel">Motion Style</div>
+              <div class="profileValue" id="motionStyle">—</div>
+              <div class="profileDesc">How signal moves when activated.</div>
+            </div>
+
+            <div class="profileBlock">
+              <div class="profileLabel">Distortion Harmonic</div>
+              <div class="profileValue" id="distortionHarmonic">—</div>
+              <div class="profileDesc">Overload pathway, not a flaw.</div>
+            </div>
+
+            <div class="profileBlock wide">
+              <div class="profileLabel">Signal Quality</div>
+              <div class="profileValue" id="signalQuality">—</div>
+              <div class="profileDesc">The texture and amount of signal your system tends to carry.</div>
+            </div>
+
+            <div class="profileBlock">
+              <div class="profileLabel">Today’s Field Harmonic</div>
+              <div class="profileValue" id="todayFieldHarmonic">—</div>
+              <div class="profileDesc">Current live field pattern.</div>
+            </div>
+
+            <div class="profileBlock wide">
+              <div class="profileLabel">Stability Method</div>
+              <div class="profileValue" id="stabilityMethod">—</div>
+              <div class="profileDesc">How your system returns toward coherence.</div>
+            </div>
+
+            <div class="profileBlock">
+              <div class="profileLabel">Overload Risk</div>
+              <div class="profileValue" id="overloadRisk">—</div>
+              <div class="profileDesc">Where strain tends to collect.</div>
+            </div>
+
+            <div class="profileBlock full">
+              <div class="profileLabel">Plain Read</div>
+              <div class="guidanceText" id="harmonicPlainRead">Waiting for harmonic profile.</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="whyReadCard">
+          <div class="profileHeader" style="margin-bottom:0;">
+            <div>
+              <h2>Why This Read?</h2>
+              <p>A compact explanation of the current configuration behind the daily guidance.</p>
+            </div>
+          </div>
+
+          <div class="whyReadGrid">
+            <div class="whyMini">
+              <div class="whyMiniLabel">Signal Architecture</div>
+              <div class="whyMiniValue" id="whyBaseline">—</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">Field</div>
+              <div class="whyMiniValue" id="whyField">—</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">Motion Style</div>
+              <div class="whyMiniValue" id="whyMotionStyle">—</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">State</div>
+              <div class="whyMiniValue" id="whyState">—</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">Primary Driver</div>
+              <div class="whyMiniValue" id="whyDriver">—</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">Load</div>
+              <div class="whyMiniValue" id="whyLoad">—</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">Capacity</div>
+              <div class="whyMiniValue" id="whyCapacity">—</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">Regulation</div>
+              <div class="whyMiniValue" id="whyRegulation">—</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">Distortion Pathway</div>
+              <div class="whyMiniValue" id="whyDistortion">—</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">Direction</div>
+              <div class="whyMiniValue" id="whyDirection">—</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">Peak Timing</div>
+              <div class="whyMiniValue" id="whyPeakTiming">Later backend pass</div>
+            </div>
+
+            <div class="whyMini">
+              <div class="whyMiniLabel">Moonstamp Modifier</div>
+              <div class="whyMiniValue" id="whyMoonstampModifier">Later integration</div>
+            </div>
+
+            <div class="whyMini full">
+              <div class="whyMiniLabel">Rationale</div>
+              <div class="whyMiniValue" id="whyRationale">Waiting for rationale.</div>
+            </div>
+          </div>
+
+          <div class="whyExplain" id="whyConfigText">
+            Waiting for configuration.
+          </div>
+        </section>
+
+        <section class="shareSection">
+          <div class="shareIntro">
+            <div>
+              <h2>Share Card</h2>
+              <p>Save or copy the daily guidance layer. This card shows the field read, not the full engine.</p>
+            </div>
+
+            <div class="shareIntroChips">
+              <span class="shareChip gold" id="shareBaselineChip">Signal: —</span>
+              <span class="shareChip field" id="shareFieldChip">Field: —</span>
+              <span class="shareChip violet" id="shareStateChip">State: —</span>
+            </div>
+          </div>
+
+          <div class="shareExportFrame">
+            <div id="lucyShareCard" class="shareCard">
+              <div class="shareCardInner">
+                <div class="shareCardTop">
+                  <span>Lucy.OS Pro</span>
+                  <span>Personal Field Guidance</span>
+                </div>
+
+                <div class="shareCardChips">
+                  <span class="shareCardChip gold" id="shareCardBaselineChip">Signal: —</span>
+                  <span class="shareCardChip field" id="shareCardFieldChip">Field: —</span>
+                  <span class="shareCardChip violet" id="shareCardStateChip">State: —</span>
+                </div>
+
+                <div class="shareCardSection">
+                  <div class="shareCardLabel">Today’s System Weather</div>
+                  <div class="shareCardWeather" id="shareCardWeather">Structured signal architecture × Field loading</div>
+                </div>
+
+                <div class="shareCardSection">
+                  <div class="shareCardLabel">Today’s Read</div>
+                  <div class="shareCardRead" id="shareCardTodayRead">Waiting for daily read.</div>
+                </div>
+
+                <div class="shareCardMiniGrid">
+                  <div class="shareCardMini">
+                    <div class="shareCardLabel">Motion Style</div>
+                    <div class="shareCardRead" id="shareCardMotionStyle">—</div>
+                  </div>
+
+                  <div class="shareCardMini">
+                    <div class="shareCardLabel">Today’s Driver</div>
+                    <div class="shareCardRead" id="shareCardDriverNote">Waiting for driver note.</div>
+                  </div>
+
+                  <div class="shareCardMini">
+                    <div class="shareCardLabel">One Good Move</div>
+                    <div class="shareCardRead" id="shareCardGoodMove">—</div>
+                  </div>
+
+                  <div class="shareCardMini">
+                    <div class="shareCardLabel">Return to yourself by</div>
+                    <div class="shareCardRead" id="shareCardReturn">—</div>
+                  </div>
+                </div>
+
+                <div class="shareFooter">Personal field guidance · Lucy.OS Pro</div>
+              </div>
+            </div>
+
+            <div class="shareActions">
+              <button id="saveShareCardBtn" type="button">Save Share Card</button>
+              <button id="copyShareTextBtn" type="button">Copy Share Text</button>
+            </div>
+
+            <div id="shareStatus" class="shareStatus"></div>
+          </div>
+        </section>
+
+        <details class="librarySection">
+          <summary>Open Harmonic Library</summary>
+          <div class="libraryBody">
+            <p class="libraryIntro">
+              The Pro library is here for context. Your result comes first; the library shows the full 9-harmonic vocabulary.
+            </p>
+
+            <div class="libraryGrid" id="harmonicLibraryGrid"></div>
+          </div>
+        </details>
+
+        <details class="engineDetails">
+          <summary>Open Engine Details</summary>
+          <div class="engineBody">
+            <div class="engineHeader">
+              <div>
+                <h2>Engine Details</h2>
+                <p>Technical state, API confirmation, drivers, stabilizers, and chart debug remain visible here.</p>
+              </div>
+              <div class="metaRow" style="margin-top:0;">
+                <span class="metaPill field" id="envBand">Field: —</span>
+                <span class="metaPill forecast" id="forecastBand">Forecast: —</span>
+              </div>
+            </div>
+
+            <div class="heroStats">
+              <div class="stat">
+                <div class="label">Capacity</div>
+                <div class="big" id="capacityScore">0.00</div>
+                <div class="sub" id="capacityLabel">Available system bandwidth</div>
+                <div class="meter meter-capacity"><span id="capacityBar"></span></div>
+              </div>
+
+              <div class="stat">
+                <div class="label">Strain</div>
+                <div class="big" id="strainScore">0.00</div>
+                <div class="sub" id="strainLabel">Current active load</div>
+                <div class="meter meter-strain"><span id="strainBar"></span></div>
+              </div>
+
+              <div class="stat">
+                <div class="label">State</div>
+                <div class="big" id="stateText">Regulated</div>
+                <div class="sub" id="stateLabel">Stable with manageable load</div>
+                <div class="stateBadge" id="stateBadge">Regulated</div>
+              </div>
+            </div>
+
+            <div class="midRow">
+              <div class="microCard">
+                <div class="microHeader">
+                  <div class="microTitle">Forecast</div>
+                </div>
+                <div class="forecastBig" id="forecastTitle">Forecast: —</div>
+                <div class="forecastSub" id="forecastText">
+                  Waiting for forecast state.
+                </div>
+              </div>
+
+              <div class="microCard">
+                <div class="microHeader">
+                  <div class="microTitle">Sky Data</div>
+                  <div class="verifiedBadge" id="skyVerified">Verified</div>
+                </div>
+                <div class="forecastBig" id="skyDataTitle">Chart Loaded</div>
+                <div class="forecastSub" id="skyDataText">
+                  Waiting for resolved birth data and ephemeris source confirmation.
+                </div>
+              </div>
+            </div>
+
+            <div class="whyCard">
+              <div class="whyTitle">Why</div>
+              <div class="whyText" id="whyText">Waiting for chart interpretation.</div>
+            </div>
+
+            <div class="summaryTitle">System Summary</div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th>Value</th>
+                  <th>Band</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Capacity</td>
+                  <td id="capVal">0.00</td>
+                  <td><span class="badge b-gold">Capacity</span></td>
+                </tr>
+                <tr>
+                  <td>Amplified Load</td>
+                  <td id="loadVal">0.00</td>
+                  <td><span class="badge b-red">Load</span></td>
+                </tr>
+                <tr>
+                  <td>Regulation</td>
+                  <td id="regVal">0.00</td>
+                  <td><span class="badge b-green">Regulation</span></td>
+                </tr>
+                <tr>
+                  <td>Effective Load</td>
+                  <td id="effVal">0.00</td>
+                  <td><span class="badge b-blue">Net</span></td>
+                </tr>
+                <tr class="softMetric">
+                  <td>Regulator Average</td>
+                  <td id="stabilityVal">0.00</td>
+                  <td><span class="badge b-violet">Derived</span></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="bottomGrid">
+              <div class="miniPanel">
+                <div class="summaryTitle" style="font-size:13px; margin-bottom:10px;">Active Drivers</div>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Driver</th>
+                      <th>Strength</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Primary Driver</td>
+                      <td id="primaryDriver">—</td>
+                    </tr>
+                    <tr>
+                      <td>Volatility (Uranus)</td>
+                      <td id="volatilityVal">0.00</td>
+                    </tr>
+                    <tr>
+                      <td>Fog (Neptune)</td>
+                      <td id="fogVal">0.00</td>
+                    </tr>
+                    <tr>
+                      <td>Activation (Mars)</td>
+                      <td id="activationVal">0.00</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="miniPanel">
+                <div class="summaryTitle" style="font-size:13px; margin-bottom:10px;">Stabilizers</div>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Regulator</th>
+                      <th>Strength</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Saturn</td>
+                      <td id="saturnVal">0.00</td>
+                    </tr>
+                    <tr>
+                      <td>Venus</td>
+                      <td id="venusVal">0.00</td>
+                    </tr>
+                    <tr>
+                      <td>Mercury</td>
+                      <td id="mercuryVal">0.00</td>
+                    </tr>
+                    <tr>
+                      <td>Current State</td>
+                      <td id="stateCondition">—</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="tiny">
+              Forecast, regulator average, harmonic routing, and why-line are interpretive layers on top of the current V2.5 engine.
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "/api/chart_inputs";
+
+    const HARMONICS = {
+      Structured: {
+        label: "Structured",
+        signalQuality: "High, coherent, pattern-seeking, structure-oriented",
+        stabilityMethod: "Regulation, sequencing, naming, meaning-making",
+        overloadRisk: "Too much signal before the container is finished; pressure outrunning structure",
+        plainRead: "This system stabilizes by turning pressure into order. Overload happens when clarity arrives faster than the structure can hold it."
+      },
+      Contained: {
+        label: "Contained",
+        signalQuality: "Deep, internal, cyclical, protected",
+        stabilityMethod: "Withdrawal, privacy, inward processing, controlled release",
+        overloadRisk: "Emotional compression; signal trapped inside; delayed expression turning into pressure buildup",
+        plainRead: "This system stabilizes by pulling signal inward until it feels safe. Overload happens when too much stays unexpressed for too long."
+      },
+      Chaotic: {
+        label: "Chaotic",
+        signalQuality: "High-voltage, mobile, catalytic, nonlinear",
+        stabilityMethod: "Movement, disruption, voltage release, rapid shifts",
+        overloadRisk: "Scattering, instability, shock cycles, losing continuity",
+        plainRead: "This system carries fast, nonlinear signal and stabilizes by giving the charge somewhere useful to go. Overload happens when the voltage has no container."
+      },
+      Relational: {
+        label: "Relational",
+        signalQuality: "Attuned, responsive, field-sensitive, relational",
+        stabilityMethod: "Contact, mirroring, tone-tracking, repairing the field",
+        overloadRisk: "Over-attunement, losing center, attachment loops, emotional fusion",
+        plainRead: "This system stabilizes by reading and repairing the space between people. Overload happens when the field becomes too loud or too fused."
+      },
+      Threshold: {
+        label: "Threshold",
+        signalQuality: "Sharp, decisive, activation-based, timing-sensitive",
+        stabilityMethod: "Timing, crossings, clean openings, decisive action",
+        overloadRisk: "Urgency, rupture, impatience, acting before the field is ready",
+        plainRead: "This system stabilizes at turning points. Overload happens when everything feels like a turning point."
+      },
+      Reconstructive: {
+        label: "Reconstructive",
+        signalQuality: "Compressed, transformative, deep-field, pressure-bearing",
+        stabilityMethod: "Breakdown → rebuild cycles, pressure integration, reforming structure",
+        overloadRisk: "Crisis identity, heaviness, repeated collapse loops",
+        plainRead: "This system stabilizes by transforming pressure into a stronger form. Overload happens when the system is forced to rebuild too often without rest."
+      },
+      Integrative: {
+        label: "Integrative",
+        signalQuality: "Wide, connective, meaning-oriented, integrative",
+        stabilityMethod: "Synthesis, pattern-linking, big-picture coherence",
+        overloadRisk: "Over-meaning, abstraction, taking in too many layers at once",
+        plainRead: "This system stabilizes by making the scattered field coherent. Overload happens when there are too many pieces to integrate."
+      },
+      Diffused: {
+        label: "Diffused",
+        signalQuality: "Porous, atmospheric, impressionistic, subtle",
+        stabilityMethod: "Soft focus, spaciousness, gentle pacing, wide reception",
+        overloadRisk: "Fog, overwhelm, boundary loss, unclear direction",
+        plainRead: "This system stabilizes by receiving widely before defining. Overload happens when the field is too dense or too demanding."
+      },
+      Regulated: {
+        label: "Regulated",
+        signalQuality: "Measured, paced, controlled, load-aware",
+        stabilityMethod: "Timing, containment, emotional management, load control",
+        overloadRisk: "Over-control, bottlenecking, emotional restriction, fear of disorder",
+        plainRead: "This system stabilizes by pacing the signal until it becomes manageable. Overload happens when the system tries to control too much for too long."
+      }
+    };
+
+    const HARMONIC_SCORE_WEIGHTS = {
+      natal: {
+        Structured: 5.50,
+        Contained: 2.60,
+        Chaotic: 2.40,
+        Relational: 2.55,
+        Threshold: 2.80,
+        Reconstructive: 2.40,
+        Integrative: 2.55,
+        Diffused: 2.40,
+        Regulated: 3.35
+      },
+      field: {
+        Structured: 1.60,
+        Contained: 1.20,
+        Chaotic: 2.65,
+        Relational: 1.55,
+        Threshold: 2.60,
+        Reconstructive: 2.30,
+        Integrative: 1.60,
+        Diffused: 1.75,
+        Regulated: 2.40
+      },
+      distortion: {
+        Structured: 1.05,
+        Contained: 1.10,
+        Chaotic: 3.20,
+        Relational: 1.00,
+        Threshold: 2.30,
+        Reconstructive: 3.20,
+        Integrative: 1.90,
+        Diffused: 3.60,
+        Regulated: 2.50
+      }
+    };
+
+    let latestSharePayload = {
+      systemWeather: "Structured signal architecture × Field loading",
+      todayRead: "Waiting for daily read.",
+      driverNote: "Waiting for driver note.",
+      goodMove: "—",
+      returnText: "—",
+      primary: "Structured",
+      field: "—",
+      state: "—",
+      motionStyle: "—"
+    };
+
+    function clamp(v, min, max){
+      return Math.max(min, Math.min(max, v));
+    }
+
+    function safeNum(v, fallback = 0){
+      const n = Number(v);
+      return Number.isFinite(n) ? n : fallback;
+    }
+
+    function fmt(v){
+      return safeNum(v).toFixed(2);
+    }
+
+    function setText(id, value){
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    function setHTML(id, value){
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = value;
+    }
+
+    function setBar(id, value, max = 1.2){
+      const el = document.getElementById(id);
+      if (!el) return;
+      const pct = clamp((safeNum(value) / max) * 100, 0, 100);
+      el.style.width = pct + "%";
+    }
+
+    function getHarmonicBaseName(value){
+      return String(value || "").split("/")[0].trim();
+    }
+
+    function harmonicClass(name){
+      const base = getHarmonicBaseName(name);
+      return String(base || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-");
+    }
+
+    function harmonicText(name){
+      if (!name) return "—";
+      const parts = String(name).split("/").map(part => part.trim()).filter(Boolean);
+      return parts.length ? parts.join(" / ") : "—";
+    }
+
+    function harmonicLabel(name){
+      if (!name) return "—";
+      const parts = String(name).split("/").map(part => part.trim()).filter(Boolean);
+
+      if (parts.length > 1) {
+        return parts
+          .map(part => `<span class="harmonicName h-${harmonicClass(part)}">${part}</span>`)
+          .join(" / ");
+      }
+
+      return `<span class="harmonicName h-${harmonicClass(name)}">${name}</span>`;
+    }
+
+    function harmonicInline(name, suffix = ""){
+      return `${harmonicLabel(name)}${suffix ? `&nbsp;${suffix}` : ""}`;
+    }
+
+    function chipClass(name, fallback = ""){
+      const base = getHarmonicBaseName(name);
+      const cls = harmonicClass(base);
+      return cls || fallback;
+    }
+
+    function applyChipClass(id, baseClass, harmonic){
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      const keep = String(baseClass || "").trim();
+      const hClass = chipClass(harmonic);
+
+      el.className = keep && hClass
+        ? `${keep} ${hClass}`
+        : keep || el.className;
+    }
+
+    function slugify(value){
+      return String(value || "")
+        .toLowerCase()
+        .replace(/×/g, "x")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+    }
+
+    function sortedScoreKeys(scores){
+      return Object.entries(scores)
+        .sort((a, b) => b[1] - a[1])
+        .map(([key]) => key);
+    }
+
+    function addScore(scores, key, value){
+      scores[key] = safeNum(scores[key]) + safeNum(value);
+    }
+
+    function normalizeScores(scores, weights){
+      const normalized = {};
+
+      Object.keys(scores).forEach(key => {
+        const divisor = safeNum(weights?.[key], 1);
+        normalized[key] = divisor > 0 ? safeNum(scores[key]) / divisor : safeNum(scores[key]);
+      });
+
+      return normalized;
+    }
+
+    function getTopHarmonic(scores, fallback = "Structured"){
+      const sorted = sortedScoreKeys(scores);
+      return sorted[0] || fallback;
+    }
+
+    function getSecondHarmonic(scores, primary, fallback = "Regulated"){
+      const sorted = sortedScoreKeys(scores).filter(key => key !== primary);
+      return sorted[0] || fallback;
+    }
+
+    function stateLabelFromMode(modeText){
+      const text = String(modeText || "").toLowerCase();
+      if (text.includes("overload")) return "Overloaded";
+      if (text.includes("threshold") || text.includes("strain")) return "Threshold";
+      if (text.includes("mobilized") || text.includes("active")) return "Mobilized";
+      return "Regulated";
+    }
+
+    function stateHelperFromMode(modeText){
+      const text = String(modeText || "").toLowerCase();
+      if (text.includes("overload")) return "System is carrying more than it can comfortably regulate";
+      if (text.includes("threshold") || text.includes("strain")) return "Load is approaching capacity";
+      if (text.includes("mobilized") || text.includes("active")) return "Elevated activity, still functioning";
+      return "Stable with manageable load";
+    }
+
+    function strainLabelFromStrain(strain){
+      const s = safeNum(strain);
+      if (s < 0.60) return "Current active load";
+      if (s < 0.85) return "Moderate active load";
+      if (s < 1.00) return "High strain";
+      return "Critical load";
+    }
+
+    function capacityLabelFromValue(){
+      return "Available system bandwidth";
+    }
+
+    function envBandFromMode(envMode){
+      const text = String(envMode || "").trim();
+      return `Field: ${text || "—"}`;
+    }
+
+    function forecastBandFromState(forecastState){
+      const text = String(forecastState || "").trim();
+      return `Forecast: ${text || "—"}`;
+    }
+
+    function driverValueFromTaggedList(list, planetName){
+      if (!Array.isArray(list)) return null;
+      const hit = list.find(item => String(item).toLowerCase().startsWith(String(planetName).toLowerCase()));
+      if (!hit) return null;
+      const match = String(hit).match(/\(([^)]+)\)/);
+      return match ? safeNum(match[1]) : null;
+    }
+
+    function primaryDriverName(data){
+      return data?.telemetry?.primaryDriver || "—";
+    }
+
+    function publicDriverName(driver){
+      const text = String(driver || "").trim();
+
+      if (!text || text === "—") return "The strongest current driver";
+
+      const lower = text.toLowerCase();
+
+      if (
+        lower === "mc" ||
+        lower.startsWith("mc ") ||
+        lower.startsWith("mc(") ||
+        lower.includes("midheaven")
+      ) return "Life Direction";
+
+      if (
+        lower === "asc" ||
+        lower.startsWith("asc ") ||
+        lower.startsWith("asc(") ||
+        lower.includes("ascendant")
+      ) return "Personal Orientation";
+
+      return text;
+    }
+
+    function loadBandFromValue(load){
+      const value = safeNum(load);
+      if (value < 0.45) return "Low";
+      if (value < 0.75) return "Moderate";
+      if (value < 1.00) return "High";
+      return "Overloaded";
+    }
+
+    function capacityBandFromValue(capacity){
+      const value = safeNum(capacity);
+      if (value < 0.55) return "Limited";
+      if (value < 0.85) return "Decent";
+      return "Strong";
+    }
+
+    function regulationBandFromValue(regulation){
+      const value = safeNum(regulation);
+      if (value < 0.40) return "Low";
+      if (value < 0.70) return "Moderate";
+      return "Strong";
+    }
+
+    function buildWhyText({ modeText, primaryDriver, fog, activation, mercury, saturn, venus }) {
+      const parts = [];
+
+      if (safeNum(fog) >= 0.65) parts.push("Neptune is increasing diffusion");
+      if (safeNum(activation) >= 0.65) parts.push("Mars is raising activation");
+      if (safeNum(mercury) >= 0.65) parts.push("Mercury is improving signal clarity");
+      if (safeNum(saturn) >= 0.65) parts.push("Saturn is adding constraint");
+      if (safeNum(venus) >= 0.65) parts.push("Venus is supporting regulation");
+
+      let front = parts.slice(0, 3).join(" + ");
+      if (!front) {
+        front = `${primaryDriver || "Current drivers"} are within stable operating range`;
+      }
+
+      return `${front}. Current mode is ${String(modeText || "Regulated").toLowerCase()}.`;
+    }
+
+    function forecastTextFromState(forecastState){
+      const state = String(forecastState || "").toLowerCase();
+
+      if (state.includes("overload")) {
+        return "The current field is carrying more load. Reduce inputs, simplify choices, and avoid stacking pressure.";
+      }
+
+      if (state.includes("threshold")) {
+        return "The current field is near an edge. Move carefully, pace decisions, and do not force the crossing.";
+      }
+
+      if (state.includes("mobilized")) {
+        return "The current field is active. Use the momentum, but keep the load contained and paced.";
+      }
+
+      return "The current field is regulated enough for steady, focused movement.";
+    }
+
+    function outlookTextFromState(forecastState, horizonLabel){
+      const state = String(forecastState || "").toLowerCase();
+
+      if (state.includes("overload")) {
+        return `${horizonLabel} reads as overloaded. Reduce extra input, simplify choices, and do not add unnecessary pressure.`;
+      }
+
+      if (state.includes("threshold")) {
+        return `${horizonLabel} reads near an edge. Pause before crossing and choose one clean move.`;
+      }
+
+      if (state.includes("mobilized")) {
+        return `${horizonLabel} reads active. Use the available momentum, but avoid stacking too many demands.`;
+      }
+
+      return `${horizonLabel} reads steady enough for paced action, simple focus, and clean follow-through.`;
+    }
+
+    function fieldPhraseFromHarmonic(field){
+      if (field === "Reconstructive") return "repair pressure";
+      if (field === "Chaotic") return "movement pressure";
+      if (field === "Threshold") return "edge pressure";
+      if (field === "Diffused") return "diffusion pressure";
+      if (field === "Contained") return "inward pressure";
+      if (field === "Relational") return "contact pressure";
+      if (field === "Integrative") return "meaning pressure";
+      if (field === "Structured") return "structure support";
+      return "field pressure";
+    }
+
+    function calculateFieldTrend(data, harmonics){
+      const state = data?.state || {};
+      const field = harmonics?.todayField || "Regulated";
+      const modeLabel = stateLabelFromMode(state.mode || "");
+      const strain = safeNum(state.strain);
+      const load = safeNum(state.amplifiedLoad);
+      const regulation = safeNum(state.regulation);
+      const driver = publicDriverName(primaryDriverName(data));
+      const fieldPhrase = fieldPhraseFromHarmonic(field);
+
+      let trend = "Stable";
+      let rationale = "Regulation is holding the load; trend reads as stable.";
+
+      if (modeLabel === "Overloaded" || strain >= 1.0) {
+        trend = "Intensifying";
+        rationale = `${driver} is increasing pressure while load is already high; trend reads as intensifying.`;
+      } else if (
+        modeLabel === "Threshold" ||
+        strain >= 0.85 ||
+        field === "Reconstructive" ||
+        field === "Threshold"
+      ) {
+        trend = "Intensifying";
+        rationale = `${driver} is increasing ${fieldPhrase}; trend reads as intensifying.`;
+      } else if (modeLabel === "Mobilized" || strain >= 0.60 || load >= 0.75) {
+        trend = "Active";
+        rationale = `The field is active but still workable; ${driver} is the strongest driver.`;
+      } else if (regulation >= 0.50 && strain < 0.55) {
+        trend = "Easing";
+        rationale = "Regulation is holding more of the load; trend reads as easing.";
+      }
+
+      return {
+        trend,
+        fieldPhrase,
+        rationale
+      };
+    }
+
+    function buildFieldDirectionText(harmonics, data){
+      const field = harmonics?.todayField || "Regulated";
+      const driver = publicDriverName(primaryDriverName(data));
+      const driverText = driver && driver !== "—" ? ` ${driver} is the strongest active driver.` : "";
+
+      if (field === "Reconstructive") {
+        return {
+          title: "Repair pressure is active",
+          text: `Reconstructive pressure is active, but this does not mean collapse. Choose one repair rather than rebuilding the whole system.${driverText}`
+        };
+      }
+
+      if (field === "Chaotic") {
+        return {
+          title: "Extra movement is active",
+          text: `The field may feel more mobile, scattered, or charged. Let movement happen, but give it one clean container.${driverText}`
+        };
+      }
+
+      if (field === "Threshold") {
+        return {
+          title: "The field is near an edge",
+          text: `The field may bring openings, decisions, or crossings. Do not rush the threshold. Name the next step before moving.${driverText}`
+        };
+      }
+
+      if (field === "Diffused") {
+        return {
+          title: "The field is more atmospheric",
+          text: `The field may feel subtle, foggy, or harder to define. Reduce inputs and look for one simple true line.${driverText}`
+        };
+      }
+
+      if (field === "Contained") {
+        return {
+          title: "The field is pulling inward",
+          text: `The field favors privacy, inward processing, and protected formation. Let the signal shape quietly before forcing it outward.${driverText}`
+        };
+      }
+
+      if (field === "Relational") {
+        return {
+          title: "Contact is part of the field",
+          text: `The field may clarify through tone, contact, or repair. Stay centered before trying to read or fix the room.${driverText}`
+        };
+      }
+
+      if (field === "Integrative") {
+        return {
+          title: "Meaning is gathering",
+          text: `The field may connect pieces and widen the pattern. Integrate what helps today without carrying every fragment.${driverText}`
+        };
+      }
+
+      if (field === "Structured") {
+        return {
+          title: "Structure is available",
+          text: `The field supports form, sequence, and practical order. Use the container, but do not over-tighten it.${driverText}`
+        };
+      }
+
+      return {
+        title: "Stable field",
+        text: `The field is readable enough to pace your next move. Keep the guidance practical and avoid turning the whole day into a problem to solve.${driverText}`
+      };
+    }
+
+    function updateOutlookUI(data, harmonics){
+      const forecast = data?.forecast || {};
+      const nowState = forecast?.now?.state || stateLabelFromMode(data?.state?.mode || "");
+      const plus6State = forecast?.plus6?.state || nowState;
+      const plus24State = forecast?.plus24?.state || nowState;
+      const field = harmonics?.todayField || "—";
+      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
+      const direction = buildFieldDirectionText(harmonics, data);
+
+      setText("outlookStateChip", `${stateLabel} State`);
+      applyChipClass("outlookStateChip", "chip violet", "");
+
+      setHTML("outlookFieldChip", `Field:&nbsp;${harmonicLabel(field)}`);
+      applyChipClass("outlookFieldChip", "chip field", field);
+
+      setText("outlookNowState", nowState);
+      setText("outlookNowText", outlookTextFromState(nowState, "Now"));
+
+      setText("outlookShortState", plus6State);
+      setText("outlookShortText", outlookTextFromState(plus6State, "Next 6 hours"));
+
+      setText("outlook24State", plus24State);
+      setText("outlook24Text", outlookTextFromState(plus24State, "Next 24 hours"));
+
+      setText("outlookDirectionTitle", direction.title);
+      setText("outlookDirectionText", direction.text);
+    }
+
+    function setHeroGlow(modeText, fog, volatility){
+      const el = document.getElementById("heroGlow");
+      if (!el) return;
+
+      const text = String(modeText || "").toLowerCase();
+      let glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.10), transparent 42%)";
+
+      if (text.includes("overload")) {
+        glow = "radial-gradient(circle at 50% 28%, rgba(255,102,102,.14), transparent 42%)";
+      } else if (text.includes("threshold") || text.includes("strain")) {
+        glow = "radial-gradient(circle at 50% 28%, rgba(216,184,76,.14), transparent 42%)";
+      } else if (text.includes("mobilized") || text.includes("active")) {
+        glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.08), rgba(216,184,76,.10), transparent 48%)";
+      }
+
+      if (safeNum(fog) > 0.72) {
+        glow = "radial-gradient(circle at 50% 28%, rgba(176,108,255,.12), rgba(103,193,255,.05), transparent 48%)";
+      }
+
+      if (safeNum(volatility) > 0.75 && !text.includes("overload")) {
+        glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.12), rgba(176,108,255,.05), transparent 48%)";
+      }
+
+      el.style.background = glow;
+    }
+
+    function buildMotionStyle(normalizedNatalScores, primary){
+      const chaoticScore = safeNum(normalizedNatalScores.Chaotic);
+      const thresholdScore = safeNum(normalizedNatalScores.Threshold);
+      const structuredScore = safeNum(normalizedNatalScores.Structured);
+      const primaryScore = safeNum(normalizedNatalScores[primary]);
+
+      const motionParts = [];
+
+      if (
+        chaoticScore >= primaryScore * 0.78 ||
+        chaoticScore >= structuredScore * 0.85
+      ) {
+        motionParts.push("Chaotic");
+      }
+
+      if (
+        thresholdScore >= primaryScore * 0.72 ||
+        thresholdScore >= chaoticScore * 0.82
+      ) {
+        motionParts.push("Threshold");
+      }
+
+      if (!motionParts.length) {
+        const motionScores = {
+          Chaotic: chaoticScore,
+          Threshold: thresholdScore,
+          Reconstructive: safeNum(normalizedNatalScores.Reconstructive),
+          Diffused: safeNum(normalizedNatalScores.Diffused)
+        };
+
+        const topMotion = getTopHarmonic(motionScores, "");
+        if (safeNum(motionScores[topMotion]) >= 0.42) {
+          motionParts.push(topMotion);
+        }
+      }
+
+      return motionParts.length ? motionParts.join(" / ") : "Steady";
+    }
+
+    function calculateHarmonics(data){
+      const state = data?.state || {};
+      const baselineState = data?.baselineState || {};
+      const planetary = data?.planetary || {};
+      const environment = data?.environment || {};
+      const forecast = data?.forecast || {};
+      const timing = data?.timing || {};
+
+      const sun = safeNum(planetary.sun);
+      const moon = safeNum(planetary.moon);
+      const mercury = safeNum(planetary.mercury);
+      const venus = safeNum(planetary.venus);
+      const mars = safeNum(planetary.mars);
+      const jupiter = safeNum(planetary.jupiter);
+      const saturn = safeNum(planetary.saturn);
+      const uranus = safeNum(planetary.uranus);
+      const neptune = safeNum(planetary.neptune);
+      const pluto = safeNum(planetary.pluto);
+      const asc = safeNum(planetary.asc);
+      const mc = safeNum(planetary.mc);
+
+      const tMoon = safeNum(planetary.transitMoon);
+      const tMercury = safeNum(planetary.transitMercury);
+      const tVenus = safeNum(planetary.transitVenus);
+      const tMars = safeNum(planetary.transitMars);
+      const tJupiter = safeNum(planetary.transitJupiter);
+      const tSaturn = safeNum(planetary.transitSaturn);
+      const tUranus = safeNum(planetary.transitUranus);
+      const tNeptune = safeNum(planetary.transitNeptune);
+      const tPluto = safeNum(planetary.transitPluto);
+
+      const currentStrain = safeNum(state.strain);
+      const currentLoad = safeNum(state.amplifiedLoad);
+      const currentRegulation = safeNum(state.regulation);
+      const baselineCapacity = safeNum(baselineState.capacity);
+      const baselineRegulation = safeNum(baselineState.regulation);
+      const envMode = String(environment.environmentMode || "").toLowerCase();
+      const forecastState = String(forecast?.now?.state || "").toLowerCase();
+      const timingPressure = safeNum(timing.timingPressure);
+
+      const natalScores = {
+        Structured: 0,
+        Contained: 0,
+        Chaotic: 0,
+        Relational: 0,
+        Threshold: 0,
+        Reconstructive: 0,
+        Integrative: 0,
+        Diffused: 0,
+        Regulated: 0
+      };
+
+      addScore(natalScores, "Structured", saturn * 1.40 + mercury * 1.30 + sun * 0.75 + mc * 0.65 + baselineCapacity * 0.85 + baselineRegulation * 0.55);
+      addScore(natalScores, "Contained", moon * 1.05 + saturn * 0.75 + neptune * 0.45 + baselineRegulation * 0.35);
+      addScore(natalScores, "Chaotic", uranus * 1.05 + mars * 0.85 + neptune * 0.35);
+      addScore(natalScores, "Relational", venus * 1.15 + moon * 0.85 + asc * 0.55);
+      addScore(natalScores, "Threshold", mars * 1.05 + uranus * 0.85 + pluto * 0.45 + mc * 0.45);
+      addScore(natalScores, "Reconstructive", pluto * 1.25 + saturn * 0.80);
+      addScore(natalScores, "Integrative", jupiter * 1.10 + neptune * 0.85 + moon * 0.35 + mercury * 0.25);
+      addScore(natalScores, "Diffused", neptune * 1.35 + moon * 0.70 + jupiter * 0.35);
+      addScore(natalScores, "Regulated", saturn * 1.25 + mercury * 0.85 + baselineRegulation * 0.90 + venus * 0.35);
+
+      const normalizedNatalScores = normalizeScores(natalScores, HARMONIC_SCORE_WEIGHTS.natal);
+
+      let primary = getTopHarmonic(normalizedNatalScores, "Structured");
+
+      /*
+        Stable-signal-architecture near-tie override.
+
+        Purpose:
+        If an activation-heavy harmonic barely wins as Primary,
+        but Structured is close behind and the chart has real natal
+        structure support, classify Primary as Structured instead.
+
+        This keeps Chaotic / Threshold alive as real signal movement
+        without flattening activation into root signal architecture too quickly.
+      */
+      const structuredScore = normalizedNatalScores.Structured || 0;
+      const chaoticScore = normalizedNatalScores.Chaotic || 0;
+      const thresholdScore = normalizedNatalScores.Threshold || 0;
+
+      const structuredSupport =
+        saturn >= 0.55 &&
+        mercury >= 0.55 &&
+        mc >= 0.45;
+
+      const chaoticBarelyWins =
+        primary === "Chaotic" &&
+        structuredScore >= chaoticScore * 0.88 &&
+        structuredSupport;
+
+      const thresholdBarelyWins =
+        primary === "Threshold" &&
+        structuredScore >= thresholdScore * 0.88 &&
+        structuredSupport;
+
+      if (chaoticBarelyWins || thresholdBarelyWins) {
+        primary = "Structured";
+      }
+
+      const motionStyle = buildMotionStyle(normalizedNatalScores, primary);
+
+      let support = getSecondHarmonic(normalizedNatalScores, primary, "Regulated");
+
+      const activationHeavySupport =
+        support === "Chaotic" ||
+        support === "Threshold";
+
+      if (activationHeavySupport) {
+        const supportCandidates = {
+          Structured: safeNum(normalizedNatalScores.Structured),
+          Regulated: safeNum(normalizedNatalScores.Regulated),
+          Integrative: safeNum(normalizedNatalScores.Integrative),
+          Contained: safeNum(normalizedNatalScores.Contained),
+          Relational: safeNum(normalizedNatalScores.Relational)
+        };
+
+        support = getTopHarmonic(supportCandidates, "Regulated");
+      }
+
+      if (primary === "Structured" || primary === "Chaotic") {
+        const regulatedScore = normalizedNatalScores.Regulated || 0;
+        const integrativeScore = normalizedNatalScores.Integrative || 0;
+        const structuredSupportScore = normalizedNatalScores.Structured || 0;
+        const secondScore = normalizedNatalScores[support] || 0;
+
+        if (primary === "Chaotic" && structuredSupportScore >= secondScore * 0.88) {
+          support = "Structured";
+        } else if (regulatedScore >= secondScore * 0.88 && integrativeScore >= secondScore * 0.78) {
+          support = "Regulated / Integrative";
+        } else if (regulatedScore >= secondScore * 0.88) {
+          support = "Regulated";
+        } else if (integrativeScore >= secondScore * 0.88) {
+          support = "Integrative";
+        }
+      }
+
+      const fieldScores = {
+        Structured: 0,
+        Contained: 0,
+        Chaotic: 0,
+        Relational: 0,
+        Threshold: 0,
+        Reconstructive: 0,
+        Integrative: 0,
+        Diffused: 0,
+        Regulated: 0
+      };
+
+      addScore(fieldScores, "Structured", tSaturn * 0.90 + tMercury * 0.70);
+      addScore(fieldScores, "Contained", tMoon * 0.65 + tSaturn * 0.55);
+      addScore(fieldScores, "Chaotic", tUranus * 1.30 + tMars * 0.85 + currentStrain * 0.50);
+      addScore(fieldScores, "Relational", tVenus * 1.00 + tMoon * 0.55);
+      addScore(fieldScores, "Threshold", tMars * 1.00 + tUranus * 0.75 + timingPressure * 0.85);
+      addScore(fieldScores, "Reconstructive", tPluto * 1.20 + currentLoad * 0.45 + currentStrain * 0.65);
+      addScore(fieldScores, "Integrative", tJupiter * 0.95 + tNeptune * 0.65);
+      addScore(fieldScores, "Diffused", tNeptune * 1.30 + tMoon * 0.45);
+      addScore(fieldScores, "Regulated", tSaturn * 1.05 + tMercury * 0.75 + currentRegulation * 0.60);
+
+      if (envMode.includes("diffuse") || envMode.includes("volatile")) {
+        addScore(fieldScores, "Diffused", 0.45);
+        addScore(fieldScores, "Chaotic", 0.35);
+      }
+
+      if (forecastState.includes("threshold")) addScore(fieldScores, "Threshold", 0.65);
+      if (forecastState.includes("mobilized")) addScore(fieldScores, "Chaotic", 0.35);
+      if (forecastState.includes("overload")) addScore(fieldScores, "Reconstructive", 0.55);
+
+      const fieldWeights = { ...HARMONIC_SCORE_WEIGHTS.field };
+
+      if (envMode.includes("diffuse") || envMode.includes("volatile")) {
+        fieldWeights.Diffused += 0.45;
+        fieldWeights.Chaotic += 0.35;
+      }
+
+      if (forecastState.includes("threshold")) fieldWeights.Threshold += 0.65;
+      if (forecastState.includes("mobilized")) fieldWeights.Chaotic += 0.35;
+      if (forecastState.includes("overload")) fieldWeights.Reconstructive += 0.55;
+
+      const normalizedFieldScores = normalizeScores(fieldScores, fieldWeights);
+      const todayField = getTopHarmonic(normalizedFieldScores, "Regulated");
+
+      const distortionScores = {
+        Structured: 0,
+        Contained: 0,
+        Chaotic: 0,
+        Relational: 0,
+        Threshold: 0,
+        Reconstructive: 0,
+        Integrative: 0,
+        Diffused: 0,
+        Regulated: 0
+      };
+
+      const regulationRatio = currentLoad > 0.15
+        ? clamp(currentRegulation / currentLoad, 0, 1.25)
+        : currentRegulation;
+      const overloadGap = Math.max(currentStrain - 0.85, 0);
+
+      addScore(distortionScores, "Diffused", neptune * 1.00 + tNeptune * 1.20 + overloadGap * 1.40);
+      addScore(distortionScores, "Chaotic", uranus * 0.70 + tUranus * 1.05 + tMars * 0.65 + overloadGap * 0.80);
+      addScore(distortionScores, "Reconstructive", pluto * 0.85 + tPluto * 1.00 + currentLoad * 0.35 + overloadGap * 1.00);
+
+      addScore(distortionScores, "Regulated", saturn * 0.75 + tSaturn * 0.65 + regulationRatio * 1.10);
+      addScore(distortionScores, "Threshold", mars * 0.65 + tMars * 0.85 + timingPressure * 0.80);
+      addScore(distortionScores, "Integrative", jupiter * 0.55 + neptune * 0.45 + tJupiter * 0.45 + tNeptune * 0.45);
+      addScore(distortionScores, "Contained", moon * 0.65 + saturn * 0.45);
+      addScore(distortionScores, "Relational", venus * 0.55 + moon * 0.45);
+      addScore(distortionScores, "Structured", mercury * 0.55 + saturn * 0.50);
+
+      const distortionWeights = { ...HARMONIC_SCORE_WEIGHTS.distortion };
+
+      if (overloadGap > 0) {
+        distortionWeights.Diffused += 1.40;
+        distortionWeights.Chaotic += 0.80;
+        distortionWeights.Reconstructive += 1.00;
+      }
+
+      const normalizedDistortionScores = normalizeScores(distortionScores, distortionWeights);
+      let distortion = getTopHarmonic(normalizedDistortionScores, "Diffused");
+
+      if (primary === "Structured" && normalizedDistortionScores.Diffused >= normalizedDistortionScores[distortion] * 0.82) {
+        distortion = "Diffused";
+      }
+
+      if (primary === "Chaotic" && normalizedDistortionScores.Structured >= normalizedDistortionScores[distortion] * 0.78) {
+        distortion = "Structured";
+      }
+
+      return {
+        primary,
+        support,
+        motionStyle,
+        distortion,
+        todayField,
+        natalScores,
+        normalizedNatalScores,
+        fieldScores,
+        normalizedFieldScores,
+        distortionScores,
+        normalizedDistortionScores
+      };
+    }
+
+    function buildDailyGuidance(harmonics, data){
+      const primary = harmonics.primary || "Structured";
+      const field = harmonics.todayField || "Regulated";
+      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
+      const primaryLower = primary.toLowerCase();
+      const fieldLower = field.toLowerCase();
+
+      let read = `Your ${primaryLower} signal architecture is meeting a ${fieldLower} field today. Let the field inform your pace, but do not let today’s weather rewrite your root pattern.`;
+      let lean = "Choose the clearest useful move and keep the day simple.";
+      let watch = "Watch for turning the whole field into something you have to solve at once.";
+      let move = "Pick one pressure point and give it a clean next step.";
+      let ret = "Name what is actually active, then stop before you expand the task.";
+
+      if (primary === "Structured" && field === "Structured") {
+        read = "Your structured signal architecture is meeting a structured field today. This can support clarity, planning, and clean follow-through, as long as structure stays useful instead of becoming pressure.";
+        lean = "Simple systems, clear order, and one practical piece made more workable.";
+        watch = "Over-refining the structure after it is already strong enough.";
+        move = "Improve one useful container and stop before polish becomes strain.";
+        ret = "Return to the structure that helps, not the structure that controls.";
+      } else if (primary === "Structured" && field === "Contained") {
+        read = "Your signal architecture wants clarity and form, but today may pull your signal inward. This is better for shaping one private piece than trying to explain the whole system outwardly.";
+        lean = "Private refinement, simple language, and protecting unfinished work.";
+        watch = "Forcing clarity too soon or getting frustrated because the words are not ready yet.";
+        move = "Finish one small piece instead of organizing the whole field.";
+        ret = "Name the real pressure point, then step away for a bit.";
+      } else if (primary === "Structured" && field === "Chaotic") {
+        read = "Your signal architecture wants structure, but today may bring extra movement, voltage, or scattered signal. Do not chase every thread. Catch the one that can actually become useful.";
+        lean = "Containment, prioritizing, and turning one signal into one clean form.";
+        watch = "Trying to structure every incoming signal at once.";
+        move = "Choose one useful thread and give it a simple container.";
+        ret = "Reduce inputs and return to the piece that is actually yours to build.";
+      } else if (primary === "Structured" && field === "Threshold") {
+        read = "Your signal architecture wants form, and today may bring an edge, opening, or decision point. Build the next step before forcing the crossing.";
+        lean = "Clean timing, clear steps, and paced movement.";
+        watch = "Mistaking urgency for the real opening.";
+        move = "Write the next step plainly, then move only as far as the field can hold.";
+        ret = "Come back to sequence: first this, then that.";
+      } else if (primary === "Structured" && field === "Reconstructive") {
+        read = "Your signal architecture wants clarity and form, but today may push repair, pressure, or rebuilding. Do not turn normal strain into a full reconstruction project.";
+        lean = "Honest repair, one clean adjustment, and practical containment.";
+        watch = "Treating every weak point like it means the whole structure has failed.";
+        move = "Choose one honest adjustment and give it a clean container.";
+        ret = "Remind yourself that one repair is not the same as rebuilding the whole system.";
+      } else if (primary === "Structured" && field === "Diffused") {
+        read = "Your signal architecture wants clarity, but today’s field may feel atmospheric, subtle, or harder to define. Do not panic if the signal is not crisp yet.";
+        lean = "Soft focus, fewer inputs, and one clear sentence.";
+        watch = "Over-explaining fog or forcing definition before the signal forms.";
+        move = "Give the atmosphere one sentence and let that be enough.";
+        ret = "Come back to the simplest true line.";
+      } else if (primary === "Structured" && field === "Regulated") {
+        read = "Your signal architecture and the field both support structure, pacing, and clear movement. This is a good day for making one practical piece more workable.";
+        lean = "Clean systems, steady progress, and realistic scope.";
+        watch = "Over-controlling details after the structure is already good enough.";
+        move = "Improve one useful piece and stop before refinement becomes pressure.";
+        ret = "Let good enough be a stabilizing choice.";
+      } else if (primary === "Structured" && field === "Integrative") {
+        read = "Your signal architecture wants clarity and form, while today may widen the pattern and connect more pieces. Let the larger meaning inform the structure without making the structure carry everything.";
+        lean = "Synthesis, simple frameworks, and choosing the pattern that actually helps.";
+        watch = "Trying to integrate every layer before building the next usable piece.";
+        move = "Name the larger pattern, then reduce it to one workable step.";
+        ret = "Come back to the structure that makes the meaning usable.";
+      } else if (primary === "Structured" && field === "Relational") {
+        read = "Your signal architecture wants order, but today may clarify through contact, tone, or feedback. Let the conversation simplify the structure instead of turning the person into a problem to solve.";
+        lean = "Plain language, clean contact, and saying the simple version first.";
+        watch = "Over-structuring a relational moment before the other person can meet you in it.";
+        move = "Say one clear thing and leave room for response.";
+        ret = "Return to the bond or exchange, not just the model of it.";
+      } else if (primary === "Contained" && field === "Contained") {
+        read = "Your contained signal architecture is meeting a contained field today. This can support privacy, quiet sorting, and protected formation, but too much inwardness may slow release.";
+        lean = "Low input, private processing, and one gentle form of expression.";
+        watch = "Holding everything inside until the pressure becomes harder to name.";
+        move = "Let one small piece of the inner field become visible or workable.";
+        ret = "Return to privacy as a container, not a hiding place.";
+      } else if (primary === "Contained" && field === "Structured") {
+        read = "Your signal architecture processes inwardly, and today may offer more structure. This can help you shape what has been private without forcing it into full visibility.";
+        lean = "Gentle organization, protected planning, and quiet structure.";
+        watch = "Turning structure into pressure to expose more than is ready.";
+        move = "Put one private thought into a clear form for yourself first.";
+        ret = "Let structure protect the inner field instead of pushing it open.";
+      } else if (primary === "Contained" && field === "Diffused") {
+        read = "Your signal architecture pulls inward, and today may feel even more subtle, foggy, or hard to define. Do not demand sharp language from a field that needs quiet sorting.";
+        lean = "Low input, privacy, gentle rhythm, and letting impressions settle.";
+        watch = "Withdrawing so far that nothing can move or resolve.";
+        move = "Choose one small grounding action before interpreting the whole feeling.";
+        ret = "Come back to your body, your breath, and your own pace.";
+      } else if (primary === "Contained" && field === "Chaotic") {
+        read = "Your signal architecture processes inwardly, but today may feel louder or more disruptive than usual. Protect your inner field without disappearing completely.";
+        lean = "Lower stimulation, private processing, and slow response.";
+        watch = "Shutting down completely because the field feels too loud.";
+        move = "Create one quiet pocket before responding.";
+        ret = "Come back to your own rhythm before taking in more signal.";
+      } else if (primary === "Contained" && field === "Threshold") {
+        read = "Your signal architecture needs safety before expression, but today may bring an edge or decision. You do not have to reveal everything to make one clean move.";
+        lean = "Small crossings, honest pacing, and protected expression.";
+        watch = "Waiting forever because the whole field does not feel safe yet.";
+        move = "Take one small step that does not overexpose you.";
+        ret = "Return to privacy without using it as a hiding place.";
+      } else if (primary === "Contained" && field === "Relational") {
+        read = "Your signal architecture processes inwardly, while today may bring more attention to contact, tone, or relational feedback. Let connection inform you without pulling more out of you than you are ready to share.";
+        lean = "Gentle contact, protected honesty, and slow relational pacing.";
+        watch = "Letting someone else’s need for closeness override your own timing.";
+        move = "Offer one honest signal without overexposing the whole inner field.";
+        ret = "Return to your private center before deciding what else to share.";
+      } else if (primary === "Contained" && field === "Reconstructive") {
+        read = "Your signal architecture holds signal inside, while today may bring repair pressure. Something may need adjustment, but it does not have to be processed all at once or exposed before it is ready.";
+        lean = "Private repair, careful honesty, and one manageable adjustment.";
+        watch = "Letting pressure build silently until it feels heavier than it is.";
+        move = "Name one thing that needs repair, even if you keep the work private for now.";
+        ret = "Let repair happen in a protected container, not through emotional flooding.";
+      } else if (primary === "Contained" && field === "Integrative") {
+        read = "Your signal architecture works inwardly, while today may widen the pattern and connect more layers. Let meaning gather slowly instead of forcing every private piece into one big conclusion.";
+        lean = "Quiet synthesis, private reflection, and gentle pattern-linking.";
+        watch = "Over-interpreting inner signals before they have settled.";
+        move = "Write down one connection that feels useful and leave the rest open.";
+        ret = "Come back to the part of the pattern that actually brings relief.";
+      } else if (primary === "Contained" && field === "Regulated") {
+        read = "Your signal architecture already prefers protected processing, and today may support pacing, containment, and quieter regulation. This is useful for sorting pressure without forcing action too soon.";
+        lean = "Privacy, pacing, simple routines, and emotional containment.";
+        watch = "Using containment to delay a small step that is actually ready.";
+        move = "Choose one small regulated action that does not violate your privacy.";
+        ret = "Let pacing protect you without letting it freeze the whole field.";
+      } else if (primary === "Chaotic" && field === "Chaotic") {
+        read = "Your chaotic signal architecture is meeting a chaotic field today. There may be extra movement, charge, or nonlinear signal, so the goal is not to stop the energy but to give it one safe channel.";
+        lean = "Movement with a container, quick release, and one useful direction for the charge.";
+        watch = "Following every spark until the whole day loses continuity.";
+        move = "Pick one channel for the energy and let the rest pass through.";
+        ret = "Return to rhythm before chasing another signal.";
+      } else if (primary === "Chaotic" && field === "Threshold") {
+        read = "Your root signal carries movement and charge, and today may add an edge or crossing point. Use the activation, but do not let urgency decide for you.";
+        lean = "Focused motion, clean timing, and one decisive channel for the charge.";
+        watch = "Mistaking intensity for the right moment.";
+        move = "Aim the energy at one clear crossing instead of opening every door.";
+        ret = "Slow down just enough to choose the real threshold.";
+      } else if (primary === "Chaotic" && field === "Reconstructive") {
+        read = "Your root signal moves quickly, nonlinearly, and toward pressure points, while today may bring repair or recalibration pressure. Not every burst of energy needs to become a teardown.";
+        lean = "Directed repair, controlled release, and useful disruption.";
+        watch = "Creating a bigger break than the situation actually needs.";
+        move = "Use the charge to fix one weak point, not to rebuild the whole field.";
+        ret = "Let movement serve repair. Stop once the first usable structure appears.";
+      } else if (primary === "Chaotic" && field === "Regulated") {
+        read = "Your root signal carries movement and charge, while today may slow the field down. Do not fight the container. Use it to channel the voltage.";
+        lean = "Rhythm, pacing, and turning movement into something usable.";
+        watch = "Rebelling against structure just because the day asks for containment.";
+        move = "Put your energy into one durable action.";
+        ret = "Let the container hold the charge instead of killing it.";
+      } else if (primary === "Chaotic" && field === "Structured") {
+        read = "Your root signal moves through charge, speed, and disruption, while today may offer more structure. The structure does not have to trap the voltage; it can give the energy somewhere useful to go.";
+        lean = "Practical containers, visible steps, and channeling movement into form.";
+        watch = "Rejecting structure because it feels like it will kill momentum.";
+        move = "Put one moving piece into a simple plan or container.";
+        ret = "Let structure carry the charge instead of fighting it.";
+      } else if (primary === "Chaotic" && field === "Contained") {
+        read = "Your root signal wants movement, while today may pull the field inward. This can feel frustrating, but it may also help the charge settle before it turns reactive.";
+        lean = "Quiet movement, lower stimulation, and contained release.";
+        watch = "Pushing against the slowdown until the pressure spikes.";
+        move = "Find one safe way to discharge energy without escalating the field.";
+        ret = "Let inwardness settle the voltage before you act.";
+      } else if (primary === "Chaotic" && field === "Relational") {
+        read = "Your root signal carries quick movement and disruption, while today may bring the relational field into focus. Let contact ground the energy without using other people as the release point.";
+        lean = "Clean contact, honest tone, and energy that stays accountable.";
+        watch = "Letting charge spill into the relationship before you know what it is.";
+        move = "Name the energy before you aim it at a person or conversation.";
+        ret = "Return to your own charge first, then re-enter contact more cleanly.";
+      } else if (primary === "Chaotic" && field === "Integrative") {
+        read = "Your root signal moves through charge and disruption, while today may widen the field and connect more meaning. Not every spark needs to become a full pattern.";
+        lean = "Useful connections, creative movement, and letting one insight organize the rest.";
+        watch = "Trying to make meaning from every burst of signal.";
+        move = "Choose the one connection that turns the energy into something usable.";
+        ret = "Let extra sparks pass without needing to integrate them all.";
+      } else if (primary === "Chaotic" && field === "Diffused") {
+        read = "Your root signal carries movement, while today may feel more porous, foggy, or uncontained. This can scatter energy if you do not give it a gentle boundary.";
+        lean = "Low-friction structure, soft grounding, and fewer inputs.";
+        watch = "Letting scattered atmosphere pull your energy in too many directions.";
+        move = "Pick one grounding action before following another signal.";
+        ret = "Come back to the body and the nearest practical step.";
+      } else if (primary === "Relational" && field === "Relational") {
+        read = "Your relational signal architecture is meeting a relational field today. Contact, tone, and shared atmosphere may matter more, but your center still needs to stay separate from the room.";
+        lean = "Clean contact, steady tone, and honest repair without over-reading.";
+        watch = "Absorbing the whole shared field because you can feel it.";
+        move = "Name one relational signal plainly and keep responsibility proportional.";
+        ret = "Return to your own center before trying to repair the connection.";
+      } else if (primary === "Relational" && field === "Threshold") {
+        read = "Your signal architecture reads connection, and today may bring a decision edge in the relational field. Do not chase closeness; name the real crossing.";
+        lean = "Clear contact, honest timing, and letting the bond show what is ready.";
+        watch = "Trying to secure the relationship instead of reading the threshold clearly.";
+        move = "Say the simple truth about what point the connection has reached.";
+        ret = "Return to your center before responding to the other person’s signal.";
+
+      } else if (primary === "Relational" && field === "Regulated") {
+        read = "Your signal architecture stabilizes through contact, while today may support steadier pacing. This is a good field for calmer repair, clearer agreements, or less reactive connection.";
+        lean = "Steady contact, simple repair, and paced communication.";
+        watch = "Over-managing the emotional field when a simple rhythm would work better.";
+        move = "Make one small relational agreement clearer.";
+        ret = "Let steadiness be enough without needing constant reassurance.";
+      } else if (primary === "Relational" && field === "Diffused") {
+        read = "Your signal architecture reads the field between people, and today may make the atmosphere more porous. Check what is actually yours before responding.";
+        lean = "Gentle contact, boundary checks, and slower interpretation.";
+        watch = "Absorbing other people’s tone as if it belongs to you.";
+        move = "Ask: is this mine, theirs, or the shared field?";
+        ret = "Return to your own center before repairing the room.";
+      } else if (primary === "Relational" && field === "Structured") {
+        read = "Your signal architecture reads tone, contact, and the space between people, while today may offer clearer structure. Let structure clarify the relationship without making it cold or over-defined.";
+        lean = "Clear agreements, simple language, and practical relational structure.";
+        watch = "Turning a living connection into a rigid set of rules.";
+        move = "Name one boundary, agreement, or expectation plainly.";
+        ret = "Come back to the personal contact underneath the structure.";
+      } else if (primary === "Relational" && field === "Contained") {
+        read = "Your signal architecture stabilizes through connection, while today may pull the field inward. Someone may need space, privacy, or slower contact without it meaning the bond is failing.";
+        lean = "Respectful distance, gentle check-ins, and slower interpretation.";
+        watch = "Reading withdrawal as rejection before the field has spoken clearly.";
+        move = "Give the connection room without abandoning it.";
+        ret = "Return to your own center instead of chasing the signal.";
+      } else if (primary === "Relational" && field === "Chaotic") {
+        read = "Your signal architecture reads the relational field, while today may add movement, charge, or disruption. The room may feel louder than usual, so respond to what is real, not every ripple.";
+        lean = "Calm contact, clean tone, and slowing the relational signal down.";
+        watch = "Reacting to charge before you know whether it belongs to you, them, or the shared field.";
+        move = "Pause before answering the loudest signal.";
+        ret = "Come back to steady contact rather than emotional weather.";
+      } else if (primary === "Relational" && field === "Reconstructive") {
+        read = "Your signal architecture stabilizes through connection, while today may bring repair pressure into the relational field. Something may need honesty, but not every tension needs a full relationship rebuild.";
+        lean = "Clean repair, truthful contact, and one specific adjustment.";
+        watch = "Treating one relational weak point like the whole bond is broken.";
+        move = "Name the one repair that would make the connection more workable.";
+        ret = "Return to trust-building actions, not total relational analysis.";
+      } else if (primary === "Relational" && field === "Integrative") {
+        read = "Your signal architecture reads connection, while today may widen the meaning around the bond or shared field. This can help you understand the pattern, as long as you do not absorb everyone’s layer as your own.";
+        lean = "Meaningful contact, pattern recognition, and shared understanding.";
+        watch = "Carrying the whole emotional system because you can see how the pieces connect.";
+        move = "Clarify one shared pattern without taking full responsibility for it.";
+        ret = "Return to your part of the field, not the whole field.";
+      } else if (primary === "Threshold" && field === "Threshold") {
+        read = "Your threshold signal architecture is meeting a threshold field today. The sense of edge, opening, or decision may be stronger, so timing matters more than speed.";
+        lean = "Clean timing, small crossings, and naming the actual decision point.";
+        watch = "Treating every feeling of pressure like it means act now.";
+        move = "Choose the one threshold that is real enough to cross today.";
+        ret = "Return to the edge slowly and do not force the opening.";
+      } else if (primary === "Threshold" && field === "Contained") {
+        read = "Your signal architecture senses edges and openings, while today may pull the field inward. The crossing may still be real, but it may need privacy, preparation, or a quieter first move.";
+        lean = "Protected timing, small crossings, and letting the next step form before announcing it.";
+        watch = "Pushing for outward movement before the inner field has caught up.";
+        move = "Choose one private preparation step that makes the threshold cleaner.";
+        ret = "Return to the edge without forcing it open.";
+      } else if (primary === "Threshold" && field === "Chaotic") {
+        read = "Your signal architecture is already sensitive to turning points, and today may add extra charge or disruption. The edge may feel louder than it is. Slow the reaction before you cross.";
+        lean = "Focused activation, clean timing, and movement that has a target.";
+        watch = "Letting intensity make every opening feel urgent.";
+        move = "Discharge enough energy to choose the right door, not every door.";
+        ret = "Come back to the real threshold underneath the noise.";
+      } else if (primary === "Threshold" && field === "Relational") {
+        read = "Your signal architecture reads crossings, while today may bring those crossings through contact, tone, or a relationship field. A conversation may show what is ready, but it does not have to become a dramatic pivot.";
+        lean = "Honest timing, clean contact, and naming what point the connection has reached.";
+        watch = "Using the relationship as proof that you must act immediately.";
+        move = "Say the simple truth, then give the field room to answer.";
+        ret = "Return to your own timing before reacting to someone else’s signal.";
+      } else if (primary === "Threshold" && field === "Integrative") {
+        read = "Your signal architecture senses the edge, while today may widen the meaning around it. The larger pattern can help, but too much meaning may blur the clean next move.";
+        lean = "Meaning that clarifies timing, not meaning that delays action.";
+        watch = "Trying to understand every layer before making one clean crossing.";
+        move = "Name the pattern, then choose the next step that is actually ready.";
+        ret = "Come back to the one crossing that matters today.";
+      } else if (primary === "Threshold" && field === "Diffused") {
+        read = "Your signal architecture wants a clear edge, but today may feel foggy, soft, or undefined. You may not get a perfect signal before you need to choose one small direction.";
+        lean = "Gentle boundaries, small decisions, and reducing the spread.";
+        watch = "Waiting for total clarity or pushing through fog too fast.";
+        move = "Choose one low-risk direction that makes the field less vague.";
+        ret = "Return to the smallest clear edge you can actually feel.";
+      } else if (primary === "Threshold" && field === "Reconstructive") {
+        read = "Your signal architecture senses crossings, and today may add repair pressure. The edge may be real, but the move does not have to become a full rebuild.";
+        lean = "Precise change, honest repair, and crossing only what is ready.";
+        watch = "Forcing a transformation before the next step has a container.";
+        move = "Make one repair that opens the next clean path.";
+        ret = "Return to timing: not every repair has to happen today.";
+      } else if (primary === "Threshold" && field === "Regulated") {
+        read = "Your signal architecture wants movement at the edge, while today may ask for pacing. This can help you cross more cleanly if you do not rush the moment.";
+        lean = "Measured timing, preparation, and clean sequence.";
+        watch = "Feeling blocked just because the field is asking you to slow down.";
+        move = "Prepare the crossing instead of forcing it.";
+        ret = "Let pacing make the threshold safer.";
+      } else if (primary === "Threshold" && field === "Structured") {
+        read = "Your signal architecture senses openings and crossings, while today asks for more structure. Build the next step before forcing the movement.";
+        lean = "Planning the crossing, pacing activation, and naming the next move.";
+        watch = "Jumping before the container exists.";
+        move = "Make the path visible before you cross it.";
+        ret = "Come back to the structure that makes movement safer.";
+      } else if (primary === "Reconstructive" && field === "Reconstructive") {
+        read = "Your reconstructive signal architecture is meeting a reconstructive field today. Repair pressure may be easier to feel, but the goal is one workable adjustment, not a full rebuild.";
+        lean = "Honest repair, durable simplification, and strengthening one weak point.";
+        watch = "Turning every strain into proof that the whole system needs reconstruction.";
+        move = "Choose the one repair that would reduce the most pressure.";
+        ret = "Return to what can actually be repaired today.";
+      } else if (primary === "Reconstructive" && field === "Contained") {
+        read = "Your signal architecture knows how to rebuild under pressure, while today may pull the repair process inward. The work may be real, but it may need privacy before action.";
+        lean = "Private repair, protected honesty, and one careful adjustment.";
+        watch = "Holding repair pressure inside until it becomes heavier than necessary.";
+        move = "Name one weak point quietly and decide the smallest safe repair.";
+        ret = "Let the repair have a container before it becomes a crisis.";
+      } else if (primary === "Reconstructive" && field === "Relational") {
+        read = "Your signal architecture rebuilds through pressure, while today may bring repair through contact or relationship. Something may need honesty, but the whole bond does not need to be rebuilt at once.";
+        lean = "Specific repair, truthful tone, and trust rebuilt through small actions.";
+        watch = "Reading one relational strain as proof that everything is broken.";
+        move = "Ask what one adjustment would make the connection more workable.";
+        ret = "Return to the repairable piece, not the whole history.";
+      } else if (primary === "Reconstructive" && field === "Threshold") {
+        read = "Your signal architecture transforms pressure, and today may bring a crossing point. This can be useful, but the threshold needs a clean container before you rebuild around it.";
+        lean = "Timed repair, clear decisions, and changing only what is actually ready.";
+        watch = "Turning an opening into a full overhaul before the field can support it.";
+        move = "Cross one practical threshold that strengthens the structure.";
+        ret = "Come back to timing before you deepen the repair.";
+      } else if (primary === "Reconstructive" && field === "Integrative") {
+        read = "Your signal architecture rebuilds what pressure exposes, while today may connect more meaning around the repair. Let the pattern teach you without making every old piece part of today’s rebuild.";
+        lean = "Meaningful repair, clean synthesis, and learning from the pressure.";
+        watch = "Pulling too many layers into one repair until the work feels endless.";
+        move = "Extract one lesson and turn it into one concrete adjustment.";
+        ret = "Return to the piece that can actually be rebuilt now.";
+      } else if (primary === "Reconstructive" && field === "Diffused") {
+        read = "Your signal architecture works through deep repair, while today may make the field softer, foggier, or harder to define. Do not rebuild from unclear pressure.";
+        lean = "Gentle sorting, rest, and waiting for the real weak point to show itself.";
+        watch = "Treating vague discomfort like a full structural failure.";
+        move = "Separate unclear atmosphere from the one repair you can name.";
+        ret = "Come back to what is concrete, repairable, and present.";
+      } else if (primary === "Reconstructive" && field === "Chaotic") {
+        read = "Your signal architecture knows how to rebuild, while today may add movement, disruption, or scattered pressure. Let the energy reveal what needs repair without turning it into a crisis.";
+        lean = "Controlled movement, practical repair, and releasing pressure safely.";
+        watch = "Letting disruption convince you that everything is breaking.";
+        move = "Separate the real repair from the noise around it.";
+        ret = "Come back to the part that can actually be strengthened today.";
+      } else if (primary === "Reconstructive" && field === "Structured") {
+        read = "Your signal architecture rebuilds through pressure, and today may offer the structure to make repair more practical. This is a good field for stabilizing what has already changed.";
+        lean = "Practical rebuilding, clear sequence, and durable repair.";
+        watch = "Overbuilding around a wound instead of fixing the actual weak point.";
+        move = "Turn one repair into a simple structure you can keep using.";
+        ret = "Let form hold the repair so you do not have to keep carrying it.";
+      } else if (primary === "Reconstructive" && field === "Regulated") {
+        read = "Your signal architecture knows how to rebuild under pressure, but today may not require a full reconstruction. Let regulation reduce the load first.";
+        lean = "Maintenance, simplification, and one practical repair.";
+        watch = "Turning ordinary strain into a crisis rebuild.";
+        move = "Fix the one part that actually needs attention.";
+        ret = "Let steadiness prove that not everything is breaking.";
+      } else if (primary === "Integrative" && field === "Integrative") {
+        read = "Your integrative signal architecture is meeting an integrative field today. Meaning may gather quickly, but the goal is coherence, not carrying every layer at once.";
+        lean = "Useful synthesis, closure where possible, and one pattern that helps.";
+        watch = "Trying to integrate every loose end before the day can move.";
+        move = "Choose the one connection that brings the most clarity.";
+        ret = "Return to the whole by releasing the pieces that are not yours today.";
+      } else if (primary === "Integrative" && field === "Structured") {
+        read = "Your signal architecture wants the larger pattern, while today may offer form and sequence. Let structure make the meaning useful instead of shrinking it.";
+        lean = "Clear frameworks, practical synthesis, and one organized next step.";
+        watch = "Trying to fit every layer into the structure before anything can move.";
+        move = "Turn one big pattern into one usable outline.";
+        ret = "Come back to the form that helps the meaning land.";
+      } else if (primary === "Integrative" && field === "Contained") {
+        read = "Your signal architecture gathers many pieces, while today may pull the field inward. The meaning may need quiet before it becomes clear.";
+        lean = "Private synthesis, slower reflection, and protecting unfinished meaning.";
+        watch = "Filling the quiet with too many interpretations.";
+        move = "Let one connection settle privately before sharing or expanding it.";
+        ret = "Return to the meaning that brings steadiness, not more pressure.";
+      } else if (primary === "Integrative" && field === "Relational") {
+        read = "Your signal architecture connects patterns, while today may bring those patterns through people, tone, or shared field. Let contact clarify meaning without making you responsible for everyone’s layer.";
+        lean = "Shared understanding, clean contact, and naming the pattern simply.";
+        watch = "Absorbing the whole relational field because you can see how it connects.";
+        move = "Name one shared pattern and keep responsibility proportional.";
+        ret = "Come back to your part of the meaning.";
+      } else if (primary === "Integrative" && field === "Threshold") {
+        read = "Your signal architecture wants to integrate the whole picture, while today may ask for a crossing before every piece is resolved. The move can still be wise if it is small and clean.";
+        lean = "Decisions that simplify the pattern and make the next step clearer.";
+        watch = "Delaying the crossing because you want total integration first.";
+        move = "Choose the one step that resolves the most pressure without forcing everything.";
+        ret = "Return to the pattern that is ready, not the pattern that is still forming.";
+      } else if (primary === "Integrative" && field === "Reconstructive") {
+        read = "Your signal architecture gathers meaning, while today may bring repair pressure. Let the repair teach you, but do not turn every piece of history into today’s work.";
+        lean = "Meaningful repair, honest synthesis, and one concrete change.";
+        watch = "Making the rebuild too large because every layer connects.";
+        move = "Extract one lesson and apply it to one real pressure point.";
+        ret = "Come back to the present repair, not the entire story.";
+      } else if (primary === "Integrative" && field === "Diffused") {
+        read = "Your signal architecture wants to gather the pieces, while today may make the field wider, softer, or less defined. Do not try to make meaning from everything at once.";
+        lean = "Soft sorting, fewer inputs, and letting unclear pieces remain loose.";
+        watch = "Absorbing too much atmosphere and calling it the whole pattern.";
+        move = "Choose one piece of meaning that actually helps today.";
+        ret = "Let the rest stay unintegrated for now.";
+      } else if (primary === "Integrative" && field === "Regulated") {
+        read = "Your signal architecture sees the larger arc, while today may support pacing and containment. This is a good day to make meaning usable, not endless.";
+        lean = "Practical synthesis, steady pacing, and finishing one loop.";
+        watch = "Keeping the pattern open after it is clear enough to use.";
+        move = "Turn one insight into one grounded action.";
+        ret = "Come back to the simplest resolution available.";
+      } else if (primary === "Integrative" && field === "Chaotic") {
+        read = "Your signal architecture wants the larger pattern, while today may scatter the field. Everything may feel meaningful, but not every signal deserves your energy.";
+        lean = "Choosing the pattern that helps today.";
+        watch = "Trying to integrate every fragment at once.";
+        move = "Pick the one connection that clarifies the rest.";
+        ret = "Let the extra fragments stay outside the center for now.";
+      } else if (primary === "Diffused" && field === "Diffused") {
+        read = "Your diffused signal architecture is meeting a diffused field today. The atmosphere may feel wide, subtle, or hard to define, so simple grounding matters more than total clarity.";
+        lean = "Soft boundaries, fewer inputs, and one gentle point of focus.";
+        watch = "Letting the whole atmosphere become your responsibility.";
+        move = "Choose one clear anchor and let the rest stay loose.";
+        ret = "Return to the body, the room, and the nearest simple truth.";
+      } else if (primary === "Diffused" && field === "Contained") {
+        read = "Your signal architecture receives widely, while today may pull the field inward. This can help reduce noise, but too much retreat may make the signal harder to define.";
+        lean = "Quiet boundaries, low input, and letting impressions settle.";
+        watch = "Drifting into isolation or holding the whole atmosphere inside.";
+        move = "Choose one private grounding action that gives the field a soft edge.";
+        ret = "Return to the body before trying to interpret the whole atmosphere.";
+      } else if (primary === "Diffused" && field === "Chaotic") {
+        read = "Your signal architecture is porous, and today may add charge, movement, or disruption. The field can scatter quickly, so give your attention one gentle anchor.";
+        lean = "Simple grounding, fewer inputs, and movement that stays contained.";
+        watch = "Following every ripple until the day loses shape.";
+        move = "Pick one physical or practical anchor before responding to more signal.";
+        ret = "Come back to one place, one task, or one breath.";
+      } else if (primary === "Diffused" && field === "Relational") {
+        read = "Your signal architecture receives widely, while today may bring contact and tone into focus. You may pick up more than people are saying, so check what is actually yours.";
+        lean = "Gentle connection, clear boundaries, and slow interpretation.";
+        watch = "Absorbing someone else’s mood as if it is your instruction.";
+        move = "Name what you feel, then separate yours from theirs.";
+        ret = "Return to your own center before repairing the shared field.";
+      } else if (primary === "Diffused" && field === "Reconstructive") {
+        read = "Your signal architecture is subtle and wide, while today may bring repair pressure. Do not rebuild from fog. Wait for the repair point to become clear enough to name.";
+        lean = "Soft sorting, rest, and one concrete repair if it becomes visible.";
+        watch = "Treating vague pressure like proof that everything needs fixing.";
+        move = "Ask what is actually broken, what is only unclear, and what can wait.";
+        ret = "Come back to the repair you can name, not the pressure you can only feel.";
+      } else if (primary === "Diffused" && field === "Integrative") {
+        read = "Your signal architecture receives widely, while today may connect meaning across the field. This can be rich, but it may also become too much if every impression turns into a pattern.";
+        lean = "Gentle synthesis, fewer layers, and one useful meaning.";
+        watch = "Making meaning from every atmosphere, symbol, or emotional signal.";
+        move = "Choose one insight that helps you move more calmly today.";
+        ret = "Let the rest stay open without needing to resolve it.";
+      } else if (primary === "Diffused" && field === "Threshold") {
+        read = "Your signal architecture receives widely, while today may ask for a choice, boundary, or crossing. You do not need total clarity to choose one direction.";
+        lean = "Small decisions, simple boundaries, and gentle commitment.";
+        watch = "Waiting for the fog to fully clear before making any move.";
+        move = "Pick one boundary or direction that reduces the spread.";
+        ret = "Let one clear choice be enough for today.";
+      } else if (primary === "Diffused" && field === "Regulated") {
+        read = "Your signal architecture receives the field broadly, while today may offer pacing and containment. Let the rhythm help you define what is usually hard to hold.";
+        lean = "Gentle structure, timed breaks, and simple regulation.";
+        watch = "Feeling restricted by the very container that could help.";
+        move = "Put one soft impression into one practical rhythm.";
+        ret = "Come back to pacing before trying to understand everything.";
+      } else if (primary === "Diffused" && field === "Structured") {
+        read = "Your signal architecture receives widely, and today offers more form. Do not force the whole atmosphere into a system. Start with one clear line.";
+        lean = "Simple wording, gentle structure, and grounded direction.";
+        watch = "Feeling trapped by structure or avoiding definition entirely.";
+        move = "Give the field one sentence or one boundary.";
+        ret = "Let clarity be small, not total.";
+      } else if (primary === "Regulated" && field === "Regulated") {
+        read = "Your regulated signal architecture is meeting a regulated field today. This can support pacing, calm execution, and manageable follow-through, as long as regulation does not turn into over-control.";
+        lean = "Steady rhythm, clear limits, and one manageable action.";
+        watch = "Tightening the system after the pressure is already manageable.";
+        move = "Choose one useful rhythm and let it carry the next step.";
+        ret = "Return to enough regulation, not total control.";
+      } else if (primary === "Regulated" && field === "Contained") {
+        read = "Your signal architecture manages pressure through pacing, while today may pull the field inward. This can support calm sorting, but it can also become too much holding.";
+        lean = "Quiet regulation, simple routines, and protected emotional pacing.";
+        watch = "Managing everything privately until the pressure has nowhere to go.";
+        move = "Release one small piece of pressure safely before it bottlenecks.";
+        ret = "Let containment support regulation without turning into restriction.";
+      } else if (primary === "Regulated" && field === "Relational") {
+        read = "Your signal architecture stabilizes through pacing, while today may bring contact, tone, or repair into focus. Let connection be steady rather than overly managed.";
+        lean = "Paced communication, calm repair, and clear agreements.";
+        watch = "Trying to control the relational field so nothing gets messy.";
+        move = "Make one simple contact point clearer without managing the whole exchange.";
+        ret = "Return to steady presence, not emotional control.";
+      } else if (primary === "Regulated" && field === "Threshold") {
+        read = "Your signal architecture prefers pacing and control, while today may bring an edge or decision point. The threshold may be real, but it does not need to be rushed or over-managed.";
+        lean = "Measured decisions, clean timing, and preparing before crossing.";
+        watch = "Delaying too long because movement feels less safe than management.";
+        move = "Choose one small crossing that your system can actually hold.";
+        ret = "Let pacing support movement instead of preventing it.";
+      } else if (primary === "Regulated" && field === "Integrative") {
+        read = "Your signal architecture regulates load, while today may widen the meaning or connect more layers. Let the pattern inform you, but keep the amount manageable.";
+        lean = "Practical synthesis, paced reflection, and one usable insight.";
+        watch = "Trying to manage every layer of meaning until the day becomes heavy.";
+        move = "Choose one insight and turn it into one regulated action.";
+        ret = "Return to the amount of meaning your system can hold today.";
+      } else if (primary === "Regulated" && field === "Diffused") {
+        read = "Your signal architecture likes pacing and control, while today may feel softer, foggier, or harder to define. Do not over-control the fog. Give it a gentle boundary.";
+        lean = "Soft structure, fewer inputs, and simple nervous-system pacing.";
+        watch = "Tightening too much because the field feels unclear.";
+        move = "Set one light boundary and let the rest remain undefined for now.";
+        ret = "Come back to gentle rhythm instead of hard control.";
+      } else if (primary === "Regulated" && field === "Reconstructive") {
+        read = "Your signal architecture manages pressure through pacing, while today may bring repair or rebuilding pressure. Do not only manage symptoms; allow one honest adjustment.";
+        lean = "Measured repair, controlled honesty, and practical change.";
+        watch = "Trying to regulate away a problem that actually needs repair.";
+        move = "Make one clean adjustment without opening the whole system.";
+        ret = "Let regulation support repair instead of avoiding it.";
+      } else if (primary === "Regulated" && field === "Structured") {
+        read = "Your signal architecture stabilizes through pacing, and today may support structure. This is a strong field for organizing pressure into something realistic and manageable.";
+        lean = "Clear routines, simple structure, and steady execution.";
+        watch = "Over-tightening the plan because order feels safer than movement.";
+        move = "Build one manageable container for the pressure.";
+        ret = "Let the structure be useful, not perfect.";
+      } else if (primary === "Regulated" && field === "Chaotic") {
+        read = "Your signal architecture manages load through pacing, but today may feel disorderly. Slow the signal without freezing it.";
+        lean = "Flexible containment and calm response.";
+        watch = "Trying to control every moving part.";
+        move = "Choose what actually needs regulation and let the rest move.";
+        ret = "Release the pressure to manage the whole field.";
+      }
+
+      if (stateLabel === "Overloaded") {
+        watch = `${watch} Also watch for stacking more input when your system is already carrying enough.`;
+        move = `Reduce scope first. ${move}`;
+      } else if (stateLabel === "Threshold") {
+        move = `Pause at the edge, then choose cleanly. ${move}`;
+      } else if (stateLabel === "Mobilized") {
+        lean = `${lean} Use the available movement, but keep it paced.`;
+      }
+
+      return { read, lean, watch, move, ret };
+    }
+
+    function buildDriverNote(data, harmonics, fieldTrend){
+      const driver = publicDriverName(primaryDriverName(data));
+      const field = harmonics?.todayField || "Regulated";
+      const trend = fieldTrend?.trend || "Stable";
+      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
+      const planetary = data?.planetary || {};
+
+      const volatility = safeNum(
+        planetary.uranus,
+        driverValueFromTaggedList(data?.telemetry?.topDrivers, "Uranus")
+      );
+      const fog = safeNum(
+        planetary.neptune,
+        driverValueFromTaggedList(data?.telemetry?.topDrivers, "Neptune")
+      );
+      const activation = safeNum(
+        planetary.mars,
+        driverValueFromTaggedList(data?.telemetry?.topDrivers, "Mars")
+      );
+
+      const cleanDriver = driver && driver !== "—" ? driver : "The strongest current driver";
+      const driverLower = String(cleanDriver).toLowerCase();
+
+      let note = `${cleanDriver} may be shaping how today’s field lands in your system. With a ${field.toLowerCase()} field and a ${trend.toLowerCase()} trend, keep the read practical and choose one manageable next move.`;
+
+      if (driverLower.includes("pluto")) {
+        note = "Pluto may make the pressure feel deeper, heavier, or more fundamental today. Treat it as a signal for one honest repair, not proof that the whole system has to be rebuilt.";
+      } else if (driverLower.includes("mars")) {
+        note = "Mars may raise activation, urgency, or heat today. Use the extra charge for one clear action instead of letting it push the whole field faster than it needs to go.";
+      } else if (driverLower.includes("uranus")) {
+        note = "Uranus may add movement, disruption, or sudden signal today. Let the change show you what needs attention without reacting to every spark.";
+      } else if (driverLower.includes("neptune")) {
+        note = "Neptune may make the field feel more porous, foggy, or emotionally blended today. Reduce extra input and look for one simple true line.";
+      } else if (driverLower.includes("saturn")) {
+        note = "Saturn may add pressure, limits, or structure today. Use the container to simplify the load instead of turning every limit into a blockage.";
+      } else if (driverLower.includes("venus")) {
+        note = "Venus may bring tone, contact, comfort, or relational regulation into focus today. Let steadiness and repair matter more than perfect control.";
+      } else if (driverLower.includes("mercury")) {
+        note = "Mercury may sharpen language, interpretation, and decision-making today. Name the signal plainly, then stop before analysis becomes extra load.";
+      } else if (driverLower.includes("moon")) {
+        note = "The Moon may make the field more responsive, emotional, or body-led today. Let the signal settle before turning it into a conclusion.";
+      } else if (driverLower.includes("jupiter")) {
+        note = "Jupiter may widen the field, add meaning, or increase scale today. Let the larger pattern help, but do not make the day carry every possibility.";
+      } else if (driverLower.includes("sun")) {
+        note = "The Sun may bring identity, focus, or visibility into the field today. Let the signal clarify direction without forcing the whole self to prove something.";
+      }
+
+      if (field === "Reconstructive" && !driverLower.includes("pluto")) {
+        note += " Because the field is reconstructive, focus on one repair that is actually present.";
+      } else if (field === "Threshold" && !driverLower.includes("mars")) {
+        note += " Because the field is near a threshold, pause before crossing and choose the next step cleanly.";
+      } else if (field === "Diffused" && !driverLower.includes("neptune")) {
+        note += " Because the field is diffused, fewer inputs may help the real signal stand out.";
+      } else if (field === "Chaotic" && !driverLower.includes("uranus")) {
+        note += " Because the field is charged, give the movement one safe container.";
+      }
+
+      if (stateLabel === "Overloaded") {
+        note += " Since the system reads overloaded, reduce scope before adding more interpretation.";
+      } else if (stateLabel === "Threshold") {
+        note += " Since the system reads near threshold, move carefully and avoid forcing the timing.";
+      } else if (stateLabel === "Mobilized") {
+        note += " Since the system reads mobilized, use the momentum without stacking demands.";
+      }
+
+      if (fog >= 0.72 && !driverLower.includes("neptune")) {
+        note += " A higher fog signal can make things feel less defined, so simple language helps.";
+      }
+
+      if (activation >= 0.72 && !driverLower.includes("mars")) {
+        note += " A higher activation signal can make the body want to move faster than the field is ready for.";
+      }
+
+      if (volatility >= 0.72 && !driverLower.includes("uranus")) {
+        note += " A higher volatility signal can make changes feel sudden, so keep the response contained.";
+      }
+
+      return note;
+    }
+
+    function renderHarmonicLibrary(activePrimary = "", activeField = ""){
+      const grid = document.getElementById("harmonicLibraryGrid");
+      if (!grid) return;
+
+      grid.innerHTML = Object.entries(HARMONICS).map(([key, item]) => {
+        const activeClass = key === activePrimary || key === activeField ? "active" : "";
+        const activeLabel = key === activePrimary
+          ? "Root signal architecture"
+          : key === activeField
+            ? "Today’s field"
+            : "";
+
+        return `
+          <article class="libraryCard ${activeClass}">
+            <h3>${harmonicLabel(item.label)}${activeLabel ? `&nbsp;· ${activeLabel}` : ""}</h3>
+            <p><strong>Signal Quality:</strong> ${item.signalQuality}</p>
+            <p><strong>Stability Method:</strong> ${item.stabilityMethod}</p>
+            <p><strong>Overload Risk:</strong> ${item.overloadRisk}</p>
+            <p>${item.plainRead}</p>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function updateWhyReadUI(harmonics, data, fieldTrend){
+      const state = data?.state || {};
+      const primary = harmonics.primary || "Structured";
+      const field = harmonics.todayField || "Regulated";
+      const motionStyle = harmonics.motionStyle || "—";
+      const currentState = stateLabelFromMode(state.mode || "");
+      const driver = publicDriverName(primaryDriverName(data));
+      const loadBand = loadBandFromValue(state.amplifiedLoad);
+      const capacityBand = capacityBandFromValue(state.capacity);
+      const regulationBand = regulationBandFromValue(state.regulation);
+      const distortion = harmonics.distortion || "Diffused";
+
+      setHTML("whyBaseline", harmonicLabel(primary));
+      setHTML("whyField", harmonicLabel(field));
+      setHTML("whyMotionStyle", harmonicLabel(motionStyle));
+      setText("whyState", currentState);
+      setText("whyDriver", driver);
+      setText("whyLoad", loadBand);
+      setText("whyCapacity", capacityBand);
+      setText("whyRegulation", regulationBand);
+      setHTML("whyDistortion", harmonicLabel(distortion));
+      setText("whyDirection", fieldTrend.trend);
+      setText("whyRationale", fieldTrend.rationale);
+      setText("whyPeakTiming", "Later backend pass");
+      setText("whyMoonstampModifier", "Later integration");
+
+      let explanation = `This read comes from a ${harmonicText(primary)} signal architecture meeting a ${harmonicText(field)} field while the current state is ${currentState.toLowerCase()}. Motion Style is ${harmonicText(motionStyle).toLowerCase()}, which describes how the signal moves when activated. Load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. ${fieldTrend.rationale}`;
+
+      if (primary === "Chaotic" && field === "Reconstructive") {
+        explanation = `This does not mean the person is chaotic as a lifestyle or identity. It means the root signal moves quickly, nonlinearly, and toward pressure points. The ${harmonicText(field)} field adds repair pressure, so the best move is one honest adjustment, not a full rebuild. Motion Style is ${harmonicText(motionStyle).toLowerCase()}, which gives activation a home outside the Support layer.`;
+      }
+
+      if (primary === "Structured" && field === "Reconstructive") {
+        explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${harmonicText(primary)} signal architecture wants order, sequence, and meaning, while the ${harmonicText(field)} field pushes repair pressure. ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild.`;
+      }
+
+      if (currentState === "Threshold" && loadBand === "Overloaded" && capacityBand === "Decent") {
+        explanation += " Load is reading overloaded, but the system still has usable capacity. This is an edge, not a collapse.";
+      }
+
+      if (String(driver).toLowerCase().includes("pluto")) {
+        explanation += " Pluto as the primary driver can make the pressure feel fundamental, but the guidance is still to avoid treating every weak point like the whole system is broken.";
+      }
+
+      if (distortion === field) {
+        explanation += " The distortion pathway matches today’s field, so the same pattern that is active today can become the overload route if the load keeps stacking.";
+      }
+
+      setText("whyConfigText", explanation);
+    }
+
+    function updateShareUI({ systemWeather, todayRead, driverNote, goodMove, returnText, primary, field, state, motionStyle }){
+      latestSharePayload = {
+        systemWeather,
+        todayRead,
+        driverNote,
+        goodMove,
+        returnText,
+        primary,
+        field,
+        state,
+        motionStyle
+      };
+
+      setHTML("shareBaselineChip", `Signal:&nbsp;${harmonicLabel(primary)}`);
+      setHTML("shareFieldChip", `Field:&nbsp;${harmonicLabel(field)}`);
+      setText("shareStateChip", `State: ${state}`);
+
+      setHTML("shareCardBaselineChip", `Signal:&nbsp;${harmonicLabel(primary)}`);
+      setHTML("shareCardFieldChip", `Field:&nbsp;${harmonicLabel(field)}`);
+      setText("shareCardStateChip", `State: ${state}`);
+
+      applyChipClass("shareBaselineChip", "shareChip", primary);
+      applyChipClass("shareFieldChip", "shareChip", field);
+      applyChipClass("shareStateChip", "shareChip violet", "");
+
+      applyChipClass("shareCardBaselineChip", "shareCardChip", primary);
+      applyChipClass("shareCardFieldChip", "shareCardChip", field);
+      applyChipClass("shareCardStateChip", "shareCardChip violet", "");
+
+      setText("shareCardWeather", systemWeather);
+      setText("shareCardTodayRead", todayRead);
+      setText("shareCardMotionStyle", harmonicText(motionStyle || "—"));
+      setText("shareCardDriverNote", driverNote);
+      setText("shareCardGoodMove", goodMove);
+      setText("shareCardReturn", returnText);
+    }
+
+    function getShareText(){
+      return [
+        "Lucy.OS Pro",
+        "",
+        "Today’s System Weather:",
+        latestSharePayload.systemWeather,
+        "",
+        "Motion Style:",
+        latestSharePayload.motionStyle || "—",
+        "",
+        "Today’s Read:",
+        latestSharePayload.todayRead,
+        "",
+        "Today’s Driver:",
+        latestSharePayload.driverNote,
+        "",
+        "One Good Move:",
+        latestSharePayload.goodMove,
+        "",
+        "Return to yourself by:",
+        latestSharePayload.returnText,
+        "",
+        "Personal field guidance · Lucy.OS Pro"
+      ].join("\n");
+    }
+
+    async function copyShareText(){
+      const status = document.getElementById("shareStatus");
+
+      try {
+        await navigator.clipboard.writeText(getShareText());
+        if (status) status.textContent = "Copied share text.";
+      } catch (error) {
+        if (status) status.textContent = "Copy failed. You can manually select and copy the text.";
+      }
+    }
+
+    async function saveShareCard(){
+      const status = document.getElementById("shareStatus");
+      const card = document.getElementById("lucyShareCard");
+
+      if (!card) {
+        if (status) status.textContent = "Share card was not found.";
+        return;
+      }
+
+      if (typeof html2canvas === "undefined") {
+        if (status) status.textContent = "Image exporter did not load. You can still screenshot the card.";
+        return;
+      }
+
+      try {
+        if (status) status.textContent = "Creating image...";
+
+        const canvas = await html2canvas(card, {
+          backgroundColor: "#09142f",
+          scale: 2,
+          useCORS: true,
+          logging: false
+        });
+
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            if (status) status.textContent = "Image save failed. You can still screenshot the card.";
+            return;
+          }
+
+          const weatherSlug = slugify(latestSharePayload.systemWeather || "lucy-os-pro");
+          const filename = weatherSlug ? `lucy-os-pro-${weatherSlug}.png` : "lucy-os-pro-share-card.png";
+
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.download = filename;
+          link.href = url;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+          if (status) status.textContent = "Saved share card.";
+        }, "image/png");
+      } catch (error) {
+        console.error("Could not save Lucy.OS Pro share card.", error);
+        if (status) status.textContent = "Image save failed. You can still screenshot the card.";
+      }
+    }
+
+    function updateHarmonicUI(data){
+      const harmonics = calculateHarmonics(data);
+      const primaryMeta = HARMONICS[harmonics.primary] || HARMONICS.Structured;
+      const supportBase = getHarmonicBaseName(harmonics.support);
+      const supportMeta = HARMONICS[supportBase] || HARMONICS.Regulated;
+      const distortionMeta = HARMONICS[harmonics.distortion] || HARMONICS.Diffused;
+      const fieldMeta = HARMONICS[harmonics.todayField] || HARMONICS.Regulated;
+      const currentState = stateLabelFromMode(data?.state?.mode || "");
+      const fieldTrend = calculateFieldTrend(data, harmonics);
+
+      const primaryLabel = harmonicLabel(primaryMeta.label);
+      const supportLabel = harmonics.support && String(harmonics.support).includes("/")
+        ? String(harmonics.support)
+            .split("/")
+            .map(part => harmonicLabel(part.trim()))
+            .join(" / ")
+        : harmonicLabel(supportMeta.label);
+      const motionStyleLabel = harmonicLabel(harmonics.motionStyle || "Steady");
+      const distortionLabel = harmonicLabel(distortionMeta.label);
+      const fieldLabel = harmonicLabel(fieldMeta.label);
+
+      const systemWeather = `${harmonicText(primaryMeta.label)} signal architecture × ${harmonicText(fieldMeta.label)} field`;
+      const systemWeatherHTML = `${primaryLabel}&nbsp;signal architecture <span>×</span> ${fieldLabel}&nbsp;field`;
+      const guidance = buildDailyGuidance(harmonics, data);
+      const driver = publicDriverName(primaryDriverName(data));
+      const driverNote = buildDriverNote(data, harmonics, fieldTrend);
+
+      setHTML("systemWeatherLine", systemWeatherHTML);
+      setText("dailyTodayRead", guidance.read);
+      setText("dailyLeanInto", guidance.lean);
+      setText("dailyWatchFor", guidance.watch);
+      setText("dailyGoodMove", guidance.move);
+      setText("dailyReturn", guidance.ret);
+      setText(
+        "todayOutlookLine",
+        `Current Outlook: Trend: ${fieldTrend.trend} · Driver: ${driver} · ${fieldTrend.fieldPhrase}`
+      );
+
+      setHTML("primaryHarmonic", primaryLabel);
+      setHTML("supportHarmonic", supportLabel);
+      setHTML("motionStyle", motionStyleLabel);
+      setHTML("distortionHarmonic", distortionLabel);
+      setHTML("todayFieldHarmonic", fieldLabel);
+      setText("signalQuality", primaryMeta.signalQuality);
+      setText("stabilityMethod", primaryMeta.stabilityMethod);
+      setText("overloadRisk", distortionMeta.overloadRisk);
+      setText("harmonicPlainRead", primaryMeta.plainRead);
+
+      setHTML("profileStateChip", `${primaryLabel}&nbsp;signal architecture`);
+      setHTML("profileFieldChip", `${fieldLabel}&nbsp;field`);
+      applyChipClass("profileStateChip", "chip", primaryMeta.label);
+      applyChipClass("profileFieldChip", "chip", fieldMeta.label);
+
+      updateOutlookUI(data, harmonics);
+      updateWhyReadUI(harmonics, data, fieldTrend);
+      updateShareUI({
+        systemWeather,
+        todayRead: guidance.read,
+        driverNote,
+        goodMove: guidance.move,
+        returnText: guidance.ret,
+        primary: primaryMeta.label,
+        field: fieldMeta.label,
+        state: currentState,
+        motionStyle: harmonicText(harmonics.motionStyle || "Steady")
+      });
+
+      renderHarmonicLibrary(primaryMeta.label, fieldMeta.label);
+
+      return harmonics;
+    }
+
+    function updateUI(data){
+      console.log("Lucy.OS Pro response:", data);
+      window.lastLucyData = data;
+
+      const state = data?.state || {};
+      const telemetry = data?.telemetry || {};
+      const environment = data?.environment || {};
+      const forecast = data?.forecast || {};
+      const planetary = data?.planetary || {};
+      const inputResolved = data?.inputResolved || {};
+      const ephemeris = data?.ephemeris || {};
+
+      const capacity = safeNum(state.capacity);
+      const strain = safeNum(state.strain);
+      const load = safeNum(state.amplifiedLoad);
+      const regulation = safeNum(state.regulation);
+      const effective = safeNum(state.effectiveLoad);
+      const modeText = state.mode || "Regulated";
+
+      const effectiveDisplay = Math.min(effective, Math.max(capacity * 1.15, 1.10));
+
+      const volatility = safeNum(
+        planetary.uranus,
+        driverValueFromTaggedList(telemetry.topDrivers, "Uranus")
+      );
+      const fog = safeNum(
+        planetary.neptune,
+        driverValueFromTaggedList(telemetry.topDrivers, "Neptune")
+      );
+      const activation = safeNum(
+        planetary.mars,
+        driverValueFromTaggedList(telemetry.topDrivers, "Mars")
+      );
+
+      const saturn = safeNum(
+        planetary.saturn,
+        driverValueFromTaggedList(telemetry.topRegulators, "Saturn")
+      );
+      const venus = safeNum(
+        planetary.venus,
+        driverValueFromTaggedList(telemetry.topRegulators, "Venus")
+      );
+      const mercury = safeNum(
+        planetary.mercury,
+        driverValueFromTaggedList(telemetry.topRegulators, "Mercury")
+      );
+
+      const regulatorAverage = (saturn + venus + mercury) / 3;
+
+      const harmonics = updateHarmonicUI(data);
+      console.log("Lucy.OS normalized harmonic scores:", {
+        primary: harmonics.primary,
+        support: harmonics.support,
+        motionStyle: harmonics.motionStyle,
+        distortion: harmonics.distortion,
+        todayField: harmonics.todayField,
+        natalScores: harmonics.natalScores,
+        normalizedNatalScores: harmonics.normalizedNatalScores,
+        fieldScores: harmonics.fieldScores,
+        normalizedFieldScores: harmonics.normalizedFieldScores,
+        distortionScores: harmonics.distortionScores,
+        normalizedDistortionScores: harmonics.normalizedDistortionScores
+      });
+
+      setText("capacityScore", fmt(capacity));
+      setText("capacityLabel", capacityLabelFromValue(capacity));
+
+      setText("strainScore", fmt(strain));
+      setText("strainLabel", strainLabelFromStrain(strain));
+
+      setText("stateText", stateLabelFromMode(modeText));
+      setText("stateLabel", stateHelperFromMode(modeText));
+      setText("stateBadge", stateLabelFromMode(modeText));
+
+      setBar("capacityBar", capacity, 1.2);
+      setBar("strainBar", strain, 1.2);
+
+      setText("capVal", fmt(capacity));
+      setText("loadVal", fmt(load));
+      setText("regVal", fmt(regulation));
+      setText("effVal", fmt(effectiveDisplay));
+      setText("stabilityVal", fmt(regulatorAverage));
+
+      setText("primaryDriver", primaryDriverName(data));
+      setText("volatilityVal", fmt(volatility));
+      setText("fogVal", fmt(fog));
+      setText("activationVal", fmt(activation));
+
+      setText("saturnVal", fmt(saturn));
+      setText("venusVal", fmt(venus));
+      setText("mercuryVal", fmt(mercury));
+      setText("stateCondition", stateLabelFromMode(modeText));
+
+      const forecastState = forecast?.now?.state || stateLabelFromMode(modeText);
+      setText("forecastTitle", forecastState);
+      setText("forecastText", forecastTextFromState(forecastState));
+
+      const resolvedLocation =
+        inputResolved.resolvedLocation ||
+        inputResolved.locationResolved ||
+        "—";
+
+      const resolvedTime =
+        inputResolved.localTimeResolved ||
+        inputResolved.local_time_resolved ||
+        "—";
+
+      const timezoneName =
+        inputResolved.timezoneName ||
+        inputResolved.timezone_name ||
+        "—";
+
+      const utcDatetime =
+        ephemeris.utcDatetime ||
+        ephemeris.utc_datetime ||
+        "—";
+
+      setText("skyDataTitle", ephemeris.source ? "Verified" : "Pending");
+      setText(
+        "skyDataText",
+        ephemeris.source
+          ? "Live ephemeris and resolved location confirmed."
+          : `Local: ${resolvedTime} • UTC: ${utcDatetime} • ${resolvedLocation} • ${timezoneName}`
+      );
+
+      setText(
+        "whyText",
+        buildWhyText({
+          modeText: stateLabelFromMode(modeText),
+          primaryDriver: primaryDriverName(data),
+          fog,
+          activation,
+          mercury,
+          saturn,
+          venus
+        })
+      );
+
+      setText("envBand", envBandFromMode(environment.environmentMode));
+      setText("forecastBand", forecastBandFromState(forecastState));
+
+      setText(
+        "resolvedInput",
+        `Local: ${resolvedTime} | UTC: ${utcDatetime} | Place: ${resolvedLocation} | TZ: ${timezoneName}`
+      );
+
+      setText(
+        "apiStatus",
+        `OK • ${ephemeris.source || "API"} • ${ephemeris.mode || "natal"}`
+      );
+      document.getElementById("apiStatus").className = "ok";
+
+      const sunDeg = data?._longitudesDeg?.sun ?? "—";
+      const moonDeg = data?._longitudesDeg?.moon ?? "—";
+      const ascDeg = data?.angles?.asc ?? "—";
+      const mcDeg = data?.angles?.mc ?? "—";
+
+      setText(
+        "chartDebug",
+        `JD: ${ephemeris.jdUt || ephemeris.jd_ut || "—"} | Sun: ${sunDeg} | Moon: ${moonDeg} | ASC: ${ascDeg} | MC: ${mcDeg}`
+      );
+
+      setHeroGlow(modeText, fog, volatility);
+    }
+
+    async function calculate(){
+      const dob = document.getElementById("dob").value;
+      const tobRaw = document.getElementById("tob").value.trim();
+      const ampm = document.getElementById("ampm").value;
+      const location = document.getElementById("location").value.trim();
+
+      const payload = {
+        dob,
+        tobRaw,
+        ampm,
+        locationText: location
+      };
+
+      try {
+        const btn = document.getElementById("calcBtn");
+        btn.disabled = true;
+        btn.textContent = "Calculating...";
+
+        setText("apiStatus", "Calculating...");
+        document.getElementById("apiStatus").className = "";
+
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data?.error || `API error ${response.status}`);
+        }
+
+        updateUI(data);
+      } catch (err) {
+        console.error(err);
+        setText("apiStatus", `Error • ${err.message}`);
+        document.getElementById("apiStatus").className = "err";
+        alert("Calculation failed. Check API deployment or payload.");
+      } finally {
+        const btn = document.getElementById("calcBtn");
+        btn.disabled = false;
+        btn.textContent = "Calculate";
+      }
+    }
+
+    function randomHarmonicTestData() {
+      const r = () => Math.random();
+
+      return {
+        state: {
+          strain: r(),
+          amplifiedLoad: r(),
+          regulation: r(),
+          effectiveLoad: r(),
+          capacity: r(),
+          mode: "Regulated"
+        },
+        baselineState: {
+          capacity: r(),
+          strain: r(),
+          amplifiedLoad: r(),
+          regulation: r()
+        },
+        planetary: {
+          sun: r(),
+          moon: r(),
+          mercury: r(),
+          venus: r(),
+          mars: r(),
+          jupiter: r(),
+          saturn: r(),
+          uranus: r(),
+          neptune: r(),
+          pluto: r(),
+          asc: r(),
+          mc: r(),
+          transitMoon: r(),
+          transitMercury: r(),
+          transitVenus: r(),
+          transitMars: r(),
+          transitJupiter: r(),
+          transitSaturn: r(),
+          transitUranus: r(),
+          transitNeptune: r(),
+          transitPluto: r()
+        },
+        environment: {
+          environmentMode: ""
+        },
+        forecast: {
+          now: {
+            state: "Regulated"
+          }
+        },
+        timing: {
+          timingPressure: r()
+        }
+      };
+    }
+
+    function runSyntheticHarmonicBalanceTest(count = 10000) {
+      const primaryCounts = {};
+      const supportCounts = {};
+      const motionStyleCounts = {};
+      const fieldCounts = {};
+      const distortionCounts = {};
+
+      Object.keys(HARMONICS).forEach(key => {
+        primaryCounts[key] = 0;
+        supportCounts[key] = 0;
+        motionStyleCounts[key] = 0;
+        fieldCounts[key] = 0;
+        distortionCounts[key] = 0;
+      });
+
+      for (let i = 0; i < count; i++) {
+        const result = calculateHarmonics(randomHarmonicTestData());
+
+        primaryCounts[result.primary] = (primaryCounts[result.primary] || 0) + 1;
+
+        const supportBase = getHarmonicBaseName(result.support);
+        supportCounts[supportBase] = (supportCounts[supportBase] || 0) + 1;
+
+        String(result.motionStyle || "")
+          .split("/")
+          .map(part => part.trim())
+          .filter(Boolean)
+          .forEach(part => {
+            motionStyleCounts[part] = (motionStyleCounts[part] || 0) + 1;
+          });
+
+        fieldCounts[result.todayField] = (fieldCounts[result.todayField] || 0) + 1;
+        distortionCounts[result.distortion] = (distortionCounts[result.distortion] || 0) + 1;
+      }
+
+      console.table({
+        Primary: primaryCounts,
+        Support: supportCounts,
+        MotionStyle: motionStyleCounts,
+        Field: fieldCounts,
+        Distortion: distortionCounts
+      });
+
+      return {
+        primaryCounts,
+        supportCounts,
+        motionStyleCounts,
+        fieldCounts,
+        distortionCounts
+      };
+    }
+
+    function runAstrologyCalibrationTest() {
+      const baseData = () => ({
+        state: {
+          strain: 0.30,
+          amplifiedLoad: 0.35,
+          regulation: 0.45,
+          effectiveLoad: 0.25,
+          capacity: 0.55,
+          mode: "Regulated"
+        },
+        baselineState: {
+          capacity: 0.40,
+          strain: 0.25,
+          amplifiedLoad: 0.25,
+          regulation: 0.40
+        },
+        planetary: {
+          sun: 0.20,
+          moon: 0.20,
+          mercury: 0.20,
+          venus: 0.20,
+          mars: 0.20,
+          jupiter: 0.20,
+          saturn: 0.20,
+          uranus: 0.20,
+          neptune: 0.20,
+          pluto: 0.20,
+          asc: 0.20,
+          mc: 0.20,
+          transitMoon: 0.20,
+          transitMercury: 0.20,
+          transitVenus: 0.20,
+          transitMars: 0.20,
+          transitJupiter: 0.20,
+          transitSaturn: 0.20,
+          transitUranus: 0.20,
+          transitNeptune: 0.20,
+          transitPluto: 0.20
+        },
+        environment: {
+          environmentMode: ""
+        },
+        forecast: {
+          now: {
+            state: "Regulated"
+          }
+        },
+        timing: {
+          timingPressure: 0.20
+        }
+      });
+
+      const cases = [
+        {
+          name: "Structured Case",
+          expected: ["Structured", "Regulated"],
+          build: () => {
+            const data = baseData();
+            data.planetary.saturn = 0.95;
+            data.planetary.mercury = 0.95;
+            data.planetary.sun = 0.60;
+            data.planetary.mc = 0.90;
+            data.baselineState.capacity = 0.90;
+            data.baselineState.regulation = 0.75;
+            return data;
+          }
+        },
+        {
+          name: "Contained Case",
+          expected: ["Contained"],
+          build: () => {
+            const data = baseData();
+            data.planetary.moon = 0.95;
+            data.planetary.saturn = 0.90;
+            data.planetary.neptune = 0.55;
+            data.baselineState.regulation = 0.55;
+            return data;
+          }
+        },
+        {
+          name: "Chaotic Case",
+          expected: ["Chaotic"],
+          build: () => {
+            const data = baseData();
+            data.planetary.uranus = 0.95;
+            data.planetary.mars = 0.92;
+            data.planetary.neptune = 0.35;
+            data.baselineState.strain = 0.40;
+            return data;
+          }
+        },
+        {
+          name: "Relational Case",
+          expected: ["Relational"],
+          build: () => {
+            const data = baseData();
+            data.planetary.venus = 0.95;
+            data.planetary.moon = 0.90;
+            data.planetary.asc = 0.92;
+            return data;
+          }
+        },
+        {
+          name: "Threshold Case",
+          expected: ["Threshold", "Chaotic"],
+          build: () => {
+            const data = baseData();
+            data.planetary.mars = 0.95;
+            data.planetary.uranus = 0.92;
+            data.planetary.pluto = 0.60;
+            data.planetary.mc = 0.90;
+            return data;
+          }
+        },
+        {
+          name: "Reconstructive Case",
+          expected: ["Reconstructive"],
+          build: () => {
+            const data = baseData();
+            data.planetary.pluto = 0.95;
+            data.planetary.saturn = 0.92;
+            data.baselineState.amplifiedLoad = 0.55;
+            data.baselineState.strain = 0.55;
+            return data;
+          }
+        },
+        {
+          name: "Integrative Case",
+          expected: ["Integrative", "Diffused"],
+          build: () => {
+            const data = baseData();
+            data.planetary.jupiter = 0.95;
+            data.planetary.neptune = 0.92;
+            data.planetary.mercury = 0.55;
+            data.planetary.moon = 0.55;
+            return data;
+          }
+        },
+        {
+          name: "Diffused Case",
+          expected: ["Diffused"],
+          build: () => {
+            const data = baseData();
+            data.planetary.neptune = 0.95;
+            data.planetary.moon = 0.92;
+            data.planetary.jupiter = 0.60;
+            return data;
+          }
+        },
+        {
+          name: "Regulated Case",
+          expected: ["Regulated", "Structured"],
+          build: () => {
+            const data = baseData();
+            data.planetary.saturn = 0.95;
+            data.planetary.mercury = 0.92;
+            data.planetary.venus = 0.55;
+            data.baselineState.regulation = 0.95;
+            return data;
+          }
+        }
+      ];
+
+      const results = cases.map(testCase => {
+        const result = calculateHarmonics(testCase.build());
+        const passed = testCase.expected.includes(result.primary);
+
+        return {
+          case: testCase.name,
+          expected: testCase.expected.join(" or "),
+          actualPrimary: result.primary,
+          support: result.support,
+          motionStyle: result.motionStyle,
+          distortion: result.distortion,
+          todayField: result.todayField,
+          passFail: passed ? "PASS" : "FAIL"
+        };
+      });
+
+      console.table(results);
+      return results;
+    }
+
+    window.runSyntheticHarmonicBalanceTest = runSyntheticHarmonicBalanceTest;
+    window.runAstrologyCalibrationTest = runAstrologyCalibrationTest;
+
+    document.getElementById("calcBtn").addEventListener("click", calculate);
+    document.getElementById("saveShareCardBtn").addEventListener("click", saveShareCard);
+    document.getElementById("copyShareTextBtn").addEventListener("click", copyShareText);
+
+    document.getElementById("dob").value = "1992-04-18";
+    document.getElementById("tob").value = "9:15";
+    document.getElementById("ampm").value = "AM";
+    document.getElementById("location").value = "Portland, OR";
+
+    renderHarmonicLibrary();
+    calculate();
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</body>
+</html>
