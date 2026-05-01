@@ -50,8 +50,8 @@
       margin:0;
       font-family:Arial, sans-serif;
       background:
-        radial-gradient(circle at 50% 0%, rgba(103,193,255,.08), transparent 32%),
-        radial-gradient(circle at 80% 12%, rgba(176,108,255,.05), transparent 30%),
+        radial-gradient(circle at 50% 0%, rgba(103,193,255,.10), transparent 34%),
+        radial-gradient(circle at 80% 12%, rgba(176,108,255,.06), transparent 32%),
         linear-gradient(180deg,#071126 0%, #09142f 100%);
       color:var(--text);
     }
@@ -90,23 +90,24 @@
       position:relative;
       text-align:center;
       margin-bottom:16px;
-      padding:14px 18px 12px;
+      padding:15px 18px 13px;
       overflow:hidden;
-      border:1px solid rgba(103,193,255,.10);
+      border:1px solid rgba(103,193,255,.13);
       border-radius:20px;
       background:
-        linear-gradient(180deg,rgba(15,27,56,.56),rgba(9,20,47,.22));
-      box-shadow:0 12px 34px rgba(0,0,0,.20);
+        radial-gradient(circle at 50% -20%, rgba(103,193,255,.11), transparent 46%),
+        linear-gradient(180deg,rgba(15,27,56,.62),rgba(9,20,47,.24));
+      box-shadow:0 14px 38px rgba(0,0,0,.22);
     }
 
     .heroGlow{
       position:absolute;
       inset:0;
       pointer-events:none;
-      opacity:.85;
+      opacity:.88;
       transition:background .35s ease;
       background:
-        radial-gradient(circle at 50% 28%, rgba(103,193,255,.08), transparent 42%);
+        radial-gradient(circle at 50% 28%, rgba(103,193,255,.09), transparent 42%);
     }
 
     .hero h1{
@@ -244,16 +245,17 @@
     .premiumCard{
       position:relative;
       overflow:hidden;
-      border:1px solid rgba(103,193,255,.24);
-      border-radius:22px;
-      padding:24px;
+      border:1px solid rgba(103,193,255,.28);
+      border-radius:24px;
+      padding:25px;
       background:
-        radial-gradient(circle at 18% 0%, rgba(103,193,255,.13), transparent 36%),
-        radial-gradient(circle at 86% 20%, rgba(216,184,76,.10), transparent 32%),
-        linear-gradient(180deg,rgba(16,31,64,.98),rgba(12,24,50,.96));
+        radial-gradient(circle at 15% -8%, rgba(103,193,255,.16), transparent 39%),
+        radial-gradient(circle at 88% 16%, rgba(216,184,76,.13), transparent 34%),
+        radial-gradient(circle at 52% 112%, rgba(176,108,255,.07), transparent 40%),
+        linear-gradient(180deg,rgba(17,33,68,.99),rgba(12,24,50,.97));
       box-shadow:
-        0 20px 60px rgba(0,0,0,.30),
-        inset 0 0 0 1px rgba(255,255,255,.025);
+        0 24px 70px rgba(0,0,0,.34),
+        inset 0 0 0 1px rgba(255,255,255,.035);
     }
 
     .premiumCard::before{
@@ -262,8 +264,17 @@
       inset:0;
       pointer-events:none;
       background:
-        linear-gradient(135deg,rgba(255,255,255,.035),transparent 38%),
-        radial-gradient(circle at 50% 110%, rgba(103,193,255,.08), transparent 42%);
+        linear-gradient(135deg,rgba(255,255,255,.048),transparent 40%),
+        radial-gradient(circle at 50% 110%, rgba(103,193,255,.095), transparent 44%);
+    }
+
+    .premiumCard::after{
+      content:"";
+      position:absolute;
+      inset:1px;
+      pointer-events:none;
+      border-radius:23px;
+      border:1px solid rgba(255,255,255,.025);
     }
 
     .cardContent{
@@ -272,21 +283,22 @@
     }
 
     .kicker{
-      margin:0 0 8px;
+      margin:0 0 9px;
       font-size:11px;
-      font-weight:800;
-      letter-spacing:.12em;
+      font-weight:900;
+      letter-spacing:.13em;
       text-transform:uppercase;
       color:var(--blue);
     }
 
     .weatherLine{
       margin:0;
-      font-size:clamp(28px,3.8vw,44px);
-      line-height:1.02;
-      font-weight:900;
-      letter-spacing:-.04em;
+      font-size:clamp(30px,3.9vw,46px);
+      line-height:1.01;
+      font-weight:950;
+      letter-spacing:-.045em;
       color:var(--text);
+      text-wrap:balance;
     }
 
     .weatherLine span{
@@ -294,11 +306,11 @@
     }
 
     .weatherExplain{
-      margin:10px 0 0;
-      color:var(--muted2);
+      margin:11px 0 0;
+      color:#c4cee6;
       font-size:12px;
       line-height:1.45;
-      font-weight:700;
+      font-weight:800;
       letter-spacing:.01em;
     }
 
@@ -306,70 +318,75 @@
       display:flex;
       flex-wrap:wrap;
       gap:8px;
-      margin-top:12px;
-      max-width:920px;
+      margin-top:13px;
+      max-width:940px;
       color:var(--muted);
       font-size:12px;
       line-height:1.45;
-      font-weight:800;
+      font-weight:850;
     }
 
     .pairingExplain span{
       display:inline-flex;
       align-items:center;
-      min-height:30px;
-      padding:6px 10px;
+      min-height:31px;
+      padding:7px 11px;
       border-radius:999px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.035);
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.045);
       overflow-wrap:anywhere;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.012);
     }
 
     .pairingExplain strong{
       color:var(--text);
-      font-weight:900;
+      font-weight:950;
     }
 
     .motionStrip{
       display:grid;
-      grid-template-columns:minmax(170px,.42fr) 1fr;
+      grid-template-columns:minmax(210px,.40fr) 1fr;
       gap:10px;
-      margin-top:14px;
-      border:1px solid rgba(216,184,76,.20);
-      border-radius:16px;
+      margin-top:15px;
+      border:1px solid rgba(216,184,76,.26);
+      border-radius:18px;
       background:
-        linear-gradient(135deg,rgba(216,184,76,.075),rgba(103,193,255,.045));
+        radial-gradient(circle at 8% 0%, rgba(216,184,76,.12), transparent 34%),
+        linear-gradient(135deg,rgba(216,184,76,.09),rgba(103,193,255,.055));
       padding:12px;
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.025),
+        0 10px 26px rgba(0,0,0,.13);
     }
 
     .motionMini{
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:14px;
-      background:rgba(255,255,255,.035);
-      padding:11px 12px;
+      border:1px solid rgba(255,255,255,.095);
+      border-radius:15px;
+      background:rgba(255,255,255,.045);
+      padding:12px 13px;
     }
 
     .motionMiniLabel{
-      color:var(--muted);
+      color:#b9c5e2;
       font-size:10px;
-      font-weight:900;
-      letter-spacing:.10em;
+      font-weight:950;
+      letter-spacing:.11em;
       text-transform:uppercase;
-      margin-bottom:6px;
+      margin-bottom:7px;
     }
 
     .motionMiniValue{
       color:var(--text);
-      font-size:15px;
-      font-weight:900;
+      font-size:16px;
+      font-weight:950;
       line-height:1.25;
     }
 
     .motionMiniText{
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.48;
-      font-weight:700;
+      color:#d7def1;
+      font-size:12.5px;
+      line-height:1.5;
+      font-weight:750;
     }
 
     .harmonicName{
@@ -388,8 +405,8 @@
     .h-steady{color:var(--h-steady)}
 
     .todayRead{
-      margin:15px 0 0;
-      max-width:880px;
+      margin:16px 0 0;
+      max-width:900px;
       color:var(--text);
       font-size:16px;
       line-height:1.68;
@@ -432,13 +449,13 @@
 
     .todayOutlookLine{
       margin-top:14px;
-      border:1px solid rgba(216,184,76,.18);
-      background:rgba(216,184,76,.055);
+      border:1px solid rgba(216,184,76,.20);
+      background:rgba(216,184,76,.065);
       color:var(--text);
       border-radius:999px;
       padding:10px 13px;
       font-size:12px;
-      font-weight:800;
+      font-weight:850;
       line-height:1.4;
     }
 
@@ -1535,7 +1552,7 @@
       .hero p{font-size:12px}
       .panel,.premiumCard,.profileCard,.engineDetails,.whyReadCard,.shareSection,.outlookCard{border-radius:16px}
       .premiumCard{padding:18px}
-      .weatherLine{font-size:28px}
+      .weatherLine{font-size:29px}
       .weatherExplain{font-size:11px}
       .pairingExplain{
         display:grid;
@@ -1547,7 +1564,14 @@
       }
       .motionStrip{
         grid-template-columns:1fr;
-        border-radius:14px;
+        border-radius:15px;
+        padding:10px;
+      }
+      .motionMini{
+        border-radius:13px;
+      }
+      .motionMiniText{
+        font-size:12px;
       }
       .todayRead{font-size:15px}
       .todayOutlookLine{border-radius:14px}
