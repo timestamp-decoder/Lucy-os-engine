@@ -464,13 +464,16 @@
     }
 
     .outlookCard{
-      border:1px solid rgba(103,193,255,.18);
-      border-radius:20px;
-      padding:18px;
+      border:1px solid rgba(103,193,255,.22);
+      border-radius:22px;
+      padding:20px;
       background:
-        radial-gradient(circle at 14% 0%, rgba(103,193,255,.08), transparent 34%),
-        linear-gradient(180deg,rgba(15,27,56,.95),rgba(12,24,50,.92));
-      box-shadow:var(--shadow);
+        radial-gradient(circle at 10% 0%, rgba(103,193,255,.105), transparent 34%),
+        radial-gradient(circle at 92% 8%, rgba(176,108,255,.075), transparent 34%),
+        linear-gradient(180deg,rgba(15,27,56,.97),rgba(12,24,50,.94));
+      box-shadow:
+        0 18px 52px rgba(0,0,0,.26),
+        inset 0 0 0 1px rgba(255,255,255,.02);
     }
 
     .outlookHeader{
@@ -478,19 +481,21 @@
       align-items:flex-start;
       justify-content:space-between;
       gap:14px;
-      margin-bottom:14px;
+      margin-bottom:15px;
     }
 
     .outlookHeader h2{
       margin:0;
-      font-size:20px;
+      font-size:22px;
+      letter-spacing:-.02em;
     }
 
     .outlookHeader p{
-      margin:4px 0 0;
-      color:var(--muted);
+      margin:5px 0 0;
+      color:#c4cee6;
       font-size:13px;
       line-height:1.5;
+      max-width:620px;
     }
 
     .outlookGrid{
@@ -507,10 +512,34 @@
       min-height:116px;
     }
 
-    .outlookBlock.full{
+    .outlookBlock.primary{
       grid-column:1 / -1;
+      min-height:150px;
+      padding:18px;
+      border-color:rgba(176,108,255,.24);
+      background:
+        radial-gradient(circle at 14% 0%, rgba(176,108,255,.14), transparent 34%),
+        radial-gradient(circle at 100% 14%, rgba(103,193,255,.08), transparent 30%),
+        linear-gradient(180deg,rgba(176,108,255,.075),rgba(103,193,255,.035));
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.025),
+        0 12px 34px rgba(0,0,0,.18);
+    }
+
+    .outlookBlock.now{
+      border-color:rgba(103,193,255,.14);
       background:rgba(103,193,255,.045);
-      border-color:rgba(103,193,255,.13);
+    }
+
+    .outlookBlock.forecastShell{
+      opacity:.78;
+      border-color:rgba(255,255,255,.055);
+      background:rgba(255,255,255,.018);
+    }
+
+    .outlookBlock.forecastShell .outlookValue,
+    .outlookBlock.forecastShell .outlookText{
+      color:rgba(244,247,255,.82);
     }
 
     .outlookLabel{
@@ -522,6 +551,12 @@
       margin-bottom:7px;
     }
 
+    .outlookBlock.primary .outlookLabel{
+      color:#cab1ff;
+      font-size:11px;
+      letter-spacing:.12em;
+    }
+
     .outlookValue{
       color:var(--text);
       font-size:18px;
@@ -529,11 +564,24 @@
       line-height:1.25;
     }
 
+    .outlookBlock.primary .outlookValue{
+      font-size:clamp(25px,2.7vw,34px);
+      letter-spacing:-.035em;
+    }
+
     .outlookText{
       color:var(--muted);
       margin-top:8px;
       font-size:12px;
       line-height:1.55;
+    }
+
+    .outlookBlock.primary .outlookText{
+      color:#d9e0f4;
+      margin-top:10px;
+      max-width:820px;
+      font-size:14px;
+      line-height:1.62;
     }
 
     .outlookNote{
@@ -1528,6 +1576,7 @@
       .profileBlock.wide,
       .profileBlock.full{grid-column:auto}
       .outlookGrid{grid-template-columns:1fr}
+      .outlookBlock.primary{grid-column:auto}
       .whyReadGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
       .whyMini.full{grid-column:1 / -1}
       .libraryGrid{grid-template-columns:1fr}
@@ -1576,6 +1625,22 @@
       .todayRead{font-size:15px}
       .todayOutlookLine{border-radius:14px}
       .profileHeader,.outlookHeader{display:grid}
+      .outlookCard{
+        padding:18px;
+      }
+      .outlookHeader h2{
+        font-size:24px;
+      }
+      .outlookBlock.primary{
+        min-height:auto;
+        padding:16px;
+      }
+      .outlookBlock.primary .outlookValue{
+        font-size:25px;
+      }
+      .outlookBlock.primary .outlookText{
+        font-size:13px;
+      }
       .profileBlock{min-height:auto}
       .profileValue{font-size:17px}
       .chip,.shareChip{min-height:28px; padding:6px 9px}
@@ -1711,8 +1776,8 @@
         <section class="outlookCard">
           <div class="outlookHeader">
             <div>
-              <h2>Current Outlook</h2>
-              <p>Live-field guidance using the current forecast shell. Future projection will be upgraded later.</p>
+              <h2>Current Field Direction</h2>
+              <p>The main live-field takeaway. Forecast projections are still a later backend pass.</p>
             </div>
             <div class="chipRow" style="margin-top:0;">
               <span class="chip violet" id="outlookStateChip">State: —</span>
@@ -1721,28 +1786,28 @@
           </div>
 
           <div class="outlookGrid">
-            <div class="outlookBlock">
+            <div class="outlookBlock primary">
+              <div class="outlookLabel">Field Direction</div>
+              <div class="outlookValue" id="outlookDirectionTitle">—</div>
+              <div class="outlookText" id="outlookDirectionText">Waiting for field direction.</div>
+            </div>
+
+            <div class="outlookBlock now">
               <div class="outlookLabel">Now</div>
               <div class="outlookValue" id="outlookNowState">—</div>
               <div class="outlookText" id="outlookNowText">Waiting for live state.</div>
             </div>
 
-            <div class="outlookBlock">
+            <div class="outlookBlock forecastShell">
               <div class="outlookLabel">Next 6 Hours</div>
               <div class="outlookValue" id="outlookShortState">—</div>
               <div class="outlookText" id="outlookShortText">Waiting for next 6 hours outlook.</div>
             </div>
 
-            <div class="outlookBlock">
+            <div class="outlookBlock forecastShell">
               <div class="outlookLabel">Next 24 Hours</div>
               <div class="outlookValue" id="outlook24State">—</div>
               <div class="outlookText" id="outlook24Text">Waiting for next-day outlook.</div>
-            </div>
-
-            <div class="outlookBlock full">
-              <div class="outlookLabel">Field Direction</div>
-              <div class="outlookValue" id="outlookDirectionTitle">—</div>
-              <div class="outlookText" id="outlookDirectionText">Waiting for field direction.</div>
             </div>
           </div>
 
