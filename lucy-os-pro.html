@@ -302,6 +302,34 @@
       letter-spacing:.01em;
     }
 
+    .pairingExplain{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:12px;
+      max-width:920px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+      font-weight:800;
+    }
+
+    .pairingExplain span{
+      display:inline-flex;
+      align-items:center;
+      min-height:28px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.035);
+      overflow-wrap:anywhere;
+    }
+
+    .pairingExplain strong{
+      color:var(--text);
+      font-weight:900;
+    }
+
     .harmonicName{
       font-weight:950;
     }
@@ -1460,6 +1488,14 @@
       .premiumCard{padding:18px}
       .weatherLine{font-size:28px}
       .weatherExplain{font-size:11px}
+      .pairingExplain{
+        display:grid;
+        gap:7px;
+        font-size:11px;
+      }
+      .pairingExplain span{
+        border-radius:12px;
+      }
       .todayRead{font-size:15px}
       .todayOutlookLine{border-radius:14px}
       .profileHeader,.outlookHeader{display:grid}
@@ -1546,6 +1582,11 @@
               Structured signal architecture<br><span>meeting a</span> live field
             </h2>
             <p class="weatherExplain">Signal architecture = your root pattern. Current field = what today is activating.</p>
+            <div class="pairingExplain" id="pairingExplain">
+              <span><strong>Root pattern:</strong>&nbsp;—</span>
+              <span><strong>Current field:</strong>&nbsp;—</span>
+              <span><strong>Meaning:</strong>&nbsp;—</span>
+            </div>
 
             <p class="todayRead" id="dailyTodayRead">
               Waiting for chart calculation. Lucy.OS will read your root signal architecture inside the current field.
@@ -1626,7 +1667,7 @@
           <div class="profileHeader">
             <div>
               <h2>Harmonic Profile</h2>
-              <p>Your root signal architecture, stabilizing support, motion style, and overload pathway. Today’s field is current weather, not identity.</p>
+              <p>Your root signal architecture, stabilizing support, motion style, and overload pathway. Current field is today’s weather, not identity.</p>
             </div>
             <div class="chipRow">
               <span class="chip gold" id="profileStateChip">Signal Architecture</span>
@@ -1666,7 +1707,7 @@
             </div>
 
             <div class="profileBlock">
-              <div class="profileLabel">Today’s Field Harmonic</div>
+              <div class="profileLabel">Current Field Harmonic</div>
               <div class="profileValue" id="todayFieldHarmonic">—</div>
               <div class="profileDesc">Current live field pattern.</div>
             </div>
@@ -2428,6 +2469,25 @@
       return "field pressure";
     }
 
+    function primaryPhraseFromHarmonic(primary){
+      if (primary === "Structured") return "structure-seeking signal";
+      if (primary === "Contained") return "protected inner signal";
+      if (primary === "Chaotic") return "fast nonlinear signal";
+      if (primary === "Relational") return "contact-sensitive signal";
+      if (primary === "Threshold") return "crossing-sensitive signal";
+      if (primary === "Reconstructive") return "repair-oriented signal";
+      if (primary === "Integrative") return "meaning-gathering signal";
+      if (primary === "Diffused") return "wide receptive signal";
+      if (primary === "Regulated") return "paced regulation signal";
+      return "root signal";
+    }
+
+    function buildPairingMeaning(primary, field){
+      const rootPhrase = primaryPhraseFromHarmonic(primary);
+      const fieldPhrase = fieldPhraseFromHarmonic(field);
+      return `${rootPhrase} meeting ${fieldPhrase}`;
+    }
+
     function calculateFieldTrend(data, harmonics){
       const state = data?.state || {};
       const field = harmonics?.todayField || "Regulated";
@@ -2593,6 +2653,7 @@
 
       const chaoticScore = safeNum(scores.Chaotic);
       const thresholdScore = safeNum(scores.Threshold);
+      const containedScore = safeNum(scores.Contained);
       const structuredScore = safeNum(scores.Structured);
       const reconstructiveScore = safeNum(scores.Reconstructive);
       const diffusedScore = safeNum(scores.Diffused);
@@ -2600,6 +2661,7 @@
 
       const CHAOTIC_FLOOR = 0.55;
       const THRESHOLD_FLOOR = 0.55;
+      const CONTAINED_FLOOR = 0.52;
       const FALLBACK_FLOOR = 0.62;
 
       const motionParts = [];
@@ -2618,6 +2680,14 @@
           thresholdScore >= chaoticScore * 0.95
         );
 
+      const containedElevated =
+        containedScore >= CONTAINED_FLOOR &&
+        (
+          containedScore >= primaryScore * 0.90 ||
+          containedScore >= chaoticScore * 0.88 ||
+          containedScore >= thresholdScore * 0.88
+        );
+
       if (chaoticElevated) {
         motionParts.push("Chaotic");
       }
@@ -2626,10 +2696,15 @@
         motionParts.push("Threshold");
       }
 
+      if (containedElevated) {
+        motionParts.push("Contained");
+      }
+
       if (!motionParts.length) {
         const fallbackCandidates = [
           { label: "Chaotic", score: chaoticScore },
           { label: "Threshold", score: thresholdScore },
+          { label: "Contained", score: containedScore },
           { label: "Reconstructive", score: reconstructiveScore },
           { label: "Diffused", score: diffusedScore }
         ].sort((a, b) => b.score - a.score);
@@ -3775,6 +3850,7 @@
       const distortionLabel = harmonicLabel(distortionMeta.label);
       const fieldLabel = harmonicLabel(fieldMeta.label);
 
+      const pairingMeaning = buildPairingMeaning(primaryMeta.label, fieldMeta.label);
       const systemWeather = `${harmonicText(primaryMeta.label)} signal architecture meeting a ${harmonicText(fieldMeta.label)} field`;
       const systemWeatherHTML = `${primaryLabel}&nbsp;signal architecture<br><span>meeting a</span> ${fieldLabel}&nbsp;field`;
       const guidance = buildDailyGuidance(harmonics, data);
@@ -3782,6 +3858,12 @@
       const shareDriverNote = buildShortDriverNote(data, harmonics, fieldTrend);
 
       setHTML("systemWeatherLine", systemWeatherHTML);
+      setHTML(
+        "pairingExplain",
+        `<span><strong>Root pattern:</strong>&nbsp;${primaryLabel}</span>` +
+        `<span><strong>Current field:</strong>&nbsp;${fieldLabel}</span>` +
+        `<span><strong>Meaning:</strong>&nbsp;${pairingMeaning}</span>`
+      );
       setText("dailyTodayRead", guidance.read);
       setText("dailyLeanInto", guidance.lean);
       setText("dailyWatchFor", guidance.watch);
