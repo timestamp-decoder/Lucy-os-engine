@@ -1832,7 +1832,7 @@
           <div class="outlookHeader">
             <div>
               <h2>Current Field Direction</h2>
-              <p>The main live-field takeaway. Forecast projections are still a later backend pass.</p>
+              <p>The main live-field takeaway. Extended timing projections are still a later backend pass.</p>
             </div>
             <div class="chipRow" style="margin-top:0;">
               <span class="chip violet" id="outlookStateChip">State: —</span>
@@ -1854,20 +1854,20 @@
             </div>
 
             <div class="outlookBlock forecastShell">
-              <div class="outlookLabel">Next 6 Hours</div>
+              <div class="outlookLabel">Next Timing Window</div>
               <div class="outlookValue" id="outlookShortState">—</div>
-              <div class="outlookText" id="outlookShortText">Waiting for next 6 hours outlook.</div>
+              <div class="outlookText" id="outlookShortText">Waiting for next timing window.</div>
             </div>
 
             <div class="outlookBlock forecastShell">
-              <div class="outlookLabel">Next 24 Hours</div>
+              <div class="outlookLabel">Later Field Window</div>
               <div class="outlookValue" id="outlook24State">—</div>
-              <div class="outlookText" id="outlook24Text">Waiting for next-day outlook.</div>
+              <div class="outlookText" id="outlook24Text">Waiting for later field window.</div>
             </div>
           </div>
 
           <div class="outlookNote">
-            Current Field Direction uses the live-field forecast shell only. Separate +6 and +24 hour projections will be added in a later backend pass.
+            Current Field Direction uses the live-field forecast shell only. Extended timing windows will be added in a later backend pass.
           </div>
         </section>
 
@@ -2157,7 +2157,7 @@
               </div>
               <div class="metaRow" style="margin-top:0;">
                 <span class="metaPill field" id="envBand">Field: —</span>
-                <span class="metaPill forecast" id="forecastBand">Forecast: —</span>
+                <span class="metaPill forecast" id="forecastBand">Timing: —</span>
               </div>
             </div>
 
@@ -2187,11 +2187,11 @@
             <div class="midRow">
               <div class="microCard">
                 <div class="microHeader">
-                  <div class="microTitle">Forecast</div>
+                  <div class="microTitle">Timing Shell</div>
                 </div>
-                <div class="forecastBig" id="forecastTitle">Forecast: —</div>
+                <div class="forecastBig" id="forecastTitle">Timing: —</div>
                 <div class="forecastSub" id="forecastText">
-                  Waiting for forecast state.
+                  Waiting for timing shell state.
                 </div>
               </div>
 
@@ -2313,7 +2313,7 @@
             </div>
 
             <div class="tiny">
-              Forecast, regulator average, harmonic routing, and why-line are interpretive layers on top of the current V2.5 engine.
+              Timing shell, regulator average, harmonic routing, and why-line are interpretive layers on top of the current V2.5 engine.
             </div>
           </div>
         </details>
@@ -2626,7 +2626,7 @@
 
     function forecastBandFromState(forecastState){
       const text = String(forecastState || "").trim();
-      return `Forecast: ${text || "—"}`;
+      return `Timing: ${text || "—"}`;
     }
 
     function driverValueFromTaggedList(list, planetName){
@@ -2966,10 +2966,10 @@
       setText("outlookNowText", outlookTextFromState(nowState, "Now"));
 
       setText("outlookShortState", plus6State);
-      setText("outlookShortText", outlookTextFromState(plus6State, "Next 6 hours"));
+      setText("outlookShortText", outlookTextFromState(plus6State, "Next timing window"));
 
       setText("outlook24State", plus24State);
-      setText("outlook24Text", outlookTextFromState(plus24State, "Next 24 hours"));
+      setText("outlook24Text", outlookTextFromState(plus24State, "Later field window"));
 
       setText("outlookDirectionTitle", direction.title);
       setText("outlookDirectionText", direction.text);
