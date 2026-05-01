@@ -2706,46 +2706,81 @@
           diffusedScore >= thresholdScore * 0.88
         );
 
-      const orderedCandidates = [];
+      const containedProtectiveCloseCall =
+        chaoticActive &&
+        thresholdActive &&
+        diffusedActive &&
+        containedScore >= CONTAINED_FLOOR &&
+        containedScore >= diffusedScore * 0.82;
 
-      if (chaoticActive) orderedCandidates.push({ label: "Chaotic", score: chaoticScore });
-      if (thresholdActive) orderedCandidates.push({ label: "Threshold", score: thresholdScore });
-      if (containedActive) orderedCandidates.push({ label: "Contained", score: containedScore });
-      if (reconstructiveActive) orderedCandidates.push({ label: "Reconstructive", score: reconstructiveScore });
-      if (diffusedActive) orderedCandidates.push({ label: "Diffused", score: diffusedScore });
+      const activeCandidates = [];
 
-      if (orderedCandidates.length >= 1 && orderedCandidates.length <= 3) {
-        return orderedCandidates.map(item => item.label).join(" / ");
+      if (chaoticActive) {
+        activeCandidates.push({ label: "Chaotic", score: chaoticScore });
       }
 
-      if (orderedCandidates.length > 3) {
-        const locked = [];
-        const remainingSlots = () => 3 - locked.length;
+      if (thresholdActive) {
+        activeCandidates.push({ label: "Threshold", score: thresholdScore });
+      }
 
-        if (chaoticActive) locked.push({ label: "Chaotic", score: chaoticScore });
-        if (thresholdActive && locked.length < 3) locked.push({ label: "Threshold", score: thresholdScore });
+      if (containedActive || containedProtectiveCloseCall) {
+        activeCandidates.push({ label: "Contained", score: containedScore });
+      }
 
-        const remainingRanked = [
-          containedActive ? { label: "Contained", score: containedScore } : null,
-          reconstructiveActive ? { label: "Reconstructive", score: reconstructiveScore } : null,
-          diffusedActive ? { label: "Diffused", score: diffusedScore } : null
+      if (reconstructiveActive) {
+        activeCandidates.push({ label: "Reconstructive", score: reconstructiveScore });
+      }
+
+      if (diffusedActive && !containedProtectiveCloseCall) {
+        activeCandidates.push({ label: "Diffused", score: diffusedScore });
+      }
+
+      if (activeCandidates.length > 0 && activeCandidates.length <= 3) {
+        return activeCandidates.map(item => item.label).join(" / ");
+      }
+
+      if (activeCandidates.length > 3) {
+        const finalMotionParts = [];
+
+        if (chaoticActive) {
+          finalMotionParts.push("Chaotic");
+        }
+
+        if (thresholdActive) {
+          finalMotionParts.push("Threshold");
+        }
+
+        const remainingCandidates = [
+          {
+            label: "Contained",
+            score: containedScore,
+            active: containedActive || containedProtectiveCloseCall
+          },
+          {
+            label: "Reconstructive",
+            score: reconstructiveScore,
+            active: reconstructiveActive
+          },
+          {
+            label: "Diffused",
+            score: diffusedScore,
+            active: diffusedActive && !containedProtectiveCloseCall
+          }
         ]
-          .filter(Boolean)
-          .sort((a, b) => b.score - a.score)
-          .slice(0, remainingSlots());
+          .filter(item => item.active && !finalMotionParts.includes(item.label))
+          .sort((a, b) => b.score - a.score);
 
-        const selectedLabels = [...locked, ...remainingRanked].map(item => item.label);
+        remainingCandidates.forEach(item => {
+          if (finalMotionParts.length < 3) {
+            finalMotionParts.push(item.label);
+          }
+        });
 
-        const motionOrder = {
-          Chaotic: 1,
-          Threshold: 2,
-          Contained: 3,
-          Reconstructive: 4,
-          Diffused: 5
-        };
+        const motionOrder = ["Chaotic", "Threshold", "Contained", "Reconstructive", "Diffused"];
 
-        return selectedLabels
-          .sort((a, b) => motionOrder[a] - motionOrder[b])
+        return finalMotionParts
+          .sort((a, b) => motionOrder.indexOf(a) - motionOrder.indexOf(b))
+          .slice(0, 3)
           .join(" / ");
       }
 
@@ -4536,3 +4571,4 @@
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </body>
 </html>
+
