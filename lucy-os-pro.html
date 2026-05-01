@@ -1732,6 +1732,41 @@
           </div>
         </section>
 
+        <section class="profileCard">
+          <div class="profileHeader">
+            <div>
+              <h2>Today’s Field Translation</h2>
+              <p>A plain-English read of what today’s field is doing. This describes current pressure, not your identity.</p>
+            </div>
+            <div class="chipRow">
+              <span class="chip field" id="fieldTranslationChip">Field: —</span>
+            </div>
+          </div>
+
+          <div class="profileGrid">
+            <div class="profileBlock">
+              <div class="profileLabel">Current Field</div>
+              <div class="profileValue" id="fieldTranslationTitle">—</div>
+              <div class="profileDesc" id="fieldTranslationShort">Waiting for field translation.</div>
+            </div>
+
+            <div class="profileBlock wide">
+              <div class="profileLabel">Plain-English Meaning</div>
+              <div class="guidanceText" id="fieldTranslationMeaning">Waiting for field translation.</div>
+            </div>
+
+            <div class="profileBlock">
+              <div class="profileLabel">Best Use</div>
+              <div class="guidanceText" id="fieldTranslationBest">—</div>
+            </div>
+
+            <div class="profileBlock wide">
+              <div class="profileLabel">Watch For</div>
+              <div class="guidanceText" id="fieldTranslationWatch">—</div>
+            </div>
+          </div>
+        </section>
+
         <section class="whyReadCard">
           <div class="profileHeader" style="margin-bottom:0;">
             <div>
@@ -2490,6 +2525,76 @@
       return `${rootPhrase} meeting ${fieldPhrase}`;
     }
 
+    function getFieldTranslation(field){
+      const translations = {
+        Structured: {
+          title: "Structure is available",
+          short: "Today favors form, order, sequence, and practical containers.",
+          meaning: "The field supports turning pressure into something organized and usable. This is good for simplifying, planning, naming the next step, or giving loose signal a clear container.",
+          best: "Use the field to create one useful structure.",
+          watch: "Do not over-tighten the plan after the structure is already good enough."
+        },
+        Contained: {
+          title: "The field is pulling inward",
+          short: "Today favors privacy, protected processing, and slower release.",
+          meaning: "The field may ask for more quiet, privacy, or internal sorting before the signal becomes ready to share. This is not blockage by default; it can be protected formation.",
+          best: "Let the signal shape privately before forcing it outward.",
+          watch: "Do not hold pressure so long that it becomes heavier than necessary."
+        },
+        Chaotic: {
+          title: "Extra movement is active",
+          short: "Today may bring more charge, disruption, speed, or nonlinear signal.",
+          meaning: "The field may feel more mobile or electric. The point is not to stop the movement, but to give the charge one safe and useful direction.",
+          best: "Give the energy one channel.",
+          watch: "Do not chase every spark until the day loses continuity."
+        },
+        Relational: {
+          title: "Contact is part of the field",
+          short: "Today may clarify through tone, feedback, closeness, or repair.",
+          meaning: "The field may make relationships, contact, or shared atmosphere more noticeable. Stay centered before trying to read or fix the room.",
+          best: "Use simple language and keep responsibility proportional.",
+          watch: "Do not absorb the whole shared field as if it belongs to you."
+        },
+        Threshold: {
+          title: "The field is near an edge",
+          short: "Today may bring a crossing, decision, opening, or pressure point.",
+          meaning: "The field may feel like something is approaching a turn. The edge may be real, but timing matters more than speed.",
+          best: "Name the real crossing before moving.",
+          watch: "Do not treat every pressure spike like it means act now."
+        },
+        Reconstructive: {
+          title: "Repair pressure is active",
+          short: "Today may highlight what needs adjustment, repair, or recalibration.",
+          meaning: "Reconstructive pressure does not automatically mean collapse. It often means one weak point is asking for attention. Choose one honest repair instead of turning the whole field into a rebuild.",
+          best: "Fix one weak point that is actually present.",
+          watch: "Do not treat every strain like proof the whole system has failed."
+        },
+        Integrative: {
+          title: "Meaning is gathering",
+          short: "Today may connect pieces and widen the pattern.",
+          meaning: "The field may help you see how things connect. Use the larger pattern if it clarifies action, but do not make the day carry every layer at once.",
+          best: "Choose the one connection that makes the next step clearer.",
+          watch: "Do not try to integrate every loose end today."
+        },
+        Diffused: {
+          title: "The field is more atmospheric",
+          short: "Today may feel subtle, foggy, porous, or harder to define.",
+          meaning: "The field may be harder to name quickly. Reduce inputs, look for one simple true line, and avoid making decisions from fog.",
+          best: "Ground the field with one clear anchor.",
+          watch: "Do not turn unclear atmosphere into a full conclusion."
+        },
+        Regulated: {
+          title: "Pacing is available",
+          short: "Today supports rhythm, load management, and steady movement.",
+          meaning: "The field supports reducing strain through pacing and containment. This is good for doing less, doing it clearly, and keeping the system manageable.",
+          best: "Let rhythm carry one practical action.",
+          watch: "Do not turn regulation into over-control."
+        }
+      };
+
+      return translations[field] || translations.Regulated;
+    }
+
     function calculateFieldTrend(data, harmonics){
       const state = data?.state || {};
       const field = harmonics?.todayField || "Regulated";
@@ -2622,6 +2727,19 @@
 
       setText("outlookDirectionTitle", direction.title);
       setText("outlookDirectionText", direction.text);
+    }
+
+    function updateFieldTranslationUI(field){
+      const translation = getFieldTranslation(field || "Regulated");
+
+      setHTML("fieldTranslationChip", `Field:&nbsp;${harmonicLabel(field || "Regulated")}`);
+      applyChipClass("fieldTranslationChip", "chip field", field || "Regulated");
+
+      setHTML("fieldTranslationTitle", harmonicLabel(field || "Regulated"));
+      setText("fieldTranslationShort", translation.short);
+      setText("fieldTranslationMeaning", translation.meaning);
+      setText("fieldTranslationBest", translation.best);
+      setText("fieldTranslationWatch", translation.watch);
     }
 
     function setHeroGlow(modeText, fog, volatility){
@@ -2872,10 +2990,10 @@
 
         Purpose:
         If an activation-heavy harmonic barely wins as Primary,
-        but Structured is close behind and the chart has real natal
+        but Structured is extremely close behind and the chart has real natal
         structure support, classify Primary as Structured instead.
 
-        This keeps Chaotic / Threshold alive as real signal movement
+        This keeps Chaotic / Threshold alive as real Motion Style
         without flattening activation into root signal architecture too quickly.
       */
       const structuredScore = normalizedNatalScores.Structured || 0;
@@ -2883,18 +3001,18 @@
       const thresholdScore = normalizedNatalScores.Threshold || 0;
 
       const structuredSupport =
-        saturn >= 0.55 &&
-        mercury >= 0.55 &&
-        mc >= 0.45;
+        saturn >= 0.58 &&
+        mercury >= 0.58 &&
+        mc >= 0.48;
 
       const chaoticBarelyWins =
         primary === "Chaotic" &&
-        structuredScore >= chaoticScore * 0.88 &&
+        structuredScore >= chaoticScore * 0.96 &&
         structuredSupport;
 
       const thresholdBarelyWins =
         primary === "Threshold" &&
-        structuredScore >= thresholdScore * 0.88 &&
+        structuredScore >= thresholdScore * 0.96 &&
         structuredSupport;
 
       if (chaoticBarelyWins || thresholdBarelyWins) {
@@ -3576,7 +3694,7 @@
         "Reconstructive": "Signal moves toward repair, reset, structural correction, or rebuild pressure.",
         "Diffused": "Signal spreads through the atmosphere and needs grounding before clear action.",
 
-        "Chaotic / Threshold": "Fast activation moves toward edges, crossings, or pressure points.",
+        "Chaotic / Threshold": "Fast activation moves toward edges, crossings, debugging points, repair points, and next-step pressure.",
         "Chaotic / Contained": "Fast signal rises, then pulls inward to prevent spillover.",
         "Threshold / Contained": "The system senses an edge, then protects the crossing until safety is clear.",
         "Chaotic / Reconstructive": "Fast activation moves toward repair pressure and wants to fix the weak point quickly.",
@@ -4026,6 +4144,7 @@
       applyChipClass("profileStateChip", "chip", primaryMeta.label);
       applyChipClass("profileFieldChip", "chip", fieldMeta.label);
 
+      updateFieldTranslationUI(fieldMeta.label);
       updateOutlookUI(data, harmonics);
       updateWhyReadUI(harmonics, data, fieldTrend);
       updateShareUI({
@@ -4559,10 +4678,10 @@
     document.getElementById("saveShareCardBtn").addEventListener("click", saveShareCard);
     document.getElementById("copyShareTextBtn").addEventListener("click", copyShareText);
 
-    document.getElementById("dob").value = "1992-04-18";
-    document.getElementById("tob").value = "9:15";
+    document.getElementById("dob").value = "1980-11-21";
+    document.getElementById("tob").value = "6:20";
     document.getElementById("ampm").value = "AM";
-    document.getElementById("location").value = "Portland, OR";
+    document.getElementById("location").value = "Cuero, TX";
 
     renderHarmonicLibrary();
     calculate();
@@ -4571,4 +4690,3 @@
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </body>
 </html>
-
