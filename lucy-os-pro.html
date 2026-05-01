@@ -1778,7 +1778,7 @@
             <h2 class="weatherLine" id="systemWeatherLine">
               Structured signal architecture<br><span>meeting a</span> live field
             </h2>
-            <p class="weatherExplain">Signal architecture = your root pattern. Current field = what today is activating.</p>
+            <p class="weatherExplain">Signal architecture = your root pattern. Current field = what today is activating. Read this as: how your system tends to move + what today is pressing on.</p>
             <div class="pairingExplain" id="pairingExplain">
               <span><strong>Root pattern:</strong>&nbsp;—</span>
               <span><strong>Current field:</strong>&nbsp;—</span>
@@ -2765,10 +2765,20 @@
       return "root signal";
     }
 
+    function buildPairingAction(primary, field){
+      if (primary === "Chaotic" && field === "Reconstructive") return "use charge for one repair";
+      if (primary === "Structured" && field === "Reconstructive") return "repair one weak point without rebuilding everything";
+      if (primary === "Threshold" && field === "Reconstructive") return "cross only the repair that is ready";
+      if (primary === "Diffused" && field === "Reconstructive") return "wait until the real repair point is clear";
+      if (primary === "Regulated" && field === "Reconstructive") return "let pacing support one honest adjustment";
+      return "choose one clear next move";
+    }
+
     function buildPairingMeaning(primary, field){
       const rootPhrase = primaryPhraseFromHarmonic(primary);
       const fieldPhrase = fieldPhraseFromHarmonic(field);
-      return `${rootPhrase} meeting ${fieldPhrase}`;
+      const action = buildPairingAction(primary, field);
+      return `${rootPhrase} + ${fieldPhrase} = ${action}`;
     }
 
     function getFieldTranslation(field){
@@ -4436,7 +4446,9 @@
       const distortionLabel = harmonicLabel(distortionMeta.label);
       const fieldLabel = harmonicLabel(fieldMeta.label);
 
-      const pairingMeaning = buildPairingMeaning(primaryMeta.label, fieldMeta.label);
+      const primaryPhrase = primaryPhraseFromHarmonic(primaryMeta.label);
+      const fieldPhrase = fieldPhraseFromHarmonic(fieldMeta.label);
+      const pairingMeaning = `${primaryPhrase} + ${fieldPhrase} = ${buildPairingAction(primaryMeta.label, fieldMeta.label)}`;
       const systemWeather = `${harmonicText(primaryMeta.label)} signal architecture meeting a ${harmonicText(fieldMeta.label)} field`;
       const systemWeatherHTML = `${primaryLabel}&nbsp;signal architecture<br><span>meeting a</span> ${fieldLabel}&nbsp;field`;
       const guidance = buildDailyGuidance(harmonics, data);
