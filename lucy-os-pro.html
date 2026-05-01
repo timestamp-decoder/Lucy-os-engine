@@ -1698,7 +1698,7 @@
             <div class="profileBlock">
               <div class="profileLabel">Distortion Harmonic</div>
               <div class="profileValue" id="distortionHarmonic">—</div>
-              <div class="profileDesc">Overload pathway, not a flaw.</div>
+              <div class="profileDesc">Raw overload tendency, not a flaw.</div>
             </div>
 
             <div class="profileBlock wide">
@@ -1817,7 +1817,7 @@
             </div>
 
             <div class="whyMini">
-              <div class="whyMiniLabel">Distortion Pathway</div>
+              <div class="whyMiniLabel">Distortion State</div>
               <div class="whyMiniValue" id="whyDistortion">—</div>
             </div>
 
@@ -2207,6 +2207,33 @@
         Integrative: 1.90,
         Diffused: 3.60,
         Regulated: 2.50
+      }
+    };
+
+    const DISTORTION_STATES = {
+      emotionalFusion: {
+        label: "Emotional Fusion",
+        short: "Field-overload distortion / blends signal",
+        plain: "External emotional signal may enter the internal channel too strongly, making another field feel like your own.",
+        returnPath: "Re-separate channels: mine / not mine. Re-establish internal axis."
+      },
+      rupture: {
+        label: "Rupture",
+        short: "Axis-protection distortion / breaks contact",
+        plain: "Pressure may exceed tolerance and cause the system to break contact, withdraw, or snap out of the field to preserve integrity.",
+        returnPath: "Re-establish continuity slowly. Re-enter the field after stability returns."
+      },
+      overStructuring: {
+        label: "Over-Structuring",
+        short: "Rigidity distortion / tightens structure",
+        plain: "The system may try to stabilize uncertainty by adding more rules, categories, analysis, or control than the moment requires.",
+        returnPath: "Widen the frame. Reduce structural load. Allow some uncertainty without collapse."
+      },
+      scatter: {
+        label: "Scatter",
+        short: "Diffusion distortion / disperses signal",
+        plain: "Too many signals may be open at once, making it hard to keep one clear thread.",
+        returnPath: "Reduce inputs. Choose one channel. Restore sequence."
       }
     };
 
@@ -2919,6 +2946,67 @@
       return "Steady";
     }
 
+    function getDistortionState(harmonics, data){
+      const primary = harmonics?.primary || "Structured";
+      const motion = harmonicText(harmonics?.motionStyle || "");
+      const distortion = harmonics?.distortion || "Regulated";
+      const field = harmonics?.todayField || "Regulated";
+
+      const state = data?.state || {};
+      const strain = safeNum(state.strain);
+      const load = safeNum(state.amplifiedLoad);
+      const regulation = safeNum(state.regulation);
+
+      const highLoad = strain >= 0.85 || load >= 0.85;
+      const lowRegulation = regulation < 0.45;
+
+      const motionHas = (name) => String(motion).includes(name);
+
+      if (
+        primary === "Relational" ||
+        field === "Relational" ||
+        distortion === "Relational" ||
+        (distortion === "Diffused" && field === "Relational")
+      ) {
+        return "emotionalFusion";
+      }
+
+      if (
+        distortion === "Structured" ||
+        distortion === "Regulated" ||
+        primary === "Structured" ||
+        primary === "Regulated"
+      ) {
+        return highLoad && lowRegulation ? "rupture" : "overStructuring";
+      }
+
+      if (
+        distortion === "Diffused" ||
+        distortion === "Integrative" ||
+        primary === "Diffused" ||
+        primary === "Integrative" ||
+        field === "Diffused"
+      ) {
+        return "scatter";
+      }
+
+      if (
+        motionHas("Chaotic") ||
+        motionHas("Threshold") ||
+        distortion === "Chaotic" ||
+        distortion === "Threshold" ||
+        (highLoad && field === "Threshold")
+      ) {
+        return lowRegulation || highLoad ? "rupture" : "scatter";
+      }
+
+      if (primary === "Reconstructive" || field === "Reconstructive" || distortion === "Reconstructive") {
+        return highLoad ? "rupture" : "overStructuring";
+      }
+
+      return "overStructuring";
+    }
+
     function calculateHarmonics(data){
       const state = data?.state || {};
       const baselineState = data?.baselineState || {};
@@ -3148,11 +3236,23 @@
         distortion = "Structured";
       }
 
+      const distortionStateKey = getDistortionState(
+        {
+          primary,
+          support,
+          motionStyle,
+          distortion,
+          todayField
+        },
+        data
+      );
+
       return {
         primary,
         support,
         motionStyle,
         distortion,
+        distortionStateKey,
         todayField,
         natalScores,
         normalizedNatalScores,
@@ -3914,6 +4014,7 @@
       const capacityBand = capacityBandFromValue(state.capacity);
       const regulationBand = regulationBandFromValue(state.regulation);
       const distortion = harmonics.distortion || "Diffused";
+      const distortionState = DISTORTION_STATES[harmonics.distortionStateKey] || DISTORTION_STATES.overStructuring;
       const driverNote = buildDriverNote(data, harmonics, fieldTrend);
 
       setHTML("whyBaseline", harmonicLabel(primary));
@@ -3924,20 +4025,20 @@
       setText("whyLoad", loadBand);
       setText("whyCapacity", capacityBand);
       setText("whyRegulation", regulationBand);
-      setHTML("whyDistortion", harmonicLabel(distortion));
+      setText("whyDistortion", distortionState.label);
       setText("whyDirection", fieldTrend.trend);
       setText("whyRationale", fieldTrend.rationale);
       setText("whyPeakTiming", "Later backend pass");
       setText("whyMoonstampModifier", "Later integration");
 
-      let explanation = `This read comes from a ${harmonicText(primary)} signal architecture meeting a ${harmonicText(field)} field while the current state is ${currentState.toLowerCase()}. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. ${fieldTrend.rationale} ${driverNote}`;
+      let explanation = `This read comes from a ${harmonicText(primary)} signal architecture meeting a ${harmonicText(field)} field while the current state is ${currentState.toLowerCase()}. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${fieldTrend.rationale} ${driverNote}`;
 
       if (primary === "Chaotic" && field === "Reconstructive") {
-        explanation = `This does not mean the person is chaotic as a lifestyle or identity. It means the root signal moves quickly, nonlinearly, and toward pressure points. The ${harmonicText(field)} field adds repair pressure, so the best move is one honest adjustment, not a full rebuild. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} ${driverNote}`;
+        explanation = `This does not mean the person is chaotic as a lifestyle or identity. It means the root signal moves quickly, nonlinearly, and toward pressure points. The ${harmonicText(field)} field adds repair pressure, so the best move is one honest adjustment, not a full rebuild. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
       }
 
       if (primary === "Structured" && field === "Reconstructive") {
-        explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${harmonicText(primary)} signal architecture wants order, sequence, and meaning, while the ${harmonicText(field)} field pushes repair pressure. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild. ${driverNote}`;
+        explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${harmonicText(primary)} signal architecture wants order, sequence, and meaning, while the ${harmonicText(field)} field pushes repair pressure. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
       }
 
       if (currentState === "Threshold" && loadBand === "Overloaded" && capacityBand === "Decent") {
@@ -3949,7 +4050,7 @@
       }
 
       if (distortion === field) {
-        explanation += " The distortion pathway matches today’s field, so the same pattern that is active today can become the overload route if the load keeps stacking.";
+        explanation += " The raw distortion harmonic matches today’s field, so the same pattern that is active today can become the overload route if the load keeps stacking.";
       }
 
       setText("whyConfigText", explanation);
@@ -4088,6 +4189,7 @@
       const supportBase = getHarmonicBaseName(harmonics.support);
       const supportMeta = HARMONICS[supportBase] || HARMONICS.Regulated;
       const distortionMeta = HARMONICS[harmonics.distortion] || HARMONICS.Diffused;
+      const distortionState = DISTORTION_STATES[harmonics.distortionStateKey] || DISTORTION_STATES.overStructuring;
       const fieldMeta = HARMONICS[harmonics.todayField] || HARMONICS.Regulated;
       const currentState = stateLabelFromMode(data?.state?.mode || "");
       const fieldTrend = calculateFieldTrend(data, harmonics);
@@ -4132,11 +4234,11 @@
       setHTML("supportHarmonic", supportLabel);
       setHTML("motionStyle", motionStyleLabel);
       setText("motionStyleRead", motionStyleRead);
-      setHTML("distortionHarmonic", distortionLabel);
+      setHTML("distortionHarmonic", `${distortionLabel} · ${distortionState.label}`);
       setHTML("todayFieldHarmonic", fieldLabel);
       setText("signalQuality", primaryMeta.signalQuality);
       setText("stabilityMethod", primaryMeta.stabilityMethod);
-      setText("overloadRisk", distortionMeta.overloadRisk);
+      setText("overloadRisk", `${distortionState.short}. ${distortionState.plain}`);
       setText("harmonicPlainRead", primaryMeta.plainRead);
 
       setHTML("profileStateChip", `${primaryLabel}&nbsp;signal architecture`);
@@ -4215,12 +4317,15 @@
       const regulatorAverage = (saturn + venus + mercury) / 3;
 
       const harmonics = updateHarmonicUI(data);
+      const distortionState = DISTORTION_STATES[harmonics.distortionStateKey] || DISTORTION_STATES.overStructuring;
+
       console.log("Lucy.OS normalized harmonic scores:", {
         primary: harmonics.primary,
         support: harmonics.support,
         motionStyle: harmonics.motionStyle,
         motionStyleRead: getMotionStyleRead(harmonics.motionStyle),
-        distortion: harmonics.distortion,
+        rawDistortionHarmonic: harmonics.distortion,
+        primaryDistortionState: distortionState.label,
         todayField: harmonics.todayField,
         natalScores: harmonics.natalScores,
         normalizedNatalScores: harmonics.normalizedNatalScores,
@@ -4439,18 +4544,25 @@
       const supportCounts = {};
       const motionStyleCounts = {};
       const fieldCounts = {};
-      const distortionCounts = {};
+      const rawDistortionCounts = {};
+      const distortionStateCounts = {};
 
       Object.keys(HARMONICS).forEach(key => {
         primaryCounts[key] = 0;
         supportCounts[key] = 0;
         motionStyleCounts[key] = 0;
         fieldCounts[key] = 0;
-        distortionCounts[key] = 0;
+        rawDistortionCounts[key] = 0;
+      });
+
+      Object.values(DISTORTION_STATES).forEach(state => {
+        distortionStateCounts[state.label] = 0;
       });
 
       for (let i = 0; i < count; i++) {
-        const result = calculateHarmonics(randomHarmonicTestData());
+        const data = randomHarmonicTestData();
+        const result = calculateHarmonics(data);
+        const distortionState = DISTORTION_STATES[result.distortionStateKey] || DISTORTION_STATES.overStructuring;
 
         primaryCounts[result.primary] = (primaryCounts[result.primary] || 0) + 1;
 
@@ -4466,7 +4578,8 @@
           });
 
         fieldCounts[result.todayField] = (fieldCounts[result.todayField] || 0) + 1;
-        distortionCounts[result.distortion] = (distortionCounts[result.distortion] || 0) + 1;
+        rawDistortionCounts[result.distortion] = (rawDistortionCounts[result.distortion] || 0) + 1;
+        distortionStateCounts[distortionState.label] = (distortionStateCounts[distortionState.label] || 0) + 1;
       }
 
       console.table({
@@ -4474,7 +4587,8 @@
         Support: supportCounts,
         MotionStyle: motionStyleCounts,
         Field: fieldCounts,
-        Distortion: distortionCounts
+        RawDistortionHarmonic: rawDistortionCounts,
+        DistortionState: distortionStateCounts
       });
 
       return {
@@ -4482,7 +4596,8 @@
         supportCounts,
         motionStyleCounts,
         fieldCounts,
-        distortionCounts
+        rawDistortionCounts,
+        distortionStateCounts
       };
     }
 
@@ -4650,7 +4765,9 @@
       ];
 
       const results = cases.map(testCase => {
-        const result = calculateHarmonics(testCase.build());
+        const data = testCase.build();
+        const result = calculateHarmonics(data);
+        const distortionState = DISTORTION_STATES[result.distortionStateKey] || DISTORTION_STATES.overStructuring;
         const passed = testCase.expected.includes(result.primary);
 
         return {
@@ -4660,7 +4777,8 @@
           support: result.support,
           motionStyle: result.motionStyle,
           motionStyleRead: getMotionStyleRead(result.motionStyle),
-          distortion: result.distortion,
+          rawDistortionHarmonic: result.distortion,
+          primaryDistortionState: distortionState.label,
           todayField: result.todayField,
           passFail: passed ? "PASS" : "FAIL"
         };
