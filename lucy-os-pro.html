@@ -1133,6 +1133,51 @@
       overflow-wrap:anywhere;
     }
 
+    .shareCardFieldDirection{
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(176,108,255,.25);
+      border-radius:18px;
+      padding:16px;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(176,108,255,.15), transparent 36%),
+        radial-gradient(circle at 100% 12%, rgba(103,193,255,.09), transparent 34%),
+        linear-gradient(180deg,rgba(176,108,255,.075),rgba(103,193,255,.035));
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.025),
+        0 10px 28px rgba(0,0,0,.16);
+    }
+
+    .shareCardFieldDirection::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:linear-gradient(135deg,rgba(255,255,255,.04),transparent 46%);
+    }
+
+    .shareCardFieldDirection > *{
+      position:relative;
+      z-index:1;
+    }
+
+    .shareCardFieldTitle{
+      color:var(--text);
+      font-size:22px;
+      font-weight:950;
+      line-height:1.15;
+      letter-spacing:-.03em;
+      overflow-wrap:anywhere;
+    }
+
+    .shareCardFieldText{
+      color:#d9e0f4;
+      font-size:14px;
+      line-height:1.58;
+      font-weight:650;
+      overflow-wrap:break-word;
+    }
+
     .shareCardRead{
       color:var(--text);
       font-size:17px;
@@ -1651,6 +1696,16 @@
         gap:8px;
       }
       .shareCardWeather{font-size:34px}
+      .shareCardFieldDirection{
+        border-radius:16px;
+        padding:14px;
+      }
+      .shareCardFieldTitle{
+        font-size:20px;
+      }
+      .shareCardFieldText{
+        font-size:13px;
+      }
       .shareCardRead{font-size:15px}
       .shareActions{grid-template-columns:1fr}
     }
@@ -2033,6 +2088,14 @@
                   <div class="shareCardWeather" id="shareCardWeather">Structured signal architecture meeting a live field</div>
                 </div>
 
+                <div class="shareCardFieldDirection">
+                  <div class="shareCardSection">
+                    <div class="shareCardLabel">Current Field Direction</div>
+                    <div class="shareCardFieldTitle" id="shareCardFieldDirectionTitle">—</div>
+                    <div class="shareCardFieldText" id="shareCardFieldDirectionText">Waiting for field direction.</div>
+                  </div>
+                </div>
+
                 <div class="shareCardSection">
                   <div class="shareCardLabel">Today’s Read</div>
                   <div class="shareCardRead" id="shareCardTodayRead">Waiting for daily read.</div>
@@ -2393,6 +2456,8 @@
 
     let latestSharePayload = {
       systemWeather: "Structured signal architecture meeting a live field",
+      fieldDirectionTitle: "—",
+      fieldDirectionText: "Waiting for field direction.",
       todayRead: "Waiting for daily read.",
       driverNote: "Waiting for driver note.",
       goodMove: "—",
@@ -4199,9 +4264,24 @@
       setText("whyConfigText", explanation);
     }
 
-    function updateShareUI({ systemWeather, todayRead, driverNote, goodMove, returnText, primary, field, state, motionStyle, motionStyleRead }){
+    function updateShareUI({
+      systemWeather,
+      fieldDirectionTitle,
+      fieldDirectionText,
+      todayRead,
+      driverNote,
+      goodMove,
+      returnText,
+      primary,
+      field,
+      state,
+      motionStyle,
+      motionStyleRead
+    }){
       latestSharePayload = {
         systemWeather,
+        fieldDirectionTitle,
+        fieldDirectionText,
         todayRead,
         driverNote,
         goodMove,
@@ -4230,6 +4310,8 @@
       applyChipClass("shareCardStateChip", "shareCardChip violet", "");
 
       setText("shareCardWeather", systemWeather);
+      setText("shareCardFieldDirectionTitle", fieldDirectionTitle || "—");
+      setText("shareCardFieldDirectionText", fieldDirectionText || "Waiting for field direction.");
       setText("shareCardTodayRead", todayRead);
       setText("shareCardMotionStyle", harmonicText(motionStyle || "—"));
       setText("shareCardDriverNote", driverNote);
@@ -4243,6 +4325,10 @@
         "",
         "Today’s System Weather:",
         latestSharePayload.systemWeather,
+        "",
+        "Current Field Direction:",
+        latestSharePayload.fieldDirectionTitle || "—",
+        latestSharePayload.fieldDirectionText || "Waiting for field direction.",
         "",
         "Motion Style:",
         latestSharePayload.motionStyle || "—",
@@ -4336,6 +4422,7 @@
       const fieldMeta = HARMONICS[harmonics.todayField] || HARMONICS.Regulated;
       const currentState = stateLabelFromMode(data?.state?.mode || "");
       const fieldTrend = calculateFieldTrend(data, harmonics);
+      const fieldDirection = buildFieldDirectionText(harmonics, data);
 
       const primaryLabel = harmonicLabel(primaryMeta.label);
       const supportLabel = harmonics.support && String(harmonics.support).includes("/")
@@ -4398,6 +4485,8 @@
       updateWhyReadUI(harmonics, data, fieldTrend);
       updateShareUI({
         systemWeather,
+        fieldDirectionTitle: fieldDirection.title,
+        fieldDirectionText: fieldDirection.text,
         todayRead: guidance.read,
         driverNote: shareDriverNote,
         goodMove: guidance.move,
