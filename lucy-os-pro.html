@@ -1692,6 +1692,7 @@
               <div class="profileLabel">Motion Style</div>
               <div class="profileValue" id="motionStyle">—</div>
               <div class="profileDesc">How signal moves when activated.</div>
+              <div class="profileDesc" id="motionStyleRead">Waiting for motion style read.</div>
             </div>
 
             <div class="profileBlock">
@@ -2183,7 +2184,8 @@
       primary: "Structured",
       field: "—",
       state: "—",
-      motionStyle: "—"
+      motionStyle: "—",
+      motionStyleRead: "—"
     };
 
     function clamp(v, min, max){
@@ -2662,25 +2664,25 @@
       const CHAOTIC_FLOOR = 0.55;
       const THRESHOLD_FLOOR = 0.55;
       const CONTAINED_FLOOR = 0.52;
+      const RECONSTRUCTIVE_FLOOR = 0.56;
+      const DIFFUSED_FLOOR = 0.56;
       const FALLBACK_FLOOR = 0.62;
 
-      const motionParts = [];
-
-      const chaoticElevated =
+      const chaoticActive =
         chaoticScore >= CHAOTIC_FLOOR &&
         (
           chaoticScore >= primaryScore * 0.95 ||
           chaoticScore >= structuredScore * 1.00
         );
 
-      const thresholdElevated =
+      const thresholdActive =
         thresholdScore >= THRESHOLD_FLOOR &&
         (
           thresholdScore >= primaryScore * 0.95 ||
           thresholdScore >= chaoticScore * 0.95
         );
 
-      const containedElevated =
+      const containedActive =
         containedScore >= CONTAINED_FLOOR &&
         (
           containedScore >= primaryScore * 0.90 ||
@@ -2688,35 +2690,80 @@
           containedScore >= thresholdScore * 0.88
         );
 
-      if (chaoticElevated) {
-        motionParts.push("Chaotic");
+      const reconstructiveActive =
+        reconstructiveScore >= RECONSTRUCTIVE_FLOOR &&
+        (
+          reconstructiveScore >= primaryScore * 0.90 ||
+          reconstructiveScore >= chaoticScore * 0.88 ||
+          reconstructiveScore >= thresholdScore * 0.88
+        );
+
+      const diffusedActive =
+        diffusedScore >= DIFFUSED_FLOOR &&
+        (
+          diffusedScore >= primaryScore * 0.90 ||
+          diffusedScore >= chaoticScore * 0.88 ||
+          diffusedScore >= thresholdScore * 0.88
+        );
+
+      const orderedCandidates = [];
+
+      if (chaoticActive) orderedCandidates.push({ label: "Chaotic", score: chaoticScore });
+      if (thresholdActive) orderedCandidates.push({ label: "Threshold", score: thresholdScore });
+      if (containedActive) orderedCandidates.push({ label: "Contained", score: containedScore });
+      if (reconstructiveActive) orderedCandidates.push({ label: "Reconstructive", score: reconstructiveScore });
+      if (diffusedActive) orderedCandidates.push({ label: "Diffused", score: diffusedScore });
+
+      if (orderedCandidates.length >= 1 && orderedCandidates.length <= 3) {
+        return orderedCandidates.map(item => item.label).join(" / ");
       }
 
-      if (thresholdElevated) {
-        motionParts.push("Threshold");
+      if (orderedCandidates.length > 3) {
+        const locked = [];
+        const remainingSlots = () => 3 - locked.length;
+
+        if (chaoticActive) locked.push({ label: "Chaotic", score: chaoticScore });
+        if (thresholdActive && locked.length < 3) locked.push({ label: "Threshold", score: thresholdScore });
+
+        const remainingRanked = [
+          containedActive ? { label: "Contained", score: containedScore } : null,
+          reconstructiveActive ? { label: "Reconstructive", score: reconstructiveScore } : null,
+          diffusedActive ? { label: "Diffused", score: diffusedScore } : null
+        ]
+          .filter(Boolean)
+          .sort((a, b) => b.score - a.score)
+          .slice(0, remainingSlots());
+
+        const selectedLabels = [...locked, ...remainingRanked].map(item => item.label);
+
+        const motionOrder = {
+          Chaotic: 1,
+          Threshold: 2,
+          Contained: 3,
+          Reconstructive: 4,
+          Diffused: 5
+        };
+
+        return selectedLabels
+          .sort((a, b) => motionOrder[a] - motionOrder[b])
+          .join(" / ");
       }
 
-      if (containedElevated) {
-        motionParts.push("Contained");
+      const fallbackCandidates = [
+        { label: "Chaotic", score: chaoticScore },
+        { label: "Threshold", score: thresholdScore },
+        { label: "Contained", score: containedScore },
+        { label: "Reconstructive", score: reconstructiveScore },
+        { label: "Diffused", score: diffusedScore }
+      ].sort((a, b) => b.score - a.score);
+
+      const topMotion = fallbackCandidates[0];
+
+      if (topMotion && topMotion.score >= FALLBACK_FLOOR) {
+        return topMotion.label;
       }
 
-      if (!motionParts.length) {
-        const fallbackCandidates = [
-          { label: "Chaotic", score: chaoticScore },
-          { label: "Threshold", score: thresholdScore },
-          { label: "Contained", score: containedScore },
-          { label: "Reconstructive", score: reconstructiveScore },
-          { label: "Diffused", score: diffusedScore }
-        ].sort((a, b) => b.score - a.score);
-
-        const topMotion = fallbackCandidates[0];
-
-        if (topMotion && topMotion.score >= FALLBACK_FLOOR) {
-          motionParts.push(topMotion.label);
-        }
-      }
-
-      return motionParts.length ? motionParts.join(" / ") : "Steady";
+      return "Steady";
     }
 
     function calculateHarmonics(data){
@@ -3150,7 +3197,6 @@
         watch = "Trying to secure the relationship instead of reading the threshold clearly.";
         move = "Say the simple truth about what point the connection has reached.";
         ret = "Return to your center before responding to the other person’s signal.";
-
       } else if (primary === "Relational" && field === "Regulated") {
         read = "Your signal architecture stabilizes through contact, while today may support steadier pacing. This is a good field for calmer repair, clearer agreements, or less reactive connection.";
         lean = "Steady contact, simple repair, and paced communication.";
@@ -3477,6 +3523,57 @@
       return { read, lean, watch, move, ret };
     }
 
+    function getMotionStyleRead(motionStyle){
+      const parts = String(motionStyle || "")
+        .split("/")
+        .map(part => part.trim())
+        .filter(Boolean);
+
+      const normalizedParts = parts.length ? parts : ["Steady"];
+      const key = normalizedParts.join(" / ");
+
+      const reads = {
+        "Steady": "Signal moves through pacing, continuity, and manageable rhythm.",
+
+        "Chaotic": "Signal activates quickly, moves nonlinearly, and needs a useful channel.",
+        "Threshold": "Signal moves toward edges, decisions, access points, or crossings.",
+        "Contained": "Signal pulls inward, protects the channel, and waits for safety before release.",
+        "Reconstructive": "Signal moves toward repair, reset, structural correction, or rebuild pressure.",
+        "Diffused": "Signal spreads through the atmosphere and needs grounding before clear action.",
+
+        "Chaotic / Threshold": "Fast activation moves toward edges, crossings, or pressure points.",
+        "Chaotic / Contained": "Fast signal rises, then pulls inward to prevent spillover.",
+        "Threshold / Contained": "The system senses an edge, then protects the crossing until safety is clear.",
+        "Chaotic / Reconstructive": "Fast activation moves toward repair pressure and wants to fix the weak point quickly.",
+        "Threshold / Reconstructive": "The system senses a crossing where repair, reset, or structural change is needed.",
+        "Contained / Reconstructive": "Repair pressure goes inward first and needs a protected container before action.",
+        "Chaotic / Diffused": "Fast signal spreads across the field and needs grounding before it scatters.",
+        "Threshold / Diffused": "The system senses an edge, but the signal may feel unclear until the field settles.",
+        "Contained / Diffused": "Signal pulls inward and becomes atmospheric; grounding is needed before interpretation.",
+        "Reconstructive / Diffused": "Repair pressure is present, but the weak point may not be clear yet.",
+
+        "Chaotic / Threshold / Contained": "Fast activation finds the access point, then contains or closes the channel when the field feels unsafe, contaminated, or no longer repairable.",
+        "Chaotic / Threshold / Reconstructive": "Fast activation finds the pressure point and wants to force a repair or reset quickly.",
+        "Chaotic / Threshold / Diffused": "Fast activation finds an edge, but the field may feel scattered or unclear before the right move appears.",
+        "Chaotic / Contained / Reconstructive": "Fast repair pressure rises, then pulls inward so the system can process before acting.",
+        "Chaotic / Contained / Diffused": "Fast signal rises, spreads, then pulls inward because the field feels too porous or unclear.",
+        "Chaotic / Reconstructive / Diffused": "Fast repair pressure spreads quickly; the system needs one concrete weak point before acting.",
+        "Threshold / Contained / Reconstructive": "The system senses a repair threshold, then protects the channel until the change can happen safely.",
+        "Threshold / Contained / Diffused": "The system senses an edge, then pulls inward because the signal is not clear enough to cross cleanly.",
+        "Threshold / Reconstructive / Diffused": "The system senses a repair threshold, but needs clarity before deciding what actually needs to change.",
+        "Contained / Reconstructive / Diffused": "Repair pressure goes inward, becomes subtle or foggy, and needs grounding before any rebuild."
+      };
+
+      if (reads[key]) return reads[key];
+
+      if (normalizedParts.length === 1) {
+        return reads[normalizedParts[0]] || "Signal moves through a pattern that needs pacing, containment, and one clean next step.";
+      }
+
+      const readableParts = normalizedParts.map(part => part.toLowerCase()).join(", ");
+      return `Signal moves through ${readableParts}. Keep the interpretation practical and choose one clean next move.`;
+    }
+
     function buildDriverNote(data, harmonics, fieldTrend){
       const driver = publicDriverName(primaryDriverName(data));
       const field = harmonics?.todayField || "Regulated";
@@ -3657,6 +3754,7 @@
       const primary = harmonics.primary || "Structured";
       const field = harmonics.todayField || "Regulated";
       const motionStyle = harmonics.motionStyle || "—";
+      const motionStyleRead = getMotionStyleRead(motionStyle);
       const currentState = stateLabelFromMode(state.mode || "");
       const driver = publicDriverName(primaryDriverName(data));
       const loadBand = loadBandFromValue(state.amplifiedLoad);
@@ -3679,14 +3777,14 @@
       setText("whyPeakTiming", "Later backend pass");
       setText("whyMoonstampModifier", "Later integration");
 
-      let explanation = `This read comes from a ${harmonicText(primary)} signal architecture meeting a ${harmonicText(field)} field while the current state is ${currentState.toLowerCase()}. Motion Style is ${harmonicText(motionStyle).toLowerCase()}, which describes how the signal moves when activated. Load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. ${fieldTrend.rationale} ${driverNote}`;
+      let explanation = `This read comes from a ${harmonicText(primary)} signal architecture meeting a ${harmonicText(field)} field while the current state is ${currentState.toLowerCase()}. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. ${fieldTrend.rationale} ${driverNote}`;
 
       if (primary === "Chaotic" && field === "Reconstructive") {
-        explanation = `This does not mean the person is chaotic as a lifestyle or identity. It means the root signal moves quickly, nonlinearly, and toward pressure points. The ${harmonicText(field)} field adds repair pressure, so the best move is one honest adjustment, not a full rebuild. Motion Style is ${harmonicText(motionStyle).toLowerCase()}, which gives activation a home outside the Support layer. ${driverNote}`;
+        explanation = `This does not mean the person is chaotic as a lifestyle or identity. It means the root signal moves quickly, nonlinearly, and toward pressure points. The ${harmonicText(field)} field adds repair pressure, so the best move is one honest adjustment, not a full rebuild. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} ${driverNote}`;
       }
 
       if (primary === "Structured" && field === "Reconstructive") {
-        explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${harmonicText(primary)} signal architecture wants order, sequence, and meaning, while the ${harmonicText(field)} field pushes repair pressure. ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild. ${driverNote}`;
+        explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${harmonicText(primary)} signal architecture wants order, sequence, and meaning, while the ${harmonicText(field)} field pushes repair pressure. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild. ${driverNote}`;
       }
 
       if (currentState === "Threshold" && loadBand === "Overloaded" && capacityBand === "Decent") {
@@ -3704,7 +3802,7 @@
       setText("whyConfigText", explanation);
     }
 
-    function updateShareUI({ systemWeather, todayRead, driverNote, goodMove, returnText, primary, field, state, motionStyle }){
+    function updateShareUI({ systemWeather, todayRead, driverNote, goodMove, returnText, primary, field, state, motionStyle, motionStyleRead }){
       latestSharePayload = {
         systemWeather,
         todayRead,
@@ -3714,7 +3812,8 @@
         primary,
         field,
         state,
-        motionStyle
+        motionStyle,
+        motionStyleRead
       };
 
       setHTML("shareBaselineChip", `Signal:&nbsp;${harmonicLabel(primary)}`);
@@ -3750,6 +3849,7 @@
         "",
         "Motion Style:",
         latestSharePayload.motionStyle || "—",
+        latestSharePayload.motionStyleRead || "",
         "",
         "Today’s Read:",
         latestSharePayload.todayRead,
@@ -3847,6 +3947,7 @@
             .join(" / ")
         : harmonicLabel(supportMeta.label);
       const motionStyleLabel = harmonicLabel(harmonics.motionStyle || "Steady");
+      const motionStyleRead = getMotionStyleRead(harmonics.motionStyle || "Steady");
       const distortionLabel = harmonicLabel(distortionMeta.label);
       const fieldLabel = harmonicLabel(fieldMeta.label);
 
@@ -3877,6 +3978,7 @@
       setHTML("primaryHarmonic", primaryLabel);
       setHTML("supportHarmonic", supportLabel);
       setHTML("motionStyle", motionStyleLabel);
+      setText("motionStyleRead", motionStyleRead);
       setHTML("distortionHarmonic", distortionLabel);
       setHTML("todayFieldHarmonic", fieldLabel);
       setText("signalQuality", primaryMeta.signalQuality);
@@ -3900,7 +4002,8 @@
         primary: primaryMeta.label,
         field: fieldMeta.label,
         state: currentState,
-        motionStyle: harmonicText(harmonics.motionStyle || "Steady")
+        motionStyle: harmonicText(harmonics.motionStyle || "Steady"),
+        motionStyleRead
       });
 
       renderHarmonicLibrary(primaryMeta.label, fieldMeta.label);
@@ -3962,6 +4065,7 @@
         primary: harmonics.primary,
         support: harmonics.support,
         motionStyle: harmonics.motionStyle,
+        motionStyleRead: getMotionStyleRead(harmonics.motionStyle),
         distortion: harmonics.distortion,
         todayField: harmonics.todayField,
         natalScores: harmonics.natalScores,
@@ -4401,6 +4505,7 @@
           actualPrimary: result.primary,
           support: result.support,
           motionStyle: result.motionStyle,
+          motionStyleRead: getMotionStyleRead(result.motionStyle),
           distortion: result.distortion,
           todayField: result.todayField,
           passFail: passed ? "PASS" : "FAIL"
@@ -4413,6 +4518,7 @@
 
     window.runSyntheticHarmonicBalanceTest = runSyntheticHarmonicBalanceTest;
     window.runAstrologyCalibrationTest = runAstrologyCalibrationTest;
+    window.getMotionStyleRead = getMotionStyleRead;
 
     document.getElementById("calcBtn").addEventListener("click", calculate);
     document.getElementById("saveShareCardBtn").addEventListener("click", saveShareCard);
