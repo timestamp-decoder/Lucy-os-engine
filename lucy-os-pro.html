@@ -343,6 +343,89 @@
       font-weight:950;
     }
 
+    .interactionMap{
+      margin-top:13px;
+      border:1px solid rgba(103,193,255,.18);
+      border-radius:18px;
+      padding:12px;
+      background:
+        radial-gradient(circle at 8% 0%, rgba(103,193,255,.10), transparent 35%),
+        radial-gradient(circle at 92% 0%, rgba(216,184,76,.09), transparent 34%),
+        linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.018));
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.018),
+        0 10px 26px rgba(0,0,0,.12);
+    }
+
+    .interactionMapLabel{
+      color:var(--muted);
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      margin-bottom:10px;
+    }
+
+    .interactionMapGrid{
+      display:grid;
+      grid-template-columns:1fr auto 1fr auto 1.25fr;
+      gap:10px;
+      align-items:stretch;
+    }
+
+    .interactionNode{
+      border:1px solid rgba(255,255,255,.09);
+      border-radius:15px;
+      padding:12px 13px;
+      background:rgba(255,255,255,.035);
+      min-height:96px;
+      display:grid;
+      align-content:start;
+      gap:6px;
+    }
+
+    .interactionNode.move{
+      border-color:rgba(216,184,76,.22);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(216,184,76,.11), transparent 34%),
+        rgba(216,184,76,.045);
+    }
+
+    .interactionNodeLabel{
+      color:#b9c5e2;
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:.11em;
+      text-transform:uppercase;
+    }
+
+    .interactionNodeName{
+      color:var(--text);
+      font-size:16px;
+      font-weight:950;
+      line-height:1.22;
+      overflow-wrap:anywhere;
+    }
+
+    .interactionNodeText{
+      color:#d7def1;
+      font-size:12px;
+      line-height:1.48;
+      font-weight:700;
+      overflow-wrap:break-word;
+    }
+
+    .interactionOperator{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--gold);
+      font-size:20px;
+      font-weight:950;
+      min-width:18px;
+      opacity:.92;
+    }
+
     .motionStrip{
       display:grid;
       grid-template-columns:minmax(210px,.40fr) 1fr;
@@ -1625,6 +1708,12 @@
       .whyReadGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
       .whyMini.full{grid-column:1 / -1}
       .libraryGrid{grid-template-columns:1fr}
+      .interactionMapGrid{
+        grid-template-columns:1fr;
+      }
+      .interactionOperator{
+        min-height:18px;
+      }
       .shareIntro{
         display:grid;
       }
@@ -1655,6 +1744,18 @@
       }
       .pairingExplain span{
         border-radius:12px;
+      }
+      .interactionMap{
+        border-radius:15px;
+        padding:10px;
+      }
+      .interactionNode{
+        min-height:auto;
+        border-radius:13px;
+      }
+      .interactionOperator{
+        justify-content:flex-start;
+        padding-left:4px;
       }
       .motionStrip{
         grid-template-columns:1fr;
@@ -1783,6 +1884,33 @@
               <span><strong>Root pattern:</strong>&nbsp;—</span>
               <span><strong>Current field:</strong>&nbsp;—</span>
               <span><strong>Meaning:</strong>&nbsp;—</span>
+            </div>
+
+            <div class="interactionMap">
+              <div class="interactionMapLabel">Interaction Map</div>
+              <div class="interactionMapGrid">
+                <div class="interactionNode">
+                  <div class="interactionNodeLabel">Your System</div>
+                  <div class="interactionNodeName" id="interactionSystemName">—</div>
+                  <div class="interactionNodeText" id="interactionSystemText">Waiting for root signal.</div>
+                </div>
+
+                <div class="interactionOperator">×</div>
+
+                <div class="interactionNode">
+                  <div class="interactionNodeLabel">Today’s Field</div>
+                  <div class="interactionNodeName" id="interactionFieldName">—</div>
+                  <div class="interactionNodeText" id="interactionFieldText">Waiting for current field.</div>
+                </div>
+
+                <div class="interactionOperator">→</div>
+
+                <div class="interactionNode move">
+                  <div class="interactionNodeLabel">Best Move</div>
+                  <div class="interactionNodeName" id="interactionMoveName">—</div>
+                  <div class="interactionNodeText" id="interactionMoveText">Waiting for best move.</div>
+                </div>
+              </div>
             </div>
 
             <div class="motionStrip">
@@ -2779,6 +2907,50 @@
       const fieldPhrase = fieldPhraseFromHarmonic(field);
       const action = buildPairingAction(primary, field);
       return `${rootPhrase} + ${fieldPhrase} = ${action}`;
+    }
+
+    function primaryPlainPhrase(primary){
+      if (primary === "Structured") return "wants order, sequence, and usable form";
+      if (primary === "Contained") return "processes inward before release";
+      if (primary === "Chaotic") return "moves quickly through charge and pressure points";
+      if (primary === "Relational") return "reads tone, contact, and the shared field";
+      if (primary === "Threshold") return "senses edges, openings, and crossings";
+      if (primary === "Reconstructive") return "works through pressure by repairing form";
+      if (primary === "Integrative") return "gathers pieces into meaning";
+      if (primary === "Diffused") return "receives widely before defining";
+      if (primary === "Regulated") return "stabilizes through pacing and control";
+      return "has a root signal pattern";
+    }
+
+    function fieldPlainPhrase(field){
+      if (field === "Structured") return "structure support is available";
+      if (field === "Contained") return "the field is pulling inward";
+      if (field === "Chaotic") return "extra movement is active";
+      if (field === "Relational") return "contact is part of the field";
+      if (field === "Threshold") return "the field is near an edge";
+      if (field === "Reconstructive") return "repair pressure is active";
+      if (field === "Integrative") return "meaning is gathering";
+      if (field === "Diffused") return "the field is more atmospheric";
+      if (field === "Regulated") return "pacing is available";
+      return "today is activating the field";
+    }
+
+    function pairingMovePlainText(primary, field){
+      if (primary === "Chaotic" && field === "Reconstructive") return "Fix one weak point without turning the whole field into a rebuild.";
+      if (primary === "Structured" && field === "Reconstructive") return "Repair the weak point inside the structure, not the whole structure.";
+      if (primary === "Threshold" && field === "Reconstructive") return "Cross only the repair that is actually ready.";
+      if (primary === "Diffused" && field === "Reconstructive") return "Wait until the repair point is clear enough to name.";
+      if (primary === "Regulated" && field === "Reconstructive") return "Use pacing to make one honest adjustment.";
+      return "Choose one clear next move and keep the scope small.";
+    }
+
+    function updateInteractionMap(primary, field){
+      setHTML("interactionSystemName", `${harmonicLabel(primary)}&nbsp;signal`);
+      setText("interactionSystemText", primaryPlainPhrase(primary));
+      setHTML("interactionFieldName", `${harmonicLabel(field)}&nbsp;field`);
+      setText("interactionFieldText", fieldPlainPhrase(field));
+      setText("interactionMoveName", buildPairingAction(primary, field));
+      setText("interactionMoveText", pairingMovePlainText(primary, field));
     }
 
     function getFieldTranslation(field){
@@ -4462,6 +4634,8 @@
         `<span><strong>Current field:</strong>&nbsp;${fieldLabel}</span>` +
         `<span><strong>Meaning:</strong>&nbsp;${pairingMeaning}</span>`
       );
+
+      updateInteractionMap(primaryMeta.label, fieldMeta.label);
 
       setHTML("topMotionStyle", motionStyleLabel);
       setText("topMotionStyleRead", motionStyleRead);
