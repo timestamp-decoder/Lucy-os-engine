@@ -2589,38 +2589,55 @@
     }
 
     function buildMotionStyle(normalizedNatalScores, primary){
-      const chaoticScore = safeNum(normalizedNatalScores.Chaotic);
-      const thresholdScore = safeNum(normalizedNatalScores.Threshold);
-      const structuredScore = safeNum(normalizedNatalScores.Structured);
-      const primaryScore = safeNum(normalizedNatalScores[primary]);
+      const scores = normalizedNatalScores || {};
+
+      const chaoticScore = safeNum(scores.Chaotic);
+      const thresholdScore = safeNum(scores.Threshold);
+      const structuredScore = safeNum(scores.Structured);
+      const reconstructiveScore = safeNum(scores.Reconstructive);
+      const diffusedScore = safeNum(scores.Diffused);
+      const primaryScore = safeNum(scores[primary]);
+
+      const CHAOTIC_FLOOR = 0.55;
+      const THRESHOLD_FLOOR = 0.55;
+      const FALLBACK_FLOOR = 0.62;
 
       const motionParts = [];
 
-      if (
-        chaoticScore >= primaryScore * 0.78 ||
-        chaoticScore >= structuredScore * 0.85
-      ) {
+      const chaoticElevated =
+        chaoticScore >= CHAOTIC_FLOOR &&
+        (
+          chaoticScore >= primaryScore * 0.95 ||
+          chaoticScore >= structuredScore * 1.00
+        );
+
+      const thresholdElevated =
+        thresholdScore >= THRESHOLD_FLOOR &&
+        (
+          thresholdScore >= primaryScore * 0.95 ||
+          thresholdScore >= chaoticScore * 0.95
+        );
+
+      if (chaoticElevated) {
         motionParts.push("Chaotic");
       }
 
-      if (
-        thresholdScore >= primaryScore * 0.72 ||
-        thresholdScore >= chaoticScore * 0.82
-      ) {
+      if (thresholdElevated) {
         motionParts.push("Threshold");
       }
 
       if (!motionParts.length) {
-        const motionScores = {
-          Chaotic: chaoticScore,
-          Threshold: thresholdScore,
-          Reconstructive: safeNum(normalizedNatalScores.Reconstructive),
-          Diffused: safeNum(normalizedNatalScores.Diffused)
-        };
+        const fallbackCandidates = [
+          { label: "Chaotic", score: chaoticScore },
+          { label: "Threshold", score: thresholdScore },
+          { label: "Reconstructive", score: reconstructiveScore },
+          { label: "Diffused", score: diffusedScore }
+        ].sort((a, b) => b.score - a.score);
 
-        const topMotion = getTopHarmonic(motionScores, "");
-        if (safeNum(motionScores[topMotion]) >= 0.42) {
-          motionParts.push(topMotion);
+        const topMotion = fallbackCandidates[0];
+
+        if (topMotion && topMotion.score >= FALLBACK_FLOOR) {
+          motionParts.push(topMotion.label);
         }
       }
 
@@ -3518,7 +3535,7 @@
       }
 
       if (stateLabel === "Overloaded") {
-        note += " Since the system reads overloaded, reduce scope first.";
+        note += " Since the system reads overloaded, keep the move small.";
       } else if (stateLabel === "Threshold") {
         note += " Since the system reads near threshold, move carefully.";
       } else if (stateLabel === "Mobilized") {
