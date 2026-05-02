@@ -625,6 +625,33 @@
       line-height:1.68;
     }
 
+    .realLifeBlock{
+      margin-top:16px;
+      border:1px solid rgba(216,184,76,.24);
+      border-radius:16px;
+      padding:14px;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(216,184,76,.11), transparent 34%),
+        rgba(216,184,76,.045);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
+    }
+
+    .realLifeLabel{
+      color:var(--gold);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.11em;
+      text-transform:uppercase;
+      margin-bottom:7px;
+    }
+
+    .realLifeText{
+      color:var(--text);
+      font-size:14px;
+      line-height:1.58;
+      font-weight:750;
+    }
+
     .guidanceGrid{
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
@@ -1398,6 +1425,15 @@
       overflow-wrap:break-word;
     }
 
+    .shareCardRealLife{
+      border:1px solid rgba(216,184,76,.24);
+      border-radius:16px;
+      padding:14px;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(216,184,76,.12), transparent 34%),
+        rgba(216,184,76,.045);
+    }
+
     .shareCardMiniGrid{
       display:grid;
       gap:12px;
@@ -1880,8 +1916,9 @@
       .interactionMap{order:6}
       .motionStrip{order:7}
       .todayRead{order:8}
-      .guidanceGrid{order:9}
-      .todayOutlookLine{order:10}
+      .realLifeBlock{order:9}
+      .guidanceGrid{order:10}
+      .todayOutlookLine{order:11}
       .weatherLine{
         font-size:29px;
         line-height:1.03;
@@ -1996,6 +2033,15 @@
         margin-top:13px;
         line-height:1.62;
       }
+      .realLifeBlock{
+        border-radius:14px;
+        padding:12px;
+        margin-top:13px;
+      }
+      .realLifeText{
+        font-size:13px;
+        line-height:1.55;
+      }
       .guidanceGrid{
         margin-top:14px;
         gap:10px;
@@ -2043,6 +2089,10 @@
         font-size:13px;
       }
       .shareCardRead{font-size:15px}
+      .shareCardRealLife{
+        border-radius:14px;
+        padding:12px;
+      }
       .shareActions{grid-template-columns:1fr}
     }
   </style>
@@ -2196,6 +2246,11 @@
             <p class="todayRead" id="dailyTodayRead">
               Waiting for chart calculation. Lucy.OS will read your root signal architecture inside the current field.
             </p>
+
+            <div class="realLifeBlock">
+              <div class="realLifeLabel">In Real Life, This Means</div>
+              <div class="realLifeText" id="dailyRealLife">Waiting for plain-life translation.</div>
+            </div>
 
             <div class="guidanceGrid">
               <div class="guidanceBlock">
@@ -2496,6 +2551,13 @@
                 <div class="shareCardSection">
                   <div class="shareCardLabel">Today’s Read</div>
                   <div class="shareCardRead" id="shareCardTodayRead">Waiting for daily read.</div>
+                </div>
+
+                <div class="shareCardRealLife">
+                  <div class="shareCardSection">
+                    <div class="shareCardLabel">In Real Life, This Means</div>
+                    <div class="shareCardRead" id="shareCardRealLife">Waiting for plain-life translation.</div>
+                  </div>
                 </div>
 
                 <div class="shareCardMiniGrid">
@@ -2856,6 +2918,7 @@
       fieldDirectionTitle: "—",
       fieldDirectionText: "Waiting for field direction.",
       todayRead: "Waiting for daily read.",
+      realLifeText: "Waiting for plain-life translation.",
       driverNote: "Waiting for driver note.",
       goodMove: "—",
       returnText: "—",
@@ -4513,6 +4576,45 @@
       return `Signal moves through ${readableParts}. Keep the interpretation practical and choose one clean next move.`;
     }
 
+    function buildRealLifeTranslation(harmonics, data){
+      const primary = harmonics?.primary || "Structured";
+      const field = harmonics?.todayField || "Regulated";
+      const motionStyle = harmonicText(harmonics?.motionStyle || "");
+      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
+
+      let text = "";
+
+      if (primary === "Chaotic" && field === "Reconstructive") {
+        text = "When energy rises, choose one specific weak point to fix. Do not turn the whole situation into a rebuild.";
+      } else if (primary === "Integrative" && field === "Reconstructive") {
+        text = "When old pain, history, or meaning gets activated, come back to the one present issue that can actually be handled today.";
+      } else if (primary === "Structured" && field === "Reconstructive") {
+        text = "When something feels off, repair the specific part that is weak. Do not rebuild the whole structure unless the whole structure is actually failing.";
+      } else if (primary === "Threshold" && field === "Reconstructive") {
+        text = "When you sense a crossing or decision point, make the one repair that opens the next clean step. Do not force a full transformation.";
+      } else if (primary === "Diffused" && field === "Reconstructive") {
+        text = "When the pressure feels vague or heavy, wait until the real weak point is clear enough to name before trying to fix it.";
+      } else if (field === "Reconstructive") {
+        text = "Something may be asking for repair today. Choose one specific adjustment instead of treating the whole situation like it is broken.";
+      } else if (motionStyle.includes("Chaotic") && motionStyle.includes("Threshold")) {
+        text = "When activation rises, slow down enough to choose the one move that actually helps.";
+      } else if (motionStyle.includes("Diffused")) {
+        text = "If the situation feels blurry, ground first. Then choose one clear next step.";
+      } else {
+        text = "Translate the read into one practical action: name what is active, choose one clean move, and keep the scope small.";
+      }
+
+      if (stateLabel === "Overloaded") {
+        text += " Because the system reads overloaded, reduce scope before adding more.";
+      } else if (stateLabel === "Threshold") {
+        text += " Because the system reads near a threshold, pause before forcing the next step.";
+      } else if (stateLabel === "Mobilized") {
+        text += " Because the system is mobilized, use the energy without stacking extra demands.";
+      }
+
+      return text;
+    }
+
     function buildDriverNote(data, harmonics, fieldTrend){
       const driver = publicDriverName(primaryDriverName(data));
       const field = harmonics?.todayField || "Regulated";
@@ -4747,6 +4849,7 @@
       fieldDirectionTitle,
       fieldDirectionText,
       todayRead,
+      realLifeText,
       driverNote,
       goodMove,
       returnText,
@@ -4761,6 +4864,7 @@
         fieldDirectionTitle,
         fieldDirectionText,
         todayRead,
+        realLifeText,
         driverNote,
         goodMove,
         returnText,
@@ -4791,6 +4895,7 @@
       setText("shareCardFieldDirectionTitle", fieldDirectionTitle || "—");
       setText("shareCardFieldDirectionText", fieldDirectionText || "Waiting for field direction.");
       setText("shareCardTodayRead", todayRead);
+      setText("shareCardRealLife", realLifeText || "Translate the read into one practical action.");
       setText("shareCardMotionStyle", harmonicText(motionStyle || "—"));
       setText("shareCardDriverNote", driverNote);
       setText("shareCardGoodMove", goodMove);
@@ -4808,12 +4913,15 @@
         latestSharePayload.fieldDirectionTitle || "—",
         latestSharePayload.fieldDirectionText || "Waiting for field direction.",
         "",
+        "Today’s Read:",
+        latestSharePayload.todayRead,
+        "",
+        "In Real Life, This Means:",
+        latestSharePayload.realLifeText || "Translate the read into one practical action.",
+        "",
         "Motion Style:",
         latestSharePayload.motionStyle || "—",
         latestSharePayload.motionStyleRead || "",
-        "",
-        "Today’s Read:",
-        latestSharePayload.todayRead,
         "",
         "Today’s Driver:",
         latestSharePayload.driverNote,
@@ -4920,6 +5028,7 @@
       const systemWeather = `${harmonicText(primaryMeta.label)} signal architecture meeting a ${harmonicText(fieldMeta.label)} field`;
       const systemWeatherHTML = `${primaryLabel}&nbsp;signal architecture<br><span>meeting a</span> ${fieldLabel}&nbsp;field`;
       const guidance = buildDailyGuidance(harmonics, data);
+      const realLifeText = buildRealLifeTranslation(harmonics, data);
       const driver = publicDriverName(primaryDriverName(data));
       const shareDriverNote = buildShortDriverNote(data, harmonics, fieldTrend);
 
@@ -4937,6 +5046,7 @@
       setText("topMotionStyleRead", motionStyleRead);
 
       setText("dailyTodayRead", guidance.read);
+      setText("dailyRealLife", realLifeText);
       setText("dailyLeanInto", guidance.lean);
       setText("dailyWatchFor", guidance.watch);
       setText("dailyGoodMove", guidance.move);
@@ -4970,6 +5080,7 @@
         fieldDirectionTitle: fieldDirection.title,
         fieldDirectionText: fieldDirection.text,
         todayRead: guidance.read,
+        realLifeText,
         driverNote: shareDriverNote,
         goodMove: guidance.move,
         returnText: guidance.ret,
