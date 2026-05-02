@@ -195,6 +195,65 @@
       cursor:wait;
     }
 
+    .savedProfiles{
+      margin-top:14px;
+      border:1px solid rgba(103,193,255,.16);
+      border-radius:14px;
+      padding:14px;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(103,193,255,.08), transparent 34%),
+        rgba(255,255,255,.025);
+    }
+
+    .savedProfiles h3{
+      margin:0 0 10px;
+      color:var(--text);
+      font-size:13px;
+      font-weight:900;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+
+    .savedProfiles label{
+      margin-top:8px;
+    }
+
+    .savedProfiles button{
+      margin-top:10px;
+      padding:10px 12px;
+      font-size:12px;
+    }
+
+    .savedProfiles .profileButtonRow{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .savedProfiles .profileButtonRow button{
+      margin-top:10px;
+    }
+
+    .savedProfiles .deleteProfileBtn{
+      background:linear-gradient(180deg,rgba(255,102,102,.82),rgba(172,52,74,.92));
+    }
+
+    .profileSaveHelper{
+      margin-top:9px;
+      color:var(--muted2);
+      font-size:11px;
+      line-height:1.4;
+    }
+
+    .profileSaveStatus{
+      min-height:17px;
+      margin-top:8px;
+      color:var(--blue);
+      font-size:11px;
+      font-weight:800;
+      line-height:1.4;
+    }
+
     .tiny{
       font-size:11px;
       color:var(--muted);
@@ -2134,6 +2193,28 @@
 
         <button id="calcBtn">Calculate</button>
 
+        <div class="savedProfiles">
+          <h3>Saved Profiles</h3>
+
+          <label>Profile Name</label>
+          <input id="profileName" type="text" placeholder="Joshua, Andrea, Sister..." />
+
+          <button id="saveProfileBtn" type="button">Save Current Profile</button>
+
+          <label>Load Saved Profile</label>
+          <select id="savedProfilesSelect">
+            <option value="">No saved profiles yet</option>
+          </select>
+
+          <div class="profileButtonRow">
+            <button id="loadProfileBtn" type="button">Load Profile</button>
+            <button id="deleteProfileBtn" class="deleteProfileBtn" type="button">Delete Profile</button>
+          </div>
+
+          <div class="profileSaveHelper">Saved only on this device/browser.</div>
+          <div id="profileSaveStatus" class="profileSaveStatus"></div>
+        </div>
+
         <div class="tiny">
           Birth location resolves timezone, angles, and houses for accurate chart input.
         </div>
@@ -2783,6 +2864,7 @@
   <script>
 
     const API_URL = "/api/chart_inputs";
+    const SAVED_PROFILES_KEY = "lucyOSProSavedProfiles";
 
     const HARMONICS = {
       Structured: {
@@ -3018,6 +3100,150 @@
         .replace(/×/g, "x")
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "");
+    }
+
+    function getSavedProfiles(){
+      try {
+        const raw = localStorage.getItem(SAVED_PROFILES_KEY);
+        const parsed = JSON.parse(raw || "[]");
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (error) {
+        console.warn("Could not read saved Lucy.OS profiles.", error);
+        return [];
+      }
+    }
+
+    function setSavedProfiles(profiles){
+      try {
+        localStorage.setItem(SAVED_PROFILES_KEY, JSON.stringify(Array.isArray(profiles) ? profiles : []));
+      } catch (error) {
+        console.warn("Could not save Lucy.OS profiles.", error);
+        setText("profileSaveStatus", "Could not save profile on this device/browser.");
+      }
+    }
+
+    function renderSavedProfiles(){
+      const select = document.getElementById("savedProfilesSelect");
+      if (!select) return;
+
+      const profiles = getSavedProfiles()
+        .slice()
+        .sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
+
+      const currentValue = select.value;
+
+      select.innerHTML = "";
+
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = profiles.length ? "Select saved profile" : "No saved profiles yet";
+      select.appendChild(placeholder);
+
+      profiles.forEach(profile => {
+        const option = document.createElement("option");
+        option.value = profile.name;
+        option.textContent = profile.name;
+        select.appendChild(option);
+      });
+
+      if (currentValue && profiles.some(profile => profile.name === currentValue)) {
+        select.value = currentValue;
+      }
+    }
+
+    function saveCurrentProfile(){
+      const name = document.getElementById("profileName")?.value.trim() || "";
+      const dob = document.getElementById("dob")?.value || "";
+      const tobRaw = document.getElementById("tob")?.value.trim() || "";
+      const ampm = document.getElementById("ampm")?.value || "AM";
+      const locationText = document.getElementById("location")?.value.trim() || "";
+
+      if (!name) {
+        setText("profileSaveStatus", "Enter a profile name first.");
+        return;
+      }
+
+      if (!dob || !locationText) {
+        setText("profileSaveStatus", "Date of birth and birth location are required.");
+        return;
+      }
+
+      const profiles = getSavedProfiles();
+      const nextProfile = {
+        name,
+        dob,
+        tobRaw,
+        ampm,
+        locationText,
+        savedAt: new Date().toISOString()
+      };
+
+      const existingIndex = profiles.findIndex(profile => String(profile.name || "").toLowerCase() === name.toLowerCase());
+
+      if (existingIndex >= 0) {
+        profiles[existingIndex] = nextProfile;
+      } else {
+        profiles.push(nextProfile);
+      }
+
+      setSavedProfiles(profiles);
+      renderSavedProfiles();
+
+      const select = document.getElementById("savedProfilesSelect");
+      if (select) select.value = name;
+
+      setText("profileSaveStatus", existingIndex >= 0 ? "Profile updated on this device/browser." : "Profile saved on this device/browser.");
+    }
+
+    function loadSelectedProfile(){
+      const select = document.getElementById("savedProfilesSelect");
+      const selectedName = select?.value || "";
+
+      if (!selectedName) {
+        setText("profileSaveStatus", "Select a saved profile to load.");
+        return;
+      }
+
+      const profiles = getSavedProfiles();
+      const profile = profiles.find(item => item.name === selectedName);
+
+      if (!profile) {
+        setText("profileSaveStatus", "Saved profile was not found.");
+        renderSavedProfiles();
+        return;
+      }
+
+      const profileNameInput = document.getElementById("profileName");
+      const dobInput = document.getElementById("dob");
+      const tobInput = document.getElementById("tob");
+      const ampmInput = document.getElementById("ampm");
+      const locationInput = document.getElementById("location");
+
+      if (profileNameInput) profileNameInput.value = profile.name || "";
+      if (dobInput) dobInput.value = profile.dob || "";
+      if (tobInput) tobInput.value = profile.tobRaw || "";
+      if (ampmInput) ampmInput.value = profile.ampm || "AM";
+      if (locationInput) locationInput.value = profile.locationText || "";
+
+      setText("profileSaveStatus", "Profile loaded. Press Calculate to run this chart.");
+    }
+
+    function deleteSelectedProfile(){
+      const select = document.getElementById("savedProfilesSelect");
+      const selectedName = select?.value || "";
+
+      if (!selectedName) {
+        setText("profileSaveStatus", "Select a saved profile to delete.");
+        return;
+      }
+
+      const profiles = getSavedProfiles();
+      const nextProfiles = profiles.filter(profile => profile.name !== selectedName);
+
+      setSavedProfiles(nextProfiles);
+      renderSavedProfiles();
+
+      setText("profileSaveStatus", "Profile deleted from this device/browser.");
     }
 
     function sortedScoreKeys(scores){
@@ -5626,6 +5852,9 @@
     document.getElementById("calcBtn").addEventListener("click", calculate);
     document.getElementById("saveShareCardBtn").addEventListener("click", saveShareCard);
     document.getElementById("copyShareTextBtn").addEventListener("click", copyShareText);
+    document.getElementById("saveProfileBtn").addEventListener("click", saveCurrentProfile);
+    document.getElementById("loadProfileBtn").addEventListener("click", loadSelectedProfile);
+    document.getElementById("deleteProfileBtn").addEventListener("click", deleteSelectedProfile);
 
     document.getElementById("dob").value = "1980-11-21";
     document.getElementById("tob").value = "6:20";
@@ -5633,6 +5862,7 @@
     document.getElementById("location").value = "Cuero, TX";
 
     renderHarmonicLibrary();
+    renderSavedProfiles();
     calculate();
   </script>
 
