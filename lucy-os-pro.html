@@ -4461,3 +4461,1070 @@
 
       return { read, lean, watch, move, ret };
     }
+
+    function getMotionStyleRead(motionStyle){
+      const parts = String(motionStyle || "")
+        .split("/")
+        .map(part => part.trim())
+        .filter(Boolean);
+
+      const normalizedParts = parts.length ? parts : ["Steady"];
+      const key = normalizedParts.join(" / ");
+
+      const reads = {
+        "Steady": "Signal moves through pacing, continuity, and manageable rhythm.",
+
+        "Chaotic": "Signal activates quickly, moves nonlinearly, and needs a useful channel.",
+        "Threshold": "Signal moves toward edges, decisions, access points, or crossings.",
+        "Contained": "Signal pulls inward, protects the channel, and waits for safety before release.",
+        "Reconstructive": "Signal moves toward repair, reset, structural correction, or rebuild pressure.",
+        "Diffused": "Signal spreads through the atmosphere and needs grounding before clear action.",
+
+        "Chaotic / Threshold": "Fast activation moves toward edges, crossings, debugging points, repair points, and next-step pressure.",
+        "Chaotic / Contained": "Fast signal rises, then pulls inward to prevent spillover.",
+        "Threshold / Contained": "The system senses an edge, then protects the crossing until safety is clear.",
+        "Chaotic / Reconstructive": "Fast activation moves toward repair pressure and wants to fix the weak point quickly.",
+        "Threshold / Reconstructive": "The system senses a crossing where repair, reset, or structural change is needed.",
+        "Contained / Reconstructive": "Repair pressure goes inward first and needs a protected container before action.",
+        "Chaotic / Diffused": "Fast signal spreads across the field and needs grounding before it scatters.",
+        "Threshold / Diffused": "The system senses an edge, but the signal may feel unclear until the field settles.",
+        "Contained / Diffused": "Signal pulls inward and becomes atmospheric; grounding is needed before interpretation.",
+        "Reconstructive / Diffused": "Repair pressure is present, but the weak point may not be clear yet.",
+
+        "Chaotic / Threshold / Contained": "Fast activation finds the access point, then contains or closes the channel when the field feels unsafe, contaminated, or no longer repairable.",
+        "Chaotic / Threshold / Reconstructive": "Fast activation finds the pressure point and wants to force a repair or reset quickly.",
+        "Chaotic / Threshold / Diffused": "Fast activation finds an edge, but the field may feel scattered or unclear before the right move appears.",
+        "Chaotic / Contained / Reconstructive": "Fast repair pressure rises, then pulls inward so the system can process before acting.",
+        "Chaotic / Contained / Diffused": "Fast signal rises, spreads, then pulls inward because the field feels too porous or unclear.",
+        "Chaotic / Reconstructive / Diffused": "Fast repair pressure spreads quickly; the system needs one concrete weak point before acting.",
+        "Threshold / Contained / Reconstructive": "The system senses a repair threshold, then protects the channel until the change can happen safely.",
+        "Threshold / Contained / Diffused": "The system senses an edge, then pulls inward because the signal is not clear enough to cross cleanly.",
+        "Threshold / Reconstructive / Diffused": "The system senses a repair threshold, but needs clarity before deciding what actually needs to change.",
+        "Contained / Reconstructive / Diffused": "Repair pressure goes inward, becomes subtle or foggy, and needs grounding before any rebuild."
+      };
+
+      if (reads[key]) return reads[key];
+
+      if (normalizedParts.length === 1) {
+        return reads[normalizedParts[0]] || "Signal moves through a pattern that needs pacing, containment, and one clean next step.";
+      }
+
+      const readableParts = normalizedParts.map(part => part.toLowerCase()).join(", ");
+      return `Signal moves through ${readableParts}. Keep the interpretation practical and choose one clean next move.`;
+    }
+
+    function buildDriverNote(data, harmonics, fieldTrend){
+      const driver = publicDriverName(primaryDriverName(data));
+      const field = harmonics?.todayField || "Regulated";
+      const trend = fieldTrend?.trend || "Stable";
+      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
+      const planetary = data?.planetary || {};
+
+      const volatility = safeNum(
+        planetary.uranus,
+        driverValueFromTaggedList(data?.telemetry?.topDrivers, "Uranus")
+      );
+      const fog = safeNum(
+        planetary.neptune,
+        driverValueFromTaggedList(data?.telemetry?.topDrivers, "Neptune")
+      );
+      const activation = safeNum(
+        planetary.mars,
+        driverValueFromTaggedList(data?.telemetry?.topDrivers, "Mars")
+      );
+
+      const cleanDriver = driver && driver !== "—" ? driver : "The strongest current driver";
+      const driverLower = String(cleanDriver).toLowerCase();
+
+      let note = `${cleanDriver} may be shaping how today’s field lands in your system. With a ${field.toLowerCase()} field and a ${trend.toLowerCase()} trend, keep the read practical and choose one manageable next move.`;
+
+      if (driverLower.includes("pluto")) {
+        note = "Pluto may make the pressure feel deeper, heavier, or more fundamental today. Treat it as a signal for one honest repair, not proof that the whole system has to be rebuilt.";
+      } else if (driverLower.includes("mars")) {
+        note = "Mars may raise activation, urgency, or heat today. Use the extra charge for one clear action instead of letting it push the whole field faster than it needs to go.";
+      } else if (driverLower.includes("uranus")) {
+        note = "Uranus may add movement, disruption, or sudden signal today. Let the change show you what needs attention without reacting to every spark.";
+      } else if (driverLower.includes("neptune")) {
+        note = "Neptune may make the field feel more porous, foggy, or emotionally blended today. Reduce extra input and look for one simple true line.";
+      } else if (driverLower.includes("saturn")) {
+        note = "Saturn may add pressure, limits, or structure today. Use the container to simplify the load instead of turning every limit into a blockage.";
+      } else if (driverLower.includes("venus")) {
+        note = "Venus may bring tone, contact, comfort, or relational regulation into focus today. Let steadiness and repair matter more than perfect control.";
+      } else if (driverLower.includes("mercury")) {
+        note = "Mercury may sharpen language, interpretation, and decision-making today. Name the signal plainly, then stop before analysis becomes extra load.";
+      } else if (driverLower.includes("moon")) {
+        note = "The Moon may make the field more responsive, emotional, or body-led today. Let the signal settle before turning it into a conclusion.";
+      } else if (driverLower.includes("jupiter")) {
+        note = "Jupiter may widen the field, add meaning, or increase scale today. Let the larger pattern help, but do not make the day carry every possibility.";
+      } else if (driverLower.includes("sun")) {
+        note = "The Sun may bring identity, focus, or visibility into the field today. Let the signal clarify direction without forcing the whole self to prove something.";
+      }
+
+      if (field === "Reconstructive" && !driverLower.includes("pluto")) {
+        note += " Because the field is reconstructive, focus on one repair that is actually present.";
+      } else if (field === "Threshold" && !driverLower.includes("mars")) {
+        note += " Because the field is near a threshold, pause before crossing and choose the next step cleanly.";
+      } else if (field === "Diffused" && !driverLower.includes("neptune")) {
+        note += " Because the field is diffused, fewer inputs may help the real signal stand out.";
+      } else if (field === "Chaotic" && !driverLower.includes("uranus")) {
+        note += " Because the field is charged, give the movement one safe container.";
+      }
+
+      if (stateLabel === "Overloaded") {
+        note += " Since the system reads overloaded, reduce scope before adding more interpretation.";
+      } else if (stateLabel === "Threshold") {
+        note += " Since the system reads near threshold, move carefully and avoid forcing the timing.";
+      } else if (stateLabel === "Mobilized") {
+        note += " Since the system reads mobilized, use the momentum without stacking demands.";
+      }
+
+      if (fog >= 0.72 && !driverLower.includes("neptune")) {
+        note += " A higher fog signal can make things feel less defined, so simple language helps.";
+      }
+
+      if (activation >= 0.72 && !driverLower.includes("mars")) {
+        note += " A higher activation signal can make the body want to move faster than the field is ready for.";
+      }
+
+      if (volatility >= 0.72 && !driverLower.includes("uranus")) {
+        note += " A higher volatility signal can make changes feel sudden, so keep the response contained.";
+      }
+
+      return note;
+    }
+
+    function buildShortDriverNote(data, harmonics, fieldTrend){
+      const driver = publicDriverName(primaryDriverName(data));
+      const field = harmonics?.todayField || "Regulated";
+      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
+      const planetary = data?.planetary || {};
+
+      const fog = safeNum(
+        planetary.neptune,
+        driverValueFromTaggedList(data?.telemetry?.topDrivers, "Neptune")
+      );
+      const activation = safeNum(
+        planetary.mars,
+        driverValueFromTaggedList(data?.telemetry?.topDrivers, "Mars")
+      );
+
+      const cleanDriver = driver && driver !== "—" ? driver : "The strongest current driver";
+      const driverLower = String(cleanDriver).toLowerCase();
+
+      let note = `${cleanDriver} may shape how today’s field lands. Choose one manageable next move.`;
+
+      if (driverLower.includes("pluto")) {
+        note = "Pluto may make the pressure feel deeper or more fundamental today. Use it for one honest repair, not a full rebuild.";
+      } else if (driverLower.includes("mars")) {
+        note = "Mars may raise activation or urgency today. Use the extra charge for one clear action.";
+      } else if (driverLower.includes("uranus")) {
+        note = "Uranus may add movement or sudden signal today. Let the change show one useful adjustment.";
+      } else if (driverLower.includes("neptune")) {
+        note = "Neptune may make the field feel foggier or more blended today. Reduce input and find one simple true line.";
+      } else if (driverLower.includes("saturn")) {
+        note = "Saturn may add pressure, limits, or structure today. Use the container to simplify the load.";
+      } else if (driverLower.includes("venus")) {
+        note = "Venus may bring tone, contact, or relational regulation into focus today. Let steadiness and repair lead.";
+      } else if (driverLower.includes("mercury")) {
+        note = "Mercury may sharpen language and interpretation today. Name the signal plainly, then stop.";
+      } else if (driverLower.includes("moon")) {
+        note = "The Moon may make the field more responsive or body-led today. Let the signal settle first.";
+      } else if (driverLower.includes("jupiter")) {
+        note = "Jupiter may widen the field or add meaning today. Let the larger pattern help without carrying everything.";
+      } else if (driverLower.includes("sun")) {
+        note = "The Sun may bring identity, focus, or visibility into the field today. Let the signal clarify direction without forcing proof.";
+      }
+
+      if (field === "Reconstructive" && !driverLower.includes("pluto")) {
+        note += " Focus on one repair that is actually present.";
+      } else if (field === "Threshold" && !driverLower.includes("mars")) {
+        note += " Pause before crossing and choose the next step cleanly.";
+      } else if (field === "Diffused" && !driverLower.includes("neptune")) {
+        note += " Fewer inputs can help the real signal stand out.";
+      } else if (field === "Chaotic" && !driverLower.includes("uranus")) {
+        note += " Give the movement one safe container.";
+      }
+
+      if (stateLabel === "Overloaded") {
+        note += " Since the system reads overloaded, keep the move small.";
+      } else if (stateLabel === "Threshold") {
+        note += " Since the system reads near threshold, move carefully.";
+      } else if (stateLabel === "Mobilized") {
+        note += " Because the system is mobilized, keep momentum paced.";
+      }
+
+      if (fog >= 0.72 && !driverLower.includes("neptune")) {
+        note += " Simple language helps.";
+      }
+
+      if (activation >= 0.72 && !driverLower.includes("mars")) {
+        note += " Do not let the body outrun the field.";
+      }
+
+      return note;
+    }
+
+    function renderHarmonicLibrary(activePrimary = "", activeField = ""){
+      const grid = document.getElementById("harmonicLibraryGrid");
+      if (!grid) return;
+
+      grid.innerHTML = Object.entries(HARMONICS).map(([key, item]) => {
+        const activeClass = key === activePrimary || key === activeField ? "active" : "";
+        const activeLabel = key === activePrimary
+          ? "Root signal architecture"
+          : key === activeField
+            ? "Current field"
+            : "";
+
+        return `
+          <article class="libraryCard ${activeClass}">
+            <h3>${harmonicLabel(item.label)}${activeLabel ? `&nbsp;· ${activeLabel}` : ""}</h3>
+            <p><strong>Signal Quality:</strong> ${item.signalQuality}</p>
+            <p><strong>Stability Method:</strong> ${item.stabilityMethod}</p>
+            <p><strong>Overload Risk:</strong> ${item.overloadRisk}</p>
+            <p>${item.plainRead}</p>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function updateWhyReadUI(harmonics, data, fieldTrend){
+      const state = data?.state || {};
+      const primary = harmonics.primary || "Structured";
+      const field = harmonics.todayField || "Regulated";
+      const motionStyle = harmonics.motionStyle || "—";
+      const motionStyleRead = getMotionStyleRead(motionStyle);
+      const currentState = stateLabelFromMode(state.mode || "");
+      const driver = publicDriverName(primaryDriverName(data));
+      const loadBand = loadBandFromValue(state.amplifiedLoad);
+      const capacityBand = capacityBandFromValue(state.capacity);
+      const regulationBand = regulationBandFromValue(state.regulation);
+      const distortion = harmonics.distortion || "Diffused";
+      const distortionState = DISTORTION_STATES[harmonics.distortionStateKey] || DISTORTION_STATES.overStructuring;
+      const driverNote = buildDriverNote(data, harmonics, fieldTrend);
+
+      setHTML("whyBaseline", harmonicLabel(primary));
+      setHTML("whyField", harmonicLabel(field));
+      setHTML("whyMotionStyle", harmonicLabel(motionStyle));
+      setText("whyState", currentState);
+      setText("whyDriver", driver);
+      setText("whyLoad", loadBand);
+      setText("whyCapacity", capacityBand);
+      setText("whyRegulation", regulationBand);
+      setText("whyDistortion", distortionState.label);
+      setText("whyDirection", fieldTrend.trend);
+      setText("whyRationale", fieldTrend.rationale);
+      setText("whyPeakTiming", "Later backend pass");
+      setText("whyMoonstampModifier", "Later integration");
+
+      let explanation = `This read comes from a ${harmonicText(primary)} signal architecture meeting a ${harmonicText(field)} field while the current state is ${currentState.toLowerCase()}. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${fieldTrend.rationale} ${driverNote}`;
+
+      if (primary === "Chaotic" && field === "Reconstructive") {
+        explanation = `This does not mean the person is chaotic as a lifestyle or identity. It means the root signal moves quickly, nonlinearly, and toward pressure points. The ${harmonicText(field)} field adds repair pressure, so the best move is one honest adjustment, not a full rebuild. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
+      }
+
+      if (primary === "Structured" && field === "Reconstructive") {
+        explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${harmonicText(primary)} signal architecture wants order, sequence, and meaning, while the ${harmonicText(field)} field pushes repair pressure. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
+      }
+
+      if (currentState === "Threshold" && loadBand === "Overloaded" && capacityBand === "Decent") {
+        explanation += " Load is reading overloaded, but the system still has usable capacity. This is an edge, not a collapse.";
+      }
+
+      if (String(driver).toLowerCase().includes("pluto")) {
+        explanation += " Pluto as the primary driver can make the pressure feel fundamental, but the guidance is still to avoid treating every weak point like the whole system is broken.";
+      }
+
+      if (distortion === field) {
+        explanation += " The raw distortion harmonic matches today’s field, so the same pattern that is active today can become the overload route if the load keeps stacking.";
+      }
+
+      setText("whyConfigText", explanation);
+    }
+
+    function updateShareUI({
+      systemWeather,
+      fieldDirectionTitle,
+      fieldDirectionText,
+      todayRead,
+      driverNote,
+      goodMove,
+      returnText,
+      primary,
+      field,
+      state,
+      motionStyle,
+      motionStyleRead
+    }){
+      latestSharePayload = {
+        systemWeather,
+        fieldDirectionTitle,
+        fieldDirectionText,
+        todayRead,
+        driverNote,
+        goodMove,
+        returnText,
+        primary,
+        field,
+        state,
+        motionStyle,
+        motionStyleRead
+      };
+
+      setHTML("shareBaselineChip", `Signal:&nbsp;${harmonicLabel(primary)}`);
+      setHTML("shareFieldChip", `Field:&nbsp;${harmonicLabel(field)}`);
+      setText("shareStateChip", `State: ${state}`);
+
+      setHTML("shareCardBaselineChip", `Signal:&nbsp;${harmonicLabel(primary)}`);
+      setHTML("shareCardFieldChip", `Field:&nbsp;${harmonicLabel(field)}`);
+      setText("shareCardStateChip", `State: ${state}`);
+
+      applyChipClass("shareBaselineChip", "shareChip", primary);
+      applyChipClass("shareFieldChip", "shareChip", field);
+      applyChipClass("shareStateChip", "shareChip violet", "");
+
+      applyChipClass("shareCardBaselineChip", "shareCardChip", primary);
+      applyChipClass("shareCardFieldChip", "shareCardChip", field);
+      applyChipClass("shareCardStateChip", "shareCardChip violet", "");
+
+      setText("shareCardWeather", systemWeather);
+      setText("shareCardFieldDirectionTitle", fieldDirectionTitle || "—");
+      setText("shareCardFieldDirectionText", fieldDirectionText || "Waiting for field direction.");
+      setText("shareCardTodayRead", todayRead);
+      setText("shareCardMotionStyle", harmonicText(motionStyle || "—"));
+      setText("shareCardDriverNote", driverNote);
+      setText("shareCardGoodMove", goodMove);
+      setText("shareCardReturn", returnText);
+    }
+
+    function getShareText(){
+      return [
+        "Lucy.OS Pro",
+        "",
+        "Today’s System Weather:",
+        latestSharePayload.systemWeather,
+        "",
+        "Current Field Direction:",
+        latestSharePayload.fieldDirectionTitle || "—",
+        latestSharePayload.fieldDirectionText || "Waiting for field direction.",
+        "",
+        "Motion Style:",
+        latestSharePayload.motionStyle || "—",
+        latestSharePayload.motionStyleRead || "",
+        "",
+        "Today’s Read:",
+        latestSharePayload.todayRead,
+        "",
+        "Today’s Driver:",
+        latestSharePayload.driverNote,
+        "",
+        "One Good Move:",
+        latestSharePayload.goodMove,
+        "",
+        "Return to yourself by:",
+        latestSharePayload.returnText,
+        "",
+        "Personal field guidance · Lucy.OS Pro"
+      ].join("\n");
+    }
+
+    async function copyShareText(){
+      const status = document.getElementById("shareStatus");
+
+      try {
+        await navigator.clipboard.writeText(getShareText());
+        if (status) status.textContent = "Copied share text.";
+      } catch (error) {
+        if (status) status.textContent = "Copy failed. You can manually select and copy the text.";
+      }
+    }
+
+    async function saveShareCard(){
+      const status = document.getElementById("shareStatus");
+      const card = document.getElementById("lucyShareCard");
+
+      if (!card) {
+        if (status) status.textContent = "Share card was not found.";
+        return;
+      }
+
+      if (typeof html2canvas === "undefined") {
+        if (status) status.textContent = "Image exporter did not load. You can still screenshot the card.";
+        return;
+      }
+
+      try {
+        if (status) status.textContent = "Creating image...";
+
+        const canvas = await html2canvas(card, {
+          backgroundColor: "#09142f",
+          scale: 2,
+          useCORS: true,
+          logging: false
+        });
+
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            if (status) status.textContent = "Image save failed. You can still screenshot the card.";
+            return;
+          }
+
+          const weatherSlug = slugify(latestSharePayload.systemWeather || "lucy-os-pro");
+          const filename = weatherSlug ? `lucy-os-pro-${weatherSlug}.png` : "lucy-os-pro-share-card.png";
+
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.download = filename;
+          link.href = url;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+          if (status) status.textContent = "Saved share card.";
+        }, "image/png");
+      } catch (error) {
+        console.error("Could not save Lucy.OS Pro share card.", error);
+        if (status) status.textContent = "Image save failed. You can still screenshot the card.";
+      }
+    }
+
+    function updateHarmonicUI(data){
+      const harmonics = calculateHarmonics(data);
+      const primaryMeta = HARMONICS[harmonics.primary] || HARMONICS.Structured;
+      const supportBase = getHarmonicBaseName(harmonics.support);
+      const supportMeta = HARMONICS[supportBase] || HARMONICS.Regulated;
+      const distortionMeta = HARMONICS[harmonics.distortion] || HARMONICS.Diffused;
+      const distortionState = DISTORTION_STATES[harmonics.distortionStateKey] || DISTORTION_STATES.overStructuring;
+      const fieldMeta = HARMONICS[harmonics.todayField] || HARMONICS.Regulated;
+      const currentState = stateLabelFromMode(data?.state?.mode || "");
+      const fieldTrend = calculateFieldTrend(data, harmonics);
+      const fieldDirection = buildFieldDirectionText(harmonics, data);
+
+      const primaryLabel = harmonicLabel(primaryMeta.label);
+      const supportLabel = harmonics.support && String(harmonics.support).includes("/")
+        ? String(harmonics.support)
+            .split("/")
+            .map(part => harmonicLabel(part.trim()))
+            .join(" / ")
+        : harmonicLabel(supportMeta.label);
+      const motionStyleLabel = harmonicLabel(harmonics.motionStyle || "Steady");
+      const motionStyleRead = getMotionStyleRead(harmonics.motionStyle || "Steady");
+      const distortionLabel = harmonicLabel(distortionMeta.label);
+      const fieldLabel = harmonicLabel(fieldMeta.label);
+
+      const primaryPhrase = primaryPhraseFromHarmonic(primaryMeta.label);
+      const fieldPhrase = fieldPhraseFromHarmonic(fieldMeta.label);
+      const pairingMeaning = `${primaryPhrase} + ${fieldPhrase} = ${buildPairingAction(primaryMeta.label, fieldMeta.label)}`;
+      const systemWeather = `${harmonicText(primaryMeta.label)} signal architecture meeting a ${harmonicText(fieldMeta.label)} field`;
+      const systemWeatherHTML = `${primaryLabel}&nbsp;signal architecture<br><span>meeting a</span> ${fieldLabel}&nbsp;field`;
+      const guidance = buildDailyGuidance(harmonics, data);
+      const driver = publicDriverName(primaryDriverName(data));
+      const shareDriverNote = buildShortDriverNote(data, harmonics, fieldTrend);
+
+      setHTML("systemWeatherLine", systemWeatherHTML);
+      setHTML(
+        "pairingExplain",
+        `<span><strong>Root pattern:</strong>&nbsp;${primaryLabel}</span>` +
+        `<span><strong>Current field:</strong>&nbsp;${fieldLabel}</span>` +
+        `<span><strong>Meaning:</strong>&nbsp;${pairingMeaning}</span>`
+      );
+
+      updateInteractionMap(primaryMeta.label, fieldMeta.label);
+
+      setHTML("topMotionStyle", motionStyleLabel);
+      setText("topMotionStyleRead", motionStyleRead);
+
+      setText("dailyTodayRead", guidance.read);
+      setText("dailyLeanInto", guidance.lean);
+      setText("dailyWatchFor", guidance.watch);
+      setText("dailyGoodMove", guidance.move);
+      setText("dailyReturn", guidance.ret);
+      setText(
+        "todayOutlookLine",
+        `Current Field Direction: Trend: ${fieldTrend.trend} · Driver: ${driver} · ${fieldTrend.fieldPhrase}`
+      );
+
+      setHTML("primaryHarmonic", primaryLabel);
+      setHTML("supportHarmonic", supportLabel);
+      setHTML("motionStyle", motionStyleLabel);
+      setText("motionStyleRead", motionStyleRead);
+      setHTML("distortionHarmonic", `${distortionLabel} · ${distortionState.label}`);
+      setHTML("todayFieldHarmonic", fieldLabel);
+      setText("signalQuality", primaryMeta.signalQuality);
+      setText("stabilityMethod", primaryMeta.stabilityMethod);
+      setText("overloadRisk", `${distortionState.short}. ${distortionState.plain}`);
+      setText("harmonicPlainRead", primaryMeta.plainRead);
+
+      setHTML("profileStateChip", `${primaryLabel}&nbsp;signal architecture`);
+      setHTML("profileFieldChip", `${fieldLabel}&nbsp;field`);
+      applyChipClass("profileStateChip", "chip", primaryMeta.label);
+      applyChipClass("profileFieldChip", "chip", fieldMeta.label);
+
+      updateFieldTranslationUI(fieldMeta.label);
+      updateOutlookUI(data, harmonics);
+      updateWhyReadUI(harmonics, data, fieldTrend);
+      updateShareUI({
+        systemWeather,
+        fieldDirectionTitle: fieldDirection.title,
+        fieldDirectionText: fieldDirection.text,
+        todayRead: guidance.read,
+        driverNote: shareDriverNote,
+        goodMove: guidance.move,
+        returnText: guidance.ret,
+        primary: primaryMeta.label,
+        field: fieldMeta.label,
+        state: currentState,
+        motionStyle: harmonicText(harmonics.motionStyle || "Steady"),
+        motionStyleRead
+      });
+
+      renderHarmonicLibrary(primaryMeta.label, fieldMeta.label);
+
+      return harmonics;
+    }
+
+    function updateUI(data){
+      console.log("Lucy.OS Pro response:", data);
+      window.lastLucyData = data;
+
+      const state = data?.state || {};
+      const telemetry = data?.telemetry || {};
+      const environment = data?.environment || {};
+      const forecast = data?.forecast || {};
+      const planetary = data?.planetary || {};
+      const inputResolved = data?.inputResolved || {};
+      const ephemeris = data?.ephemeris || {};
+
+      const capacity = safeNum(state.capacity);
+      const strain = safeNum(state.strain);
+      const load = safeNum(state.amplifiedLoad);
+      const regulation = safeNum(state.regulation);
+      const effective = safeNum(state.effectiveLoad);
+      const modeText = state.mode || "Regulated";
+
+      const effectiveDisplay = Math.min(effective, Math.max(capacity * 1.15, 1.10));
+
+      const volatility = safeNum(
+        planetary.uranus,
+        driverValueFromTaggedList(telemetry.topDrivers, "Uranus")
+      );
+      const fog = safeNum(
+        planetary.neptune,
+        driverValueFromTaggedList(telemetry.topDrivers, "Neptune")
+      );
+      const activation = safeNum(
+        planetary.mars,
+        driverValueFromTaggedList(telemetry.topDrivers, "Mars")
+      );
+
+      const saturn = safeNum(
+        planetary.saturn,
+        driverValueFromTaggedList(telemetry.topRegulators, "Saturn")
+      );
+      const venus = safeNum(
+        planetary.venus,
+        driverValueFromTaggedList(telemetry.topRegulators, "Venus")
+      );
+      const mercury = safeNum(
+        planetary.mercury,
+        driverValueFromTaggedList(telemetry.topRegulators, "Mercury")
+      );
+
+      const regulatorAverage = (saturn + venus + mercury) / 3;
+
+      const harmonics = updateHarmonicUI(data);
+      updateFieldCompass(data);
+
+      const distortionState = DISTORTION_STATES[harmonics.distortionStateKey] || DISTORTION_STATES.overStructuring;
+
+      console.log("Lucy.OS normalized harmonic scores:", {
+        primary: harmonics.primary,
+        support: harmonics.support,
+        motionStyle: harmonics.motionStyle,
+        motionStyleRead: getMotionStyleRead(harmonics.motionStyle),
+        rawDistortionHarmonic: harmonics.distortion,
+        primaryDistortionState: distortionState.label,
+        todayField: harmonics.todayField,
+        natalScores: harmonics.natalScores,
+        normalizedNatalScores: harmonics.normalizedNatalScores,
+        fieldScores: harmonics.fieldScores,
+        normalizedFieldScores: harmonics.normalizedFieldScores,
+        distortionScores: harmonics.distortionScores,
+        normalizedDistortionScores: harmonics.normalizedDistortionScores
+      });
+
+      setText("capacityScore", fmt(capacity));
+      setText("capacityLabel", capacityLabelFromValue(capacity));
+
+      setText("strainScore", fmt(strain));
+      setText("strainLabel", strainLabelFromStrain(strain));
+
+      setText("stateText", stateLabelFromMode(modeText));
+      setText("stateLabel", stateHelperFromMode(modeText));
+      setText("stateBadge", stateLabelFromMode(modeText));
+
+      setBar("capacityBar", capacity, 1.2);
+      setBar("strainBar", strain, 1.2);
+
+      setText("capVal", fmt(capacity));
+      setText("loadVal", fmt(load));
+      setText("regVal", fmt(regulation));
+      setText("effVal", fmt(effectiveDisplay));
+      setText("stabilityVal", fmt(regulatorAverage));
+
+      setText("primaryDriver", primaryDriverName(data));
+      setText("volatilityVal", fmt(volatility));
+      setText("fogVal", fmt(fog));
+      setText("activationVal", fmt(activation));
+
+      setText("saturnVal", fmt(saturn));
+      setText("venusVal", fmt(venus));
+      setText("mercuryVal", fmt(mercury));
+      setText("stateCondition", stateLabelFromMode(modeText));
+
+      const forecastState = forecast?.now?.state || stateLabelFromMode(modeText);
+      setText("forecastTitle", forecastState);
+      setText("forecastText", forecastTextFromState(forecastState));
+
+      const resolvedLocation =
+        inputResolved.resolvedLocation ||
+        inputResolved.locationResolved ||
+        "—";
+
+      const resolvedTime =
+        inputResolved.localTimeResolved ||
+        inputResolved.local_time_resolved ||
+        "—";
+
+      const timezoneName =
+        inputResolved.timezoneName ||
+        inputResolved.timezone_name ||
+        "—";
+
+      const utcDatetime =
+        ephemeris.utcDatetime ||
+        ephemeris.utc_datetime ||
+        "—";
+
+      setText("skyDataTitle", ephemeris.source ? "Verified" : "Pending");
+      setText(
+        "skyDataText",
+        ephemeris.source
+          ? "Live ephemeris and resolved location confirmed."
+          : `Local: ${resolvedTime} • UTC: ${utcDatetime} • ${resolvedLocation} • ${timezoneName}`
+      );
+
+      setText(
+        "whyText",
+        buildWhyText({
+          modeText: stateLabelFromMode(modeText),
+          primaryDriver: primaryDriverName(data),
+          fog,
+          activation,
+          mercury,
+          saturn,
+          venus
+        })
+      );
+
+      setText("envBand", envBandFromMode(environment.environmentMode));
+      setText("forecastBand", forecastBandFromState(forecastState));
+
+      setText(
+        "resolvedInput",
+        `Local: ${resolvedTime} | UTC: ${utcDatetime} | Place: ${resolvedLocation} | TZ: ${timezoneName}`
+      );
+
+      setText(
+        "apiStatus",
+        `OK • ${ephemeris.source || "API"} • ${ephemeris.mode || "natal"}`
+      );
+      document.getElementById("apiStatus").className = "ok";
+
+      const sunDeg = data?._longitudesDeg?.sun ?? "—";
+      const moonDeg = data?._longitudesDeg?.moon ?? "—";
+      const ascDeg = data?.angles?.asc ?? "—";
+      const mcDeg = data?.angles?.mc ?? "—";
+
+      setText(
+        "chartDebug",
+        `JD: ${ephemeris.jdUt || ephemeris.jd_ut || "—"} | Sun: ${sunDeg} | Moon: ${moonDeg} | ASC: ${ascDeg} | MC: ${mcDeg}`
+      );
+
+      setHeroGlow(modeText, fog, volatility);
+    }
+
+    async function calculate(){
+      const dob = document.getElementById("dob").value;
+      const tobRaw = document.getElementById("tob").value.trim();
+      const ampm = document.getElementById("ampm").value;
+      const location = document.getElementById("location").value.trim();
+
+      const payload = {
+        dob,
+        tobRaw,
+        ampm,
+        locationText: location
+      };
+
+      try {
+        const btn = document.getElementById("calcBtn");
+        btn.disabled = true;
+        btn.textContent = "Calculating...";
+
+        setText("apiStatus", "Calculating...");
+        document.getElementById("apiStatus").className = "";
+
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data?.error || `API error ${response.status}`);
+        }
+
+        updateUI(data);
+      } catch (err) {
+        console.error(err);
+        setText("apiStatus", `Error • ${err.message}`);
+        document.getElementById("apiStatus").className = "err";
+        alert("Calculation failed. Check API deployment or payload.");
+      } finally {
+        const btn = document.getElementById("calcBtn");
+        btn.disabled = false;
+        btn.textContent = "Calculate";
+      }
+    }
+
+    function randomHarmonicTestData() {
+      const r = () => Math.random();
+
+      return {
+        state: {
+          strain: r(),
+          amplifiedLoad: r(),
+          regulation: r(),
+          effectiveLoad: r(),
+          capacity: r(),
+          mode: "Regulated"
+        },
+        baselineState: {
+          capacity: r(),
+          strain: r(),
+          amplifiedLoad: r(),
+          regulation: r()
+        },
+        planetary: {
+          sun: r(),
+          moon: r(),
+          mercury: r(),
+          venus: r(),
+          mars: r(),
+          jupiter: r(),
+          saturn: r(),
+          uranus: r(),
+          neptune: r(),
+          pluto: r(),
+          asc: r(),
+          mc: r(),
+          transitMoon: r(),
+          transitMercury: r(),
+          transitVenus: r(),
+          transitMars: r(),
+          transitJupiter: r(),
+          transitSaturn: r(),
+          transitUranus: r(),
+          transitNeptune: r(),
+          transitPluto: r()
+        },
+        environment: {
+          environmentMode: ""
+        },
+        forecast: {
+          now: {
+            state: "Regulated"
+          }
+        },
+        timing: {
+          timingPressure: r()
+        }
+      };
+    }
+
+    function runSyntheticHarmonicBalanceTest(count = 10000) {
+      const primaryCounts = {};
+      const supportCounts = {};
+      const motionStyleCounts = {};
+      const fieldCounts = {};
+      const rawDistortionCounts = {};
+      const distortionStateCounts = {};
+
+      Object.keys(HARMONICS).forEach(key => {
+        primaryCounts[key] = 0;
+        supportCounts[key] = 0;
+        motionStyleCounts[key] = 0;
+        fieldCounts[key] = 0;
+        rawDistortionCounts[key] = 0;
+      });
+
+      Object.values(DISTORTION_STATES).forEach(state => {
+        distortionStateCounts[state.label] = 0;
+      });
+
+      for (let i = 0; i < count; i++) {
+        const data = randomHarmonicTestData();
+        const result = calculateHarmonics(data);
+        const distortionState = DISTORTION_STATES[result.distortionStateKey] || DISTORTION_STATES.overStructuring;
+
+        primaryCounts[result.primary] = (primaryCounts[result.primary] || 0) + 1;
+
+        const supportBase = getHarmonicBaseName(result.support);
+        supportCounts[supportBase] = (supportCounts[supportBase] || 0) + 1;
+
+        String(result.motionStyle || "")
+          .split("/")
+          .map(part => part.trim())
+          .filter(Boolean)
+          .forEach(part => {
+            motionStyleCounts[part] = (motionStyleCounts[part] || 0) + 1;
+          });
+
+        fieldCounts[result.todayField] = (fieldCounts[result.todayField] || 0) + 1;
+        rawDistortionCounts[result.distortion] = (rawDistortionCounts[result.distortion] || 0) + 1;
+        distortionStateCounts[distortionState.label] = (distortionStateCounts[distortionState.label] || 0) + 1;
+      }
+
+      console.table({
+        Primary: primaryCounts,
+        Support: supportCounts,
+        MotionStyle: motionStyleCounts,
+        Field: fieldCounts,
+        RawDistortionHarmonic: rawDistortionCounts,
+        DistortionState: distortionStateCounts
+      });
+
+      return {
+        primaryCounts,
+        supportCounts,
+        motionStyleCounts,
+        fieldCounts,
+        rawDistortionCounts,
+        distortionStateCounts
+      };
+    }
+
+    function runAstrologyCalibrationTest() {
+      const baseData = () => ({
+        state: {
+          strain: 0.30,
+          amplifiedLoad: 0.35,
+          regulation: 0.45,
+          effectiveLoad: 0.25,
+          capacity: 0.55,
+          mode: "Regulated"
+        },
+        baselineState: {
+          capacity: 0.40,
+          strain: 0.25,
+          amplifiedLoad: 0.25,
+          regulation: 0.40
+        },
+        planetary: {
+          sun: 0.20,
+          moon: 0.20,
+          mercury: 0.20,
+          venus: 0.20,
+          mars: 0.20,
+          jupiter: 0.20,
+          saturn: 0.20,
+          uranus: 0.20,
+          neptune: 0.20,
+          pluto: 0.20,
+          asc: 0.20,
+          mc: 0.20,
+          transitMoon: 0.20,
+          transitMercury: 0.20,
+          transitVenus: 0.20,
+          transitMars: 0.20,
+          transitJupiter: 0.20,
+          transitSaturn: 0.20,
+          transitUranus: 0.20,
+          transitNeptune: 0.20,
+          transitPluto: 0.20
+        },
+        environment: {
+          environmentMode: ""
+        },
+        forecast: {
+          now: {
+            state: "Regulated"
+          }
+        },
+        timing: {
+          timingPressure: 0.20
+        }
+      });
+
+      const cases = [
+        {
+          name: "Structured Case",
+          expected: ["Structured", "Regulated"],
+          build: () => {
+            const data = baseData();
+            data.planetary.saturn = 0.95;
+            data.planetary.mercury = 0.95;
+            data.planetary.sun = 0.60;
+            data.planetary.mc = 0.90;
+            data.baselineState.capacity = 0.90;
+            data.baselineState.regulation = 0.75;
+            return data;
+          }
+        },
+        {
+          name: "Contained Case",
+          expected: ["Contained"],
+          build: () => {
+            const data = baseData();
+            data.planetary.moon = 0.95;
+            data.planetary.saturn = 0.90;
+            data.planetary.neptune = 0.55;
+            data.baselineState.regulation = 0.55;
+            return data;
+          }
+        },
+        {
+          name: "Chaotic Case",
+          expected: ["Chaotic"],
+          build: () => {
+            const data = baseData();
+            data.planetary.uranus = 0.95;
+            data.planetary.mars = 0.92;
+            data.planetary.neptune = 0.35;
+            data.baselineState.strain = 0.40;
+            return data;
+          }
+        },
+        {
+          name: "Relational Case",
+          expected: ["Relational"],
+          build: () => {
+            const data = baseData();
+            data.planetary.venus = 0.95;
+            data.planetary.moon = 0.90;
+            data.planetary.asc = 0.92;
+            return data;
+          }
+        },
+        {
+          name: "Threshold Case",
+          expected: ["Threshold", "Chaotic"],
+          build: () => {
+            const data = baseData();
+            data.planetary.mars = 0.95;
+            data.planetary.uranus = 0.92;
+            data.planetary.pluto = 0.60;
+            data.planetary.mc = 0.90;
+            return data;
+          }
+        },
+        {
+          name: "Reconstructive Case",
+          expected: ["Reconstructive"],
+          build: () => {
+            const data = baseData();
+            data.planetary.pluto = 0.95;
+            data.planetary.saturn = 0.92;
+            data.baselineState.amplifiedLoad = 0.55;
+            data.baselineState.strain = 0.55;
+            return data;
+          }
+        },
+        {
+          name: "Integrative Case",
+          expected: ["Integrative", "Diffused"],
+          build: () => {
+            const data = baseData();
+            data.planetary.jupiter = 0.95;
+            data.planetary.neptune = 0.92;
+            data.planetary.mercury = 0.55;
+            data.planetary.moon = 0.55;
+            return data;
+          }
+        },
+        {
+          name: "Diffused Case",
+          expected: ["Diffused"],
+          build: () => {
+            const data = baseData();
+            data.planetary.neptune = 0.95;
+            data.planetary.moon = 0.92;
+            data.planetary.jupiter = 0.60;
+            return data;
+          }
+        },
+        {
+          name: "Regulated Case",
+          expected: ["Regulated", "Structured"],
+          build: () => {
+            const data = baseData();
+            data.planetary.saturn = 0.95;
+            data.planetary.mercury = 0.92;
+            data.planetary.venus = 0.55;
+            data.baselineState.regulation = 0.95;
+            return data;
+          }
+        }
+      ];
+
+      const results = cases.map(testCase => {
+        const data = testCase.build();
+        const result = calculateHarmonics(data);
+        const distortionState = DISTORTION_STATES[result.distortionStateKey] || DISTORTION_STATES.overStructuring;
+        const passed = testCase.expected.includes(result.primary);
+
+        return {
+          case: testCase.name,
+          expected: testCase.expected.join(" or "),
+          actualPrimary: result.primary,
+          support: result.support,
+          motionStyle: result.motionStyle,
+          motionStyleRead: getMotionStyleRead(result.motionStyle),
+          rawDistortionHarmonic: result.distortion,
+          primaryDistortionState: distortionState.label,
+          todayField: result.todayField,
+          passFail: passed ? "PASS" : "FAIL"
+        };
+      });
+
+      console.table(results);
+      return results;
+    }
+
+    window.runSyntheticHarmonicBalanceTest = runSyntheticHarmonicBalanceTest;
+    window.runAstrologyCalibrationTest = runAstrologyCalibrationTest;
+    window.getMotionStyleRead = getMotionStyleRead;
+
+    document.getElementById("calcBtn").addEventListener("click", calculate);
+    document.getElementById("saveShareCardBtn").addEventListener("click", saveShareCard);
+    document.getElementById("copyShareTextBtn").addEventListener("click", copyShareText);
+
+    document.getElementById("dob").value = "1980-11-21";
+    document.getElementById("tob").value = "6:20";
+    document.getElementById("ampm").value = "AM";
+    document.getElementById("location").value = "Cuero, TX";
+
+    renderHarmonicLibrary();
+    calculate();
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</body>
+</html>
