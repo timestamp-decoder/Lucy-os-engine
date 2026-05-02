@@ -1321,6 +1321,8 @@
     let latestSharePayload = {
       systemWeather: "Root signal architecture × Field loading",
       todayRead: "Waiting for daily read.",
+      plainEnglishLine: "Waiting for plain-English translation.",
+      plainRealLifeText: "Waiting for today’s read.",
       driverNote: "Waiting for driver note.",
       goodMove: "—",
       returnText: "—",
@@ -2293,6 +2295,8 @@
       latestSharePayload = {
         systemWeather,
         todayRead,
+        plainEnglishLine,
+        plainRealLifeText,
         driverNote,
         goodMove,
         returnText,
@@ -2324,6 +2328,10 @@
         "",
         "Today’s System Weather:",
         latestSharePayload.systemWeather,
+        "",
+        "What This Means Today:",
+        latestSharePayload.plainEnglishLine,
+        latestSharePayload.plainRealLifeText,
         "",
         "Today’s Read:",
         latestSharePayload.todayRead,
