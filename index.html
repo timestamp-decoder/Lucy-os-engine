@@ -23,6 +23,17 @@
       --gold:#d8b84c;
       --teal:#6fe0d3;
       --shadow:0 18px 52px rgba(0,0,0,.28);
+
+      --h-structured:#d8b84c;
+      --h-contained:#d8edf0;
+      --h-chaotic:#67c1ff;
+      --h-relational:#ff9bb7;
+      --h-threshold:#ff8a3d;
+      --h-reconstructive:#b06cff;
+      --h-integrative:#dfeaff;
+      --h-diffused:#cbb7ff;
+      --h-regulated:#6fe0d3;
+      --h-steady:#aab7d6;
     }
 
     *{box-sizing:border-box}
@@ -44,7 +55,31 @@
     .wrap{
       max-width:1380px;
       margin:0 auto;
-      padding:24px;
+      padding:18px 24px 24px;
+    }
+
+    .backLink{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      width:auto;
+      min-height:32px;
+      margin:0 0 10px;
+      padding:0 12px;
+      border-radius:999px;
+      border:1px solid rgba(103,193,255,.16);
+      background:rgba(103,193,255,.055);
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+      text-decoration:none;
+      letter-spacing:.02em;
+    }
+
+    .backLink:hover{
+      color:var(--blue);
+      border-color:rgba(103,193,255,.28);
+      background:rgba(103,193,255,.085);
     }
 
     .hero{
@@ -563,59 +598,57 @@
     }
 
     .nodeChip.structured{
-      border-color:rgba(103,193,255,.30);
-      background:rgba(103,193,255,.085);
-      color:#8fd4ff;
+      border-color:rgba(216,184,76,.28);
+      background:rgba(216,184,76,.09);
+      color:var(--h-structured);
     }
 
     .nodeChip.contained{
-      border-color:rgba(92,116,190,.34);
-      background:rgba(92,116,190,.095);
-      color:#aab9ff;
+      border-color:rgba(216,237,240,.22);
+      background:rgba(216,237,240,.07);
+      color:var(--h-contained);
     }
 
     .nodeChip.chaotic{
-      border-color:rgba(176,108,255,.34);
-      background:
-        radial-gradient(circle at 20% 0%, rgba(103,193,255,.12), transparent 42%),
-        rgba(176,108,255,.09);
-      color:#cab1ff;
+      border-color:rgba(103,193,255,.28);
+      background:rgba(103,193,255,.09);
+      color:var(--h-chaotic);
     }
 
     .nodeChip.relational{
-      border-color:rgba(255,155,183,.34);
-      background:rgba(255,155,183,.085);
-      color:#ffbdd0;
+      border-color:rgba(255,155,183,.24);
+      background:rgba(255,155,183,.08);
+      color:var(--h-relational);
     }
 
     .nodeChip.threshold{
-      border-color:rgba(241,184,75,.36);
-      background:rgba(241,184,75,.095);
-      color:#f4cf7a;
+      border-color:rgba(255,138,61,.26);
+      background:rgba(255,138,61,.08);
+      color:var(--h-threshold);
     }
 
     .nodeChip.reconstructive{
-      border-color:rgba(176,108,255,.36);
-      background:rgba(176,108,255,.105);
-      color:#d2b4ff;
+      border-color:rgba(176,108,255,.26);
+      background:rgba(176,108,255,.09);
+      color:var(--h-reconstructive);
     }
 
     .nodeChip.integrative{
-      border-color:rgba(111,224,211,.34);
-      background:rgba(111,224,211,.085);
-      color:#9af0e8;
+      border-color:rgba(223,234,255,.22);
+      background:rgba(223,234,255,.07);
+      color:var(--h-integrative);
     }
 
     .nodeChip.diffused{
-      border-color:rgba(202,221,245,.36);
-      background:rgba(202,221,245,.075);
-      color:#dcecff;
+      border-color:rgba(203,183,255,.24);
+      background:rgba(203,183,255,.08);
+      color:var(--h-diffused);
     }
 
     .nodeChip.regulated{
-      border-color:rgba(103,210,111,.34);
-      background:rgba(103,210,111,.085);
-      color:#9be7a1;
+      border-color:rgba(111,224,211,.24);
+      background:rgba(111,224,211,.08);
+      color:var(--h-regulated);
     }
 
     .proPreviewCard{
@@ -996,7 +1029,8 @@
     }
 
     @media (max-width: 720px){
-      .wrap{padding:14px}
+      .wrap{padding:12px 14px 14px}
+      .backLink{margin-bottom:8px}
       .hero h1{font-size:36px}
       .panel,.premiumCard,.plainMeaningCard,.liteWhyCard,.liteSummaryCard,.nodeCard,.proPreviewCard,.upgradeCard,.shareSection{border-radius:16px}
       .premiumCard{padding:18px}
@@ -1020,6 +1054,8 @@
 
 <body>
   <div class="wrap">
+    <a class="backLink" href="index.html">← Back to Home</a>
+
     <div class="hero">
       <div class="heroGlow" id="heroGlow"></div>
       <h1>Lucy.OS</h1>
@@ -1223,7 +1259,7 @@
             driver library, engine details, and expanded timing layers.
           </p>
           <a class="upgradeButton" href="lucy-os-pro.html">Open Lucy.OS Pro</a>
-          <div class="routeTiny">Public route will move to TimestampDecoder.com after Pro access is wired.</div>
+          <div class="routeTiny">Pro access route will be finalized after checkout is wired.</div>
         </section>
 
         <section class="shareSection">
