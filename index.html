@@ -1006,7 +1006,7 @@
           <div class="cardContent">
             <p class="kicker">Today’s System Weather</p>
             <h2 class="weatherLine" id="systemWeatherLine">
-              Root signal architecture <span>×</span> field loading
+              Root pattern <span>×</span> field loading
             </h2>
 
             <p class="todayRead" id="dailyTodayRead">
@@ -1044,7 +1044,7 @@
         <section class="plainMeaningCard">
           <h2>What This Means Today</h2>
           <p class="plainMeaningIntro">
-            A plain-language translation of your root signal architecture meeting today’s field.
+            A plain-language translation of your root pattern meeting today’s field.
           </p>
 
           <div class="plainMeaningGrid">
@@ -1086,7 +1086,7 @@
               <p>Your root pattern and today’s active field, kept simple for the public/free version.</p>
             </div>
             <div class="chipRow" style="margin-top:0;">
-              <span class="chip gold" id="liteSummaryStateChip">Root pattern</span>
+              <span class="chip gold" id="liteSummaryStateChip">Root: —</span>
               <span class="chip field" id="liteSummaryFieldChip">Field: —</span>
             </div>
           </div>
@@ -1095,7 +1095,7 @@
             <div class="liteSummaryBlock">
               <div class="liteSummaryLabel">Primary Harmonic</div>
               <div class="liteSummaryValue" id="primaryHarmonic">—</div>
-              <div class="liteSummaryDesc">Stable root signal architecture.</div>
+              <div class="liteSummaryDesc">Stable root pattern.</div>
             </div>
 
             <div class="liteSummaryBlock">
@@ -1113,18 +1113,18 @@
 
         <section class="nodeCard">
           <h2>The 9 Harmonic Nodes</h2>
-          <p>Lucy.OS reads your root signal architecture through 9 harmonic identity patterns.</p>
+          <p>Lucy.OS reads your root pattern through 9 harmonic identity patterns.</p>
 
           <div class="nodeGrid">
-            <span class="nodeChip">⬡ Structured</span>
-            <span class="nodeChip">◐ Contained</span>
-            <span class="nodeChip">⚡ Chaotic</span>
-            <span class="nodeChip">∞ Relational</span>
-            <span class="nodeChip">⟡ Threshold</span>
-            <span class="nodeChip">◆ Reconstructive</span>
-            <span class="nodeChip">◎ Integrative</span>
-            <span class="nodeChip">≋ Diffused</span>
-            <span class="nodeChip">◉ Regulated</span>
+            <span class="nodeChip">Structured</span>
+            <span class="nodeChip">Contained</span>
+            <span class="nodeChip">Chaotic</span>
+            <span class="nodeChip">Relational</span>
+            <span class="nodeChip">Threshold</span>
+            <span class="nodeChip">Reconstructive</span>
+            <span class="nodeChip">Integrative</span>
+            <span class="nodeChip">Diffused</span>
+            <span class="nodeChip">Regulated</span>
           </div>
         </section>
 
@@ -1200,7 +1200,7 @@
 
                 <div class="shareCardSection">
                   <div class="shareCardLabel">Today’s System Weather</div>
-                  <div class="shareCardWeather" id="shareCardWeather">Root signal architecture × Field loading</div>
+                  <div class="shareCardWeather" id="shareCardWeather">Root pattern × field loading</div>
                 </div>
 
                 <div class="shareCardSection">
@@ -1319,7 +1319,7 @@
     };
 
     let latestSharePayload = {
-      systemWeather: "Root signal architecture × Field loading",
+      systemWeather: "Root pattern × field loading",
       todayRead: "Waiting for daily read.",
       plainEnglishLine: "Waiting for plain-English translation.",
       plainRealLifeText: "Waiting for today’s read.",
@@ -2305,13 +2305,13 @@
         state
       };
 
-      setText("shareBaselineChip", `${harmonicSymbol(primary)} ${primary} Root`);
-      setText("shareFieldChip", `${harmonicSymbol(field)} ${field} Field`);
-      setText("shareStateChip", `${state} State`);
+      setText("shareBaselineChip", `Root: ${primary}`);
+      setText("shareFieldChip", `Field: ${field}`);
+      setText("shareStateChip", `State: ${state}`);
 
-      setText("shareCardBaselineChip", `${harmonicSymbol(primary)} ${primary} Root`);
-      setText("shareCardFieldChip", `${harmonicSymbol(field)} ${field} Field`);
-      setText("shareCardStateChip", `${state} State`);
+      setText("shareCardBaselineChip", `Root: ${primary}`);
+      setText("shareCardFieldChip", `Field: ${field}`);
+      setText("shareCardStateChip", `State: ${state}`);
 
       setText("shareCardWeather", systemWeather);
       setText("shareCardPlainEnglishLine", plainEnglishLine);
@@ -2418,9 +2418,9 @@
       const currentState = stateLabelFromMode(data?.state?.mode || "");
       const fieldTrend = calculateFieldTrend(data, harmonics);
 
-      const primaryLabel = `${harmonicSymbol(primaryMeta.label)} ${primaryMeta.label}`;
-      const fieldLabel = `${harmonicSymbol(fieldMeta.label)} ${fieldMeta.label}`;
-      const systemWeather = `${primaryLabel} root signal architecture × ${fieldLabel} field`;
+      const primaryLabel = primaryMeta.label;
+      const fieldLabel = fieldMeta.label;
+      const systemWeather = `${primaryLabel} root pattern × ${fieldLabel} field`;
       const guidance = buildDailyGuidance(harmonics, data);
       const plainLayer = buildPlainEnglishLayer(harmonics, guidance);
       const rawDriver = primaryDriverName(data);
@@ -2446,8 +2446,8 @@
       setText("harmonicPlainRead", primaryMeta.plainRead);
       setText("liteWhyTodayText", driverNote);
 
-      setText("liteSummaryStateChip", `${primaryLabel} root pattern`);
-      setText("liteSummaryFieldChip", `${fieldLabel} field`);
+      setText("liteSummaryStateChip", `Root: ${primaryLabel}`);
+      setText("liteSummaryFieldChip", `Field: ${fieldLabel}`);
 
       updateShareUI({
         systemWeather,
