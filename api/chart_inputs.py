@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 from urllib.parse import urlencode
 from urllib.request import urlopen, Request
+from math import cos, radians
 
 import swisseph as swe
 
@@ -25,6 +26,7 @@ PLANETS = {
 
 FLAGS = swe.FLG_SWIEPH | swe.FLG_SPEED
 HOUSE_SYSTEM = b"P"
+SYNODIC_MONTH_DAYS = 29.53
 
 GOOGLE_GEOCODE_API_KEY = os.getenv("GOOGLE_GEOCODE_API_KEY", "")
 GOOGLE_TIMEZONE_API_KEY = os.getenv("GOOGLE_TIMEZONE_API_KEY", "")
@@ -32,6 +34,10 @@ GOOGLE_TIMEZONE_API_KEY = os.getenv("GOOGLE_TIMEZONE_API_KEY", "")
 
 def normalize_longitude(lon: float) -> float:
     return (lon % 360.0) / 360.0
+
+
+def normalize_degrees(deg: float) -> float:
+    return float(deg % 360.0)
 
 
 def normalize_tob_with_ampm(tob: str, ampm: str | None = None) -> str:
@@ -317,8 +323,15 @@ def compute_chart_inputs(
     return result
 
 
-def compute_transit_inputs():
-    now_utc = datetime.now(timezone.utc)
+def compute_transit_inputs(now_utc: datetime | None = None):
+    if now_utc is None:
+        now_utc = datetime.now(timezone.utc)
+
+    if now_utc.tzinfo is None:
+        now_utc = now_utc.replace(tzinfo=timezone.utc)
+    else:
+        now_utc = now_utc.astimezone(timezone.utc)
+
     jd_ut = to_julian_day_utc(now_utc)
 
     result = {}
@@ -342,6 +355,161 @@ def compute_transit_inputs():
     }
 
     return result
+
+
+def calculate_lunar_phase_fraction(sun_lon_deg: float, moon_lon_deg: float) -> float:
+    phase_angle = normalize_degrees(moon_lon_deg - sun_lon_deg)
+    return phase_angle / 360.0
+
+
+def estimate_lunar_illumination(phase_fraction: float) -> float:
+    phase_angle = radians(float(phase_fraction) * 360.0)
+    illumination = ((1.0 - cos(phase_angle)) / 2.0) * 100.0
+    return round(max(0.0, min(100.0, illumination)), 1)
+
+
+def estimate_moon_age(phase_fraction: float) -> float:
+    return round(max(0.0, min(1.0, float(phase_fraction))) * SYNODIC_MONTH_DAYS, 1)
+
+
+def map_lunar_phase_name(phase_fraction: float) -> str:
+    fraction = max(0.0, min(1.0, float(phase_fraction)))
+
+    if fraction < 0.03 or fraction >= 0.97:
+        return "New Moon"
+    if fraction < 0.22:
+        return "Waxing Crescent"
+    if fraction < 0.28:
+        return "First Quarter"
+    if fraction < 0.47:
+        return "Waxing Gibbous"
+    if fraction < 0.53:
+        return "Full Moon"
+    if fraction < 0.72:
+        return "Waning Gibbous"
+    if fraction < 0.78:
+        return "Last Quarter"
+    return "Waning Crescent"
+
+
+def map_moonstamp_state(phase_fraction: float) -> str:
+    fraction = max(0.0, min(1.0, float(phase_fraction)))
+
+    if fraction < 0.03 or fraction >= 0.97:
+        return "Reset"
+    if fraction < 0.10:
+        return "Re-enter"
+    if fraction < 0.20:
+        return "Emerge"
+    if fraction < 0.28:
+        return "Threshold"
+    if fraction < 0.38:
+        return "Build"
+    if fraction < 0.47:
+        return "Show"
+    if fraction < 0.53:
+        return "Culminate"
+    if fraction < 0.66:
+        return "Release"
+    return "Reduce"
+
+
+def build_moonstamp_language(state: str, phase: str) -> dict:
+    language = {
+        "Reduce": {
+            "modifier": "Lower-load lunar field",
+            "read": "The wider lunar field is reducing and can support simplification, narrowing, and lower demand.",
+            "forecastModifier": "Use this lunar field to simplify the move and avoid adding unnecessary pressure."
+        },
+        "Reset": {
+            "modifier": "Low-visibility reset field",
+            "read": "The wider lunar field is near reset and may support clearing, recovery, and a quieter baseline.",
+            "forecastModifier": "Use this lunar field to return to baseline before forcing new momentum."
+        },
+        "Re-enter": {
+            "modifier": "Soft return field",
+            "read": "The wider lunar field is beginning to return and can support light contact, small restarts, and gentle re-entry.",
+            "forecastModifier": "Use this lunar field for one soft step back in, not premature intensity."
+        },
+        "Emerge": {
+            "modifier": "Early formation field",
+            "read": "The wider lunar field is emerging and may support shaping, early form, and protected growth.",
+            "forecastModifier": "Use this lunar field to shape the next step carefully before exposing it too much."
+        },
+        "Threshold": {
+            "modifier": "Commitment threshold field",
+            "read": "The wider lunar field is near a structural turn and may support decisions, commitment, and crossing a clear edge.",
+            "forecastModifier": "Use this lunar field to choose one clean commitment instead of hovering at the edge."
+        },
+        "Build": {
+            "modifier": "Accumulating field",
+            "read": "The wider lunar field is building and may support reinforcement, continuation, and steady strengthening.",
+            "forecastModifier": "Use this lunar field to reinforce what already has shape instead of scattering into new pivots."
+        },
+        "Show": {
+            "modifier": "Rising visibility field",
+            "read": "The wider lunar field is highly visible and may support presentation, contact, and bringing formed work into view.",
+            "forecastModifier": "Use this lunar field to make one formed thing more visible without over-editing."
+        },
+        "Culminate": {
+            "modifier": "Peak visibility / high field charge",
+            "read": "The wider lunar field is near peak visibility and can amplify exposure, delivery, and emotional charge.",
+            "forecastModifier": "Use this lunar field for one visible completion or delivery, not needless escalation."
+        },
+        "Release": {
+            "modifier": "Post-peak release field",
+            "read": "The wider lunar field is moving out of peak charge and may support release, distribution, and decompression.",
+            "forecastModifier": "Use this lunar field to let pressure move out instead of clinging to the peak."
+        },
+    }
+
+    fallback = {
+        "modifier": f"{phase} lunar field",
+        "read": "The wider lunar field may add a timing modifier to the current system weather.",
+        "forecastModifier": "Use the lunar field as context, not as the main driver."
+    }
+
+    return language.get(state, fallback)
+
+
+def build_moonstamp_modifier_from_transit(transit: dict) -> dict:
+    longitudes = transit.get("_longitudesDeg", {}) or {}
+
+    sun_lon_deg = float(longitudes.get("sun", float(transit.get("sun", 0.0)) * 360.0))
+    moon_lon_deg = float(longitudes.get("moon", float(transit.get("moon", 0.0)) * 360.0))
+
+    phase_fraction = calculate_lunar_phase_fraction(sun_lon_deg, moon_lon_deg)
+    illumination = estimate_lunar_illumination(phase_fraction)
+    moon_age = estimate_moon_age(phase_fraction)
+    phase = map_lunar_phase_name(phase_fraction)
+    state = map_moonstamp_state(phase_fraction)
+    language = build_moonstamp_language(state, phase)
+
+    meta = transit.get("_meta", {}) or {}
+
+    return {
+        "source": "Swiss Ephemeris",
+        "phase": phase,
+        "illumination": illumination,
+        "moonAge": moon_age,
+        "state": state,
+        "modifier": language["modifier"],
+        "read": language["read"],
+        "forecastModifier": language["forecastModifier"],
+        "phaseFraction": round(phase_fraction, 4),
+        "sunLongitudeDeg": round(sun_lon_deg, 4),
+        "moonLongitudeDeg": round(moon_lon_deg, 4),
+        "utcDatetime": meta.get("utc_datetime"),
+        "note": "Wider lunar phase/state modifier only. Local moonrise and moonset remain in Moonstamp."
+    }
+
+
+def build_projected_moonstamp_modifier(hours_ahead: int) -> dict:
+    projected_utc = datetime.now(timezone.utc) + timedelta(hours=hours_ahead)
+    projected_transit = compute_transit_inputs(projected_utc)
+    projected = build_moonstamp_modifier_from_transit(projected_transit)
+    projected["projectionHours"] = hours_ahead
+    return projected
 
 
 def fmt_value(n: float) -> str:
@@ -416,6 +584,9 @@ def build_lucy_response(chart: dict) -> dict:
     natal_strain = natal_effective_load / natal_capacity if natal_capacity > 0 else 0.0
 
     transit = compute_transit_inputs()
+    moonstamp = build_moonstamp_modifier_from_transit(transit)
+    moonstamp_plus6 = build_projected_moonstamp_modifier(6)
+    moonstamp_plus24 = build_projected_moonstamp_modifier(24)
 
     t_moon = float(transit.get("moon", 0.0))
     t_mercury = float(transit.get("mercury", 0.0))
@@ -574,15 +745,24 @@ def build_lucy_response(chart: dict) -> dict:
     forecast = {
         "now": {
             "state": forecast_now_state,
-            "text": interpretation["stateSummary"],
+            "text": (
+                f"{interpretation['stateSummary']} "
+                f"Moonstamp: {moonstamp['forecastModifier']}"
+            ),
         },
         "plus6": {
             "state": forecast_now_state,
-            "text": "Transit-aware live layer is active; short-horizon forecasting is still early-stage.",
+            "text": (
+                f"+6h lunar field: {moonstamp_plus6['state']} / {moonstamp_plus6['phase']}. "
+                f"{moonstamp_plus6['forecastModifier']}"
+            ),
         },
         "plus24": {
             "state": forecast_now_state,
-            "text": "Transit-aware live layer is active; longer-horizon forecasting remains a simple proxy.",
+            "text": (
+                f"+24h lunar field: {moonstamp_plus24['state']} / {moonstamp_plus24['phase']}. "
+                f"{moonstamp_plus24['forecastModifier']}"
+            ),
         },
     }
 
@@ -684,6 +864,11 @@ def build_lucy_response(chart: dict) -> dict:
         },
         "interpretation": interpretation,
         "forecast": forecast,
+        "moonstamp": moonstamp,
+        "moonstampForecast": {
+            "plus6": moonstamp_plus6,
+            "plus24": moonstamp_plus24,
+        },
         "ephemeris": ephemeris,
         "inputResolved": input_resolved,
         "planetary": planetary,
@@ -701,6 +886,9 @@ def build_lucy_response(chart: dict) -> dict:
             "transitLoad": transit_load,
             "transitRegulation": transit_regulation,
             "transitMode": transit.get("_meta", {}).get("mode", "transit"),
+            "moonstampPhaseFraction": moonstamp.get("phaseFraction"),
+            "moonstampState": moonstamp.get("state"),
+            "moonstampPhase": moonstamp.get("phase"),
         }
     }
 
@@ -746,6 +934,7 @@ class handler(BaseHTTPRequestHandler):
                     "ok": True,
                     "transitOnly": True,
                     "chart": chart,
+                    "moonstamp": build_moonstamp_modifier_from_transit(chart),
                 }
                 self._write_json(200, response)
                 return
