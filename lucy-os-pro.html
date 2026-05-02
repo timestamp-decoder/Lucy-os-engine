@@ -55,7 +55,31 @@
     .wrap{
       max-width:1380px;
       margin:0 auto;
-      padding:24px;
+      padding:18px 24px 24px;
+    }
+
+    .backLink{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      width:auto;
+      min-height:32px;
+      margin:0 0 10px;
+      padding:0 12px;
+      border-radius:999px;
+      border:1px solid rgba(103,193,255,.16);
+      background:rgba(103,193,255,.055);
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+      text-decoration:none;
+      letter-spacing:.02em;
+    }
+
+    .backLink:hover{
+      color:var(--blue);
+      border-color:rgba(103,193,255,.28);
+      background:rgba(103,193,255,.085);
     }
 
     .hero{
@@ -1005,7 +1029,8 @@
     }
 
     @media (max-width: 720px){
-      .wrap{padding:14px}
+      .wrap{padding:12px 14px 14px}
+      .backLink{margin-bottom:8px}
       .hero h1{font-size:36px}
       .panel,.premiumCard,.plainMeaningCard,.liteWhyCard,.liteSummaryCard,.nodeCard,.proPreviewCard,.upgradeCard,.shareSection{border-radius:16px}
       .premiumCard{padding:18px}
@@ -1029,6 +1054,8 @@
 
 <body>
   <div class="wrap">
+    <a class="backLink" href="index.html">← Back to Home</a>
+
     <div class="hero">
       <div class="heroGlow" id="heroGlow"></div>
       <h1>Lucy.OS</h1>
@@ -1232,7 +1259,7 @@
             driver library, engine details, and expanded timing layers.
           </p>
           <a class="upgradeButton" href="lucy-os-pro.html">Open Lucy.OS Pro</a>
-          <div class="routeTiny">Public route will move to TimestampDecoder.com after Pro access is wired.</div>
+          <div class="routeTiny">Pro access route will be finalized after checkout is wired.</div>
         </section>
 
         <section class="shareSection">
