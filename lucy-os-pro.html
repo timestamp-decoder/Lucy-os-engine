@@ -559,60 +559,160 @@
       overflow-wrap:break-word;
     }
 
-    .fieldCompassBars{
-      display:grid;
-      gap:9px;
+    .fieldCompassBalance{
+      border-color:rgba(103,193,255,.13);
+      background:
+        radial-gradient(circle at 50% 42%, rgba(103,193,255,.10), transparent 38%),
+        radial-gradient(circle at 78% 24%, rgba(216,184,76,.08), transparent 34%),
+        rgba(255,255,255,.028);
     }
 
-    .fieldCompassBarRow{
+    .fieldCompassGaugeWrap{
       display:grid;
-      grid-template-columns:88px 1fr 44px;
-      gap:9px;
+      grid-template-columns:154px 1fr;
+      gap:12px;
       align-items:center;
     }
 
-    .fieldCompassBarLabel{
+    .fieldCompassGauge{
+      position:relative;
+      width:154px;
+      height:154px;
+      display:grid;
+      place-items:center;
+      margin:0 auto;
+    }
+
+    .fieldCompassGauge svg{
+      width:154px;
+      height:154px;
+      overflow:visible;
+      filter:drop-shadow(0 12px 22px rgba(0,0,0,.22));
+    }
+
+    .fieldCompassGaugeTrack{
+      fill:none;
+      stroke:rgba(8,17,38,.82);
+      stroke-width:10;
+      stroke-linecap:round;
+    }
+
+    .fieldCompassGaugeRing{
+      fill:none;
+      stroke-width:10;
+      stroke-linecap:round;
+      transform:rotate(-90deg);
+      transform-origin:50% 50%;
+      transition:stroke-dasharray .35s ease, stroke-dashoffset .35s ease;
+    }
+
+    .fieldCompassGaugeRing.capacity{
+      stroke:url(#capacityGaugeGradient);
+    }
+
+    .fieldCompassGaugeRing.load{
+      stroke:url(#loadGaugeGradient);
+    }
+
+    .fieldCompassGaugeRing.regulation{
+      stroke:url(#regulationGaugeGradient);
+    }
+
+    .fieldCompassGaugeCenter{
+      position:absolute;
+      inset:44px;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      border-radius:50%;
+      border:1px solid rgba(103,193,255,.13);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(103,193,255,.10), transparent 55%),
+        rgba(8,17,38,.42);
+      box-shadow:inset 0 0 22px rgba(0,0,0,.20);
+    }
+
+    .fieldCompassGaugeCenterLabel{
+      color:var(--muted);
+      font-size:8px;
+      font-weight:950;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      line-height:1;
+    }
+
+    .fieldCompassGaugeCenterState{
+      margin-top:4px;
+      color:var(--violet);
+      font-size:15px;
+      font-weight:950;
+      line-height:1.05;
+      overflow-wrap:anywhere;
+    }
+
+    .fieldCompassGaugeMeta{
+      display:grid;
+      gap:8px;
+      align-content:center;
+    }
+
+    .fieldCompassGaugeValues{
+      display:grid;
+      gap:7px;
+    }
+
+    .fieldCompassGaugeValueRow{
+      display:grid;
+      grid-template-columns:13px 1fr 42px;
+      gap:8px;
+      align-items:center;
+    }
+
+    .fieldCompassGaugeDot{
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      box-shadow:0 0 14px currentColor;
+    }
+
+    .fieldCompassGaugeDot.capacity{
+      color:var(--blue);
+      background:var(--blue);
+    }
+
+    .fieldCompassGaugeDot.load{
+      color:var(--red);
+      background:var(--red);
+    }
+
+    .fieldCompassGaugeDot.regulation{
+      color:var(--green);
+      background:var(--green);
+    }
+
+    .fieldCompassGaugeValueLabel{
       color:var(--muted);
       font-size:11px;
       font-weight:900;
       letter-spacing:.04em;
     }
 
-    .fieldCompassBarTrack{
-      height:9px;
-      border-radius:999px;
-      background:#081126;
-      border:1px solid rgba(255,255,255,.08);
-      overflow:hidden;
-      box-shadow:inset 0 0 0 1px rgba(0,0,0,.10);
-    }
-
-    .fieldCompassBarTrack span{
-      display:block;
-      height:100%;
-      width:0%;
-      border-radius:999px;
-      transition:width .35s ease;
-    }
-
-    .fieldCompassBarTrack.capacity span{
-      background:linear-gradient(90deg,#67c1ff,#a1d8ff,#d8b84c);
-    }
-
-    .fieldCompassBarTrack.load span{
-      background:linear-gradient(90deg,#67d26f,#d8b84c,#ff6666);
-    }
-
-    .fieldCompassBarTrack.regulation span{
-      background:linear-gradient(90deg,#6fe0d3,#67c1ff,#d8b84c);
-    }
-
-    .fieldCompassBarValue{
+    .fieldCompassGaugeValue{
       color:var(--text);
       font-size:11px;
-      font-weight:900;
+      font-weight:950;
       text-align:right;
       font-variant-numeric:tabular-nums;
+    }
+
+    .fieldCompassGaugeNote{
+      margin-top:2px;
+      border-top:1px solid rgba(255,255,255,.07);
+      padding-top:9px;
+      color:#d7def1;
+      font-size:12px;
+      line-height:1.45;
+      font-weight:750;
     }
 
     .motionStrip{
@@ -2060,19 +2160,31 @@
         font-size:11.8px;
         line-height:1.42;
       }
-      .fieldCompassBars{
-        gap:7px;
+      .fieldCompassGaugeWrap{
+        grid-template-columns:1fr;
+        gap:9px;
       }
-      .fieldCompassBarRow{
-        grid-template-columns:76px 1fr 42px;
-        gap:7px;
+      .fieldCompassGauge{
+        width:142px;
+        height:142px;
       }
-      .fieldCompassBarTrack{
-        height:8px;
+      .fieldCompassGauge svg{
+        width:142px;
+        height:142px;
       }
-      .fieldCompassBarLabel,
-      .fieldCompassBarValue{
-        font-size:10.5px;
+      .fieldCompassGaugeCenter{
+        inset:40px;
+      }
+      .fieldCompassGaugeCenterState{
+        font-size:13px;
+      }
+      .fieldCompassGaugeValues{
+        grid-template-columns:1fr;
+        gap:6px;
+      }
+      .fieldCompassGaugeNote{
+        font-size:11.6px;
+        padding-top:8px;
       }
       .motionStrip{
         grid-template-columns:1fr;
@@ -2290,23 +2402,70 @@
 
                 <div class="fieldCompassBalance">
                   <div class="fieldCompassMiniLabel">Load Balance</div>
-                  <div class="fieldCompassBars">
-                    <div class="fieldCompassBarRow">
-                      <div class="fieldCompassBarLabel">Capacity</div>
-                      <div class="fieldCompassBarTrack capacity"><span id="fieldCompassCapacityBar"></span></div>
-                      <div class="fieldCompassBarValue" id="fieldCompassCapacityValue">0.00</div>
+
+                  <div class="fieldCompassGaugeWrap">
+                    <div class="fieldCompassGauge" aria-label="Field compass load balance gauge">
+                      <svg viewBox="0 0 160 160" role="img">
+                        <defs>
+                          <linearGradient id="capacityGaugeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#67c1ff" />
+                            <stop offset="58%" stop-color="#a1d8ff" />
+                            <stop offset="100%" stop-color="#d8b84c" />
+                          </linearGradient>
+                          <linearGradient id="loadGaugeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#67d26f" />
+                            <stop offset="50%" stop-color="#d8b84c" />
+                            <stop offset="100%" stop-color="#ff6666" />
+                          </linearGradient>
+                          <linearGradient id="regulationGaugeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#6fe0d3" />
+                            <stop offset="64%" stop-color="#67c1ff" />
+                            <stop offset="100%" stop-color="#d8b84c" />
+                          </linearGradient>
+                        </defs>
+
+                        <circle class="fieldCompassGaugeTrack" cx="80" cy="80" r="58"></circle>
+                        <circle class="fieldCompassGaugeRing capacity" id="fieldCompassCapacityRing" cx="80" cy="80" r="58"></circle>
+
+                        <circle class="fieldCompassGaugeTrack" cx="80" cy="80" r="47"></circle>
+                        <circle class="fieldCompassGaugeRing load" id="fieldCompassLoadRing" cx="80" cy="80" r="47"></circle>
+
+                        <circle class="fieldCompassGaugeTrack" cx="80" cy="80" r="36"></circle>
+                        <circle class="fieldCompassGaugeRing regulation" id="fieldCompassRegulationRing" cx="80" cy="80" r="36"></circle>
+                      </svg>
+
+                      <div class="fieldCompassGaugeCenter">
+                        <div>
+                          <div class="fieldCompassGaugeCenterLabel">State</div>
+                          <div class="fieldCompassGaugeCenterState" id="fieldCompassGaugeState">—</div>
+                        </div>
+                      </div>
                     </div>
 
-                    <div class="fieldCompassBarRow">
-                      <div class="fieldCompassBarLabel">Load</div>
-                      <div class="fieldCompassBarTrack load"><span id="fieldCompassLoadBar"></span></div>
-                      <div class="fieldCompassBarValue" id="fieldCompassLoadValue">0.00</div>
-                    </div>
+                    <div class="fieldCompassGaugeMeta">
+                      <div class="fieldCompassGaugeValues">
+                        <div class="fieldCompassGaugeValueRow">
+                          <span class="fieldCompassGaugeDot capacity"></span>
+                          <span class="fieldCompassGaugeValueLabel">Capacity</span>
+                          <span class="fieldCompassGaugeValue" id="fieldCompassCapacityValue">0.00</span>
+                        </div>
 
-                    <div class="fieldCompassBarRow">
-                      <div class="fieldCompassBarLabel">Regulation</div>
-                      <div class="fieldCompassBarTrack regulation"><span id="fieldCompassRegulationBar"></span></div>
-                      <div class="fieldCompassBarValue" id="fieldCompassRegulationValue">0.00</div>
+                        <div class="fieldCompassGaugeValueRow">
+                          <span class="fieldCompassGaugeDot load"></span>
+                          <span class="fieldCompassGaugeValueLabel">Load</span>
+                          <span class="fieldCompassGaugeValue" id="fieldCompassLoadValue">0.00</span>
+                        </div>
+
+                        <div class="fieldCompassGaugeValueRow">
+                          <span class="fieldCompassGaugeDot regulation"></span>
+                          <span class="fieldCompassGaugeValueLabel">Regulation</span>
+                          <span class="fieldCompassGaugeValue" id="fieldCompassRegulationValue">0.00</span>
+                        </div>
+                      </div>
+
+                      <div class="fieldCompassGaugeNote" id="fieldCompassGaugeNote">
+                        Waiting for load balance.
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -3041,6 +3200,26 @@
       el.style.width = pct + "%";
     }
 
+    function setGaugeRing(id, value, radius, max = 1.2){
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      const circumference = 2 * Math.PI * radius;
+      const pct = clamp(safeNum(value) / max, 0, 1);
+      const offset = circumference * (1 - pct);
+
+      el.style.strokeDasharray = `${circumference} ${circumference}`;
+      el.style.strokeDashoffset = String(offset);
+    }
+
+    function compassGaugeNote(stateLabel){
+      if (stateLabel === "Regulated") return "Balanced field. Keep the pace steady.";
+      if (stateLabel === "Mobilized") return "High load with usable capacity. Pace movement before adding more.";
+      if (stateLabel === "Threshold") return "Load is near the edge. Pause before crossing.";
+      if (stateLabel === "Overloaded") return "Demand exceeds capacity. Reduce scope first.";
+      return "Read the load first, then choose one clear next move.";
+    }
+
     function getHarmonicBaseName(value){
       return String(value || "").split("/")[0].trim();
     }
@@ -3444,9 +3623,12 @@
       setText("fieldCompassState", label);
       setText("fieldCompassText", compassPlainText(label));
 
-      setBar("fieldCompassCapacityBar", capacity, 1.2);
-      setBar("fieldCompassLoadBar", load, 1.2);
-      setBar("fieldCompassRegulationBar", regulation, 1.2);
+      setGaugeRing("fieldCompassCapacityRing", capacity, 58, 1.2);
+      setGaugeRing("fieldCompassLoadRing", load, 47, 1.2);
+      setGaugeRing("fieldCompassRegulationRing", regulation, 36, 1.2);
+
+      setText("fieldCompassGaugeState", label);
+      setText("fieldCompassGaugeNote", compassGaugeNote(label));
 
       setText("fieldCompassCapacityValue", fmt(capacity));
       setText("fieldCompassLoadValue", fmt(load));
