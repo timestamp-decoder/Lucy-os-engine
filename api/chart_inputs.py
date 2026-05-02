@@ -394,6 +394,10 @@ def map_lunar_phase_name(phase_fraction: float) -> str:
 
 def map_moonstamp_state(phase_fraction: float) -> str:
     fraction = max(0.0, min(1.0, float(phase_fraction)))
+    illumination = estimate_lunar_illumination(fraction)
+
+    if illumination >= 97.0:
+        return "Culminate"
 
     if fraction < 0.03 or fraction >= 0.97:
         return "Reset"
