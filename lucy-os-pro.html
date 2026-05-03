@@ -3798,23 +3798,6 @@
       };
     }
 
-    function updateMoonstampModifierUI(data){
-      const read = buildMoonstampModifierRead(data);
-
-      setText("moonstampModifierTitle", read.title);
-      setText("moonstampModifierText", read.text);
-      setText("moonstampModifierMeta", read.meta);
-
-      const shareBlock = document.getElementById("shareCardMoonstampBlock");
-      if (shareBlock) {
-        shareBlock.style.display = read.hasMoonstamp ? "block" : "none";
-      }
-
-      setText("shareCardMoonstampModifier", read.hasMoonstamp ? read.shareLine : "");
-
-      return read;
-    }
-
     function moonstampForecastText(forecastItem, fallback){
       if (!forecastItem || typeof forecastItem !== "object") return fallback;
 
@@ -4542,8 +4525,6 @@
 
       setText("outlookDirectionTitle", direction.title);
       setText("outlookDirectionText", direction.text);
-
-      return updateMoonstampModifierUI(data);
     }
 
     function updateFieldTranslationUI(field){
