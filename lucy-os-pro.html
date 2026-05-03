@@ -5798,45 +5798,6 @@
       }).join("");
     }
 
-    function buildMoonstampModifier(data){
-      const moonstamp = getMoonstamp(data);
-      if (!moonstamp || !hasMoonstampData(data)) {
-        return "";
-      }
-
-      const modifier = String(moonstamp.modifier || "").trim();
-      const forecastModifier = String(moonstamp.forecastModifier || "").trim();
-
-      if (modifier && forecastModifier) {
-        return `${modifier} ${forecastModifier}`;
-      }
-
-      if (modifier) {
-        return modifier;
-      }
-
-      if (forecastModifier) {
-        return forecastModifier;
-      }
-
-      const state = String(moonstamp.state || "").trim();
-      const phase = String(moonstamp.phase || "").trim();
-
-      if (state && phase) {
-        return `${state} lunar timing adds texture to the ${phase} field.`;
-      }
-
-      if (state) {
-        return `${state} lunar timing adds texture to today’s field.`;
-      }
-
-      if (phase) {
-        return `${phase} timing adds texture to today’s read.`;
-      }
-
-      return "The lunar field adds timing texture to today’s read.";
-    }
-
     function updateMoonstampModifierBlock(data){
       const moonstamp = getMoonstamp(data);
       const hasMoonstamp = hasMoonstampData(data);
@@ -6661,7 +6622,6 @@
             data.planetary.moon = 0.95;
             data.planetary.saturn = 0.90;
             data.planetary.neptune = 0.55;
-            data.baselineState.regulation = 0.55;
             return data;
           }
         },
