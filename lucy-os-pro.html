@@ -543,6 +543,64 @@
       overflow-wrap:break-word;
     }
 
+    .howUseBox{
+      position:relative;
+      width:100%;
+      max-width:100%;
+      min-width:0;
+      margin-top:13px;
+      overflow:hidden;
+      border:1px solid rgba(79,111,122,.14);
+      border-radius:16px;
+      padding:12px 13px;
+      background:
+        linear-gradient(
+          180deg,
+          var(--field-highlight) 0%,
+          #F3F2EF 100%
+        );
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.78),
+        inset 0 -1px 0 rgba(0,0,0,.025),
+        inset 1px 0 0 var(--spectral-blue),
+        inset -1px 0 0 var(--spectral-violet);
+      isolation:isolate;
+      contain:paint;
+    }
+
+    .howUseBox::before{
+      content:"";
+      position:absolute;
+      inset:1px;
+      border-radius:15px;
+      border:1px solid rgba(180,170,255,.10);
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .howUseBox > *{
+      position:relative;
+      z-index:1;
+    }
+
+    .howUseLabel{
+      margin-bottom:6px;
+      color:var(--blue);
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      overflow-wrap:break-word;
+    }
+
+    .howUseText{
+      color:var(--graphite2);
+      font-size:12.5px;
+      line-height:1.52;
+      font-weight:750;
+      overflow-wrap:break-word;
+    }
+
     .pairingExplain{
       display:flex;
       flex-wrap:wrap;
@@ -3031,16 +3089,17 @@
       .kicker{order:1}
       .weatherLine{order:2}
       .weatherExplain{order:3}
-      .pairingExplain{order:4}
-      .fieldCompass{order:5}
-      .moonstampModifierBlock{order:6}
-      .coreRuleBlock{order:7}
-      .todayRead{order:8}
-      .realLifeBlock{order:9}
-      .guidanceGrid{order:10}
-      .motionStrip{order:11}
-      .interactionMap{order:12}
-      .todayOutlookLine{order:13}
+      .howUseBox{order:4}
+      .pairingExplain{order:5}
+      .fieldCompass{order:6}
+      .moonstampModifierBlock{order:7}
+      .coreRuleBlock{order:8}
+      .todayRead{order:9}
+      .realLifeBlock{order:10}
+      .guidanceGrid{order:11}
+      .motionStrip{order:12}
+      .interactionMap{order:13}
+      .todayOutlookLine{order:14}
 
       .weatherLine{
         font-size:29px;
@@ -3050,6 +3109,26 @@
       .weatherExplain{
         font-size:11px;
         margin-top:9px;
+      }
+
+      .howUseBox{
+        margin-top:10px;
+        border-radius:14px;
+        padding:10px 11px;
+      }
+
+      .howUseBox::before{
+        border-radius:13px;
+      }
+
+      .howUseLabel{
+        font-size:9.5px;
+        margin-bottom:5px;
+      }
+
+      .howUseText{
+        font-size:11.6px;
+        line-height:1.48;
       }
 
       .pairingExplain{
@@ -3453,6 +3532,13 @@
             <p class="weatherExplain">
               Your root pattern × today’s field → the cleanest move for this moment.
             </p>
+
+            <div class="howUseBox">
+              <div class="howUseLabel">How to use this read</div>
+              <div class="howUseText">
+                Start with Today’s System Weather. Then read Current Field Direction. Use Core Rule as the practical filter. Use One Good Move as the action. Use Return to Yourself when the field feels too loud.
+              </div>
+            </div>
 
             <div class="pairingExplain" id="pairingExplain">
               <span><strong>Root pattern:</strong>&nbsp;—</span>
