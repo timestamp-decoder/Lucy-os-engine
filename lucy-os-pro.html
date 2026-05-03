@@ -3100,9 +3100,9 @@
       }
 
       .interactionOperator{
-        justify-content:flex-start;
-        min-height:10px;
-        padding-left:4px;
+        justify-content:center;
+        min-height:22px;
+        padding-left:0;
         font-size:16px;
         line-height:1;
       }
@@ -3854,11 +3854,6 @@
             </div>
 
             <div class="whyMini">
-              <div class="whyMiniLabel">Engine Rule</div>
-              <div class="whyMiniValue" id="whyEngineRule">Waiting for engine rule.</div>
-            </div>
-
-            <div class="whyMini">
               <div class="whyMiniLabel">Moonstamp Timing</div>
               <div class="whyMiniValue" id="whyPeakTiming">Moonstamp modifier pending</div>
             </div>
@@ -4456,7 +4451,7 @@
       const modifier = String(moonstamp.modifier || "").trim();
       const forecastModifier = String(moonstamp.forecastModifier || "").trim();
 
-      if (modifier && forecastModifier) return `${modifier} ${forecastModifier}`;
+      if (modifier && forecastModifier) return `${modifier}. ${forecastModifier}`;
       if (modifier) return modifier;
       if (forecastModifier) return forecastModifier;
 
@@ -5631,7 +5626,6 @@
 
       setText("engineRuleText", engineRule.text);
       setText("engineDetailsEngineRule", engineRule.text);
-      setText("whyEngineRule", engineRule.text);
     }
 
     function calculateHarmonics(data){
@@ -6686,7 +6680,6 @@
       setText("whyRegulation", regulationBand);
       setText("whyDistortion", distortionState.label);
       setText("whyDirection", fieldTrend.trend);
-      setText("whyEngineRule", engineRule?.text || "Waiting for engine rule.");
       setText("whyRationale", fieldTrend.rationale);
       setText("whyPeakTiming", formatMoonstampTiming(moonstamp));
       setText("whyMoonstampModifier", moonstampLine);
