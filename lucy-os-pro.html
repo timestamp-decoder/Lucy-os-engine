@@ -5467,6 +5467,9 @@
       const motionStyle = harmonicText(harmonics?.motionStyle || "");
       const distortionState = DISTORTION_STATES[harmonics?.distortionStateKey] || DISTORTION_STATES.overStructuring;
 
+      const hasMotion = (name) => motionStyle.includes(name);
+      const hasContainedDiffusedMotion = hasMotion("Contained") && hasMotion("Diffused");
+
       let gift = "Use what your system notices best.";
       let distortion = "Do not let pressure turn the read into overload.";
       let move = "Choose one clean move and keep the scope small.";
@@ -5536,24 +5539,6 @@
         move = "Let rhythm carry one practical action.";
       }
 
-      if (motionStyle.includes("Chaotic") && motionStyle.includes("Threshold") && field === "Reconstructive") {
-        gift = "Let the signal find the pressure point.";
-        distortion = "Contain the charge before it becomes a shock cycle.";
-        move = "Repair one weak point, not the whole field.";
-      }
-
-      if (primary === "Chaotic" && support === "Structured" && field === "Reconstructive") {
-        gift = "Let the signal move.";
-        distortion = "Contain it before it becomes a shock cycle.";
-        move = "Repair one weak point, not the whole field.";
-      }
-
-      if (primary === "Integrative" && field === "Reconstructive") {
-        gift = "Let the pattern reveal the repair point.";
-        distortion = "Do not open more channels than you can hold.";
-        move = "Repair one weak point, not the whole field.";
-      }
-
       if (distortionState.label === "Emotional Fusion") {
         distortion = "Do not absorb the shared field as if it is all yours.";
       } else if (distortionState.label === "Rupture" && primary !== "Chaotic") {
@@ -5565,13 +5550,25 @@
       }
 
       if (primary === "Chaotic" && support === "Structured" && field === "Reconstructive") {
+        gift = "Let the signal move.";
         distortion = "Contain it before it becomes a shock cycle.";
+        move = "Repair one weak point, not the whole field.";
+      }
+
+      if (motionStyle.includes("Chaotic") && motionStyle.includes("Threshold") && field === "Reconstructive") {
+        gift = "Let the signal find the pressure point.";
+        distortion = "Contain the charge before it becomes a shock cycle.";
+        move = "Repair one weak point, not the whole field.";
       }
 
       if (primary === "Integrative" && field === "Reconstructive") {
         gift = "Let the pattern reveal the repair point.";
         distortion = "Do not open more channels than you can hold.";
         move = "Repair one weak point, not the whole field.";
+      }
+
+      if (hasContainedDiffusedMotion) {
+        distortion = "Do not disappear into the pressure before the repair is clear.";
       }
 
       return {
