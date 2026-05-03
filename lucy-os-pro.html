@@ -40,14 +40,22 @@
       --h-steady:#aab7d6;
     }
 
-    *{box-sizing:border-box}
+    *{
+      box-sizing:border-box;
+    }
 
     html{
       scroll-behavior:smooth;
+      width:100%;
+      max-width:100%;
+      overflow-x:hidden;
     }
 
     body{
       margin:0;
+      width:100%;
+      max-width:100%;
+      overflow-x:hidden;
       font-family:Arial, sans-serif;
       background:
         radial-gradient(circle at 50% 0%, rgba(103,193,255,.10), transparent 34%),
@@ -56,10 +64,18 @@
       color:var(--text);
     }
 
+    img,
+    svg,
+    canvas{
+      max-width:100%;
+    }
+
     .wrap{
+      width:100%;
       max-width:1380px;
       margin:0 auto;
       padding:18px 24px 24px;
+      overflow-x:hidden;
     }
 
     .backLink{
@@ -67,6 +83,7 @@
       align-items:center;
       gap:6px;
       width:auto;
+      max-width:100%;
       min-height:32px;
       margin:0 0 10px;
       padding:0 12px;
@@ -78,6 +95,7 @@
       font-weight:800;
       text-decoration:none;
       letter-spacing:.02em;
+      overflow-wrap:anywhere;
     }
 
     .backLink:hover{
@@ -89,6 +107,8 @@
     .hero{
       position:relative;
       text-align:center;
+      width:100%;
+      max-width:100%;
       margin-bottom:16px;
       padding:15px 18px 13px;
       overflow:hidden;
@@ -128,12 +148,18 @@
 
     .grid{
       display:grid;
-      grid-template-columns:360px 1fr;
+      grid-template-columns:360px minmax(0,1fr);
       gap:18px;
       align-items:start;
+      width:100%;
+      max-width:100%;
+      min-width:0;
     }
 
     .panel{
+      width:100%;
+      max-width:100%;
+      min-width:0;
       background:linear-gradient(180deg,var(--panel),var(--panel2));
       border:1px solid var(--line);
       border-radius:18px;
@@ -149,6 +175,7 @@
     .inputPanel{
       position:sticky;
       top:16px;
+      min-width:0;
     }
 
     label{
@@ -158,8 +185,12 @@
       margin:10px 0 6px;
     }
 
-    input, select, button{
+    input,
+    select,
+    button{
       width:100%;
+      max-width:100%;
+      min-width:0;
       border-radius:10px;
       border:1px solid var(--line);
       background:#0b1734;
@@ -174,8 +205,9 @@
 
     .row2{
       display:grid;
-      grid-template-columns:1fr 1fr;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
       gap:10px;
+      min-width:0;
     }
 
     button{
@@ -203,6 +235,8 @@
       background:
         radial-gradient(circle at 10% 0%, rgba(103,193,255,.08), transparent 34%),
         rgba(255,255,255,.025);
+      min-width:0;
+      max-width:100%;
     }
 
     .savedProfiles h3{
@@ -226,8 +260,9 @@
 
     .savedProfiles .profileButtonRow{
       display:grid;
-      grid-template-columns:1fr 1fr;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
       gap:10px;
+      min-width:0;
     }
 
     .savedProfiles .profileButtonRow button{
@@ -259,12 +294,14 @@
       color:var(--muted);
       margin-top:10px;
       line-height:1.45;
+      overflow-wrap:break-word;
     }
 
     .leftStack{
       display:grid;
       gap:12px;
       margin-top:14px;
+      min-width:0;
     }
 
     .statusBlock{
@@ -275,6 +312,9 @@
       font-size:12px;
       line-height:1.55;
       color:var(--muted);
+      min-width:0;
+      max-width:100%;
+      overflow-wrap:anywhere;
     }
 
     .statusBlock strong{
@@ -299,10 +339,16 @@
     .mainStack{
       display:grid;
       gap:16px;
+      width:100%;
+      max-width:100%;
+      min-width:0;
     }
 
     .premiumCard{
       position:relative;
+      width:100%;
+      max-width:100%;
+      min-width:0;
       overflow:hidden;
       border:1px solid rgba(103,193,255,.28);
       border-radius:24px;
@@ -339,6 +385,8 @@
     .cardContent{
       position:relative;
       z-index:1;
+      min-width:0;
+      max-width:100%;
     }
 
     .kicker{
@@ -352,12 +400,14 @@
 
     .weatherLine{
       margin:0;
+      max-width:100%;
       font-size:clamp(30px,3.9vw,46px);
       line-height:1.01;
       font-weight:950;
       letter-spacing:-.045em;
       color:var(--text);
       text-wrap:balance;
+      overflow-wrap:anywhere;
     }
 
     .weatherLine span{
@@ -371,6 +421,7 @@
       line-height:1.45;
       font-weight:800;
       letter-spacing:.01em;
+      overflow-wrap:break-word;
     }
 
     .pairingExplain{
@@ -383,11 +434,14 @@
       font-size:12px;
       line-height:1.45;
       font-weight:850;
+      min-width:0;
     }
 
     .pairingExplain span{
       display:inline-flex;
       align-items:center;
+      min-width:0;
+      max-width:100%;
       min-height:31px;
       padding:7px 11px;
       border-radius:999px;
@@ -405,6 +459,9 @@
 
     .interactionMap{
       margin-top:13px;
+      width:100%;
+      max-width:100%;
+      min-width:0;
       border:1px solid rgba(103,193,255,.18);
       border-radius:18px;
       padding:12px;
@@ -428,9 +485,10 @@
 
     .interactionMapGrid{
       display:grid;
-      grid-template-columns:1fr auto 1fr auto 1.25fr;
+      grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1.25fr);
       gap:10px;
       align-items:stretch;
+      min-width:0;
     }
 
     .interactionNode{
@@ -439,6 +497,7 @@
       padding:12px 13px;
       background:rgba(255,255,255,.035);
       min-height:96px;
+      min-width:0;
       display:grid;
       align-content:start;
       gap:6px;
@@ -465,6 +524,7 @@
       font-weight:950;
       line-height:1.22;
       overflow-wrap:anywhere;
+      min-width:0;
     }
 
     .interactionNodeText{
@@ -473,6 +533,7 @@
       line-height:1.48;
       font-weight:700;
       overflow-wrap:break-word;
+      min-width:0;
     }
 
     .interactionOperator{
@@ -488,6 +549,9 @@
 
     .fieldCompass{
       margin-top:13px;
+      width:100%;
+      max-width:100%;
+      min-width:0;
       border:1px solid rgba(111,224,211,.18);
       border-radius:18px;
       padding:12px;
@@ -511,9 +575,10 @@
 
     .fieldCompassGrid{
       display:grid;
-      grid-template-columns:.9fr 1.4fr;
+      grid-template-columns:minmax(0,.9fr) minmax(0,1.4fr);
       gap:10px;
       align-items:stretch;
+      min-width:0;
     }
 
     .fieldCompassRead,
@@ -525,6 +590,8 @@
       display:grid;
       align-content:start;
       gap:7px;
+      min-width:0;
+      max-width:100%;
     }
 
     .fieldCompassRead{
@@ -569,14 +636,17 @@
 
     .fieldCompassGaugeWrap{
       display:grid;
-      grid-template-columns:154px 1fr;
+      grid-template-columns:154px minmax(0,1fr);
       gap:12px;
       align-items:center;
+      min-width:0;
+      max-width:100%;
     }
 
     .fieldCompassGauge{
       position:relative;
       width:154px;
+      max-width:100%;
       height:154px;
       display:grid;
       place-items:center;
@@ -585,6 +655,7 @@
 
     .fieldCompassGauge svg{
       width:154px;
+      max-width:100%;
       height:154px;
       overflow:visible;
       filter:drop-shadow(0 12px 22px rgba(0,0,0,.22));
@@ -654,18 +725,21 @@
       display:grid;
       gap:8px;
       align-content:center;
+      min-width:0;
     }
 
     .fieldCompassGaugeValues{
       display:grid;
       gap:7px;
+      min-width:0;
     }
 
     .fieldCompassGaugeValueRow{
       display:grid;
-      grid-template-columns:13px 1fr 42px;
+      grid-template-columns:13px minmax(0,1fr) 42px;
       gap:8px;
       align-items:center;
+      min-width:0;
     }
 
     .fieldCompassGaugeDot{
@@ -695,6 +769,7 @@
       font-size:11px;
       font-weight:900;
       letter-spacing:.04em;
+      overflow-wrap:break-word;
     }
 
     .fieldCompassGaugeValue{
@@ -713,11 +788,12 @@
       font-size:12px;
       line-height:1.45;
       font-weight:750;
+      overflow-wrap:break-word;
     }
 
     .motionStrip{
       display:grid;
-      grid-template-columns:minmax(210px,.40fr) 1fr;
+      grid-template-columns:minmax(210px,.40fr) minmax(0,1fr);
       gap:10px;
       margin-top:15px;
       border:1px solid rgba(216,184,76,.26);
@@ -729,6 +805,8 @@
       box-shadow:
         inset 0 0 0 1px rgba(255,255,255,.025),
         0 10px 26px rgba(0,0,0,.13);
+      min-width:0;
+      max-width:100%;
     }
 
     .motionMini{
@@ -736,6 +814,8 @@
       border-radius:15px;
       background:rgba(255,255,255,.045);
       padding:12px 13px;
+      min-width:0;
+      max-width:100%;
     }
 
     .motionMiniLabel{
@@ -752,6 +832,7 @@
       font-size:16px;
       font-weight:950;
       line-height:1.25;
+      overflow-wrap:anywhere;
     }
 
     .motionMiniText{
@@ -759,6 +840,7 @@
       font-size:12.5px;
       line-height:1.5;
       font-weight:750;
+      overflow-wrap:break-word;
     }
 
     .harmonicName{
@@ -782,6 +864,7 @@
       color:var(--text);
       font-size:16px;
       line-height:1.68;
+      overflow-wrap:break-word;
     }
 
     .realLifeBlock{
@@ -793,6 +876,8 @@
         radial-gradient(circle at 10% 0%, rgba(216,184,76,.11), transparent 34%),
         rgba(216,184,76,.045);
       box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
+      min-width:0;
+      max-width:100%;
     }
 
     .realLifeLabel{
@@ -809,6 +894,7 @@
       font-size:14px;
       line-height:1.58;
       font-weight:750;
+      overflow-wrap:break-word;
     }
 
     .guidanceGrid{
@@ -816,6 +902,7 @@
       grid-template-columns:repeat(2,minmax(0,1fr));
       gap:12px;
       margin-top:18px;
+      min-width:0;
     }
 
     .guidanceBlock{
@@ -823,6 +910,8 @@
       border-radius:16px;
       padding:14px;
       background:rgba(255,255,255,.035);
+      min-width:0;
+      max-width:100%;
     }
 
     .guidanceBlock.full{
@@ -844,6 +933,7 @@
       color:var(--text);
       font-size:14px;
       line-height:1.58;
+      overflow-wrap:break-word;
     }
 
     .todayOutlookLine{
@@ -856,6 +946,7 @@
       font-size:12px;
       font-weight:850;
       line-height:1.4;
+      overflow-wrap:break-word;
     }
 
     .todayOutlookLine span{
@@ -863,6 +954,9 @@
     }
 
     .outlookCard{
+      width:100%;
+      max-width:100%;
+      min-width:0;
       border:1px solid rgba(103,193,255,.22);
       border-radius:22px;
       padding:20px;
@@ -873,6 +967,7 @@
       box-shadow:
         0 18px 52px rgba(0,0,0,.26),
         inset 0 0 0 1px rgba(255,255,255,.02);
+      overflow:hidden;
     }
 
     .outlookHeader{
@@ -881,6 +976,7 @@
       justify-content:space-between;
       gap:14px;
       margin-bottom:15px;
+      min-width:0;
     }
 
     .outlookHeader h2{
@@ -895,12 +991,14 @@
       font-size:13px;
       line-height:1.5;
       max-width:620px;
+      overflow-wrap:break-word;
     }
 
     .outlookGrid{
       display:grid;
       grid-template-columns:repeat(3,minmax(0,1fr));
       gap:12px;
+      min-width:0;
     }
 
     .outlookBlock{
@@ -909,6 +1007,8 @@
       padding:14px;
       background:rgba(255,255,255,.03);
       min-height:116px;
+      min-width:0;
+      max-width:100%;
     }
 
     .outlookBlock.primary{
@@ -961,6 +1061,7 @@
       font-size:18px;
       font-weight:900;
       line-height:1.25;
+      overflow-wrap:anywhere;
     }
 
     .outlookBlock.primary .outlookValue{
@@ -973,6 +1074,7 @@
       margin-top:8px;
       font-size:12px;
       line-height:1.55;
+      overflow-wrap:break-word;
     }
 
     .outlookBlock.primary .outlookText{
@@ -983,6 +1085,53 @@
       line-height:1.62;
     }
 
+    .moonstampModifierBlock{
+      margin-top:12px;
+      border:1px solid rgba(203,183,255,.20);
+      border-radius:16px;
+      padding:14px;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(203,183,255,.09), transparent 34%),
+        rgba(255,255,255,.026);
+      min-width:0;
+      max-width:100%;
+    }
+
+    .moonstampModifierLabel{
+      color:#cab1ff;
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      margin-bottom:7px;
+    }
+
+    .moonstampModifierTitle{
+      color:var(--text);
+      font-size:15px;
+      font-weight:950;
+      line-height:1.3;
+      overflow-wrap:anywhere;
+    }
+
+    .moonstampModifierText{
+      margin-top:6px;
+      color:#d9e0f4;
+      font-size:12.5px;
+      line-height:1.52;
+      font-weight:700;
+      overflow-wrap:break-word;
+    }
+
+    .moonstampModifierMeta{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.45;
+      font-weight:750;
+      overflow-wrap:anywhere;
+    }
+
     .outlookNote{
       margin-top:12px;
       color:var(--muted2);
@@ -990,15 +1139,20 @@
       line-height:1.5;
       border-top:1px solid rgba(255,255,255,.07);
       padding-top:12px;
+      overflow-wrap:break-word;
     }
 
     .profileCard{
+      width:100%;
+      max-width:100%;
+      min-width:0;
       border:1px solid rgba(103,193,255,.18);
       border-radius:20px;
       padding:18px;
       background:
         linear-gradient(180deg,rgba(15,27,56,.96),rgba(13,25,52,.94));
       box-shadow:var(--shadow);
+      overflow:hidden;
     }
 
     .profileHeader{
@@ -1007,6 +1161,7 @@
       justify-content:space-between;
       gap:14px;
       margin-bottom:14px;
+      min-width:0;
     }
 
     .profileHeader h2{
@@ -1019,12 +1174,14 @@
       color:var(--muted);
       font-size:13px;
       line-height:1.5;
+      overflow-wrap:break-word;
     }
 
     .profileGrid{
       display:grid;
       grid-template-columns:repeat(3,minmax(0,1fr));
       gap:12px;
+      min-width:0;
     }
 
     .profileBlock{
@@ -1033,6 +1190,8 @@
       padding:14px;
       background:rgba(255,255,255,.03);
       min-height:110px;
+      min-width:0;
+      max-width:100%;
     }
 
     .profileBlock.wide{
@@ -1065,6 +1224,7 @@
       margin-top:8px;
       font-size:12px;
       line-height:1.48;
+      overflow-wrap:break-word;
     }
 
     .chipRow{
@@ -1073,6 +1233,7 @@
       flex-wrap:wrap;
       margin-top:12px;
       align-items:center;
+      min-width:0;
     }
 
     .chip{
@@ -1172,11 +1333,15 @@
     }
 
     .whyReadCard{
+      width:100%;
+      max-width:100%;
+      min-width:0;
       border:1px solid rgba(103,193,255,.15);
       border-radius:20px;
       padding:18px;
       background:linear-gradient(180deg,rgba(15,27,56,.90),rgba(11,23,52,.86));
       box-shadow:var(--shadow);
+      overflow:hidden;
     }
 
     .whyReadGrid{
@@ -1184,6 +1349,7 @@
       grid-template-columns:repeat(4,minmax(0,1fr));
       gap:10px;
       margin-top:14px;
+      min-width:0;
     }
 
     .whyMini{
@@ -1191,6 +1357,8 @@
       border-radius:14px;
       padding:12px;
       background:rgba(255,255,255,.026);
+      min-width:0;
+      max-width:100%;
     }
 
     .whyMini.full{
@@ -1212,6 +1380,7 @@
       font-weight:800;
       line-height:1.35;
       overflow-wrap:anywhere;
+      white-space:pre-line;
     }
 
     .whyExplain{
@@ -1221,9 +1390,14 @@
       color:var(--muted);
       font-size:13px;
       line-height:1.65;
+      white-space:pre-line;
+      overflow-wrap:break-word;
     }
 
     .shareSection{
+      width:100%;
+      max-width:100%;
+      min-width:0;
       border:1px solid rgba(216,184,76,.18);
       border-radius:20px;
       padding:18px;
@@ -1231,6 +1405,7 @@
         radial-gradient(circle at 18% 0%, rgba(216,184,76,.08), transparent 34%),
         linear-gradient(180deg,rgba(15,27,56,.94),rgba(11,23,52,.92));
       box-shadow:var(--shadow);
+      overflow:hidden;
     }
 
     .shareIntro{
@@ -1239,6 +1414,7 @@
       gap:14px;
       align-items:flex-start;
       margin-bottom:14px;
+      min-width:0;
     }
 
     .shareIntro h2{
@@ -1251,6 +1427,7 @@
       color:var(--muted);
       font-size:13px;
       line-height:1.5;
+      overflow-wrap:break-word;
     }
 
     .shareIntroChips{
@@ -1259,6 +1436,7 @@
       flex-wrap:wrap;
       justify-content:flex-end;
       min-width:220px;
+      max-width:100%;
     }
 
     .shareChip{
@@ -1362,11 +1540,15 @@
     .shareExportFrame{
       width:100%;
       max-width:720px;
+      min-width:0;
       margin:0 auto;
+      overflow:hidden;
     }
 
     .shareCard{
       width:100%;
+      max-width:100%;
+      min-width:0;
       border:1px solid rgba(216,184,76,.28);
       border-radius:20px;
       overflow:hidden;
@@ -1383,6 +1565,8 @@
       padding:30px;
       display:grid;
       gap:18px;
+      min-width:0;
+      max-width:100%;
     }
 
     .shareCardTop{
@@ -1397,6 +1581,7 @@
       font-weight:900;
       letter-spacing:.14em;
       text-transform:uppercase;
+      min-width:0;
     }
 
     .shareCardTop span:first-child{
@@ -1408,6 +1593,7 @@
       gap:7px;
       flex-wrap:wrap;
       margin-top:-2px;
+      min-width:0;
     }
 
     .shareCardChip{
@@ -1511,6 +1697,8 @@
       display:grid;
       gap:8px;
       padding-top:2px;
+      min-width:0;
+      max-width:100%;
     }
 
     .shareCardLabel{
@@ -1530,6 +1718,7 @@
       padding-bottom:8px;
       border-bottom:1px solid rgba(255,255,255,.08);
       overflow-wrap:anywhere;
+      min-width:0;
     }
 
     .shareCardFieldDirection{
@@ -1545,6 +1734,8 @@
       box-shadow:
         inset 0 0 0 1px rgba(255,255,255,.025),
         0 10px 28px rgba(0,0,0,.16);
+      min-width:0;
+      max-width:100%;
     }
 
     .shareCardFieldDirection::before{
@@ -1577,11 +1768,33 @@
       overflow-wrap:break-word;
     }
 
+    .shareCardMoonstamp{
+      display:none;
+      border:1px solid rgba(203,183,255,.20);
+      border-radius:16px;
+      padding:14px;
+      background:
+        radial-gradient(circle at 8% 0%, rgba(203,183,255,.10), transparent 34%),
+        rgba(255,255,255,.032);
+      min-width:0;
+      max-width:100%;
+    }
+
+    .shareCardMoonstamp.active{
+      display:block;
+    }
+
+    .shareCardMoonstamp .shareCardRead{
+      font-size:14px;
+      line-height:1.55;
+    }
+
     .shareCardRead{
       color:var(--text);
       font-size:17px;
       line-height:1.62;
       overflow-wrap:break-word;
+      min-width:0;
     }
 
     .shareCardRealLife{
@@ -1591,12 +1804,15 @@
       background:
         radial-gradient(circle at 10% 0%, rgba(216,184,76,.12), transparent 34%),
         rgba(216,184,76,.045);
+      min-width:0;
+      max-width:100%;
     }
 
     .shareCardMiniGrid{
       display:grid;
       gap:12px;
       margin-top:2px;
+      min-width:0;
     }
 
     .shareCardMini{
@@ -1604,6 +1820,8 @@
       border-radius:16px;
       padding:14px;
       background:rgba(255,255,255,.035);
+      min-width:0;
+      max-width:100%;
     }
 
     .shareCardMini .shareCardRead{
@@ -1618,13 +1836,15 @@
       font-weight:900;
       letter-spacing:.14em;
       text-transform:uppercase;
+      overflow-wrap:break-word;
     }
 
     .shareActions{
       display:grid;
-      grid-template-columns:1fr 1fr;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
       gap:12px;
       margin-top:14px;
+      min-width:0;
     }
 
     .shareStatus{
@@ -1634,9 +1854,13 @@
       font-size:12px;
       font-weight:800;
       line-height:1.4;
+      overflow-wrap:break-word;
     }
 
     .librarySection{
+      width:100%;
+      max-width:100%;
+      min-width:0;
       border:1px solid rgba(103,193,255,.15);
       border-radius:20px;
       background:rgba(6,15,34,.36);
@@ -1650,6 +1874,7 @@
       color:var(--text);
       font-size:18px;
       font-weight:900;
+      overflow-wrap:break-word;
     }
 
     .librarySection summary::-webkit-details-marker{
@@ -1668,6 +1893,8 @@
     .libraryBody{
       border-top:1px solid rgba(255,255,255,.07);
       padding:18px;
+      min-width:0;
+      max-width:100%;
     }
 
     .libraryIntro{
@@ -1675,12 +1902,14 @@
       font-size:13px;
       line-height:1.55;
       margin:0 0 14px;
+      overflow-wrap:break-word;
     }
 
     .libraryGrid{
       display:grid;
       grid-template-columns:repeat(3,minmax(0,1fr));
       gap:12px;
+      min-width:0;
     }
 
     .libraryCard{
@@ -1690,6 +1919,8 @@
       background:rgba(255,255,255,.026);
       display:grid;
       gap:8px;
+      min-width:0;
+      max-width:100%;
     }
 
     .libraryCard.active{
@@ -1704,6 +1935,7 @@
       color:var(--gold);
       font-size:16px;
       line-height:1.2;
+      overflow-wrap:anywhere;
     }
 
     .libraryCard p{
@@ -1711,6 +1943,7 @@
       color:var(--muted);
       font-size:12px;
       line-height:1.5;
+      overflow-wrap:break-word;
     }
 
     .libraryCard strong{
@@ -1718,6 +1951,9 @@
     }
 
     .engineDetails{
+      width:100%;
+      max-width:100%;
+      min-width:0;
       border:1px solid rgba(42,60,105,.75);
       border-radius:20px;
       background:rgba(6,15,34,.40);
@@ -1731,6 +1967,7 @@
       color:var(--text);
       font-size:18px;
       font-weight:900;
+      overflow-wrap:break-word;
     }
 
     .engineDetails summary::-webkit-details-marker{
@@ -1749,6 +1986,9 @@
     .engineBody{
       border-top:1px solid rgba(255,255,255,.07);
       padding:16px;
+      min-width:0;
+      max-width:100%;
+      overflow-x:hidden;
     }
 
     .engineHeader{
@@ -1757,6 +1997,7 @@
       justify-content:space-between;
       gap:14px;
       margin-bottom:14px;
+      min-width:0;
     }
 
     .engineHeader h2{
@@ -1770,13 +2011,15 @@
       color:var(--muted2);
       font-size:12px;
       line-height:1.45;
+      overflow-wrap:break-word;
     }
 
     .heroStats{
       display:grid;
-      grid-template-columns:1fr 1fr 1fr;
+      grid-template-columns:repeat(3,minmax(0,1fr));
       gap:14px;
       margin-bottom:14px;
+      min-width:0;
     }
 
     .stat{
@@ -1785,6 +2028,7 @@
       border-radius:16px;
       padding:16px;
       min-height:138px;
+      min-width:0;
     }
 
     .stat .label{
@@ -1799,6 +2043,7 @@
       font-weight:800;
       margin-top:8px;
       line-height:1.05;
+      overflow-wrap:anywhere;
     }
 
     .sub{
@@ -1806,6 +2051,7 @@
       color:var(--muted);
       margin-top:8px;
       line-height:1.4;
+      overflow-wrap:break-word;
     }
 
     .meter{
@@ -1847,9 +2093,10 @@
 
     .midRow{
       display:grid;
-      grid-template-columns:1.15fr .85fr;
+      grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);
       gap:14px;
       margin-bottom:14px;
+      min-width:0;
     }
 
     .microCard{
@@ -1858,6 +2105,7 @@
       border-radius:16px;
       padding:14px 16px;
       min-height:126px;
+      min-width:0;
     }
 
     .microHeader{
@@ -1866,6 +2114,7 @@
       align-items:center;
       gap:10px;
       margin-bottom:8px;
+      min-width:0;
     }
 
     .microTitle{
@@ -1874,6 +2123,7 @@
       text-transform:uppercase;
       letter-spacing:.08em;
       font-weight:700;
+      overflow-wrap:break-word;
     }
 
     .verifiedBadge{
@@ -1893,12 +2143,14 @@
       font-size:18px;
       font-weight:800;
       margin:2px 0 6px;
+      overflow-wrap:anywhere;
     }
 
     .forecastSub{
       font-size:12px;
       color:var(--muted);
       line-height:1.45;
+      overflow-wrap:break-word;
     }
 
     .whyCard{
@@ -1907,6 +2159,7 @@
       border:1px solid var(--line);
       border-radius:16px;
       padding:18px;
+      min-width:0;
     }
 
     .whyTitle{
@@ -1922,6 +2175,7 @@
       font-size:13px;
       color:var(--text);
       line-height:1.72;
+      overflow-wrap:break-word;
     }
 
     .summaryTitle{
@@ -1931,19 +2185,24 @@
       text-transform:uppercase;
       letter-spacing:.08em;
       font-weight:800;
+      overflow-wrap:break-word;
     }
 
     .table{
       width:100%;
+      max-width:100%;
       border-collapse:collapse;
       font-size:13px;
+      table-layout:fixed;
     }
 
-    .table th,.table td{
+    .table th,
+    .table td{
       padding:11px 8px;
       border-bottom:1px solid var(--lineSoft);
       text-align:left;
       vertical-align:middle;
+      overflow-wrap:anywhere;
     }
 
     .table th{
@@ -1955,11 +2214,13 @@
 
     .badge{
       display:inline-block;
+      max-width:100%;
       padding:5px 8px;
       border-radius:999px;
       font-size:11px;
       font-weight:700;
       border:1px solid transparent;
+      overflow-wrap:anywhere;
     }
 
     .b-blue{background:rgba(103,193,255,.12); color:var(--blue); border-color:rgba(103,193,255,.22)}
@@ -1974,9 +2235,10 @@
 
     .bottomGrid{
       display:grid;
-      grid-template-columns:1fr 1fr;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
       gap:14px;
       margin-top:14px;
+      min-width:0;
     }
 
     .miniPanel{
@@ -1984,6 +2246,9 @@
       border:1px solid var(--line);
       border-radius:16px;
       padding:16px;
+      min-width:0;
+      max-width:100%;
+      overflow:hidden;
     }
 
     .metaRow{
@@ -1992,11 +2257,13 @@
       align-items:center;
       flex-wrap:wrap;
       margin-top:16px;
+      min-width:0;
     }
 
     .metaPill{
       display:inline-flex;
       align-items:center;
+      max-width:100%;
       padding:6px 10px;
       border-radius:999px;
       font-size:11px;
@@ -2004,6 +2271,7 @@
       border:1px solid rgba(255,255,255,.08);
       background:rgba(255,255,255,.03);
       color:var(--muted);
+      overflow-wrap:anywhere;
     }
 
     .metaPill.field{
@@ -2019,32 +2287,75 @@
     }
 
     @media (max-width: 1120px){
-      .grid{grid-template-columns:1fr}
-      .inputPanel{position:static}
-      .heroStats{grid-template-columns:1fr}
-      .midRow{grid-template-columns:1fr}
-      .bottomGrid{grid-template-columns:1fr}
-      .guidanceGrid{grid-template-columns:1fr}
-      .profileGrid{grid-template-columns:1fr}
-      .profileBlock.wide,
-      .profileBlock.full{grid-column:auto}
-      .outlookGrid{grid-template-columns:1fr}
-      .outlookBlock.primary{grid-column:auto}
-      .whyReadGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .whyMini.full{grid-column:1 / -1}
-      .libraryGrid{grid-template-columns:1fr}
-      .interactionMapGrid{
-        grid-template-columns:1fr;
+      .grid{
+        grid-template-columns:minmax(0,1fr);
       }
+
+      .inputPanel{
+        position:static;
+      }
+
+      .heroStats{
+        grid-template-columns:minmax(0,1fr);
+      }
+
+      .midRow{
+        grid-template-columns:minmax(0,1fr);
+      }
+
+      .bottomGrid{
+        grid-template-columns:minmax(0,1fr);
+      }
+
+      .guidanceGrid{
+        grid-template-columns:minmax(0,1fr);
+      }
+
+      .profileGrid{
+        grid-template-columns:minmax(0,1fr);
+      }
+
+      .profileBlock.wide,
+      .profileBlock.full{
+        grid-column:auto;
+      }
+
+      .outlookGrid{
+        grid-template-columns:minmax(0,1fr);
+      }
+
+      .outlookBlock.primary{
+        grid-column:auto;
+      }
+
+      .whyReadGrid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+
+      .whyMini.full{
+        grid-column:1 / -1;
+      }
+
+      .libraryGrid{
+        grid-template-columns:minmax(0,1fr);
+      }
+
+      .interactionMapGrid{
+        grid-template-columns:minmax(0,1fr);
+      }
+
       .interactionOperator{
         min-height:18px;
       }
+
       .fieldCompassGrid{
-        grid-template-columns:1fr;
+        grid-template-columns:minmax(0,1fr);
       }
+
       .shareIntro{
         display:grid;
       }
+
       .shareIntroChips{
         justify-content:flex-start;
         min-width:0;
@@ -2052,21 +2363,51 @@
     }
 
     @media (max-width: 720px){
-      .wrap{padding:12px 14px 14px}
-      .backLink{margin-bottom:8px}
+      .wrap{
+        padding:12px 14px 14px;
+      }
+
+      .backLink{
+        margin-bottom:8px;
+      }
+
       .hero{
         margin-bottom:12px;
         padding:12px 14px 10px;
         border-radius:16px;
       }
-      .hero h1{font-size:30px}
-      .hero p{font-size:12px}
-      .panel,.premiumCard,.profileCard,.engineDetails,.whyReadCard,.shareSection,.outlookCard{border-radius:16px}
-      .premiumCard{padding:16px}
+
+      .hero h1{
+        font-size:30px;
+      }
+
+      .hero p{
+        font-size:12px;
+      }
+
+      .panel,
+      .premiumCard,
+      .profileCard,
+      .engineDetails,
+      .whyReadCard,
+      .shareSection,
+      .outlookCard{
+        border-radius:16px;
+      }
+
+      .panel{
+        padding:16px;
+      }
+
+      .premiumCard{
+        padding:16px;
+      }
+
       .cardContent{
         display:flex;
         flex-direction:column;
       }
+
       .kicker{order:1}
       .weatherLine{order:2}
       .weatherExplain{order:3}
@@ -2078,20 +2419,24 @@
       .realLifeBlock{order:9}
       .guidanceGrid{order:10}
       .todayOutlookLine{order:11}
+
       .weatherLine{
         font-size:29px;
         line-height:1.03;
       }
+
       .weatherExplain{
         font-size:11px;
         margin-top:9px;
       }
+
       .pairingExplain{
         display:grid;
         gap:7px;
         font-size:11px;
         margin-top:11px;
       }
+
       .pairingExplain span{
         display:block;
         min-height:0;
@@ -2100,35 +2445,43 @@
         line-height:1.42;
         white-space:normal;
       }
+
       .pairingExplain strong{
         display:inline-block;
         white-space:nowrap;
         margin-right:3px;
       }
+
       .interactionMap{
         border-radius:15px;
         padding:9px;
         margin-top:10px;
       }
+
       .interactionMapLabel{
         margin-bottom:7px;
       }
+
       .interactionMapGrid{
         gap:7px;
       }
+
       .interactionNode{
         min-height:auto;
         border-radius:13px;
         padding:10px 11px;
         gap:4px;
       }
+
       .interactionNodeName{
         font-size:15px;
       }
+
       .interactionNodeText{
         font-size:11.5px;
         line-height:1.42;
       }
+
       .interactionOperator{
         justify-content:flex-start;
         min-height:10px;
@@ -2136,135 +2489,209 @@
         font-size:16px;
         line-height:1;
       }
+
       .fieldCompass{
         border-radius:15px;
         padding:9px;
         margin-top:10px;
       }
+
       .fieldCompassLabel{
         margin-bottom:7px;
       }
+
       .fieldCompassGrid{
         gap:7px;
       }
+
       .fieldCompassRead,
       .fieldCompassBalance{
         border-radius:13px;
         padding:10px 11px;
         gap:5px;
       }
+
       .fieldCompassState{
         font-size:18px;
       }
+
       .fieldCompassText{
         font-size:11.8px;
         line-height:1.42;
       }
+
       .fieldCompassGaugeWrap{
-        grid-template-columns:1fr;
+        grid-template-columns:minmax(0,1fr);
         gap:9px;
       }
+
       .fieldCompassGauge{
         width:142px;
         height:142px;
       }
+
       .fieldCompassGauge svg{
         width:142px;
         height:142px;
       }
+
       .fieldCompassGaugeCenter{
         inset:40px;
       }
+
       .fieldCompassGaugeCenterState{
         font-size:13px;
       }
+
       .fieldCompassGaugeValues{
-        grid-template-columns:1fr;
+        grid-template-columns:minmax(0,1fr);
         gap:6px;
       }
+
       .fieldCompassGaugeNote{
         font-size:11.6px;
         padding-top:8px;
       }
+
       .motionStrip{
-        grid-template-columns:1fr;
+        grid-template-columns:minmax(0,1fr);
         border-radius:15px;
         padding:10px;
         margin-top:10px;
       }
+
       .motionMini{
         border-radius:13px;
         padding:10px 11px;
       }
+
       .motionMiniText{
         font-size:12px;
       }
+
       .todayRead{
         font-size:15px;
         margin-top:13px;
         line-height:1.62;
       }
+
       .realLifeBlock{
         border-radius:14px;
         padding:12px;
         margin-top:13px;
       }
+
       .realLifeText{
         font-size:13px;
         line-height:1.55;
       }
+
       .guidanceGrid{
         margin-top:14px;
         gap:10px;
       }
+
       .guidanceBlock{
         padding:12px;
         border-radius:14px;
       }
-      .todayOutlookLine{border-radius:14px}
-      .profileHeader,.outlookHeader{display:grid}
+
+      .todayOutlookLine{
+        border-radius:14px;
+      }
+
+      .profileHeader,
+      .outlookHeader{
+        display:grid;
+      }
+
       .outlookCard{
         padding:18px;
       }
+
       .outlookHeader h2{
         font-size:24px;
       }
+
       .outlookBlock.primary{
         min-height:auto;
         padding:16px;
       }
+
       .outlookBlock.primary .outlookValue{
         font-size:25px;
       }
+
       .outlookBlock.primary .outlookText{
         font-size:13px;
       }
-      .profileBlock{min-height:auto}
-      .profileValue{font-size:17px}
-      .chip,.shareChip{min-height:28px; padding:6px 9px}
-      .whyReadGrid{grid-template-columns:1fr}
-      .shareCardInner{padding:22px}
+
+      .moonstampModifierBlock{
+        border-radius:14px;
+        padding:12px;
+      }
+
+      .profileBlock{
+        min-height:auto;
+      }
+
+      .profileValue{
+        font-size:17px;
+      }
+
+      .chip,
+      .shareChip{
+        min-height:28px;
+        padding:6px 9px;
+      }
+
+      .whyReadGrid{
+        grid-template-columns:minmax(0,1fr);
+      }
+
+      .shareCardInner{
+        padding:22px;
+      }
+
       .shareCardTop{
         display:grid;
         gap:8px;
       }
-      .shareCardWeather{font-size:34px}
+
+      .shareCardWeather{
+        font-size:34px;
+      }
+
       .shareCardFieldDirection{
         border-radius:16px;
         padding:14px;
       }
+
       .shareCardFieldTitle{
         font-size:20px;
       }
+
       .shareCardFieldText{
         font-size:13px;
       }
-      .shareCardRead{font-size:15px}
+
+      .shareCardRead{
+        font-size:15px;
+      }
+
       .shareCardRealLife{
         border-radius:14px;
         padding:12px;
       }
-      .shareActions{grid-template-columns:1fr}
+
+      .shareCardMoonstamp{
+        border-radius:14px;
+        padding:12px;
+      }
+
+      .shareActions{
+        grid-template-columns:minmax(0,1fr);
+      }
     }
   </style>
 </head>
@@ -2350,45 +2777,22 @@
       </div>
 
       <div class="mainStack">
-
         <section class="premiumCard">
           <div class="cardContent">
             <p class="kicker">Today’s System Weather</p>
+
             <h2 class="weatherLine" id="systemWeatherLine">
               Structured signal architecture<br><span>meeting a</span> live field
             </h2>
-            <p class="weatherExplain">Signal architecture = your root pattern. Current field = what today is activating. Read this as: root pattern × current field → recommended move.</p>
+
+            <p class="weatherExplain">
+              Signal architecture = your root pattern. Current field = what today is activating. Read this as: root pattern × current field → recommended move.
+            </p>
+
             <div class="pairingExplain" id="pairingExplain">
               <span><strong>Root pattern:</strong>&nbsp;—</span>
               <span><strong>Current field:</strong>&nbsp;—</span>
               <span><strong>Meaning:</strong>&nbsp;—</span>
-            </div>
-
-            <div class="interactionMap">
-              <div class="interactionMapLabel">Interaction Map</div>
-              <div class="interactionMapGrid">
-                <div class="interactionNode">
-                  <div class="interactionNodeLabel">Root Pattern</div>
-                  <div class="interactionNodeName" id="interactionSystemName">—</div>
-                  <div class="interactionNodeText" id="interactionSystemText">Waiting for root signal.</div>
-                </div>
-
-                <div class="interactionOperator">×</div>
-
-                <div class="interactionNode">
-                  <div class="interactionNodeLabel">Today’s Field</div>
-                  <div class="interactionNodeName" id="interactionFieldName">—</div>
-                  <div class="interactionNodeText" id="interactionFieldText">Waiting for current field.</div>
-                </div>
-
-                <div class="interactionOperator">→</div>
-
-                <div class="interactionNode move">
-                  <div class="interactionNodeLabel">Recommended Move</div>
-                  <div class="interactionNodeName" id="interactionMoveName">—</div>
-                  <div class="interactionNodeText" id="interactionMoveText">Waiting for best move.</div>
-                </div>
-              </div>
             </div>
 
             <div class="fieldCompass">
@@ -2412,11 +2816,13 @@
                             <stop offset="58%" stop-color="#a1d8ff" />
                             <stop offset="100%" stop-color="#d8b84c" />
                           </linearGradient>
+
                           <linearGradient id="loadGaugeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" stop-color="#67d26f" />
                             <stop offset="50%" stop-color="#d8b84c" />
                             <stop offset="100%" stop-color="#ff6666" />
                           </linearGradient>
+
                           <linearGradient id="regulationGaugeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" stop-color="#6fe0d3" />
                             <stop offset="64%" stop-color="#67c1ff" />
@@ -2472,11 +2878,40 @@
               </div>
             </div>
 
+            <div class="interactionMap">
+              <div class="interactionMapLabel">Interaction Map</div>
+
+              <div class="interactionMapGrid">
+                <div class="interactionNode">
+                  <div class="interactionNodeLabel">Root Pattern</div>
+                  <div class="interactionNodeName" id="interactionSystemName">—</div>
+                  <div class="interactionNodeText" id="interactionSystemText">Waiting for root signal.</div>
+                </div>
+
+                <div class="interactionOperator">×</div>
+
+                <div class="interactionNode">
+                  <div class="interactionNodeLabel">Today’s Field</div>
+                  <div class="interactionNodeName" id="interactionFieldName">—</div>
+                  <div class="interactionNodeText" id="interactionFieldText">Waiting for current field.</div>
+                </div>
+
+                <div class="interactionOperator">→</div>
+
+                <div class="interactionNode move">
+                  <div class="interactionNodeLabel">Recommended Move</div>
+                  <div class="interactionNodeName" id="interactionMoveName">—</div>
+                  <div class="interactionNodeText" id="interactionMoveText">Waiting for best move.</div>
+                </div>
+              </div>
+            </div>
+
             <div class="motionStrip">
               <div class="motionMini">
                 <div class="motionMiniLabel">Motion Style</div>
                 <div class="motionMiniValue" id="topMotionStyle">—</div>
               </div>
+
               <div class="motionMini">
                 <div class="motionMiniLabel">How to read it</div>
                 <div class="motionMiniText" id="topMotionStyleRead">Waiting for motion style read.</div>
@@ -2524,8 +2959,9 @@
           <div class="outlookHeader">
             <div>
               <h2>Current Field Direction</h2>
-              <p>The main live-field takeaway. Extended timing projections are still a later backend pass.</p>
+              <p>The main live-field takeaway. Moonstamp modifies the timing field; it does not replace your harmonic profile.</p>
             </div>
+
             <div class="chipRow" style="margin-top:0;">
               <span class="chip violet" id="outlookStateChip">State: —</span>
               <span class="chip field" id="outlookFieldChip">Field: —</span>
@@ -2537,6 +2973,13 @@
               <div class="outlookLabel">Field Direction</div>
               <div class="outlookValue" id="outlookDirectionTitle">—</div>
               <div class="outlookText" id="outlookDirectionText">Waiting for field direction.</div>
+
+              <div class="moonstampModifierBlock" id="moonstampModifierBlock">
+                <div class="moonstampModifierLabel">Moonstamp Modifier</div>
+                <div class="moonstampModifierTitle" id="moonstampModifierTitle">Moonstamp modifier pending</div>
+                <div class="moonstampModifierText" id="moonstampModifierText">The lunar field adds timing texture to today’s read when Moonstamp data is available.</div>
+                <div class="moonstampModifierMeta" id="moonstampModifierMeta">Use it as a field modifier, not an identity label.</div>
+              </div>
             </div>
 
             <div class="outlookBlock now">
@@ -2559,7 +3002,7 @@
           </div>
 
           <div class="outlookNote">
-            Current Field Direction uses the live-field timing shell only. Extended timing windows will be added in a later backend pass.
+            Moonstamp reads the field. Lucy.OS reads the person inside the field. The lunar field adds timing texture to today’s read without overriding Today’s Field Harmonic.
           </div>
         </section>
 
@@ -2569,6 +3012,7 @@
               <h2>Harmonic Profile</h2>
               <p>Your root pattern, stabilizing support, movement style, and overload pathway. Today’s field shows what the live timing field is activating — not your identity.</p>
             </div>
+
             <div class="chipRow">
               <span class="chip gold" id="profileStateChip">Signal Architecture</span>
               <span class="chip field" id="profileFieldChip">Field: —</span>
@@ -2638,6 +3082,7 @@
               <h2>Today’s Field Translation</h2>
               <p>This translates today’s live field into simple language. It describes current activation, not who you are.</p>
             </div>
+
             <div class="chipRow">
               <span class="chip field" id="fieldTranslationChip">Field: —</span>
             </div>
@@ -2727,13 +3172,13 @@
             </div>
 
             <div class="whyMini">
-              <div class="whyMiniLabel">Peak Timing</div>
-              <div class="whyMiniValue" id="whyPeakTiming">Later backend pass</div>
+              <div class="whyMiniLabel">Moonstamp Timing</div>
+              <div class="whyMiniValue" id="whyPeakTiming">Moonstamp modifier pending</div>
             </div>
 
             <div class="whyMini">
               <div class="whyMiniLabel">Moonstamp Modifier</div>
-              <div class="whyMiniValue" id="whyMoonstampModifier">Later integration</div>
+              <div class="whyMiniValue" id="whyMoonstampModifier">Moonstamp modifier pending</div>
             </div>
 
             <div class="whyMini full">
@@ -2785,6 +3230,13 @@
                     <div class="shareCardLabel">Current Field Direction</div>
                     <div class="shareCardFieldTitle" id="shareCardFieldDirectionTitle">—</div>
                     <div class="shareCardFieldText" id="shareCardFieldDirectionText">Waiting for field direction.</div>
+                  </div>
+                </div>
+
+                <div class="shareCardMoonstamp" id="shareCardMoonstampBlock">
+                  <div class="shareCardSection">
+                    <div class="shareCardLabel">Moonstamp Modifier</div>
+                    <div class="shareCardRead" id="shareCardMoonstampModifier">The lunar field adds timing texture to today’s read.</div>
                   </div>
                 </div>
 
@@ -2854,6 +3306,7 @@
                 <h2>Engine Details</h2>
                 <p>Technical state, API confirmation, drivers, stabilizers, and chart debug remain visible here.</p>
               </div>
+
               <div class="metaRow" style="margin-top:0;">
                 <span class="metaPill field" id="envBand">Field: —</span>
                 <span class="metaPill forecast" id="forecastBand">Timing: —</span>
@@ -3012,7 +3465,7 @@
             </div>
 
             <div class="tiny">
-              Timing shell, regulator average, harmonic routing, and why-line are interpretive layers on top of the current V2.5 engine.
+              Timing shell, regulator average, harmonic routing, and why-line are interpretive layers on top of the current V2.5 engine. Moonstamp modifies the timing field only.
             </div>
           </div>
         </details>
@@ -3021,7 +3474,6 @@
   </div>
 
   <script>
-
     const API_URL = "/api/chart_inputs";
     const SAVED_PROFILES_KEY = "lucyOSProSavedProfiles";
 
@@ -3158,6 +3610,13 @@
       systemWeather: "Structured signal architecture meeting a live field",
       fieldDirectionTitle: "—",
       fieldDirectionText: "Waiting for field direction.",
+      moonstampModifier: {
+        hasMoonstamp: false,
+        title: "",
+        text: "",
+        meta: "",
+        shareLine: ""
+      },
       todayRead: "Waiting for daily read.",
       realLifeText: "Waiting for plain-life translation.",
       driverNote: "Waiting for driver note.",
@@ -3181,6 +3640,18 @@
 
     function fmt(v){
       return safeNum(v).toFixed(2);
+    }
+
+    function fmtPercent(v){
+      const n = safeNum(v, NaN);
+      if (!Number.isFinite(n)) return "—";
+      return String(Math.round(n));
+    }
+
+    function fmtMoonAge(v){
+      const n = safeNum(v, NaN);
+      if (!Number.isFinite(n)) return "—";
+      return n.toFixed(1);
     }
 
     function setText(id, value){
@@ -3210,6 +3681,157 @@
 
       el.style.strokeDasharray = `${circumference} ${circumference}`;
       el.style.strokeDashoffset = String(offset);
+    }
+
+    function getMoonstamp(data){
+      const moonstamp = data?.moonstamp;
+      return moonstamp && typeof moonstamp === "object" ? moonstamp : null;
+    }
+
+    function hasMoonstampData(data){
+      const moonstamp = getMoonstamp(data);
+      if (!moonstamp) return false;
+
+      return [
+        moonstamp.phase,
+        moonstamp.illumination,
+        moonstamp.moonAge,
+        moonstamp.state,
+        moonstamp.modifier,
+        moonstamp.forecastModifier,
+        moonstamp.moonrise,
+        moonstamp.moonset,
+        moonstamp.nextMajorPhase
+      ].some(value => value !== undefined && value !== null && String(value).trim() !== "");
+    }
+
+    function formatMoonstampTiming(moonstamp){
+      if (!moonstamp) return "Moonstamp modifier pending";
+
+      const phase = String(moonstamp.phase || "").trim() || "Moon phase";
+      const moonAge = fmtMoonAge(moonstamp.moonAge);
+      const illumination = fmtPercent(moonstamp.illumination);
+
+      if (moonAge === "—" && illumination === "—") return phase;
+      if (moonAge === "—") return `${phase} · ${illumination}% illuminated`;
+      if (illumination === "—") return `${phase} · ${moonAge} days`;
+
+      return `${phase} · ${moonAge} days · ${illumination}% illuminated`;
+    }
+
+    function formatMoonstampModifier(moonstamp){
+      if (!moonstamp) return "Moonstamp modifier pending";
+
+      const state = String(moonstamp.state || "").trim();
+      const phase = String(moonstamp.phase || "").trim();
+      const illumination = fmtPercent(moonstamp.illumination);
+      const modifier = String(moonstamp.modifier || "").trim();
+      const forecastModifier = String(moonstamp.forecastModifier || "").trim();
+      const moonrise = String(moonstamp.moonrise || "").trim();
+      const moonset = String(moonstamp.moonset || "").trim();
+      const nextMajorPhase = String(moonstamp.nextMajorPhase || "").trim();
+
+      const headerParts = [state, phase].filter(Boolean);
+      const header = headerParts.length
+        ? `${headerParts.join(" · ")}${illumination !== "—" ? ` · ${illumination}%` : ""}`
+        : "Moonstamp modifier";
+
+      const timingParts = [];
+      if (moonrise) timingParts.push(`Moonrise ${moonrise}`);
+      if (moonset) timingParts.push(`Moonset ${moonset}`);
+      if (nextMajorPhase) timingParts.push(`Next: ${nextMajorPhase}`);
+
+      return [
+        header,
+        modifier,
+        forecastModifier,
+        timingParts.length ? timingParts.join(" · ") : ""
+      ].filter(Boolean).join(" ");
+    }
+
+    function buildMoonstampModifier(data){
+      const moonstamp = getMoonstamp(data);
+
+      if (!moonstamp || !hasMoonstampData(data)) {
+        return "";
+      }
+
+      const modifier = String(moonstamp.modifier || "").trim();
+      const forecastModifier = String(moonstamp.forecastModifier || "").trim();
+
+      if (modifier && forecastModifier) return `${modifier} ${forecastModifier}`;
+      if (modifier) return modifier;
+      if (forecastModifier) return forecastModifier;
+
+      const state = String(moonstamp.state || "").trim();
+      const phase = String(moonstamp.phase || "").trim();
+
+      if (state && phase) return `${state} lunar timing adds texture to the ${phase} field.`;
+      if (state) return `${state} lunar timing adds texture to today’s field.`;
+      if (phase) return `${phase} timing adds texture to today’s read.`;
+
+      return "The lunar field adds timing texture to today’s read.";
+    }
+
+    function buildMoonstampModifierRead(data){
+      const moonstamp = getMoonstamp(data);
+
+      if (!hasMoonstampData(data)) {
+        return {
+          hasMoonstamp: false,
+          title: "Moonstamp modifier pending",
+          text: "The lunar field adds timing texture to today’s read when Moonstamp data is available.",
+          meta: "Moonstamp modifies the timing field; it does not replace your harmonic profile.",
+          shareLine: ""
+        };
+      }
+
+      const timing = formatMoonstampTiming(moonstamp);
+      const modifier = buildMoonstampModifier(data) || formatMoonstampModifier(moonstamp);
+
+      return {
+        hasMoonstamp: true,
+        title: timing,
+        text: modifier || "The lunar field adds timing texture to today’s read.",
+        meta: "Use it as a field modifier, not an identity label.",
+        shareLine: `${timing}. ${modifier || "The lunar field adds timing texture to today’s read."}`
+      };
+    }
+
+    function updateMoonstampModifierUI(data){
+      const read = buildMoonstampModifierRead(data);
+
+      setText("moonstampModifierTitle", read.title);
+      setText("moonstampModifierText", read.text);
+      setText("moonstampModifierMeta", read.meta);
+
+      const shareBlock = document.getElementById("shareCardMoonstampBlock");
+      if (shareBlock) {
+        shareBlock.style.display = read.hasMoonstamp ? "block" : "none";
+      }
+
+      setText("shareCardMoonstampModifier", read.hasMoonstamp ? read.shareLine : "");
+
+      return read;
+    }
+
+    function moonstampForecastText(forecastItem, fallback){
+      if (!forecastItem || typeof forecastItem !== "object") return fallback;
+
+      const text = String(forecastItem.text || forecastItem.read || forecastItem.modifier || forecastItem.forecastModifier || "").trim();
+      const state = String(forecastItem.state || "").trim();
+      const phase = String(forecastItem.phase || "").trim();
+      const illumination = fmtPercent(forecastItem.illumination);
+      const headerParts = [state, phase].filter(Boolean);
+      const header = headerParts.length
+        ? `${headerParts.join(" · ")}${illumination !== "—" ? ` · ${illumination}%` : ""}`
+        : "";
+
+      if (text && header) return `${header}. ${text}`;
+      if (text) return text;
+      if (header) return header;
+
+      return fallback;
     }
 
     function compassGaugeNote(stateLabel){
@@ -3249,10 +3871,6 @@
       }
 
       return `<span class="harmonicName h-${harmonicClass(name)}">${name}</span>`;
-    }
-
-    function harmonicInline(name, suffix = ""){
-      return `${harmonicLabel(name)}${suffix ? `&nbsp;${suffix}` : ""}`;
     }
 
     function chipClass(name, fallback = ""){
@@ -3669,13 +4287,6 @@
       return "choose one clear next move";
     }
 
-    function buildPairingMeaning(primary, field){
-      const rootPhrase = primaryPhraseFromHarmonic(primary);
-      const fieldPhrase = fieldPhraseFromHarmonic(field);
-      const action = buildPairingAction(primary, field);
-      return `${rootPhrase} + ${fieldPhrase} = ${action}`;
-    }
-
     function primaryPlainPhrase(primary){
       if (primary === "Structured") return "wants order, sequence, and usable form";
       if (primary === "Contained") return "processes inward before release";
@@ -3898,12 +4509,21 @@
 
     function updateOutlookUI(data, harmonics){
       const forecast = data?.forecast || {};
+      const moonstampForecast = data?.moonstampForecast || {};
       const nowState = forecast?.now?.state || stateLabelFromMode(data?.state?.mode || "");
-      const plus6State = forecast?.plus6?.state || nowState;
-      const plus24State = forecast?.plus24?.state || nowState;
+      const plus6State = forecast?.plus6?.state || moonstampForecast?.plus6?.state || nowState;
+      const plus24State = forecast?.plus24?.state || moonstampForecast?.plus24?.state || nowState;
       const field = harmonics?.todayField || "—";
       const stateLabel = stateLabelFromMode(data?.state?.mode || "");
       const direction = buildFieldDirectionText(harmonics, data);
+
+      const plus6Text =
+        forecast?.plus6?.text ||
+        moonstampForecastText(moonstampForecast?.plus6, outlookTextFromState(plus6State, "Next timing window"));
+
+      const plus24Text =
+        forecast?.plus24?.text ||
+        moonstampForecastText(moonstampForecast?.plus24, outlookTextFromState(plus24State, "Later field window"));
 
       setText("outlookStateChip", `${stateLabel} State`);
       applyChipClass("outlookStateChip", "chip violet", "");
@@ -3915,13 +4535,15 @@
       setText("outlookNowText", outlookTextFromState(nowState, "Now"));
 
       setText("outlookShortState", plus6State);
-      setText("outlookShortText", outlookTextFromState(plus6State, "Next timing window"));
+      setText("outlookShortText", plus6Text);
 
       setText("outlook24State", plus24State);
-      setText("outlook24Text", outlookTextFromState(plus24State, "Later field window"));
+      setText("outlook24Text", plus24Text);
 
       setText("outlookDirectionTitle", direction.title);
       setText("outlookDirectionText", direction.text);
+
+      return updateMoonstampModifierUI(data);
     }
 
     function updateFieldTranslationUI(field){
@@ -4028,25 +4650,11 @@
 
       const activeCandidates = [];
 
-      if (chaoticActive) {
-        activeCandidates.push({ label: "Chaotic", score: chaoticScore });
-      }
-
-      if (thresholdActive) {
-        activeCandidates.push({ label: "Threshold", score: thresholdScore });
-      }
-
-      if (containedActive || containedProtectiveCloseCall) {
-        activeCandidates.push({ label: "Contained", score: containedScore });
-      }
-
-      if (reconstructiveActive) {
-        activeCandidates.push({ label: "Reconstructive", score: reconstructiveScore });
-      }
-
-      if (diffusedActive && !containedProtectiveCloseCall) {
-        activeCandidates.push({ label: "Diffused", score: diffusedScore });
-      }
+      if (chaoticActive) activeCandidates.push({ label: "Chaotic", score: chaoticScore });
+      if (thresholdActive) activeCandidates.push({ label: "Threshold", score: thresholdScore });
+      if (containedActive || containedProtectiveCloseCall) activeCandidates.push({ label: "Contained", score: containedScore });
+      if (reconstructiveActive) activeCandidates.push({ label: "Reconstructive", score: reconstructiveScore });
+      if (diffusedActive && !containedProtectiveCloseCall) activeCandidates.push({ label: "Diffused", score: diffusedScore });
 
       if (activeCandidates.length > 0 && activeCandidates.length <= 3) {
         return activeCandidates.map(item => item.label).join(" / ");
@@ -4055,13 +4663,8 @@
       if (activeCandidates.length > 3) {
         const finalMotionParts = [];
 
-        if (chaoticActive) {
-          finalMotionParts.push("Chaotic");
-        }
-
-        if (thresholdActive) {
-          finalMotionParts.push("Threshold");
-        }
+        if (chaoticActive) finalMotionParts.push("Chaotic");
+        if (thresholdActive) finalMotionParts.push("Threshold");
 
         const remainingCandidates = [
           {
@@ -4084,9 +4687,7 @@
           .sort((a, b) => b.score - a.score);
 
         remainingCandidates.forEach(item => {
-          if (finalMotionParts.length < 3) {
-            finalMotionParts.push(item.label);
-          }
+          if (finalMotionParts.length < 3) finalMotionParts.push(item.label);
         });
 
         const motionOrder = ["Chaotic", "Threshold", "Contained", "Reconstructive", "Diffused"];
@@ -4366,7 +4967,6 @@
       addScore(distortionScores, "Diffused", neptune * 1.00 + tNeptune * 1.20 + overloadGap * 1.40);
       addScore(distortionScores, "Chaotic", uranus * 0.70 + tUranus * 1.05 + tMars * 0.65 + overloadGap * 0.80);
       addScore(distortionScores, "Reconstructive", pluto * 0.85 + tPluto * 1.00 + currentLoad * 0.35 + overloadGap * 1.00);
-
       addScore(distortionScores, "Regulated", saturn * 0.75 + tSaturn * 0.65 + regulationRatio * 1.10);
       addScore(distortionScores, "Threshold", mars * 0.65 + tMars * 0.85 + timingPressure * 0.80);
       addScore(distortionScores, "Integrative", jupiter * 0.55 + neptune * 0.45 + tJupiter * 0.45 + tNeptune * 0.45);
@@ -4951,7 +5551,7 @@
         "Reconstructive": "Signal moves toward repair, reset, structural correction, or rebuild pressure.",
         "Diffused": "Signal spreads through the atmosphere and needs grounding before clear action.",
 
-        "Chaotic / Threshold": "Fast activation moves toward edges, crossings, debugging points, repair points, and next-step pressure.",
+        "Chaotic / Threshold": "Fast activation moves toward unresolved pressure, weak points, decisions, or turning points.",
         "Chaotic / Contained": "Fast signal rises, then pulls inward to prevent spillover.",
         "Threshold / Contained": "The system senses an edge, then protects the crossing until safety is clear.",
         "Chaotic / Reconstructive": "Fast activation moves toward repair pressure and wants to fix the weak point quickly.",
@@ -5198,8 +5798,110 @@
       }).join("");
     }
 
+    function buildMoonstampModifier(data){
+      const moonstamp = getMoonstamp(data);
+      if (!moonstamp || !hasMoonstampData(data)) {
+        return "";
+      }
+
+      const modifier = String(moonstamp.modifier || "").trim();
+      const forecastModifier = String(moonstamp.forecastModifier || "").trim();
+
+      if (modifier && forecastModifier) {
+        return `${modifier} ${forecastModifier}`;
+      }
+
+      if (modifier) {
+        return modifier;
+      }
+
+      if (forecastModifier) {
+        return forecastModifier;
+      }
+
+      const state = String(moonstamp.state || "").trim();
+      const phase = String(moonstamp.phase || "").trim();
+
+      if (state && phase) {
+        return `${state} lunar timing adds texture to the ${phase} field.`;
+      }
+
+      if (state) {
+        return `${state} lunar timing adds texture to today’s field.`;
+      }
+
+      if (phase) {
+        return `${phase} timing adds texture to today’s read.`;
+      }
+
+      return "The lunar field adds timing texture to today’s read.";
+    }
+
+    function updateMoonstampModifierBlock(data){
+      const moonstamp = getMoonstamp(data);
+      const hasMoonstamp = hasMoonstampData(data);
+      const modifier = buildMoonstampModifier(data);
+
+      const block = document.getElementById("moonstampModifierBlock");
+
+      if (block) {
+        block.style.display = "block";
+      }
+
+      if (!hasMoonstamp) {
+        setText("moonstampModifierTitle", "Moonstamp modifier pending");
+        setText("moonstampModifierText", "Moonstamp modifies the timing field; it does not replace your harmonic profile.");
+        setText("moonstampModifierMeta", "The lunar field adds timing texture when backend Moonstamp data is available.");
+        setText("shareCardMoonstampModifier", "");
+        return {
+          hasMoonstamp: false,
+          title: "Moonstamp modifier pending",
+          text: "Moonstamp modifies the timing field; it does not replace your harmonic profile.",
+          meta: "The lunar field adds timing texture when backend Moonstamp data is available.",
+          shareLine: ""
+        };
+      }
+
+      const phase = String(moonstamp.phase || "").trim();
+      const state = String(moonstamp.state || "").trim();
+      const illumination = fmtPercent(moonstamp.illumination);
+      const moonrise = String(moonstamp.moonrise || "").trim();
+      const moonset = String(moonstamp.moonset || "").trim();
+      const nextMajorPhase = String(moonstamp.nextMajorPhase || "").trim();
+
+      const titleParts = [];
+      if (state) titleParts.push(state);
+      if (phase) titleParts.push(phase);
+
+      const title = titleParts.length ? titleParts.join(" · ") : "Lunar timing modifier";
+      const metaParts = [];
+      if (illumination !== "—") metaParts.push(`${illumination}% illuminated`);
+      if (moonrise) metaParts.push(`Moonrise ${moonrise}`);
+      if (moonset) metaParts.push(`Moonset ${moonset}`);
+      if (nextMajorPhase) metaParts.push(`Next: ${nextMajorPhase}`);
+
+      const text = modifier || "The lunar field adds timing texture to today’s read. Use it as a field modifier, not an identity label.";
+      const meta = metaParts.length ? metaParts.join(" · ") : "Moonstamp modifies the timing field only.";
+
+      setText("moonstampModifierTitle", title);
+      setText("moonstampModifierText", text);
+      setText("moonstampModifierMeta", meta);
+
+      setText("shareCardMoonstampModifier", `${title}: ${text}`);
+
+      return {
+        hasMoonstamp: true,
+        title,
+        text,
+        meta,
+        shareLine: `${title}: ${text}`
+      };
+    }
+
     function updateWhyReadUI(harmonics, data, fieldTrend){
       const state = data?.state || {};
+      const moonstamp = getMoonstamp(data);
+      const hasMoonstamp = hasMoonstampData(data);
       const primary = harmonics.primary || "Structured";
       const field = harmonics.todayField || "Regulated";
       const motionStyle = harmonics.motionStyle || "—";
@@ -5212,6 +5914,9 @@
       const distortion = harmonics.distortion || "Diffused";
       const distortionState = DISTORTION_STATES[harmonics.distortionStateKey] || DISTORTION_STATES.overStructuring;
       const driverNote = buildDriverNote(data, harmonics, fieldTrend);
+      const moonstampLine = hasMoonstamp
+        ? `${formatMoonstampTiming(moonstamp)} · ${buildMoonstampModifier(data)}`
+        : "Moonstamp modifier pending";
 
       setHTML("whyBaseline", harmonicLabel(primary));
       setHTML("whyField", harmonicLabel(field));
@@ -5224,8 +5929,8 @@
       setText("whyDistortion", distortionState.label);
       setText("whyDirection", fieldTrend.trend);
       setText("whyRationale", fieldTrend.rationale);
-      setText("whyPeakTiming", "Later backend pass");
-      setText("whyMoonstampModifier", "Later integration");
+      setText("whyPeakTiming", formatMoonstampTiming(moonstamp));
+      setText("whyMoonstampModifier", moonstampLine);
 
       let explanation = `This read comes from a ${harmonicText(primary)} signal architecture meeting a ${harmonicText(field)} field while the current state is ${currentState.toLowerCase()}. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${fieldTrend.rationale} ${driverNote}`;
 
@@ -5249,6 +5954,12 @@
         explanation += " The raw distortion harmonic matches today’s field, so the same pattern that is active today can become the overload route if the load keeps stacking.";
       }
 
+      if (hasMoonstamp) {
+        explanation += ` Moonstamp line: ${moonstampLine}. Moonstamp modifies the timing field; it does not replace your harmonic profile. Use it as a field modifier, not an identity label.`;
+      } else {
+        explanation += " Moonstamp line: Moonstamp modifier pending. The app is waiting for backend Moonstamp data before adding lunar timing texture.";
+      }
+
       setText("whyConfigText", explanation);
     }
 
@@ -5256,6 +5967,7 @@
       systemWeather,
       fieldDirectionTitle,
       fieldDirectionText,
+      moonstampModifier,
       todayRead,
       realLifeText,
       driverNote,
@@ -5271,6 +5983,7 @@
         systemWeather,
         fieldDirectionTitle,
         fieldDirectionText,
+        moonstampModifier: moonstampModifier || { hasMoonstamp: false, title: "", text: "", shareLine: "" },
         todayRead,
         realLifeText,
         driverNote,
@@ -5308,10 +6021,21 @@
       setText("shareCardDriverNote", driverNote);
       setText("shareCardGoodMove", goodMove);
       setText("shareCardReturn", returnText);
+
+      const shareMoonstampBlock = document.getElementById("shareCardMoonstampBlock");
+      if (shareMoonstampBlock) {
+        shareMoonstampBlock.style.display = moonstampModifier?.hasMoonstamp ? "block" : "none";
+      }
+
+      if (moonstampModifier?.hasMoonstamp) {
+        setText("shareCardMoonstampModifier", `${moonstampModifier.title}: ${moonstampModifier.text}`);
+      } else {
+        setText("shareCardMoonstampModifier", "");
+      }
     }
 
     function getShareText(){
-      return [
+      const lines = [
         "Lucy.OS Pro",
         "",
         "Today’s System Weather:",
@@ -5319,7 +6043,19 @@
         "",
         "Current Field Direction:",
         latestSharePayload.fieldDirectionTitle || "—",
-        latestSharePayload.fieldDirectionText || "Waiting for field direction.",
+        latestSharePayload.fieldDirectionText || "Waiting for field direction."
+      ];
+
+      if (latestSharePayload.moonstampModifier?.hasMoonstamp) {
+        lines.push(
+          "",
+          "Moonstamp Modifier:",
+          latestSharePayload.moonstampModifier.title || "Lunar timing modifier",
+          latestSharePayload.moonstampModifier.text || "The lunar field adds timing texture to today’s read."
+        );
+      }
+
+      lines.push(
         "",
         "Today’s Read:",
         latestSharePayload.todayRead,
@@ -5341,7 +6077,9 @@
         latestSharePayload.returnText,
         "",
         "Personal field guidance · Lucy.OS Pro"
-      ].join("\n");
+      );
+
+      return lines.join("\n");
     }
 
     async function copyShareText(){
@@ -5417,6 +6155,7 @@
       const currentState = stateLabelFromMode(data?.state?.mode || "");
       const fieldTrend = calculateFieldTrend(data, harmonics);
       const fieldDirection = buildFieldDirectionText(harmonics, data);
+      const moonstampModifier = updateMoonstampModifierBlock(data);
 
       const primaryLabel = harmonicLabel(primaryMeta.label);
       const supportLabel = harmonics.support && String(harmonics.support).includes("/")
@@ -5487,6 +6226,7 @@
         systemWeather,
         fieldDirectionTitle: fieldDirection.title,
         fieldDirectionText: fieldDirection.text,
+        moonstampModifier,
         todayRead: guidance.read,
         realLifeText,
         driverNote: shareDriverNote,
@@ -5515,6 +6255,7 @@
       const planetary = data?.planetary || {};
       const inputResolved = data?.inputResolved || {};
       const ephemeris = data?.ephemeris || {};
+      const moonstamp = getMoonstamp(data);
 
       const capacity = safeNum(state.capacity);
       const strain = safeNum(state.strain);
@@ -5566,6 +6307,7 @@
         rawDistortionHarmonic: harmonics.distortion,
         primaryDistortionState: distortionState.label,
         todayField: harmonics.todayField,
+        moonstamp,
         natalScores: harmonics.natalScores,
         normalizedNatalScores: harmonics.normalizedNatalScores,
         fieldScores: harmonics.fieldScores,
@@ -5649,7 +6391,7 @@
       );
 
       setText("envBand", envBandFromMode(environment.environmentMode));
-      setText("forecastBand", forecastBandFromState(forecastState));
+      setText("forecastBand", moonstamp ? `Moonstamp: ${moonstamp.state || "—"}` : forecastBandFromState(forecastState));
 
       setText(
         "resolvedInput",
@@ -5658,12 +6400,12 @@
 
       setText(
         "apiStatus",
-        `OK • ${ephemeris.source || "API"} • ${ephemeris.mode || "natal"}`
+        `OK • ${ephemeris.source || "API"} • ${ephemeris.mode || "natal"}${moonstamp ? " • Moonstamp live" : ""}`
       );
       document.getElementById("apiStatus").className = "ok";
 
-      const sunDeg = data?._longitudesDeg?.sun ?? "—";
-      const moonDeg = data?._longitudesDeg?.moon ?? "—";
+      const sunDeg = data?._longitudesDeg?.sun ?? moonstamp?.sunLongitudeDeg ?? "—";
+      const moonDeg = data?._longitudesDeg?.moon ?? moonstamp?.moonLongitudeDeg ?? "—";
       const ascDeg = data?.angles?.asc ?? "—";
       const mcDeg = data?.angles?.mc ?? "—";
 
@@ -5774,7 +6516,9 @@
         },
         timing: {
           timingPressure: r()
-        }
+        },
+        moonstamp: null,
+        moonstampForecast: null
       };
     }
 
@@ -5889,7 +6633,9 @@
         },
         timing: {
           timingPressure: 0.20
-        }
+        },
+        moonstamp: null,
+        moonstampForecast: null
       });
 
       const cases = [
