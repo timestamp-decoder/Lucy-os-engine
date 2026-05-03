@@ -7,65 +7,40 @@
 
   <style>
     :root{
-      --field-base:#F7F6F4;
-      --field-depth:#ECEBE8;
-      --field-highlight:#FFFFFF;
-      --text-primary:#2A2A2A;
-      --text-secondary:#4A4A4A;
-      --border-neutral:rgba(0,0,0,0.08);
-      --border-soft:rgba(0,0,0,0.05);
-      --spectral-edge:rgba(180,170,255,0.15);
-      --spectral-blue:rgba(150,160,255,0.045);
-      --spectral-violet:rgba(180,170,255,0.04);
+      --bg:#09142f;
+      --panel:#0f1b38;
+      --panel2:#132347;
+      --panel3:#0b1734;
+      --line:#2a3c69;
+      --lineSoft:rgba(255,255,255,.06);
+      --text:#f4f7ff;
+      --muted:#aab7d6;
+      --muted2:#7f8fb8;
+      --blue:#67c1ff;
+      --red:#ff6666;
+      --green:#67d26f;
+      --violet:#b06cff;
+      --gold:#d8b84c;
+      --teal:#6fe0d3;
+      --amber:#f1b84b;
+      --rose:#ff9bb7;
+      --pearl:#d8edf0;
+      --lavender:#cbb7ff;
+      --shadow:0 18px 52px rgba(0,0,0,.28);
 
-      --bg:var(--field-base);
-      --panel:var(--field-base);
-      --panel2:var(--field-highlight);
-      --panel3:var(--field-depth);
-      --line:var(--border-neutral);
-      --lineSoft:var(--border-soft);
-      --text:var(--text-primary);
-      --muted:var(--text-secondary);
-      --muted2:#6E7377;
-
-      --blue:#4F6F7A;
-      --red:#8F5F5F;
-      --green:#4F817A;
-      --violet:#766CA8;
-      --gold:#6E6A5C;
-      --teal:#4F817A;
-      --amber:#8D7358;
-      --rose:#9A6A7A;
-      --pearl:#FFFFFF;
-      --lavender:#8178AE;
-      --shadow:none;
-
-      --surface:var(--field-base);
-      --surface2:var(--field-depth);
-      --surface3:#F1F0ED;
-      --graphite:var(--text-primary);
-      --graphite2:#3D4246;
-      --softBorder:var(--border-neutral);
-      --softBorder2:var(--border-soft);
-      --fieldTint:rgba(79,111,122,.055);
-      --violetTint:rgba(118,108,168,.045);
-      --pearlEdge:rgba(255,255,255,.82);
-
-      --h-structured:#8A7A43;
-      --h-contained:#6F7780;
-      --h-chaotic:#426F86;
-      --h-relational:#9A6A7A;
-      --h-threshold:#A07145;
-      --h-reconstructive:#766CA8;
-      --h-integrative:#5B7892;
-      --h-diffused:#8178AE;
-      --h-regulated:#4F817A;
-      --h-steady:#66727E;
+      --h-structured:#d8b84c;
+      --h-contained:#f3fbff;
+      --h-chaotic:#67c1ff;
+      --h-relational:#ff9bb7;
+      --h-threshold:#ff8a3d;
+      --h-reconstructive:#b06cff;
+      --h-integrative:#a9d7ff;
+      --h-diffused:#cbb7ff;
+      --h-regulated:#6fe0d3;
+      --h-steady:#aab7d6;
     }
 
-    *,
-    *::before,
-    *::after{
+    *{
       box-sizing:border-box;
     }
 
@@ -74,7 +49,6 @@
       width:100%;
       max-width:100%;
       overflow-x:hidden;
-      background:var(--field-base);
     }
 
     body{
@@ -83,15 +57,11 @@
       max-width:100%;
       overflow-x:hidden;
       font-family:Arial, sans-serif;
-      background:var(--field-base);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(103,193,255,.10), transparent 34%),
+        radial-gradient(circle at 80% 12%, rgba(176,108,255,.06), transparent 32%),
+        linear-gradient(180deg,#071126 0%, #09142f 100%);
       color:var(--text);
-    }
-
-    @supports (overflow-x: clip){
-      html,
-      body{
-        overflow-x:clip;
-      }
     }
 
     img,
@@ -118,23 +88,20 @@
       margin:0 0 10px;
       padding:0 12px;
       border-radius:999px;
-      border:1px solid var(--border-neutral);
-      background:var(--field-highlight);
-      color:var(--text-secondary);
+      border:1px solid rgba(103,193,255,.16);
+      background:rgba(103,193,255,.055);
+      color:var(--muted);
       font-size:12px;
       font-weight:800;
       text-decoration:none;
       letter-spacing:.02em;
       overflow-wrap:anywhere;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.82),
-        inset 0 0 0 1px rgba(180,170,255,.05);
     }
 
     .backLink:hover{
       color:var(--blue);
-      border-color:rgba(0,0,0,.14);
-      background:var(--field-depth);
+      border-color:rgba(103,193,255,.28);
+      background:rgba(103,193,255,.085);
     }
 
     .hero{
@@ -145,38 +112,22 @@
       margin-bottom:16px;
       padding:15px 18px 13px;
       overflow:hidden;
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(103,193,255,.13);
       border-radius:20px;
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 48%,
-          var(--field-depth) 100%
-        );
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.88),
-        inset 0 -1px 0 rgba(0,0,0,.035),
-        0 1px 2px rgba(0,0,0,.035);
-      isolation:isolate;
-      contain:paint;
-    }
-
-    .hero::before{
-      content:"";
-      position:absolute;
-      inset:1px;
-      border-radius:19px;
-      border:1px solid var(--spectral-edge);
-      box-shadow:
-        inset 1px 0 0 var(--spectral-blue),
-        inset -1px 0 0 var(--spectral-violet);
-      pointer-events:none;
-      z-index:0;
+        radial-gradient(circle at 50% -20%, rgba(103,193,255,.11), transparent 46%),
+        linear-gradient(180deg,rgba(15,27,56,.62),rgba(9,20,47,.24));
+      box-shadow:0 14px 38px rgba(0,0,0,.22);
     }
 
     .heroGlow{
-      display:none;
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.88;
+      transition:background .35s ease;
+      background:
+        radial-gradient(circle at 50% 28%, rgba(103,193,255,.09), transparent 42%);
     }
 
     .hero h1{
@@ -184,7 +135,6 @@
       margin:0;
       font-size:34px;
       letter-spacing:.2px;
-      color:var(--graphite);
       z-index:1;
     }
 
@@ -207,50 +157,19 @@
     }
 
     .panel{
-      position:relative;
       width:100%;
       max-width:100%;
       min-width:0;
-      background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 46%,
-          var(--field-depth) 100%
-        );
-      border:1px solid var(--border-neutral);
+      background:linear-gradient(180deg,var(--panel),var(--panel2));
+      border:1px solid var(--line);
       border-radius:18px;
       padding:18px;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.82),
-        inset 0 -1px 0 rgba(0,0,0,.03),
-        0 1px 2px rgba(0,0,0,.03);
-      isolation:isolate;
-      contain:paint;
-    }
-
-    .panel::before{
-      content:"";
-      position:absolute;
-      inset:1px;
-      border-radius:17px;
-      border:1px solid var(--spectral-edge);
-      box-shadow:
-        inset 1px 0 0 var(--spectral-blue),
-        inset -1px 0 0 var(--spectral-violet);
-      pointer-events:none;
-      z-index:0;
-    }
-
-    .panel > *{
-      position:relative;
-      z-index:1;
+      box-shadow:0 10px 30px rgba(0,0,0,.20);
     }
 
     .panel h2{
       margin:0 0 12px;
       font-size:18px;
-      color:var(--graphite);
     }
 
     .inputPanel{
@@ -264,7 +183,6 @@
       font-size:12px;
       color:var(--muted);
       margin:10px 0 6px;
-      font-weight:750;
     }
 
     input,
@@ -274,14 +192,11 @@
       max-width:100%;
       min-width:0;
       border-radius:10px;
-      border:1px solid var(--border-neutral);
-      background:var(--field-highlight);
+      border:1px solid var(--line);
+      background:#0b1734;
       color:var(--text);
       padding:12px;
       font-size:14px;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.86),
-        inset 0 0 0 1px rgba(180,170,255,.04);
     }
 
     input::placeholder{
@@ -297,23 +212,14 @@
 
     button{
       margin-top:14px;
-      background:
-        linear-gradient(
-          180deg,
-          #5A7C88 0%,
-          #426F7C 100%
-        );
-      border:1px solid rgba(0,0,0,.08);
+      background:linear-gradient(180deg,#1d5cff,#3f86ff);
+      border:none;
       cursor:pointer;
       font-weight:700;
-      color:#FFFFFF;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.16),
-        0 1px 2px rgba(0,0,0,.05);
     }
 
     button:hover{
-      filter:brightness(1.02);
+      filter:brightness(1.08);
     }
 
     button:disabled{
@@ -323,21 +229,14 @@
 
     .savedProfiles{
       margin-top:14px;
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(103,193,255,.16);
       border-radius:14px;
       padding:14px;
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 52%,
-          var(--field-depth) 100%
-        );
+        radial-gradient(circle at 10% 0%, rgba(103,193,255,.08), transparent 34%),
+        rgba(255,255,255,.025);
       min-width:0;
       max-width:100%;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.78),
-        inset 0 -1px 0 rgba(0,0,0,.025);
     }
 
     .savedProfiles h3{
@@ -371,12 +270,7 @@
     }
 
     .savedProfiles .deleteProfileBtn{
-      background:
-        linear-gradient(
-          180deg,
-          #9D6A6A 0%,
-          #815656 100%
-        );
+      background:linear-gradient(180deg,rgba(255,102,102,.82),rgba(172,52,74,.92));
     }
 
     .profileSaveHelper{
@@ -412,24 +306,15 @@
 
     .statusBlock{
       padding:14px;
-      border:1px solid var(--border-neutral);
+      border:1px solid var(--line);
       border-radius:14px;
-      background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 54%,
-          var(--field-depth) 100%
-        );
+      background:rgba(255,255,255,.02);
       font-size:12px;
       line-height:1.55;
       color:var(--muted);
       min-width:0;
       max-width:100%;
       overflow-wrap:anywhere;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.74),
-        inset 0 -1px 0 rgba(0,0,0,.025);
     }
 
     .statusBlock strong{
@@ -447,7 +332,7 @@
     }
 
     .err{
-      color:var(--red);
+      color:#ff9c9c;
       font-weight:700;
     }
 
@@ -465,40 +350,36 @@
       max-width:100%;
       min-width:0;
       overflow:hidden;
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(103,193,255,.28);
       border-radius:24px;
       padding:25px;
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 44%,
-          var(--field-depth) 100%
-        );
+        radial-gradient(circle at 15% -8%, rgba(103,193,255,.16), transparent 39%),
+        radial-gradient(circle at 88% 16%, rgba(216,184,76,.13), transparent 34%),
+        radial-gradient(circle at 52% 112%, rgba(176,108,255,.07), transparent 40%),
+        linear-gradient(180deg,rgba(17,33,68,.99),rgba(12,24,50,.97));
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.88),
-        inset 0 -1px 0 rgba(0,0,0,.035),
-        0 1px 2px rgba(0,0,0,.035);
-      isolation:isolate;
-      contain:paint;
+        0 24px 70px rgba(0,0,0,.34),
+        inset 0 0 0 1px rgba(255,255,255,.035);
     }
 
     .premiumCard::before{
       content:"";
       position:absolute;
-      inset:1px;
+      inset:0;
       pointer-events:none;
-      border-radius:23px;
-      border:1px solid var(--spectral-edge);
-      box-shadow:
-        inset 1px 0 0 var(--spectral-blue),
-        inset -1px 0 0 var(--spectral-violet);
-      background:none;
-      z-index:0;
+      background:
+        linear-gradient(135deg,rgba(255,255,255,.048),transparent 40%),
+        radial-gradient(circle at 50% 110%, rgba(103,193,255,.095), transparent 44%);
     }
 
     .premiumCard::after{
-      display:none;
+      content:"";
+      position:absolute;
+      inset:1px;
+      pointer-events:none;
+      border-radius:23px;
+      border:1px solid rgba(255,255,255,.025);
     }
 
     .cardContent{
@@ -524,7 +405,7 @@
       line-height:1.01;
       font-weight:950;
       letter-spacing:-.045em;
-      color:var(--graphite);
+      color:var(--text);
       text-wrap:balance;
       overflow-wrap:anywhere;
     }
@@ -535,69 +416,11 @@
 
     .weatherExplain{
       margin:11px 0 0;
-      color:var(--muted);
+      color:#c4cee6;
       font-size:12px;
       line-height:1.45;
       font-weight:800;
       letter-spacing:.01em;
-      overflow-wrap:break-word;
-    }
-
-    .howUseBox{
-      position:relative;
-      width:100%;
-      max-width:100%;
-      min-width:0;
-      margin-top:13px;
-      overflow:hidden;
-      border:1px solid rgba(79,111,122,.14);
-      border-radius:16px;
-      padding:12px 13px;
-      background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          #F3F2EF 100%
-        );
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.78),
-        inset 0 -1px 0 rgba(0,0,0,.025),
-        inset 1px 0 0 var(--spectral-blue),
-        inset -1px 0 0 var(--spectral-violet);
-      isolation:isolate;
-      contain:paint;
-    }
-
-    .howUseBox::before{
-      content:"";
-      position:absolute;
-      inset:1px;
-      border-radius:15px;
-      border:1px solid rgba(180,170,255,.10);
-      pointer-events:none;
-      z-index:0;
-    }
-
-    .howUseBox > *{
-      position:relative;
-      z-index:1;
-    }
-
-    .howUseLabel{
-      margin-bottom:6px;
-      color:var(--blue);
-      font-size:10px;
-      font-weight:950;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      overflow-wrap:break-word;
-    }
-
-    .howUseText{
-      color:var(--graphite2);
-      font-size:12.5px;
-      line-height:1.52;
-      font-weight:750;
       overflow-wrap:break-word;
     }
 
@@ -622,56 +445,33 @@
       min-height:31px;
       padding:7px 11px;
       border-radius:999px;
-      border:1px solid var(--border-neutral);
-      background:var(--field-highlight);
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.045);
       overflow-wrap:anywhere;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.78),
-        inset 0 0 0 1px rgba(180,170,255,.04);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.012);
     }
 
     .pairingExplain strong{
-      color:var(--graphite);
+      color:var(--text);
       font-weight:950;
       white-space:nowrap;
     }
 
     .interactionMap{
-      position:relative;
       margin-top:13px;
       width:100%;
       max-width:100%;
       min-width:0;
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(103,193,255,.18);
       border-radius:18px;
       padding:12px;
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 52%,
-          var(--field-depth) 100%
-        );
+        radial-gradient(circle at 8% 0%, rgba(103,193,255,.10), transparent 35%),
+        radial-gradient(circle at 92% 0%, rgba(216,184,76,.09), transparent 34%),
+        linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.018));
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
-      isolation:isolate;
-      contain:paint;
-    }
-
-    .interactionMap::before{
-      content:"";
-      position:absolute;
-      inset:1px;
-      border-radius:17px;
-      border:1px solid rgba(180,170,255,.10);
-      pointer-events:none;
-      z-index:0;
-    }
-
-    .interactionMap > *{
-      position:relative;
-      z-index:1;
+        inset 0 0 0 1px rgba(255,255,255,.018),
+        0 10px 26px rgba(0,0,0,.12);
     }
 
     .interactionMapLabel{
@@ -692,32 +492,26 @@
     }
 
     .interactionNode{
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(255,255,255,.09);
       border-radius:15px;
       padding:12px 13px;
-      background:var(--field-highlight);
+      background:rgba(255,255,255,.035);
       min-height:96px;
       min-width:0;
       display:grid;
       align-content:start;
       gap:6px;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
     }
 
     .interactionNode.move{
-      border-color:rgba(0,0,0,.10);
+      border-color:rgba(216,184,76,.22);
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          #F3F2EF 100%
-        );
+        radial-gradient(circle at 8% 0%, rgba(216,184,76,.11), transparent 34%),
+        rgba(216,184,76,.045);
     }
 
     .interactionNodeLabel{
-      color:var(--muted);
+      color:#b9c5e2;
       font-size:10px;
       font-weight:950;
       letter-spacing:.11em;
@@ -725,7 +519,7 @@
     }
 
     .interactionNodeName{
-      color:var(--graphite);
+      color:var(--text);
       font-size:16px;
       font-weight:950;
       line-height:1.22;
@@ -734,7 +528,7 @@
     }
 
     .interactionNodeText{
-      color:var(--muted);
+      color:#d7def1;
       font-size:12px;
       line-height:1.48;
       font-weight:700;
@@ -754,41 +548,20 @@
     }
 
     .fieldCompass{
-      position:relative;
       margin-top:13px;
       width:100%;
       max-width:100%;
       min-width:0;
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(111,224,211,.18);
       border-radius:18px;
       padding:12px;
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 52%,
-          var(--field-depth) 100%
-        );
+        radial-gradient(circle at 10% 0%, rgba(111,224,211,.10), transparent 35%),
+        radial-gradient(circle at 95% 0%, rgba(103,193,255,.08), transparent 34%),
+        linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.018));
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
-      isolation:isolate;
-      contain:paint;
-    }
-
-    .fieldCompass::before{
-      content:"";
-      position:absolute;
-      inset:1px;
-      border-radius:17px;
-      border:1px solid rgba(180,170,255,.10);
-      pointer-events:none;
-      z-index:0;
-    }
-
-    .fieldCompass > *{
-      position:relative;
-      z-index:1;
+        inset 0 0 0 1px rgba(255,255,255,.018),
+        0 10px 26px rgba(0,0,0,.12);
     }
 
     .fieldCompassLabel{
@@ -810,32 +583,26 @@
 
     .fieldCompassRead,
     .fieldCompassBalance{
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(255,255,255,.09);
       border-radius:15px;
       padding:12px 13px;
-      background:var(--field-highlight);
+      background:rgba(255,255,255,.035);
       display:grid;
       align-content:start;
       gap:7px;
       min-width:0;
       max-width:100%;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
     }
 
     .fieldCompassRead{
-      border-color:rgba(79,129,122,.18);
+      border-color:rgba(111,224,211,.18);
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          #F1F5F4 100%
-        );
+        radial-gradient(circle at 10% 0%, rgba(111,224,211,.10), transparent 34%),
+        rgba(255,255,255,.032);
     }
 
     .fieldCompassMiniLabel{
-      color:var(--muted);
+      color:#b9c5e2;
       font-size:10px;
       font-weight:950;
       letter-spacing:.11em;
@@ -843,7 +610,7 @@
     }
 
     .fieldCompassState{
-      color:var(--graphite);
+      color:var(--text);
       font-size:20px;
       font-weight:950;
       line-height:1.14;
@@ -852,7 +619,7 @@
     }
 
     .fieldCompassText{
-      color:var(--muted);
+      color:#d7def1;
       font-size:12.5px;
       line-height:1.5;
       font-weight:700;
@@ -860,13 +627,11 @@
     }
 
     .fieldCompassBalance{
-      border-color:rgba(79,111,122,.15);
+      border-color:rgba(103,193,255,.13);
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          #F1F2F2 100%
-        );
+        radial-gradient(circle at 50% 42%, rgba(103,193,255,.10), transparent 38%),
+        radial-gradient(circle at 78% 24%, rgba(216,184,76,.08), transparent 34%),
+        rgba(255,255,255,.028);
     }
 
     .fieldCompassGaugeWrap{
@@ -893,12 +658,12 @@
       max-width:100%;
       height:154px;
       overflow:visible;
-      filter:none;
+      filter:drop-shadow(0 12px 22px rgba(0,0,0,.22));
     }
 
     .fieldCompassGaugeTrack{
       fill:none;
-      stroke:rgba(0,0,0,.10);
+      stroke:rgba(8,17,38,.82);
       stroke-width:10;
       stroke-linecap:round;
     }
@@ -931,16 +696,11 @@
       place-items:center;
       text-align:center;
       border-radius:50%;
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(103,193,255,.13);
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 100%
-        );
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.78),
-        inset 0 0 0 1px rgba(180,170,255,.05);
+        radial-gradient(circle at 50% 0%, rgba(103,193,255,.10), transparent 55%),
+        rgba(8,17,38,.42);
+      box-shadow:inset 0 0 22px rgba(0,0,0,.20);
     }
 
     .fieldCompassGaugeCenterLabel{
@@ -986,7 +746,7 @@
       width:10px;
       height:10px;
       border-radius:999px;
-      box-shadow:none;
+      box-shadow:0 0 14px currentColor;
     }
 
     .fieldCompassGaugeDot.capacity{
@@ -1013,7 +773,7 @@
     }
 
     .fieldCompassGaugeValue{
-      color:var(--graphite);
+      color:var(--text);
       font-size:11px;
       font-weight:950;
       text-align:right;
@@ -1022,9 +782,9 @@
 
     .fieldCompassGaugeNote{
       margin-top:2px;
-      border-top:1px solid var(--lineSoft);
+      border-top:1px solid rgba(255,255,255,.07);
       padding-top:9px;
-      color:var(--muted);
+      color:#d7def1;
       font-size:12px;
       line-height:1.45;
       font-weight:750;
@@ -1036,36 +796,30 @@
       grid-template-columns:minmax(210px,.40fr) minmax(0,1fr);
       gap:10px;
       margin-top:15px;
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(216,184,76,.26);
       border-radius:18px;
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          #F3F2EF 100%
-        );
+        radial-gradient(circle at 8% 0%, rgba(216,184,76,.12), transparent 34%),
+        linear-gradient(135deg,rgba(216,184,76,.09),rgba(103,193,255,.055));
       padding:12px;
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
+        inset 0 0 0 1px rgba(255,255,255,.025),
+        0 10px 26px rgba(0,0,0,.13);
       min-width:0;
       max-width:100%;
     }
 
     .motionMini{
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(255,255,255,.095);
       border-radius:15px;
-      background:var(--field-highlight);
+      background:rgba(255,255,255,.045);
       padding:12px 13px;
       min-width:0;
       max-width:100%;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
     }
 
     .motionMiniLabel{
-      color:var(--muted);
+      color:#b9c5e2;
       font-size:10px;
       font-weight:950;
       letter-spacing:.11em;
@@ -1074,7 +828,7 @@
     }
 
     .motionMiniValue{
-      color:var(--graphite);
+      color:var(--text);
       font-size:16px;
       font-weight:950;
       line-height:1.25;
@@ -1082,140 +836,10 @@
     }
 
     .motionMiniText{
-      color:var(--muted);
+      color:#d7def1;
       font-size:12.5px;
       line-height:1.5;
       font-weight:750;
-      overflow-wrap:break-word;
-    }
-
-    .coreRuleBlock{
-      position:relative;
-      margin-top:16px;
-      width:100%;
-      max-width:100%;
-      min-width:0;
-      overflow:hidden;
-      border:1px solid rgba(118,108,168,.20);
-      border-radius:18px;
-      padding:15px;
-      background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          #F1EFF6 100%
-        );
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.78),
-        inset 0 -1px 0 rgba(0,0,0,.025);
-      isolation:isolate;
-      contain:paint;
-    }
-
-    .coreRuleBlock::before{
-      content:"";
-      position:absolute;
-      inset:1px;
-      border-radius:17px;
-      border:1px solid rgba(180,170,255,.12);
-      pointer-events:none;
-      z-index:0;
-    }
-
-    .coreRuleBlock > *{
-      position:relative;
-      z-index:1;
-    }
-
-    .coreRuleLabel{
-      color:var(--violet);
-      font-size:10px;
-      font-weight:950;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      margin-bottom:7px;
-    }
-
-    .coreRuleHelper{
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.45;
-      font-weight:750;
-      margin-bottom:12px;
-      overflow-wrap:break-word;
-    }
-
-    .coreRuleGrid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:10px;
-      min-width:0;
-      max-width:100%;
-    }
-
-    .coreRuleItem{
-      border:1px solid var(--border-neutral);
-      border-radius:15px;
-      padding:12px 13px;
-      background:var(--field-highlight);
-      min-width:0;
-      max-width:100%;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
-    }
-
-    .coreRuleItemLabel{
-      color:var(--muted);
-      font-size:10px;
-      font-weight:950;
-      letter-spacing:.11em;
-      text-transform:uppercase;
-      margin-bottom:6px;
-      overflow-wrap:break-word;
-    }
-
-    .coreRuleItemText{
-      color:var(--graphite);
-      font-size:14px;
-      line-height:1.45;
-      font-weight:850;
-      overflow-wrap:break-word;
-    }
-
-    .engineRuleBlock{
-      margin-top:14px;
-      border:1px solid var(--border-neutral);
-      border-radius:14px;
-      padding:12px;
-      background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 100%
-        );
-      min-width:0;
-      max-width:100%;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
-    }
-
-    .engineRuleLabel{
-      color:var(--muted);
-      font-size:10px;
-      font-weight:950;
-      letter-spacing:.11em;
-      text-transform:uppercase;
-      margin-bottom:7px;
-    }
-
-    .engineRuleText{
-      color:var(--graphite);
-      font-size:13px;
-      line-height:1.55;
-      font-weight:750;
-      white-space:pre-line;
       overflow-wrap:break-word;
     }
 
@@ -1237,7 +861,7 @@
     .todayRead{
       margin:16px 0 0;
       max-width:900px;
-      color:var(--graphite);
+      color:var(--text);
       font-size:16px;
       line-height:1.68;
       overflow-wrap:break-word;
@@ -1245,18 +869,13 @@
 
     .realLifeBlock{
       margin-top:16px;
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(216,184,76,.24);
       border-radius:16px;
       padding:14px;
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          #F3F2EF 100%
-        );
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
+        radial-gradient(circle at 10% 0%, rgba(216,184,76,.11), transparent 34%),
+        rgba(216,184,76,.045);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
       min-width:0;
       max-width:100%;
     }
@@ -1271,7 +890,7 @@
     }
 
     .realLifeText{
-      color:var(--graphite);
+      color:var(--text);
       font-size:14px;
       line-height:1.58;
       font-weight:750;
@@ -1287,26 +906,18 @@
     }
 
     .guidanceBlock{
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(255,255,255,.08);
       border-radius:16px;
       padding:14px;
-      background:var(--field-highlight);
+      background:rgba(255,255,255,.035);
       min-width:0;
       max-width:100%;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
     }
 
     .guidanceBlock.full{
       grid-column:1 / -1;
-      background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          #F1F2F2 100%
-        );
-      border-color:var(--border-neutral);
+      background:rgba(103,193,255,.06);
+      border-color:rgba(103,193,255,.18);
     }
 
     .guidanceLabel{
@@ -1319,7 +930,7 @@
     }
 
     .guidanceText{
-      color:var(--graphite);
+      color:var(--text);
       font-size:14px;
       line-height:1.58;
       overflow-wrap:break-word;
@@ -1327,18 +938,15 @@
 
     .todayOutlookLine{
       margin-top:14px;
-      border:1px solid var(--border-neutral);
-      background:var(--field-highlight);
-      color:var(--graphite);
+      border:1px solid rgba(216,184,76,.20);
+      background:rgba(216,184,76,.065);
+      color:var(--text);
       border-radius:999px;
       padding:10px 13px;
       font-size:12px;
       font-weight:850;
       line-height:1.4;
       overflow-wrap:break-word;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 0 0 1px rgba(180,170,255,.04);
     }
 
     .todayOutlookLine span{
@@ -1346,45 +954,20 @@
     }
 
     .outlookCard{
-      position:relative;
       width:100%;
       max-width:100%;
       min-width:0;
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(103,193,255,.22);
       border-radius:22px;
       padding:20px;
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 46%,
-          var(--field-depth) 100%
-        );
+        radial-gradient(circle at 10% 0%, rgba(103,193,255,.105), transparent 34%),
+        radial-gradient(circle at 92% 8%, rgba(176,108,255,.075), transparent 34%),
+        linear-gradient(180deg,rgba(15,27,56,.97),rgba(12,24,50,.94));
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.84),
-        inset 0 -1px 0 rgba(0,0,0,.03),
-        0 1px 2px rgba(0,0,0,.03);
+        0 18px 52px rgba(0,0,0,.26),
+        inset 0 0 0 1px rgba(255,255,255,.02);
       overflow:hidden;
-      isolation:isolate;
-      contain:paint;
-    }
-
-    .outlookCard::before{
-      content:"";
-      position:absolute;
-      inset:1px;
-      border-radius:21px;
-      border:1px solid var(--spectral-edge);
-      box-shadow:
-        inset 1px 0 0 var(--spectral-blue),
-        inset -1px 0 0 var(--spectral-violet);
-      pointer-events:none;
-      z-index:0;
-    }
-
-    .outlookCard > *{
-      position:relative;
-      z-index:1;
     }
 
     .outlookHeader{
@@ -1400,12 +983,11 @@
       margin:0;
       font-size:22px;
       letter-spacing:-.02em;
-      color:var(--graphite);
     }
 
     .outlookHeader p{
       margin:5px 0 0;
-      color:var(--muted);
+      color:#c4cee6;
       font-size:13px;
       line-height:1.5;
       max-width:620px;
@@ -1420,58 +1002,43 @@
     }
 
     .outlookBlock{
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(255,255,255,.075);
       border-radius:16px;
       padding:14px;
-      background:var(--field-highlight);
+      background:rgba(255,255,255,.03);
       min-height:116px;
       min-width:0;
       max-width:100%;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
     }
 
     .outlookBlock.primary{
       grid-column:1 / -1;
       min-height:150px;
       padding:18px;
-      border-color:rgba(118,108,168,.20);
+      border-color:rgba(176,108,255,.24);
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          #F1EFF6 100%
-        );
+        radial-gradient(circle at 14% 0%, rgba(176,108,255,.14), transparent 34%),
+        radial-gradient(circle at 100% 14%, rgba(103,193,255,.08), transparent 30%),
+        linear-gradient(180deg,rgba(176,108,255,.075),rgba(103,193,255,.035));
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
+        inset 0 0 0 1px rgba(255,255,255,.025),
+        0 12px 34px rgba(0,0,0,.18);
     }
 
     .outlookBlock.now{
-      border-color:rgba(79,111,122,.16);
-      background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          #F1F2F2 100%
-        );
+      border-color:rgba(103,193,255,.14);
+      background:rgba(103,193,255,.045);
     }
 
     .outlookBlock.forecastShell{
-      opacity:.92;
-      border-color:var(--border-neutral);
-      background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 100%
-        );
+      opacity:.78;
+      border-color:rgba(255,255,255,.055);
+      background:rgba(255,255,255,.018);
     }
 
     .outlookBlock.forecastShell .outlookValue,
     .outlookBlock.forecastShell .outlookText{
-      color:var(--muted);
+      color:rgba(244,247,255,.82);
     }
 
     .outlookLabel{
@@ -1484,13 +1051,13 @@
     }
 
     .outlookBlock.primary .outlookLabel{
-      color:var(--violet);
+      color:#cab1ff;
       font-size:11px;
       letter-spacing:.12em;
     }
 
     .outlookValue{
-      color:var(--graphite);
+      color:var(--text);
       font-size:18px;
       font-weight:900;
       line-height:1.25;
@@ -1511,7 +1078,7 @@
     }
 
     .outlookBlock.primary .outlookText{
-      color:var(--graphite2);
+      color:#d9e0f4;
       margin-top:10px;
       max-width:820px;
       font-size:14px;
@@ -1520,24 +1087,18 @@
 
     .moonstampModifierBlock{
       margin-top:12px;
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(203,183,255,.20);
       border-radius:16px;
       padding:14px;
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          #F1EFF6 100%
-        );
+        radial-gradient(circle at 10% 0%, rgba(203,183,255,.09), transparent 34%),
+        rgba(255,255,255,.026);
       min-width:0;
       max-width:100%;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
     }
 
     .moonstampModifierLabel{
-      color:var(--violet);
+      color:#cab1ff;
       font-size:10px;
       font-weight:950;
       letter-spacing:.12em;
@@ -1546,7 +1107,7 @@
     }
 
     .moonstampModifierTitle{
-      color:var(--graphite);
+      color:var(--text);
       font-size:15px;
       font-weight:950;
       line-height:1.3;
@@ -1555,7 +1116,7 @@
 
     .moonstampModifierText{
       margin-top:6px;
-      color:var(--graphite2);
+      color:#d9e0f4;
       font-size:12.5px;
       line-height:1.52;
       font-weight:700;
@@ -1576,51 +1137,22 @@
       color:var(--muted2);
       font-size:11px;
       line-height:1.5;
-      border-top:1px solid var(--lineSoft);
+      border-top:1px solid rgba(255,255,255,.07);
       padding-top:12px;
       overflow-wrap:break-word;
     }
 
     .profileCard{
-      position:relative;
       width:100%;
       max-width:100%;
       min-width:0;
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(103,193,255,.18);
       border-radius:20px;
       padding:18px;
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 48%,
-          var(--field-depth) 100%
-        );
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.82),
-        inset 0 -1px 0 rgba(0,0,0,.03),
-        0 1px 2px rgba(0,0,0,.03);
+        linear-gradient(180deg,rgba(15,27,56,.96),rgba(13,25,52,.94));
+      box-shadow:var(--shadow);
       overflow:hidden;
-      isolation:isolate;
-      contain:paint;
-    }
-
-    .profileCard::before{
-      content:"";
-      position:absolute;
-      inset:1px;
-      border-radius:19px;
-      border:1px solid var(--spectral-edge);
-      box-shadow:
-        inset 1px 0 0 var(--spectral-blue),
-        inset -1px 0 0 var(--spectral-violet);
-      pointer-events:none;
-      z-index:0;
-    }
-
-    .profileCard > *{
-      position:relative;
-      z-index:1;
     }
 
     .profileHeader{
@@ -1635,7 +1167,6 @@
     .profileHeader h2{
       margin:0;
       font-size:20px;
-      color:var(--graphite);
     }
 
     .profileHeader p{
@@ -1654,16 +1185,13 @@
     }
 
     .profileBlock{
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(255,255,255,.075);
       border-radius:16px;
       padding:14px;
-      background:var(--field-highlight);
+      background:rgba(255,255,255,.03);
       min-height:110px;
       min-width:0;
       max-width:100%;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
     }
 
     .profileBlock.wide{
@@ -1684,7 +1212,7 @@
     }
 
     .profileValue{
-      color:var(--graphite);
+      color:var(--text);
       font-size:18px;
       line-height:1.25;
       font-weight:900;
@@ -1697,11 +1225,6 @@
       font-size:12px;
       line-height:1.48;
       overflow-wrap:break-word;
-    }
-
-    .profileDesc.strong{
-      color:var(--graphite2);
-      font-weight:750;
     }
 
     .chipRow{
@@ -1719,8 +1242,8 @@
       min-height:30px;
       padding:0 10px;
       border-radius:999px;
-      border:1px solid var(--border-neutral);
-      background:var(--field-highlight);
+      border:1px solid rgba(103,193,255,.16);
+      background:rgba(103,193,255,.07);
       color:var(--blue);
       font-size:11px;
       font-weight:800;
@@ -1729,119 +1252,96 @@
       white-space:normal;
       max-width:100%;
       overflow-wrap:anywhere;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 0 0 1px rgba(180,170,255,.04);
     }
 
     .chip.gold{
-      border-color:rgba(138,122,67,.24);
-      background:var(--field-highlight);
+      border-color:rgba(216,184,76,.26);
+      background:rgba(216,184,76,.09);
       color:var(--gold);
     }
 
     .chip.field{
-      border-color:rgba(79,111,122,.20);
-      background:var(--field-highlight);
+      border-color:rgba(103,193,255,.22);
+      background:rgba(103,193,255,.08);
       color:var(--blue);
     }
 
     .chip.violet{
-      border-color:rgba(118,108,168,.22);
-      background:var(--field-highlight);
-      color:var(--violet);
+      border-color:rgba(176,108,255,.24);
+      background:rgba(176,108,255,.09);
+      color:#cab1ff;
     }
 
     .chip.structured{
-      border-color:rgba(138,122,67,.25);
+      border-color:rgba(216,184,76,.28);
+      background:rgba(216,184,76,.09);
       color:var(--h-structured);
     }
 
     .chip.contained{
-      border-color:rgba(111,119,128,.24);
+      border-color:rgba(243,251,255,.28);
+      background:rgba(243,251,255,.075);
       color:var(--h-contained);
     }
 
     .chip.chaotic{
-      border-color:rgba(66,111,134,.24);
+      border-color:rgba(103,193,255,.28);
+      background:rgba(103,193,255,.09);
       color:var(--h-chaotic);
     }
 
     .chip.relational{
-      border-color:rgba(154,106,122,.22);
+      border-color:rgba(255,155,183,.24);
+      background:rgba(255,155,183,.08);
       color:var(--h-relational);
     }
 
     .chip.threshold{
-      border-color:rgba(160,113,69,.24);
+      border-color:rgba(255,138,61,.26);
+      background:rgba(255,138,61,.08);
       color:var(--h-threshold);
     }
 
     .chip.reconstructive{
-      border-color:rgba(118,108,168,.24);
+      border-color:rgba(176,108,255,.26);
+      background:rgba(176,108,255,.09);
       color:var(--h-reconstructive);
     }
 
     .chip.integrative{
-      border-color:rgba(91,120,146,.22);
+      border-color:rgba(169,215,255,.24);
+      background:rgba(169,215,255,.07);
       color:var(--h-integrative);
     }
 
     .chip.diffused{
-      border-color:rgba(129,120,174,.22);
+      border-color:rgba(203,183,255,.24);
+      background:rgba(203,183,255,.08);
       color:var(--h-diffused);
     }
 
     .chip.regulated{
-      border-color:rgba(79,129,122,.22);
+      border-color:rgba(111,224,211,.24);
+      background:rgba(111,224,211,.08);
       color:var(--h-regulated);
     }
 
     .chip.steady{
-      border-color:rgba(102,114,126,.20);
+      border-color:rgba(170,183,214,.20);
+      background:rgba(170,183,214,.06);
       color:var(--h-steady);
     }
 
     .whyReadCard{
-      position:relative;
       width:100%;
       max-width:100%;
       min-width:0;
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(103,193,255,.15);
       border-radius:20px;
       padding:18px;
-      background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 48%,
-          var(--field-depth) 100%
-        );
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.82),
-        inset 0 -1px 0 rgba(0,0,0,.03),
-        0 1px 2px rgba(0,0,0,.03);
+      background:linear-gradient(180deg,rgba(15,27,56,.90),rgba(11,23,52,.86));
+      box-shadow:var(--shadow);
       overflow:hidden;
-      isolation:isolate;
-      contain:paint;
-    }
-
-    .whyReadCard::before{
-      content:"";
-      position:absolute;
-      inset:1px;
-      border-radius:19px;
-      border:1px solid var(--spectral-edge);
-      box-shadow:
-        inset 1px 0 0 var(--spectral-blue),
-        inset -1px 0 0 var(--spectral-violet);
-      pointer-events:none;
-      z-index:0;
-    }
-
-    .whyReadCard > *{
-      position:relative;
-      z-index:1;
     }
 
     .whyReadGrid{
@@ -1853,15 +1353,12 @@
     }
 
     .whyMini{
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(255,255,255,.07);
       border-radius:14px;
       padding:12px;
-      background:var(--field-highlight);
+      background:rgba(255,255,255,.026);
       min-width:0;
       max-width:100%;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
     }
 
     .whyMini.full{
@@ -1878,7 +1375,7 @@
     }
 
     .whyMiniValue{
-      color:var(--graphite);
+      color:var(--text);
       font-size:14px;
       font-weight:800;
       line-height:1.35;
@@ -1888,7 +1385,7 @@
 
     .whyExplain{
       margin-top:14px;
-      border-top:1px solid var(--lineSoft);
+      border-top:1px solid rgba(255,255,255,.07);
       padding-top:14px;
       color:var(--muted);
       font-size:13px;
@@ -1898,45 +1395,17 @@
     }
 
     .shareSection{
-      position:relative;
       width:100%;
       max-width:100%;
       min-width:0;
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(216,184,76,.18);
       border-radius:20px;
       padding:18px;
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 48%,
-          var(--field-depth) 100%
-        );
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.82),
-        inset 0 -1px 0 rgba(0,0,0,.03),
-        0 1px 2px rgba(0,0,0,.03);
+        radial-gradient(circle at 18% 0%, rgba(216,184,76,.08), transparent 34%),
+        linear-gradient(180deg,rgba(15,27,56,.94),rgba(11,23,52,.92));
+      box-shadow:var(--shadow);
       overflow:hidden;
-      isolation:isolate;
-      contain:paint;
-    }
-
-    .shareSection::before{
-      content:"";
-      position:absolute;
-      inset:1px;
-      border-radius:19px;
-      border:1px solid var(--spectral-edge);
-      box-shadow:
-        inset 1px 0 0 var(--spectral-blue),
-        inset -1px 0 0 var(--spectral-violet);
-      pointer-events:none;
-      z-index:0;
-    }
-
-    .shareSection > *{
-      position:relative;
-      z-index:1;
     }
 
     .shareIntro{
@@ -1951,7 +1420,6 @@
     .shareIntro h2{
       margin:0;
       font-size:20px;
-      color:var(--graphite);
     }
 
     .shareIntro p{
@@ -1978,8 +1446,8 @@
       min-height:30px;
       padding:0 10px;
       border-radius:999px;
-      border:1px solid rgba(79,111,122,.18);
-      background:var(--field-highlight);
+      border:1px solid rgba(103,193,255,.18);
+      background:rgba(103,193,255,.075);
       color:var(--blue);
       font-size:10px;
       font-weight:900;
@@ -1989,73 +1457,83 @@
       line-height:1.25;
       max-width:100%;
       overflow-wrap:anywhere;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 0 0 1px rgba(180,170,255,.04);
     }
 
     .shareChip.gold{
-      border-color:rgba(138,122,67,.22);
+      border-color:rgba(216,184,76,.22);
+      background:rgba(216,184,76,.08);
       color:var(--gold);
     }
 
     .shareChip.field{
-      border-color:rgba(79,111,122,.22);
+      border-color:rgba(103,193,255,.22);
+      background:rgba(103,193,255,.08);
       color:var(--blue);
     }
 
     .shareChip.violet{
-      border-color:rgba(118,108,168,.20);
-      color:var(--violet);
+      border-color:rgba(176,108,255,.20);
+      background:rgba(176,108,255,.08);
+      color:#cab1ff;
     }
 
     .shareChip.structured{
-      border-color:rgba(138,122,67,.24);
+      border-color:rgba(216,184,76,.26);
+      background:rgba(216,184,76,.08);
       color:var(--h-structured);
     }
 
     .shareChip.contained{
-      border-color:rgba(111,119,128,.24);
+      border-color:rgba(243,251,255,.28);
+      background:rgba(243,251,255,.075);
       color:var(--h-contained);
     }
 
     .shareChip.chaotic{
-      border-color:rgba(66,111,134,.24);
+      border-color:rgba(103,193,255,.26);
+      background:rgba(103,193,255,.08);
       color:var(--h-chaotic);
     }
 
     .shareChip.relational{
-      border-color:rgba(154,106,122,.22);
+      border-color:rgba(255,155,183,.22);
+      background:rgba(255,155,183,.07);
       color:var(--h-relational);
     }
 
     .shareChip.threshold{
-      border-color:rgba(160,113,69,.22);
+      border-color:rgba(255,138,61,.24);
+      background:rgba(255,138,61,.08);
       color:var(--h-threshold);
     }
 
     .shareChip.reconstructive{
-      border-color:rgba(118,108,168,.22);
+      border-color:rgba(176,108,255,.24);
+      background:rgba(176,108,255,.08);
       color:var(--h-reconstructive);
     }
 
     .shareChip.integrative{
-      border-color:rgba(91,120,146,.22);
+      border-color:rgba(169,215,255,.24);
+      background:rgba(169,215,255,.07);
       color:var(--h-integrative);
     }
 
     .shareChip.diffused{
-      border-color:rgba(129,120,174,.20);
+      border-color:rgba(203,183,255,.22);
+      background:rgba(203,183,255,.07);
       color:var(--h-diffused);
     }
 
     .shareChip.regulated{
-      border-color:rgba(79,129,122,.20);
+      border-color:rgba(111,224,211,.22);
+      background:rgba(111,224,211,.07);
       color:var(--h-regulated);
     }
 
     .shareChip.steady{
-      border-color:rgba(102,114,126,.18);
+      border-color:rgba(170,183,214,.18);
+      background:rgba(170,183,214,.06);
       color:var(--h-steady);
     }
 
@@ -2071,20 +1549,16 @@
       width:100%;
       max-width:100%;
       min-width:0;
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(216,184,76,.28);
       border-radius:20px;
       overflow:hidden;
       background:
-        linear-gradient(
-          145deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 58%,
-          var(--field-depth) 100%
-        );
+        radial-gradient(circle at 18% 0%, rgba(103,193,255,.14), transparent 34%),
+        radial-gradient(circle at 88% 10%, rgba(216,184,76,.13), transparent 34%),
+        linear-gradient(145deg,#122246 0%, #0d1b39 58%, #0a1732 100%);
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.84),
-        inset 0 -1px 0 rgba(0,0,0,.03),
-        0 1px 2px rgba(0,0,0,.035);
+        0 22px 62px rgba(0,0,0,.34),
+        inset 0 0 0 1px rgba(255,255,255,.025);
     }
 
     .shareCardInner{
@@ -2101,7 +1575,7 @@
       gap:16px;
       align-items:center;
       padding-bottom:14px;
-      border-bottom:1px solid var(--lineSoft);
+      border-bottom:1px solid rgba(255,255,255,.08);
       color:var(--muted);
       font-size:11px;
       font-weight:900;
@@ -2128,8 +1602,8 @@
       min-height:26px;
       padding:0 9px;
       border-radius:999px;
-      border:1px solid rgba(79,111,122,.16);
-      background:var(--field-highlight);
+      border:1px solid rgba(103,193,255,.16);
+      background:rgba(103,193,255,.07);
       color:var(--blue);
       font-size:9px;
       font-weight:900;
@@ -2143,67 +1617,80 @@
 
     .shareCardChip.gold{
       color:var(--gold);
-      border-color:rgba(138,122,67,.20);
+      border-color:rgba(216,184,76,.22);
+      background:rgba(216,184,76,.08);
     }
 
     .shareCardChip.field{
       color:var(--blue);
-      border-color:rgba(79,111,122,.18);
+      border-color:rgba(103,193,255,.18);
+      background:rgba(103,193,255,.08);
     }
 
     .shareCardChip.violet{
-      color:var(--violet);
-      border-color:rgba(118,108,168,.18);
+      color:#cab1ff;
+      border-color:rgba(176,108,255,.18);
+      background:rgba(176,108,255,.08);
     }
 
     .shareCardChip.structured{
       color:var(--h-structured);
-      border-color:rgba(138,122,67,.20);
+      border-color:rgba(216,184,76,.22);
+      background:rgba(216,184,76,.08);
     }
 
     .shareCardChip.contained{
       color:var(--h-contained);
-      border-color:rgba(111,119,128,.20);
+      border-color:rgba(243,251,255,.22);
+      background:rgba(243,251,255,.065);
     }
 
     .shareCardChip.chaotic{
       color:var(--h-chaotic);
-      border-color:rgba(66,111,134,.20);
+      border-color:rgba(103,193,255,.20);
+      background:rgba(103,193,255,.07);
     }
 
     .shareCardChip.relational{
       color:var(--h-relational);
-      border-color:rgba(154,106,122,.18);
+      border-color:rgba(255,155,183,.18);
+      background:rgba(255,155,183,.06);
     }
 
     .shareCardChip.threshold{
       color:var(--h-threshold);
-      border-color:rgba(160,113,69,.18);
+      border-color:rgba(255,138,61,.20);
+      background:rgba(255,138,61,.07);
     }
 
     .shareCardChip.reconstructive{
       color:var(--h-reconstructive);
-      border-color:rgba(118,108,168,.18);
+      border-color:rgba(176,108,255,.20);
+      background:rgba(176,108,255,.07);
     }
 
     .shareCardChip.integrative{
       color:var(--h-integrative);
-      border-color:rgba(91,120,146,.18);
+      border-color:rgba(169,215,255,.20);
+      background:rgba(169,215,255,.06);
     }
 
     .shareCardChip.diffused{
       color:var(--h-diffused);
-      border-color:rgba(129,120,174,.18);
+      border-color:rgba(203,183,255,.18);
+      background:rgba(203,183,255,.06);
     }
 
     .shareCardChip.regulated{
       color:var(--h-regulated);
-      border-color:rgba(79,129,122,.18);
+      border-color:rgba(111,224,211,.18);
+      background:rgba(111,224,211,.06);
     }
 
     .shareCardChip.steady{
       color:var(--h-steady);
-      border-color:rgba(102,114,126,.18);
+      border-color:rgba(170,183,214,.18);
+      background:rgba(170,183,214,.06);
     }
 
     .shareCardSection{
@@ -2229,7 +1716,7 @@
       font-weight:950;
       letter-spacing:-.05em;
       padding-bottom:8px;
-      border-bottom:1px solid var(--lineSoft);
+      border-bottom:1px solid rgba(255,255,255,.08);
       overflow-wrap:anywhere;
       min-width:0;
     }
@@ -2237,18 +1724,16 @@
     .shareCardFieldDirection{
       position:relative;
       overflow:hidden;
-      border:1px solid rgba(118,108,168,.20);
+      border:1px solid rgba(176,108,255,.25);
       border-radius:18px;
       padding:16px;
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          #F1EFF6 100%
-        );
+        radial-gradient(circle at 12% 0%, rgba(176,108,255,.15), transparent 36%),
+        radial-gradient(circle at 100% 12%, rgba(103,193,255,.09), transparent 34%),
+        linear-gradient(180deg,rgba(176,108,255,.075),rgba(103,193,255,.035));
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
+        inset 0 0 0 1px rgba(255,255,255,.025),
+        0 10px 28px rgba(0,0,0,.16);
       min-width:0;
       max-width:100%;
     }
@@ -2256,10 +1741,9 @@
     .shareCardFieldDirection::before{
       content:"";
       position:absolute;
-      inset:1px;
+      inset:0;
       pointer-events:none;
-      border-radius:17px;
-      border:1px solid rgba(180,170,255,.12);
+      background:linear-gradient(135deg,rgba(255,255,255,.04),transparent 46%);
     }
 
     .shareCardFieldDirection > *{
@@ -2268,7 +1752,7 @@
     }
 
     .shareCardFieldTitle{
-      color:var(--graphite);
+      color:var(--text);
       font-size:22px;
       font-weight:950;
       line-height:1.15;
@@ -2277,83 +1761,21 @@
     }
 
     .shareCardFieldText{
-      color:var(--graphite2);
+      color:#d9e0f4;
       font-size:14px;
       line-height:1.58;
       font-weight:650;
       overflow-wrap:break-word;
     }
 
-    .shareCardCoreRule{
-      position:relative;
-      overflow:hidden;
-      border:1px solid rgba(118,108,168,.20);
-      border-radius:18px;
-      padding:16px;
-      background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          #F1EFF6 100%
-        );
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
-      min-width:0;
-      max-width:100%;
-    }
-
-    .shareCardCoreRule::before{
-      content:"";
-      position:absolute;
-      inset:1px;
-      pointer-events:none;
-      border-radius:17px;
-      border:1px solid rgba(180,170,255,.12);
-    }
-
-    .shareCardCoreRule > *{
-      position:relative;
-      z-index:1;
-    }
-
-    .shareCardCoreRuleGrid{
-      display:grid;
-      gap:10px;
-      margin-top:2px;
-      min-width:0;
-      max-width:100%;
-    }
-
-    .shareCardCoreRuleLine{
-      color:var(--graphite);
-      font-size:16px;
-      line-height:1.45;
-      font-weight:850;
-      overflow-wrap:break-word;
-    }
-
-    .shareCardCoreRuleLine span{
-      display:block;
-      margin-bottom:2px;
-      color:var(--muted);
-      font-size:10px;
-      font-weight:950;
-      letter-spacing:.11em;
-      text-transform:uppercase;
-    }
-
     .shareCardMoonstamp{
       display:none;
-      border:1px solid rgba(118,108,168,.18);
+      border:1px solid rgba(203,183,255,.20);
       border-radius:16px;
       padding:14px;
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          #F1EFF6 100%
-        );
+        radial-gradient(circle at 8% 0%, rgba(203,183,255,.10), transparent 34%),
+        rgba(255,255,255,.032);
       min-width:0;
       max-width:100%;
     }
@@ -2368,7 +1790,7 @@
     }
 
     .shareCardRead{
-      color:var(--graphite);
+      color:var(--text);
       font-size:17px;
       line-height:1.62;
       overflow-wrap:break-word;
@@ -2376,15 +1798,12 @@
     }
 
     .shareCardRealLife{
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(216,184,76,.24);
       border-radius:16px;
       padding:14px;
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          #F3F2EF 100%
-        );
+        radial-gradient(circle at 10% 0%, rgba(216,184,76,.12), transparent 34%),
+        rgba(216,184,76,.045);
       min-width:0;
       max-width:100%;
     }
@@ -2397,15 +1816,12 @@
     }
 
     .shareCardMini{
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(255,255,255,.08);
       border-radius:16px;
       padding:14px;
-      background:var(--field-highlight);
+      background:rgba(255,255,255,.035);
       min-width:0;
       max-width:100%;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
     }
 
     .shareCardMini .shareCardRead{
@@ -2442,51 +1858,20 @@
     }
 
     .librarySection{
-      position:relative;
       width:100%;
       max-width:100%;
       min-width:0;
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(103,193,255,.15);
       border-radius:20px;
-      background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 50%,
-          var(--field-depth) 100%
-        );
+      background:rgba(6,15,34,.36);
       overflow:hidden;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.82),
-        inset 0 -1px 0 rgba(0,0,0,.03),
-        0 1px 2px rgba(0,0,0,.03);
-      isolation:isolate;
-      contain:paint;
-    }
-
-    .librarySection::before{
-      content:"";
-      position:absolute;
-      inset:1px;
-      border-radius:19px;
-      border:1px solid var(--spectral-edge);
-      box-shadow:
-        inset 1px 0 0 var(--spectral-blue),
-        inset -1px 0 0 var(--spectral-violet);
-      pointer-events:none;
-      z-index:0;
-    }
-
-    .librarySection > *{
-      position:relative;
-      z-index:1;
     }
 
     .librarySection summary{
       cursor:pointer;
       list-style:none;
       padding:18px;
-      color:var(--graphite);
+      color:var(--text);
       font-size:18px;
       font-weight:900;
       overflow-wrap:break-word;
@@ -2506,7 +1891,7 @@
     }
 
     .libraryBody{
-      border-top:1px solid var(--lineSoft);
+      border-top:1px solid rgba(255,255,255,.07);
       padding:18px;
       min-width:0;
       max-width:100%;
@@ -2528,30 +1913,21 @@
     }
 
     .libraryCard{
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(255,255,255,.075);
       border-radius:16px;
       padding:14px;
-      background:var(--field-highlight);
+      background:rgba(255,255,255,.026);
       display:grid;
       gap:8px;
       min-width:0;
       max-width:100%;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
     }
 
     .libraryCard.active{
-      border-color:rgba(79,111,122,.24);
+      border-color:rgba(103,193,255,.32);
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          #F1F2F2 100%
-        );
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.78),
-        inset 0 0 0 1px rgba(180,170,255,.06);
+        linear-gradient(180deg,rgba(103,193,255,.09),rgba(255,255,255,.025));
+      box-shadow:inset 0 0 0 1px rgba(103,193,255,.08);
     }
 
     .libraryCard h3{
@@ -2571,55 +1947,24 @@
     }
 
     .libraryCard strong{
-      color:var(--graphite);
+      color:var(--text);
     }
 
     .engineDetails{
-      position:relative;
       width:100%;
       max-width:100%;
       min-width:0;
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(42,60,105,.75);
       border-radius:20px;
-      background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 50%,
-          var(--field-depth) 100%
-        );
+      background:rgba(6,15,34,.40);
       overflow:hidden;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.82),
-        inset 0 -1px 0 rgba(0,0,0,.03),
-        0 1px 2px rgba(0,0,0,.03);
-      isolation:isolate;
-      contain:paint;
-    }
-
-    .engineDetails::before{
-      content:"";
-      position:absolute;
-      inset:1px;
-      border-radius:19px;
-      border:1px solid var(--spectral-edge);
-      box-shadow:
-        inset 1px 0 0 var(--spectral-blue),
-        inset -1px 0 0 var(--spectral-violet);
-      pointer-events:none;
-      z-index:0;
-    }
-
-    .engineDetails > *{
-      position:relative;
-      z-index:1;
     }
 
     .engineDetails summary{
       cursor:pointer;
       list-style:none;
       padding:18px;
-      color:var(--graphite);
+      color:var(--text);
       font-size:18px;
       font-weight:900;
       overflow-wrap:break-word;
@@ -2639,7 +1984,7 @@
     }
 
     .engineBody{
-      border-top:1px solid var(--lineSoft);
+      border-top:1px solid rgba(255,255,255,.07);
       padding:16px;
       min-width:0;
       max-width:100%;
@@ -2658,7 +2003,7 @@
     .engineHeader h2{
       margin:0;
       font-size:18px;
-      color:var(--graphite);
+      color:var(--text);
     }
 
     .engineHeader p{
@@ -2678,15 +2023,12 @@
     }
 
     .stat{
-      background:var(--field-highlight);
-      border:1px solid var(--border-neutral);
+      background:rgba(255,255,255,.025);
+      border:1px solid var(--line);
       border-radius:16px;
       padding:16px;
       min-height:138px;
       min-width:0;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
     }
 
     .stat .label{
@@ -2702,7 +2044,6 @@
       margin-top:8px;
       line-height:1.05;
       overflow-wrap:anywhere;
-      color:var(--graphite);
     }
 
     .sub{
@@ -2718,8 +2059,8 @@
       height:10px;
       width:100%;
       border-radius:999px;
-      background:rgba(42,42,42,.08);
-      border:1px solid var(--border-neutral);
+      background:#081126;
+      border:1px solid var(--line);
       overflow:hidden;
     }
 
@@ -2731,11 +2072,11 @@
     }
 
     .meter-capacity > span{
-      background:linear-gradient(90deg,#4F6F7A,#7F9CAA,#8A7A43);
+      background:linear-gradient(90deg,#67c1ff,#a1d8ff,#d8b84c);
     }
 
     .meter-strain > span{
-      background:linear-gradient(90deg,#4F817A,#8A7A43,#9D5B5B);
+      background:linear-gradient(90deg,#67d26f,#d8b84c,#ff6666);
     }
 
     .stateBadge{
@@ -2745,9 +2086,9 @@
       border-radius:999px;
       font-size:12px;
       font-weight:700;
-      background:var(--field-highlight);
+      background:rgba(103,193,255,.10);
       color:var(--blue);
-      border:1px solid rgba(79,111,122,.18);
+      border:1px solid rgba(103,193,255,.18);
     }
 
     .midRow{
@@ -2759,15 +2100,12 @@
     }
 
     .microCard{
-      background:var(--field-highlight);
-      border:1px solid var(--border-neutral);
+      background:rgba(255,255,255,.025);
+      border:1px solid var(--line);
       border-radius:16px;
       padding:14px 16px;
       min-height:126px;
       min-width:0;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
     }
 
     .microHeader{
@@ -2796,8 +2134,8 @@
       font-size:10px;
       font-weight:700;
       color:var(--teal);
-      background:var(--field-highlight);
-      border:1px solid rgba(79,111,122,.14);
+      background:rgba(103,193,255,.08);
+      border:1px solid rgba(103,193,255,.14);
       white-space:nowrap;
     }
 
@@ -2806,7 +2144,6 @@
       font-weight:800;
       margin:2px 0 6px;
       overflow-wrap:anywhere;
-      color:var(--graphite);
     }
 
     .forecastSub{
@@ -2818,14 +2155,11 @@
 
     .whyCard{
       margin-bottom:16px;
-      background:var(--field-highlight);
-      border:1px solid var(--border-neutral);
+      background:rgba(255,255,255,.025);
+      border:1px solid var(--line);
       border-radius:16px;
       padding:18px;
       min-width:0;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
     }
 
     .whyTitle{
@@ -2839,7 +2173,7 @@
 
     .whyText{
       font-size:13px;
-      color:var(--graphite);
+      color:var(--text);
       line-height:1.72;
       overflow-wrap:break-word;
     }
@@ -2847,7 +2181,7 @@
     .summaryTitle{
       margin:0 0 10px;
       font-size:14px;
-      color:var(--graphite);
+      color:var(--text);
       text-transform:uppercase;
       letter-spacing:.08em;
       font-weight:800;
@@ -2860,7 +2194,6 @@
       border-collapse:collapse;
       font-size:13px;
       table-layout:fixed;
-      color:var(--graphite);
     }
 
     .table th,
@@ -2890,11 +2223,11 @@
       overflow-wrap:anywhere;
     }
 
-    .b-blue{background:rgba(79,111,122,.10); color:var(--blue); border-color:rgba(79,111,122,.22)}
-    .b-red{background:rgba(157,91,91,.10); color:var(--red); border-color:rgba(157,91,91,.22)}
-    .b-green{background:rgba(79,129,122,.10); color:var(--green); border-color:rgba(79,129,122,.22)}
-    .b-gold{background:rgba(138,122,67,.10); color:var(--gold); border-color:rgba(138,122,67,.22)}
-    .b-violet{background:rgba(118,108,168,.10); color:var(--violet); border-color:rgba(118,108,168,.18)}
+    .b-blue{background:rgba(103,193,255,.12); color:var(--blue); border-color:rgba(103,193,255,.22)}
+    .b-red{background:rgba(255,102,102,.12); color:var(--red); border-color:rgba(255,102,102,.22)}
+    .b-green{background:rgba(103,210,111,.12); color:var(--green); border-color:rgba(103,210,111,.22)}
+    .b-gold{background:rgba(216,184,76,.12); color:var(--gold); border-color:rgba(216,184,76,.22)}
+    .b-violet{background:rgba(176,108,255,.08); color:#cab1ff; border-color:rgba(176,108,255,.14)}
 
     .softMetric td{
       opacity:.82;
@@ -2909,16 +2242,13 @@
     }
 
     .miniPanel{
-      background:var(--field-highlight);
-      border:1px solid var(--border-neutral);
+      background:rgba(255,255,255,.025);
+      border:1px solid var(--line);
       border-radius:16px;
       padding:16px;
       min-width:0;
       max-width:100%;
       overflow:hidden;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 -1px 0 rgba(0,0,0,.025);
     }
 
     .metaRow{
@@ -2938,22 +2268,22 @@
       border-radius:999px;
       font-size:11px;
       font-weight:700;
-      border:1px solid var(--border-neutral);
-      background:var(--field-highlight);
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
       color:var(--muted);
       overflow-wrap:anywhere;
     }
 
     .metaPill.field{
-      color:var(--violet);
-      background:var(--field-highlight);
-      border-color:rgba(118,108,168,.18);
+      color:#c27cff;
+      background:rgba(176,108,255,.10);
+      border-color:rgba(176,108,255,.16);
     }
 
     .metaPill.forecast{
-      color:var(--blue);
-      background:var(--field-highlight);
-      border-color:rgba(79,111,122,.18);
+      color:#6fc0ff;
+      background:rgba(103,193,255,.10);
+      border-color:rgba(103,193,255,.16);
     }
 
     @media (max-width: 1120px){
@@ -3022,10 +2352,6 @@
         grid-template-columns:minmax(0,1fr);
       }
 
-      .coreRuleGrid{
-        grid-template-columns:minmax(0,1fr);
-      }
-
       .shareIntro{
         display:grid;
       }
@@ -3077,10 +2403,6 @@
         padding:16px;
       }
 
-      .premiumCard::before{
-        border-radius:15px;
-      }
-
       .cardContent{
         display:flex;
         flex-direction:column;
@@ -3089,17 +2411,14 @@
       .kicker{order:1}
       .weatherLine{order:2}
       .weatherExplain{order:3}
-      .howUseBox{order:4}
-      .pairingExplain{order:5}
-      .fieldCompass{order:6}
-      .moonstampModifierBlock{order:7}
-      .coreRuleBlock{order:8}
-      .todayRead{order:9}
-      .realLifeBlock{order:10}
-      .guidanceGrid{order:11}
-      .motionStrip{order:12}
-      .interactionMap{order:13}
-      .todayOutlookLine{order:14}
+      .pairingExplain{order:4}
+      .fieldCompass{order:5}
+      .interactionMap{order:6}
+      .motionStrip{order:7}
+      .todayRead{order:8}
+      .realLifeBlock{order:9}
+      .guidanceGrid{order:10}
+      .todayOutlookLine{order:11}
 
       .weatherLine{
         font-size:29px;
@@ -3109,26 +2428,6 @@
       .weatherExplain{
         font-size:11px;
         margin-top:9px;
-      }
-
-      .howUseBox{
-        margin-top:10px;
-        border-radius:14px;
-        padding:10px 11px;
-      }
-
-      .howUseBox::before{
-        border-radius:13px;
-      }
-
-      .howUseLabel{
-        font-size:9.5px;
-        margin-bottom:5px;
-      }
-
-      .howUseText{
-        font-size:11.6px;
-        line-height:1.48;
       }
 
       .pairingExplain{
@@ -3184,9 +2483,9 @@
       }
 
       .interactionOperator{
-        justify-content:center;
-        min-height:22px;
-        padding-left:0;
+        justify-content:flex-start;
+        min-height:10px;
+        padding-left:4px;
         font-size:16px;
         line-height:1;
       }
@@ -3268,44 +2567,6 @@
 
       .motionMiniText{
         font-size:12px;
-      }
-
-      .coreRuleBlock{
-        border-radius:15px;
-        padding:12px;
-        margin-top:13px;
-      }
-
-      .coreRuleBlock::before{
-        border-radius:14px;
-      }
-
-      .coreRuleHelper{
-        font-size:11.6px;
-        margin-bottom:10px;
-      }
-
-      .coreRuleGrid{
-        gap:8px;
-      }
-
-      .coreRuleItem{
-        border-radius:13px;
-        padding:10px 11px;
-      }
-
-      .coreRuleItemText{
-        font-size:13.5px;
-        line-height:1.42;
-      }
-
-      .engineRuleBlock{
-        border-radius:13px;
-        padding:11px;
-      }
-
-      .engineRuleText{
-        font-size:12.5px;
       }
 
       .todayRead{
@@ -3401,8 +2662,7 @@
         font-size:34px;
       }
 
-      .shareCardFieldDirection,
-      .shareCardCoreRule{
+      .shareCardFieldDirection{
         border-radius:16px;
         padding:14px;
       }
@@ -3413,10 +2673,6 @@
 
       .shareCardFieldText{
         font-size:13px;
-      }
-
-      .shareCardCoreRuleLine{
-        font-size:15px;
       }
 
       .shareCardRead{
@@ -3530,15 +2786,8 @@
             </h2>
 
             <p class="weatherExplain">
-              Your root pattern × today’s field → the cleanest move for this moment.
+              Signal architecture = your root pattern. Current field = what today is activating. Read this as: root pattern × current field → recommended move.
             </p>
-
-            <div class="howUseBox">
-              <div class="howUseLabel">How to use this read</div>
-              <div class="howUseText">
-                Start with Today’s System Weather. Then read Current Field Direction. Use Core Rule as the practical filter. Use One Good Move as the action. Use Return to Yourself when the field feels too loud.
-              </div>
-            </div>
 
             <div class="pairingExplain" id="pairingExplain">
               <span><strong>Root pattern:</strong>&nbsp;—</span>
@@ -3547,10 +2796,10 @@
             </div>
 
             <div class="fieldCompass">
-              <div class="fieldCompassLabel">Current Field Direction</div>
+              <div class="fieldCompassLabel">Field Compass</div>
               <div class="fieldCompassGrid">
                 <div class="fieldCompassRead">
-                  <div class="fieldCompassMiniLabel">Main Takeaway</div>
+                  <div class="fieldCompassMiniLabel">Compass Read</div>
                   <div class="fieldCompassState" id="fieldCompassState">—</div>
                   <div class="fieldCompassText" id="fieldCompassText">Waiting for field direction.</div>
                 </div>
@@ -3563,21 +2812,21 @@
                       <svg viewBox="0 0 160 160" role="img">
                         <defs>
                           <linearGradient id="capacityGaugeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#4F6F7A" />
-                            <stop offset="58%" stop-color="#7F9CAA" />
-                            <stop offset="100%" stop-color="#8A7A43" />
+                            <stop offset="0%" stop-color="#67c1ff" />
+                            <stop offset="58%" stop-color="#a1d8ff" />
+                            <stop offset="100%" stop-color="#d8b84c" />
                           </linearGradient>
 
                           <linearGradient id="loadGaugeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#4F817A" />
-                            <stop offset="50%" stop-color="#8A7A43" />
-                            <stop offset="100%" stop-color="#A65A5A" />
+                            <stop offset="0%" stop-color="#67d26f" />
+                            <stop offset="50%" stop-color="#d8b84c" />
+                            <stop offset="100%" stop-color="#ff6666" />
                           </linearGradient>
 
                           <linearGradient id="regulationGaugeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#4F817A" />
-                            <stop offset="64%" stop-color="#4F6F7A" />
-                            <stop offset="100%" stop-color="#8A7A43" />
+                            <stop offset="0%" stop-color="#6fe0d3" />
+                            <stop offset="64%" stop-color="#67c1ff" />
+                            <stop offset="100%" stop-color="#d8b84c" />
                           </linearGradient>
                         </defs>
 
@@ -3629,32 +2878,43 @@
               </div>
             </div>
 
-            <div class="moonstampModifierBlock" id="moonstampModifierBlock">
-              <div class="moonstampModifierLabel">Moonstamp Modifier</div>
-              <div class="moonstampModifierTitle" id="moonstampModifierTitle">Moonstamp modifier pending</div>
-              <div class="moonstampModifierText" id="moonstampModifierText">The lunar field adds timing texture to today’s read when Moonstamp data is available.</div>
-              <div class="moonstampModifierMeta" id="moonstampModifierMeta">Use it as a field modifier, not an identity label.</div>
+            <div class="interactionMap">
+              <div class="interactionMapLabel">Interaction Map</div>
+
+              <div class="interactionMapGrid">
+                <div class="interactionNode">
+                  <div class="interactionNodeLabel">Root Pattern</div>
+                  <div class="interactionNodeName" id="interactionSystemName">—</div>
+                  <div class="interactionNodeText" id="interactionSystemText">Waiting for root signal.</div>
+                </div>
+
+                <div class="interactionOperator">×</div>
+
+                <div class="interactionNode">
+                  <div class="interactionNodeLabel">Today’s Field</div>
+                  <div class="interactionNodeName" id="interactionFieldName">—</div>
+                  <div class="interactionNodeText" id="interactionFieldText">Waiting for current field.</div>
+                </div>
+
+                <div class="interactionOperator">→</div>
+
+                <div class="interactionNode move">
+                  <div class="interactionNodeLabel">Recommended Move</div>
+                  <div class="interactionNodeName" id="interactionMoveName">—</div>
+                  <div class="interactionNodeText" id="interactionMoveText">Waiting for best move.</div>
+                </div>
+              </div>
             </div>
 
-            <div class="coreRuleBlock">
-              <div class="coreRuleLabel">Core Rule</div>
-              <div class="coreRuleHelper">Three lines for using your gift, avoiding your overload, and choosing today’s clean move.</div>
+            <div class="motionStrip">
+              <div class="motionMini">
+                <div class="motionMiniLabel">Motion Style</div>
+                <div class="motionMiniValue" id="topMotionStyle">—</div>
+              </div>
 
-              <div class="coreRuleGrid">
-                <div class="coreRuleItem">
-                  <div class="coreRuleItemLabel">Use your gift</div>
-                  <div class="coreRuleItemText" id="coreRuleGift">Waiting for core rule.</div>
-                </div>
-
-                <div class="coreRuleItem">
-                  <div class="coreRuleItemLabel">Watch the distortion</div>
-                  <div class="coreRuleItemText" id="coreRuleDistortion">Waiting for overload watch.</div>
-                </div>
-
-                <div class="coreRuleItem">
-                  <div class="coreRuleItemLabel">Make the move</div>
-                  <div class="coreRuleItemText" id="coreRuleMove">Waiting for clean move.</div>
-                </div>
+              <div class="motionMini">
+                <div class="motionMiniLabel">How to read it</div>
+                <div class="motionMiniText" id="topMotionStyleRead">Waiting for motion style read.</div>
               </div>
             </div>
 
@@ -3689,48 +2949,8 @@
               </div>
             </div>
 
-            <div class="motionStrip">
-              <div class="motionMini">
-                <div class="motionMiniLabel">Motion Style</div>
-                <div class="motionMiniValue" id="topMotionStyle">—</div>
-              </div>
-
-              <div class="motionMini">
-                <div class="motionMiniLabel">How to read it</div>
-                <div class="motionMiniText" id="topMotionStyleRead">Waiting for motion style read.</div>
-              </div>
-            </div>
-
-            <div class="interactionMap">
-              <div class="interactionMapLabel">Engine Translation</div>
-
-              <div class="interactionMapGrid">
-                <div class="interactionNode">
-                  <div class="interactionNodeLabel">Root Pattern</div>
-                  <div class="interactionNodeName" id="interactionSystemName">—</div>
-                  <div class="interactionNodeText" id="interactionSystemText">Waiting for root signal.</div>
-                </div>
-
-                <div class="interactionOperator">×</div>
-
-                <div class="interactionNode">
-                  <div class="interactionNodeLabel">Today’s Field</div>
-                  <div class="interactionNodeName" id="interactionFieldName">—</div>
-                  <div class="interactionNodeText" id="interactionFieldText">Waiting for current field.</div>
-                </div>
-
-                <div class="interactionOperator">→</div>
-
-                <div class="interactionNode move">
-                  <div class="interactionNodeLabel">Recommended Move</div>
-                  <div class="interactionNodeName" id="interactionMoveName">—</div>
-                  <div class="interactionNodeText" id="interactionMoveText">Waiting for best move.</div>
-                </div>
-              </div>
-            </div>
-
             <div class="todayOutlookLine" id="todayOutlookLine">
-              Field summary: <span>Trend: —</span> · Driver: — · —
+              Current Field Direction: <span>Trend: —</span> · Driver: — · —
             </div>
           </div>
         </section>
@@ -3739,7 +2959,7 @@
           <div class="outlookHeader">
             <div>
               <h2>Current Field Direction</h2>
-              <p>The main live-field takeaway. Moonstamp adds timing texture without replacing your harmonic profile.</p>
+              <p>The main live-field takeaway. Moonstamp modifies the timing field; it does not replace your harmonic profile.</p>
             </div>
 
             <div class="chipRow" style="margin-top:0;">
@@ -3753,6 +2973,13 @@
               <div class="outlookLabel">Field Direction</div>
               <div class="outlookValue" id="outlookDirectionTitle">—</div>
               <div class="outlookText" id="outlookDirectionText">Waiting for field direction.</div>
+
+              <div class="moonstampModifierBlock" id="moonstampModifierBlock">
+                <div class="moonstampModifierLabel">Moonstamp Modifier</div>
+                <div class="moonstampModifierTitle" id="moonstampModifierTitle">Moonstamp modifier pending</div>
+                <div class="moonstampModifierText" id="moonstampModifierText">The lunar field adds timing texture to today’s read when Moonstamp data is available.</div>
+                <div class="moonstampModifierMeta" id="moonstampModifierMeta">Use it as a field modifier, not an identity label.</div>
+              </div>
             </div>
 
             <div class="outlookBlock now">
@@ -3775,7 +3002,7 @@
           </div>
 
           <div class="outlookNote">
-            Moonstamp reads the field. Lucy.OS reads the person inside the field. Treat timing as context, not identity.
+            Moonstamp reads the field. Lucy.OS reads the person inside the field. The lunar field adds timing texture to today’s read without overriding Today’s Field Harmonic.
           </div>
         </section>
 
@@ -3783,7 +3010,7 @@
           <div class="profileHeader">
             <div>
               <h2>Harmonic Profile</h2>
-              <p>Your root pattern, stabilizing support, movement style, and overload pathway. Today’s field shows what the live timing field is activating.</p>
+              <p>Your root pattern, stabilizing support, movement style, and overload pathway. Today’s field shows what the live timing field is activating — not your identity.</p>
             </div>
 
             <div class="chipRow">
@@ -3960,11 +3187,6 @@
             </div>
           </div>
 
-          <div class="engineRuleBlock">
-            <div class="engineRuleLabel">Engine Rule</div>
-            <div class="engineRuleText" id="engineRuleText">Waiting for engine rule.</div>
-          </div>
-
           <div class="whyExplain" id="whyConfigText">
             Waiting for configuration.
           </div>
@@ -4008,28 +3230,6 @@
                     <div class="shareCardLabel">Current Field Direction</div>
                     <div class="shareCardFieldTitle" id="shareCardFieldDirectionTitle">—</div>
                     <div class="shareCardFieldText" id="shareCardFieldDirectionText">Waiting for field direction.</div>
-                  </div>
-                </div>
-
-                <div class="shareCardCoreRule">
-                  <div class="shareCardSection">
-                    <div class="shareCardLabel">Core Rule</div>
-                    <div class="shareCardCoreRuleGrid">
-                      <div class="shareCardCoreRuleLine">
-                        <span>Use your gift</span>
-                        <div id="shareCardCoreGift">Waiting for core rule.</div>
-                      </div>
-
-                      <div class="shareCardCoreRuleLine">
-                        <span>Watch the distortion</span>
-                        <div id="shareCardCoreDistortion">Waiting for overload watch.</div>
-                      </div>
-
-                      <div class="shareCardCoreRuleLine">
-                        <span>Make the move</span>
-                        <div id="shareCardCoreMove">Waiting for clean move.</div>
-                      </div>
-                    </div>
                   </div>
                 </div>
 
@@ -4111,11 +3311,6 @@
                 <span class="metaPill field" id="envBand">Field: —</span>
                 <span class="metaPill forecast" id="forecastBand">Timing: —</span>
               </div>
-            </div>
-
-            <div class="engineRuleBlock">
-              <div class="engineRuleLabel">Engine Rule</div>
-              <div class="engineRuleText" id="engineDetailsEngineRule">Waiting for engine rule.</div>
             </div>
 
             <div class="heroStats">
@@ -4279,7 +3474,6 @@
   </div>
 
   <script>
-
     const API_URL = "/api/chart_inputs";
     const SAVED_PROFILES_KEY = "lucyOSProSavedProfiles";
 
@@ -4423,19 +3617,12 @@
         meta: "",
         shareLine: ""
       },
-      coreRule: {
-        gift: "Waiting for core rule.",
-        distortion: "Waiting for overload watch.",
-        move: "Waiting for clean move."
-      },
-      engineRule: "Waiting for engine rule.",
       todayRead: "Waiting for daily read.",
       realLifeText: "Waiting for plain-life translation.",
       driverNote: "Waiting for driver note.",
       goodMove: "—",
       returnText: "—",
       primary: "Structured",
-      support: "Regulated",
       field: "—",
       state: "—",
       motionStyle: "—",
@@ -4532,6 +3719,36 @@
       return `${phase} · ${moonAge} days · ${illumination}% illuminated`;
     }
 
+    function formatMoonstampModifier(moonstamp){
+      if (!moonstamp) return "Moonstamp modifier pending";
+
+      const state = String(moonstamp.state || "").trim();
+      const phase = String(moonstamp.phase || "").trim();
+      const illumination = fmtPercent(moonstamp.illumination);
+      const modifier = String(moonstamp.modifier || "").trim();
+      const forecastModifier = String(moonstamp.forecastModifier || "").trim();
+      const moonrise = String(moonstamp.moonrise || "").trim();
+      const moonset = String(moonstamp.moonset || "").trim();
+      const nextMajorPhase = String(moonstamp.nextMajorPhase || "").trim();
+
+      const headerParts = [state, phase].filter(Boolean);
+      const header = headerParts.length
+        ? `${headerParts.join(" · ")}${illumination !== "—" ? ` · ${illumination}%` : ""}`
+        : "Moonstamp modifier";
+
+      const timingParts = [];
+      if (moonrise) timingParts.push(`Moonrise ${moonrise}`);
+      if (moonset) timingParts.push(`Moonset ${moonset}`);
+      if (nextMajorPhase) timingParts.push(`Next: ${nextMajorPhase}`);
+
+      return [
+        header,
+        modifier,
+        forecastModifier,
+        timingParts.length ? timingParts.join(" · ") : ""
+      ].filter(Boolean).join(" ");
+    }
+
     function buildMoonstampModifier(data){
       const moonstamp = getMoonstamp(data);
 
@@ -4542,7 +3759,7 @@
       const modifier = String(moonstamp.modifier || "").trim();
       const forecastModifier = String(moonstamp.forecastModifier || "").trim();
 
-      if (modifier && forecastModifier) return `${modifier}. ${forecastModifier}`;
+      if (modifier && forecastModifier) return `${modifier} ${forecastModifier}`;
       if (modifier) return modifier;
       if (forecastModifier) return forecastModifier;
 
@@ -4570,7 +3787,7 @@
       }
 
       const timing = formatMoonstampTiming(moonstamp);
-      const modifier = buildMoonstampModifier(data);
+      const modifier = buildMoonstampModifier(data) || formatMoonstampModifier(moonstamp);
 
       return {
         hasMoonstamp: true,
@@ -4583,11 +3800,6 @@
 
     function updateMoonstampModifierUI(data){
       const read = buildMoonstampModifierRead(data);
-      const block = document.getElementById("moonstampModifierBlock");
-
-      if (block) {
-        block.style.display = "block";
-      }
 
       setText("moonstampModifierTitle", read.title);
       setText("moonstampModifierText", read.text);
@@ -5072,7 +4284,6 @@
       if (primary === "Threshold" && field === "Reconstructive") return "cross only the repair that is ready";
       if (primary === "Diffused" && field === "Reconstructive") return "wait until the real repair point is clear";
       if (primary === "Regulated" && field === "Reconstructive") return "let pacing support one honest adjustment";
-      if (primary === "Integrative" && field === "Reconstructive") return "extract one lesson and apply it to one repair";
       return "choose one clear next move";
     }
 
@@ -5108,7 +4319,6 @@
       if (primary === "Threshold" && field === "Reconstructive") return "Cross only the repair that is actually ready.";
       if (primary === "Diffused" && field === "Reconstructive") return "Wait until the repair point is clear enough to name.";
       if (primary === "Regulated" && field === "Reconstructive") return "Use pacing to make one honest adjustment.";
-      if (primary === "Integrative" && field === "Reconstructive") return "Extract one useful lesson and apply it to one present repair.";
       return "Choose one clear next move and keep the scope small.";
     }
 
@@ -5332,6 +4542,8 @@
 
       setText("outlookDirectionTitle", direction.title);
       setText("outlookDirectionText", direction.text);
+
+      return updateMoonstampModifierUI(data);
     }
 
     function updateFieldTranslationUI(field){
@@ -5347,12 +4559,30 @@
       setText("fieldTranslationWatch", translation.watch);
     }
 
-    function setHeroGlow(){
+    function setHeroGlow(modeText, fog, volatility){
       const el = document.getElementById("heroGlow");
       if (!el) return;
 
-      el.style.background =
-        "linear-gradient(135deg, rgba(79,111,122,.045), transparent 42%), linear-gradient(180deg, rgba(255,255,255,.55), transparent 64%)";
+      const text = String(modeText || "").toLowerCase();
+      let glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.10), transparent 42%)";
+
+      if (text.includes("overload")) {
+        glow = "radial-gradient(circle at 50% 28%, rgba(255,102,102,.14), transparent 42%)";
+      } else if (text.includes("threshold") || text.includes("strain")) {
+        glow = "radial-gradient(circle at 50% 28%, rgba(216,184,76,.14), transparent 42%)";
+      } else if (text.includes("mobilized") || text.includes("active")) {
+        glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.08), rgba(216,184,76,.10), transparent 48%)";
+      }
+
+      if (safeNum(fog) > 0.72) {
+        glow = "radial-gradient(circle at 50% 28%, rgba(176,108,255,.12), rgba(103,193,255,.05), transparent 48%)";
+      }
+
+      if (safeNum(volatility) > 0.75 && !text.includes("overload")) {
+        glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.12), rgba(176,108,255,.05), transparent 48%)";
+      }
+
+      el.style.background = glow;
     }
 
     function buildMotionStyle(normalizedNatalScores, primary){
@@ -5546,196 +4776,6 @@
       return "overStructuring";
     }
 
-    function buildCoreRule(harmonics, data){
-      const primary = harmonics?.primary || "Structured";
-      const support = getHarmonicBaseName(harmonics?.support || "Regulated");
-      const field = harmonics?.todayField || "Regulated";
-      const motionStyle = harmonicText(harmonics?.motionStyle || "");
-      const distortionState = DISTORTION_STATES[harmonics?.distortionStateKey] || DISTORTION_STATES.overStructuring;
-
-      const hasMotion = (name) => motionStyle.includes(name);
-      const hasContainedDiffusedMotion = hasMotion("Contained") && hasMotion("Diffused");
-
-      let gift = "Use what your system notices best.";
-      let distortion = "Do not let pressure turn the read into overload.";
-      let move = "Choose one clean move and keep the scope small.";
-
-      if (primary === "Structured") {
-        gift = "Turn the signal into order.";
-        distortion = "Do not over-structure what only needs one clear frame.";
-      } else if (primary === "Contained") {
-        gift = "Protect the signal until it is ready.";
-        distortion = "Do not hold pressure so long that it has nowhere to go.";
-      } else if (primary === "Chaotic") {
-        gift = "Let the signal move.";
-        distortion = "Contain it before it becomes a shock cycle.";
-      } else if (primary === "Relational") {
-        gift = "Read the tone without losing your center.";
-        distortion = "Do not absorb the whole field as if it belongs to you.";
-      } else if (primary === "Threshold") {
-        gift = "Notice the real crossing.";
-        distortion = "Do not treat every edge like it has to be crossed now.";
-      } else if (primary === "Reconstructive") {
-        gift = "See what actually needs repair.";
-        distortion = "Do not turn every weak point into a full rebuild.";
-      } else if (primary === "Integrative") {
-        gift = "Gather the pattern into meaning.";
-        distortion = "Do not carry every layer at once.";
-      } else if (primary === "Diffused") {
-        gift = "Sense the field before forcing a conclusion.";
-        distortion = "Do not let the atmosphere become the whole answer.";
-      } else if (primary === "Regulated") {
-        gift = "Pace the signal until it becomes usable.";
-        distortion = "Do not turn regulation into over-control.";
-      }
-
-      if (support === "Structured") {
-        distortion = primary === "Chaotic"
-          ? "Contain it before it becomes a shock cycle."
-          : "Let structure support the signal without tightening too much.";
-      } else if (support === "Contained") {
-        distortion = "Protect the channel without closing it completely.";
-      } else if (support === "Regulated") {
-        distortion = "Use pacing without turning control into the whole strategy.";
-      } else if (support === "Diffused") {
-        distortion = "Let sensitivity inform you without absorbing the whole field.";
-      } else if (support === "Integrative") {
-        distortion = "Let the larger pattern help without carrying every layer.";
-      } else if (support === "Relational") {
-        distortion = "Stay connected without making the whole room yours to regulate.";
-      }
-
-      if (field === "Reconstructive") {
-        move = "Repair one weak point, not the whole field.";
-      } else if (field === "Threshold") {
-        move = "Cross only the step that is actually ready.";
-      } else if (field === "Chaotic") {
-        move = "Give the charge one safe direction.";
-      } else if (field === "Diffused") {
-        move = "Ground the field with one clear anchor.";
-      } else if (field === "Contained") {
-        move = "Let one private signal take shape.";
-      } else if (field === "Relational") {
-        move = "Say one clear thing and keep responsibility proportional.";
-      } else if (field === "Integrative") {
-        move = "Choose the one connection that makes action clearer.";
-      } else if (field === "Structured") {
-        move = "Build one useful container.";
-      } else if (field === "Regulated") {
-        move = "Let rhythm carry one practical action.";
-      }
-
-      if (distortionState.label === "Emotional Fusion") {
-        distortion = "Do not absorb the shared field as if it is all yours.";
-      } else if (distortionState.label === "Rupture" && primary !== "Chaotic") {
-        distortion = "Do not break contact faster than the field requires.";
-      } else if (distortionState.label === "Over-Structuring" && primary !== "Structured") {
-        distortion = "Do not tighten the system more than the moment requires.";
-      } else if (distortionState.label === "Scatter" && primary !== "Diffused") {
-        distortion = "Do not open more channels than you can hold.";
-      }
-
-      if (primary === "Chaotic" && support === "Structured" && field === "Reconstructive") {
-        gift = "Let the signal move.";
-        distortion = "Contain it before it becomes a shock cycle.";
-        move = "Repair one weak point, not the whole field.";
-      }
-
-      if (motionStyle.includes("Chaotic") && motionStyle.includes("Threshold") && field === "Reconstructive") {
-        gift = "Let the signal find the pressure point.";
-        distortion = "Contain the charge before it becomes a shock cycle.";
-        move = "Repair one weak point, not the whole field.";
-      }
-
-      if (primary === "Integrative" && field === "Reconstructive") {
-        gift = "Let the pattern reveal the repair point.";
-        distortion = "Do not open more channels than you can hold.";
-        move = "Repair one weak point, not the whole field.";
-      }
-
-      if (hasContainedDiffusedMotion) {
-        distortion = "Do not disappear into the pressure before the repair is clear.";
-      }
-
-      return {
-        gift,
-        distortion,
-        move
-      };
-    }
-
-    function buildEngineRule(harmonics){
-      const primary = harmonics?.primary || "Structured";
-      const support = getHarmonicBaseName(harmonics?.support || "Regulated");
-      const field = harmonics?.todayField || "Regulated";
-      const motionStyle = harmonicText(harmonics?.motionStyle || "Steady");
-
-      let first = `Let ${primary} lead.`;
-      let second = `Let ${support} stabilize.`;
-      let third = `Let ${field} define the clean move.`;
-
-      if (primary === "Chaotic") first = "Let Chaotic detect.";
-      if (primary === "Structured") first = "Let Structured frame.";
-      if (primary === "Contained") first = "Let Contained protect.";
-      if (primary === "Relational") first = "Let Relational attune.";
-      if (primary === "Threshold") first = "Let Threshold time the crossing.";
-      if (primary === "Reconstructive") first = "Let Reconstructive identify the repair.";
-      if (primary === "Integrative") first = "Let Integrative gather the pattern.";
-      if (primary === "Diffused") first = "Let Diffused sense the field.";
-      if (primary === "Regulated") first = "Let Regulated pace.";
-
-      if (support === "Structured") second = "Let Structured contain.";
-      if (support === "Contained") second = "Let Contained protect the channel.";
-      if (support === "Chaotic") second = "Let Chaotic move without scattering.";
-      if (support === "Relational") second = "Let Relational keep contact clean.";
-      if (support === "Threshold") second = "Let Threshold choose timing.";
-      if (support === "Reconstructive") second = "Let Reconstructive strengthen the weak point.";
-      if (support === "Integrative") second = "Let Integrative make the pattern usable.";
-      if (support === "Diffused") second = "Let Diffused sense without absorbing.";
-      if (support === "Regulated") second = "Let Regulated pace.";
-
-      if (field === "Reconstructive") third = "Use the charge for one repair.";
-      if (field === "Threshold") third = "Use the edge for one clean crossing.";
-      if (field === "Chaotic") third = "Use the movement through one channel.";
-      if (field === "Diffused") third = "Use one anchor to clarify the field.";
-      if (field === "Contained") third = "Use the inward pull to protect formation.";
-      if (field === "Relational") third = "Use contact for one clean repair.";
-      if (field === "Integrative") third = "Use meaning to clarify action.";
-      if (field === "Structured") third = "Use structure to make the signal workable.";
-      if (field === "Regulated") third = "Use rhythm to keep the move manageable.";
-
-      if (primary === "Chaotic" && support === "Structured" && field === "Reconstructive") {
-        first = "Let Chaotic detect.";
-        second = "Let Structured contain.";
-        third = "Use the charge for one repair.";
-      }
-
-      if (primary === "Integrative" && field === "Reconstructive") {
-        first = "Let Integrative gather the pattern.";
-        second = `Let ${support} stabilize.`;
-        third = "Use meaning for one present repair.";
-      }
-
-      return {
-        text: `${first}\n${second}\n${third}`,
-        short: `${first} ${second} ${third}`,
-        motion: motionStyle
-      };
-    }
-
-    function updateCoreRuleUI(coreRule, engineRule){
-      setText("coreRuleGift", coreRule.gift);
-      setText("coreRuleDistortion", coreRule.distortion);
-      setText("coreRuleMove", coreRule.move);
-
-      setText("shareCardCoreGift", coreRule.gift);
-      setText("shareCardCoreDistortion", coreRule.distortion);
-      setText("shareCardCoreMove", coreRule.move);
-
-      setText("engineRuleText", engineRule.text);
-      setText("engineDetailsEngineRule", engineRule.text);
-    }
-
     function calculateHarmonics(data){
       const state = data?.state || {};
       const baselineState = data?.baselineState || {};
@@ -5747,7 +4787,6 @@
       const sun = safeNum(planetary.sun);
       const moon = safeNum(planetary.moon);
       const mercury = safeNum(planetary.mercury);
-
       const venus = safeNum(planetary.venus);
       const mars = safeNum(planetary.mars);
       const jupiter = safeNum(planetary.jupiter);
@@ -6759,7 +5798,107 @@
       }).join("");
     }
 
-    function updateWhyReadUI(harmonics, data, fieldTrend, moonstampModifier, engineRule){
+    function buildMoonstampModifier(data){
+      const moonstamp = getMoonstamp(data);
+      if (!moonstamp || !hasMoonstampData(data)) {
+        return "";
+      }
+
+      const modifier = String(moonstamp.modifier || "").trim();
+      const forecastModifier = String(moonstamp.forecastModifier || "").trim();
+
+      if (modifier && forecastModifier) {
+        return `${modifier} ${forecastModifier}`;
+      }
+
+      if (modifier) {
+        return modifier;
+      }
+
+      if (forecastModifier) {
+        return forecastModifier;
+      }
+
+      const state = String(moonstamp.state || "").trim();
+      const phase = String(moonstamp.phase || "").trim();
+
+      if (state && phase) {
+        return `${state} lunar timing adds texture to the ${phase} field.`;
+      }
+
+      if (state) {
+        return `${state} lunar timing adds texture to today’s field.`;
+      }
+
+      if (phase) {
+        return `${phase} timing adds texture to today’s read.`;
+      }
+
+      return "The lunar field adds timing texture to today’s read.";
+    }
+
+    function updateMoonstampModifierBlock(data){
+      const moonstamp = getMoonstamp(data);
+      const hasMoonstamp = hasMoonstampData(data);
+      const modifier = buildMoonstampModifier(data);
+
+      const block = document.getElementById("moonstampModifierBlock");
+
+      if (block) {
+        block.style.display = "block";
+      }
+
+      if (!hasMoonstamp) {
+        setText("moonstampModifierTitle", "Moonstamp modifier pending");
+        setText("moonstampModifierText", "Moonstamp modifies the timing field; it does not replace your harmonic profile.");
+        setText("moonstampModifierMeta", "The lunar field adds timing texture when backend Moonstamp data is available.");
+        setText("shareCardMoonstampModifier", "");
+        return {
+          hasMoonstamp: false,
+          title: "Moonstamp modifier pending",
+          text: "Moonstamp modifies the timing field; it does not replace your harmonic profile.",
+          meta: "The lunar field adds timing texture when backend Moonstamp data is available.",
+          shareLine: ""
+        };
+      }
+
+      const phase = String(moonstamp.phase || "").trim();
+      const state = String(moonstamp.state || "").trim();
+      const illumination = fmtPercent(moonstamp.illumination);
+      const moonrise = String(moonstamp.moonrise || "").trim();
+      const moonset = String(moonstamp.moonset || "").trim();
+      const nextMajorPhase = String(moonstamp.nextMajorPhase || "").trim();
+
+      const titleParts = [];
+      if (state) titleParts.push(state);
+      if (phase) titleParts.push(phase);
+
+      const title = titleParts.length ? titleParts.join(" · ") : "Lunar timing modifier";
+      const metaParts = [];
+      if (illumination !== "—") metaParts.push(`${illumination}% illuminated`);
+      if (moonrise) metaParts.push(`Moonrise ${moonrise}`);
+      if (moonset) metaParts.push(`Moonset ${moonset}`);
+      if (nextMajorPhase) metaParts.push(`Next: ${nextMajorPhase}`);
+
+      const text = modifier || "The lunar field adds timing texture to today’s read. Use it as a field modifier, not an identity label.";
+      const meta = metaParts.length ? metaParts.join(" · ") : "Moonstamp modifies the timing field only.";
+
+      setText("moonstampModifierTitle", title);
+      setText("moonstampModifierText", text);
+      setText("moonstampModifierMeta", meta);
+
+      setText("shareCardMoonstampModifier", `${title}: ${text}`);
+
+      return {
+        hasMoonstamp: true,
+        title,
+        text,
+        meta,
+        shareLine: `${title}: ${text}`
+      };
+    }
+
+    function updateWhyReadUI(harmonics, data, fieldTrend){
       const state = data?.state || {};
       const moonstamp = getMoonstamp(data);
       const hasMoonstamp = hasMoonstampData(data);
@@ -6775,8 +5914,8 @@
       const distortion = harmonics.distortion || "Diffused";
       const distortionState = DISTORTION_STATES[harmonics.distortionStateKey] || DISTORTION_STATES.overStructuring;
       const driverNote = buildDriverNote(data, harmonics, fieldTrend);
-      const moonstampLine = hasMoonstamp && moonstampModifier?.shareLine
-        ? moonstampModifier.shareLine
+      const moonstampLine = hasMoonstamp
+        ? `${formatMoonstampTiming(moonstamp)} · ${buildMoonstampModifier(data)}`
         : "Moonstamp modifier pending";
 
       setHTML("whyBaseline", harmonicLabel(primary));
@@ -6793,18 +5932,14 @@
       setText("whyPeakTiming", formatMoonstampTiming(moonstamp));
       setText("whyMoonstampModifier", moonstampLine);
 
-      let explanation = `This read comes from a ${harmonicText(primary)} signal architecture meeting a ${harmonicText(field)} field while the current state is ${currentState.toLowerCase()}. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Engine Rule: ${engineRule?.short || "Waiting for engine rule."} Load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${fieldTrend.rationale} ${driverNote}`;
+      let explanation = `This read comes from a ${harmonicText(primary)} signal architecture meeting a ${harmonicText(field)} field while the current state is ${currentState.toLowerCase()}. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${fieldTrend.rationale} ${driverNote}`;
 
       if (primary === "Chaotic" && field === "Reconstructive") {
-        explanation = `This does not mean the person is chaotic as a lifestyle or identity. It means the root signal moves quickly, nonlinearly, and toward pressure points. The ${harmonicText(field)} field adds repair pressure, so the best move is one honest adjustment, not a full rebuild. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Engine Rule: ${engineRule?.short || "Waiting for engine rule."} Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
+        explanation = `This does not mean the person is chaotic as a lifestyle or identity. It means the root signal moves quickly, nonlinearly, and toward pressure points. The ${harmonicText(field)} field adds repair pressure, so the best move is one honest adjustment, not a full rebuild. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
       }
 
       if (primary === "Structured" && field === "Reconstructive") {
-        explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${harmonicText(primary)} signal architecture wants order, sequence, and meaning, while the ${harmonicText(field)} field pushes repair pressure. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Engine Rule: ${engineRule?.short || "Waiting for engine rule."} ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
-      }
-
-      if (primary === "Integrative" && field === "Reconstructive") {
-        explanation = `This means the system is gathering meaning while the current field highlights repair pressure. The risk is turning every piece of history into today's work. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Engine Rule: ${engineRule?.short || "Waiting for engine rule."} The best move is to extract one lesson and apply it to one present repair. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
+        explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${harmonicText(primary)} signal architecture wants order, sequence, and meaning, while the ${harmonicText(field)} field pushes repair pressure. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
       }
 
       if (currentState === "Threshold" && loadBand === "Overloaded" && capacityBand === "Decent") {
@@ -6833,15 +5968,12 @@
       fieldDirectionTitle,
       fieldDirectionText,
       moonstampModifier,
-      coreRule,
-      engineRule,
       todayRead,
       realLifeText,
       driverNote,
       goodMove,
       returnText,
       primary,
-      support,
       field,
       state,
       motionStyle,
@@ -6852,19 +5984,12 @@
         fieldDirectionTitle,
         fieldDirectionText,
         moonstampModifier: moonstampModifier || { hasMoonstamp: false, title: "", text: "", shareLine: "" },
-        coreRule: coreRule || {
-          gift: "Waiting for core rule.",
-          distortion: "Waiting for overload watch.",
-          move: "Waiting for clean move."
-        },
-        engineRule: engineRule?.text || "Waiting for engine rule.",
         todayRead,
         realLifeText,
         driverNote,
         goodMove,
         returnText,
         primary,
-        support,
         field,
         state,
         motionStyle,
@@ -6890,9 +6015,6 @@
       setText("shareCardWeather", systemWeather);
       setText("shareCardFieldDirectionTitle", fieldDirectionTitle || "—");
       setText("shareCardFieldDirectionText", fieldDirectionText || "Waiting for field direction.");
-      setText("shareCardCoreGift", coreRule?.gift || "Waiting for core rule.");
-      setText("shareCardCoreDistortion", coreRule?.distortion || "Waiting for overload watch.");
-      setText("shareCardCoreMove", coreRule?.move || "Waiting for clean move.");
       setText("shareCardTodayRead", todayRead);
       setText("shareCardRealLife", realLifeText || "Translate the read into one practical action.");
       setText("shareCardMotionStyle", harmonicText(motionStyle || "—"));
@@ -6921,15 +6043,7 @@
         "",
         "Current Field Direction:",
         latestSharePayload.fieldDirectionTitle || "—",
-        latestSharePayload.fieldDirectionText || "Waiting for field direction.",
-        "",
-        "Core Rule:",
-        "Use your gift:",
-        latestSharePayload.coreRule?.gift || "Waiting for core rule.",
-        "Watch the distortion:",
-        latestSharePayload.coreRule?.distortion || "Waiting for overload watch.",
-        "Make the move:",
-        latestSharePayload.coreRule?.move || "Waiting for clean move."
+        latestSharePayload.fieldDirectionText || "Waiting for field direction."
       ];
 
       if (latestSharePayload.moonstampModifier?.hasMoonstamp) {
@@ -6997,7 +6111,7 @@
         if (status) status.textContent = "Creating image...";
 
         const canvas = await html2canvas(card, {
-          backgroundColor: "#F4F2EF",
+          backgroundColor: "#09142f",
           scale: 2,
           useCORS: true,
           logging: false
@@ -7041,9 +6155,7 @@
       const currentState = stateLabelFromMode(data?.state?.mode || "");
       const fieldTrend = calculateFieldTrend(data, harmonics);
       const fieldDirection = buildFieldDirectionText(harmonics, data);
-      const moonstampModifier = updateMoonstampModifierUI(data);
-      const coreRule = buildCoreRule(harmonics, data);
-      const engineRule = buildEngineRule(harmonics);
+      const moonstampModifier = updateMoonstampModifierBlock(data);
 
       const primaryLabel = harmonicLabel(primaryMeta.label);
       const supportLabel = harmonics.support && String(harmonics.support).includes("/")
@@ -7076,7 +6188,6 @@
       );
 
       updateInteractionMap(primaryMeta.label, fieldMeta.label);
-      updateCoreRuleUI(coreRule, engineRule);
 
       setHTML("topMotionStyle", motionStyleLabel);
       setText("topMotionStyleRead", motionStyleRead);
@@ -7110,21 +6221,18 @@
 
       updateFieldTranslationUI(fieldMeta.label);
       updateOutlookUI(data, harmonics);
-      updateWhyReadUI(harmonics, data, fieldTrend, moonstampModifier, engineRule);
+      updateWhyReadUI(harmonics, data, fieldTrend);
       updateShareUI({
         systemWeather,
         fieldDirectionTitle: fieldDirection.title,
         fieldDirectionText: fieldDirection.text,
         moonstampModifier,
-        coreRule,
-        engineRule,
         todayRead: guidance.read,
         realLifeText,
         driverNote: shareDriverNote,
         goodMove: guidance.move,
         returnText: guidance.ret,
         primary: primaryMeta.label,
-        support: harmonics.support,
         field: fieldMeta.label,
         state: currentState,
         motionStyle: harmonicText(harmonics.motionStyle || "Steady"),
@@ -7190,7 +6298,6 @@
       updateFieldCompass(data);
 
       const distortionState = DISTORTION_STATES[harmonics.distortionStateKey] || DISTORTION_STATES.overStructuring;
-      const engineRule = buildEngineRule(harmonics);
 
       console.log("Lucy.OS normalized harmonic scores:", {
         primary: harmonics.primary,
@@ -7200,7 +6307,6 @@
         rawDistortionHarmonic: harmonics.distortion,
         primaryDistortionState: distortionState.label,
         todayField: harmonics.todayField,
-        engineRule: engineRule.text,
         moonstamp,
         natalScores: harmonics.natalScores,
         normalizedNatalScores: harmonics.normalizedNatalScores,
@@ -7308,7 +6414,7 @@
         `JD: ${ephemeris.jdUt || ephemeris.jd_ut || "—"} | Sun: ${sunDeg} | Moon: ${moonDeg} | ASC: ${ascDeg} | MC: ${mcDeg}`
       );
 
-      setHeroGlow();
+      setHeroGlow(modeText, fog, volatility);
     }
 
     async function calculate(){
@@ -7647,7 +6753,6 @@
         const data = testCase.build();
         const result = calculateHarmonics(data);
         const distortionState = DISTORTION_STATES[result.distortionStateKey] || DISTORTION_STATES.overStructuring;
-        const engineRule = buildEngineRule(result);
         const passed = testCase.expected.includes(result.primary);
 
         return {
@@ -7660,7 +6765,6 @@
           rawDistortionHarmonic: result.distortion,
           primaryDistortionState: distortionState.label,
           todayField: result.todayField,
-          engineRule: engineRule.short,
           passFail: passed ? "PASS" : "FAIL"
         };
       });
