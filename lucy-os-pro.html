@@ -1641,6 +1641,11 @@
       overflow-wrap:break-word;
     }
 
+    .profileDesc.strong{
+      color:var(--graphite2);
+      font-weight:750;
+    }
+
     .chipRow{
       display:flex;
       gap:8px;
@@ -4981,6 +4986,7 @@
       if (primary === "Threshold" && field === "Reconstructive") return "cross only the repair that is ready";
       if (primary === "Diffused" && field === "Reconstructive") return "wait until the real repair point is clear";
       if (primary === "Regulated" && field === "Reconstructive") return "let pacing support one honest adjustment";
+      if (primary === "Integrative" && field === "Reconstructive") return "extract one lesson and apply it to one repair";
       return "choose one clear next move";
     }
 
@@ -5016,6 +5022,7 @@
       if (primary === "Threshold" && field === "Reconstructive") return "Cross only the repair that is actually ready.";
       if (primary === "Diffused" && field === "Reconstructive") return "Wait until the repair point is clear enough to name.";
       if (primary === "Regulated" && field === "Reconstructive") return "Use pacing to make one honest adjustment.";
+      if (primary === "Integrative" && field === "Reconstructive") return "Extract one useful lesson and apply it to one present repair.";
       return "Choose one clear next move and keep the scope small.";
     }
 
@@ -5541,6 +5548,12 @@
         move = "Repair one weak point, not the whole field.";
       }
 
+      if (primary === "Integrative" && field === "Reconstructive") {
+        gift = "Let the pattern reveal the repair point.";
+        distortion = "Do not open more channels than you can hold.";
+        move = "Repair one weak point, not the whole field.";
+      }
+
       if (distortionState.label === "Emotional Fusion") {
         distortion = "Do not absorb the shared field as if it is all yours.";
       } else if (distortionState.label === "Rupture" && primary !== "Chaotic") {
@@ -5553,6 +5566,12 @@
 
       if (primary === "Chaotic" && support === "Structured" && field === "Reconstructive") {
         distortion = "Contain it before it becomes a shock cycle.";
+      }
+
+      if (primary === "Integrative" && field === "Reconstructive") {
+        gift = "Let the pattern reveal the repair point.";
+        distortion = "Do not open more channels than you can hold.";
+        move = "Repair one weak point, not the whole field.";
       }
 
       return {
@@ -5608,6 +5627,12 @@
         third = "Use the charge for one repair.";
       }
 
+      if (primary === "Integrative" && field === "Reconstructive") {
+        first = "Let Integrative gather the pattern.";
+        second = `Let ${support} stabilize.`;
+        third = "Use meaning for one present repair.";
+      }
+
       return {
         text: `${first}\n${second}\n${third}`,
         short: `${first} ${second} ${third}`,
@@ -5639,6 +5664,7 @@
       const sun = safeNum(planetary.sun);
       const moon = safeNum(planetary.moon);
       const mercury = safeNum(planetary.mercury);
+
       const venus = safeNum(planetary.venus);
       const mars = safeNum(planetary.mars);
       const jupiter = safeNum(planetary.jupiter);
@@ -6692,6 +6718,10 @@
 
       if (primary === "Structured" && field === "Reconstructive") {
         explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${harmonicText(primary)} signal architecture wants order, sequence, and meaning, while the ${harmonicText(field)} field pushes repair pressure. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Engine Rule: ${engineRule?.short || "Waiting for engine rule."} ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
+      }
+
+      if (primary === "Integrative" && field === "Reconstructive") {
+        explanation = `This means the system is gathering meaning while the current field highlights repair pressure. The risk is turning every piece of history into today's work. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Engine Rule: ${engineRule?.short || "Waiting for engine rule."} The best move is to extract one lesson and apply it to one present repair. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
       }
 
       if (currentState === "Threshold" && loadBand === "Overloaded" && capacityBand === "Decent") {
