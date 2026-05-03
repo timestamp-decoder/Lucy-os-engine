@@ -7,40 +7,53 @@
 
   <style>
     :root{
-      --bg:#09142f;
-      --panel:#0f1b38;
-      --panel2:#132347;
-      --panel3:#0b1734;
-      --line:#2a3c69;
-      --lineSoft:rgba(255,255,255,.06);
-      --text:#f4f7ff;
-      --muted:#aab7d6;
-      --muted2:#7f8fb8;
-      --blue:#67c1ff;
-      --red:#ff6666;
-      --green:#67d26f;
-      --violet:#b06cff;
-      --gold:#d8b84c;
-      --teal:#6fe0d3;
-      --amber:#f1b84b;
-      --rose:#ff9bb7;
-      --pearl:#d8edf0;
-      --lavender:#cbb7ff;
-      --shadow:0 18px 52px rgba(0,0,0,.28);
+      --bg:#ECEFF1;
+      --panel:#F8F7F4;
+      --panel2:#F1F0ED;
+      --panel3:#E7EAEC;
+      --line:rgba(37,48,58,.14);
+      --lineSoft:rgba(37,48,58,.08);
+      --text:#25303A;
+      --muted:#5B6570;
+      --muted2:#7A838C;
+      --blue:#426F86;
+      --red:#9D5B5B;
+      --green:#4F7E74;
+      --violet:#766CA8;
+      --gold:#7B735A;
+      --teal:#4F817A;
+      --amber:#A07145;
+      --rose:#9A6A7A;
+      --pearl:#FFFFFF;
+      --lavender:#8178AE;
+      --shadow:0 10px 28px rgba(37,48,58,.08);
 
-      --h-structured:#d8b84c;
-      --h-contained:#f3fbff;
-      --h-chaotic:#67c1ff;
-      --h-relational:#ff9bb7;
-      --h-threshold:#ff8a3d;
-      --h-reconstructive:#b06cff;
-      --h-integrative:#a9d7ff;
-      --h-diffused:#cbb7ff;
-      --h-regulated:#6fe0d3;
-      --h-steady:#aab7d6;
+      --surface:#F8F7F4;
+      --surface2:#F2F1EE;
+      --surface3:#ECEFF1;
+      --graphite:#25303A;
+      --graphite2:#3D4852;
+      --softBorder:rgba(37,48,58,.12);
+      --softBorder2:rgba(37,48,58,.08);
+      --fieldTint:rgba(66,111,134,.06);
+      --violetTint:rgba(118,108,168,.06);
+      --pearlEdge:rgba(255,255,255,.78);
+
+      --h-structured:#8A7A43;
+      --h-contained:#6F7780;
+      --h-chaotic:#426F86;
+      --h-relational:#9A6A7A;
+      --h-threshold:#A07145;
+      --h-reconstructive:#766CA8;
+      --h-integrative:#5B7892;
+      --h-diffused:#8178AE;
+      --h-regulated:#4F817A;
+      --h-steady:#66727E;
     }
 
-    *{
+    *,
+    *::before,
+    *::after{
       box-sizing:border-box;
     }
 
@@ -49,6 +62,7 @@
       width:100%;
       max-width:100%;
       overflow-x:hidden;
+      background:var(--bg);
     }
 
     body{
@@ -58,9 +72,7 @@
       overflow-x:hidden;
       font-family:Arial, sans-serif;
       background:
-        radial-gradient(circle at 50% 0%, rgba(103,193,255,.10), transparent 34%),
-        radial-gradient(circle at 80% 12%, rgba(176,108,255,.06), transparent 32%),
-        linear-gradient(180deg,#071126 0%, #09142f 100%);
+        linear-gradient(180deg,#F7F6F4 0%, #ECEFF1 52%, #E5E8EA 100%);
       color:var(--text);
     }
 
@@ -88,20 +100,21 @@
       margin:0 0 10px;
       padding:0 12px;
       border-radius:999px;
-      border:1px solid rgba(103,193,255,.16);
-      background:rgba(103,193,255,.055);
+      border:1px solid var(--softBorder);
+      background:rgba(255,255,255,.58);
       color:var(--muted);
       font-size:12px;
       font-weight:800;
       text-decoration:none;
       letter-spacing:.02em;
       overflow-wrap:anywhere;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.70);
     }
 
     .backLink:hover{
       color:var(--blue);
-      border-color:rgba(103,193,255,.28);
-      background:rgba(103,193,255,.085);
+      border-color:rgba(66,111,134,.22);
+      background:rgba(255,255,255,.82);
     }
 
     .hero{
@@ -112,22 +125,23 @@
       margin-bottom:16px;
       padding:15px 18px 13px;
       overflow:hidden;
-      border:1px solid rgba(103,193,255,.13);
+      border:1px solid var(--softBorder);
       border-radius:20px;
       background:
-        radial-gradient(circle at 50% -20%, rgba(103,193,255,.11), transparent 46%),
-        linear-gradient(180deg,rgba(15,27,56,.62),rgba(9,20,47,.24));
-      box-shadow:0 14px 38px rgba(0,0,0,.22);
+        linear-gradient(180deg,rgba(255,255,255,.88),rgba(242,241,238,.76));
+      box-shadow:var(--shadow);
     }
 
     .heroGlow{
       position:absolute;
-      inset:0;
+      inset:1px;
       pointer-events:none;
-      opacity:.88;
+      opacity:1;
       transition:background .35s ease;
+      border-radius:19px;
       background:
-        radial-gradient(circle at 50% 28%, rgba(103,193,255,.09), transparent 42%);
+        linear-gradient(135deg,rgba(66,111,134,.045),transparent 42%),
+        linear-gradient(180deg,rgba(255,255,255,.55),transparent 64%);
     }
 
     .hero h1{
@@ -135,6 +149,7 @@
       margin:0;
       font-size:34px;
       letter-spacing:.2px;
+      color:var(--graphite);
       z-index:1;
     }
 
@@ -160,16 +175,18 @@
       width:100%;
       max-width:100%;
       min-width:0;
-      background:linear-gradient(180deg,var(--panel),var(--panel2));
-      border:1px solid var(--line);
+      background:
+        linear-gradient(180deg,rgba(255,255,255,.90),rgba(242,241,238,.78));
+      border:1px solid var(--softBorder);
       border-radius:18px;
       padding:18px;
-      box-shadow:0 10px 30px rgba(0,0,0,.20);
+      box-shadow:var(--shadow);
     }
 
     .panel h2{
       margin:0 0 12px;
       font-size:18px;
+      color:var(--graphite);
     }
 
     .inputPanel{
@@ -183,6 +200,7 @@
       font-size:12px;
       color:var(--muted);
       margin:10px 0 6px;
+      font-weight:750;
     }
 
     input,
@@ -192,11 +210,12 @@
       max-width:100%;
       min-width:0;
       border-radius:10px;
-      border:1px solid var(--line);
-      background:#0b1734;
+      border:1px solid var(--softBorder);
+      background:rgba(255,255,255,.78);
       color:var(--text);
       padding:12px;
       font-size:14px;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
     }
 
     input::placeholder{
@@ -212,14 +231,16 @@
 
     button{
       margin-top:14px;
-      background:linear-gradient(180deg,#1d5cff,#3f86ff);
+      background:linear-gradient(180deg,#4F7D92,#355F73);
       border:none;
       cursor:pointer;
       font-weight:700;
+      color:#FFFFFF;
+      box-shadow:0 8px 18px rgba(37,48,58,.12);
     }
 
     button:hover{
-      filter:brightness(1.08);
+      filter:brightness(1.04);
     }
 
     button:disabled{
@@ -229,14 +250,14 @@
 
     .savedProfiles{
       margin-top:14px;
-      border:1px solid rgba(103,193,255,.16);
+      border:1px solid var(--softBorder);
       border-radius:14px;
       padding:14px;
       background:
-        radial-gradient(circle at 10% 0%, rgba(103,193,255,.08), transparent 34%),
-        rgba(255,255,255,.025);
+        linear-gradient(180deg,rgba(255,255,255,.72),rgba(242,241,238,.62));
       min-width:0;
       max-width:100%;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.66);
     }
 
     .savedProfiles h3{
@@ -270,7 +291,7 @@
     }
 
     .savedProfiles .deleteProfileBtn{
-      background:linear-gradient(180deg,rgba(255,102,102,.82),rgba(172,52,74,.92));
+      background:linear-gradient(180deg,#9D5B5B,#7B4448);
     }
 
     .profileSaveHelper{
@@ -306,15 +327,16 @@
 
     .statusBlock{
       padding:14px;
-      border:1px solid var(--line);
+      border:1px solid var(--softBorder);
       border-radius:14px;
-      background:rgba(255,255,255,.02);
+      background:rgba(255,255,255,.58);
       font-size:12px;
       line-height:1.55;
       color:var(--muted);
       min-width:0;
       max-width:100%;
       overflow-wrap:anywhere;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.68);
     }
 
     .statusBlock strong{
@@ -332,7 +354,7 @@
     }
 
     .err{
-      color:#ff9c9c;
+      color:var(--red);
       font-weight:700;
     }
 
@@ -350,27 +372,27 @@
       max-width:100%;
       min-width:0;
       overflow:hidden;
-      border:1px solid rgba(103,193,255,.28);
+      border:1px solid rgba(37,48,58,.14);
       border-radius:24px;
       padding:25px;
       background:
-        radial-gradient(circle at 15% -8%, rgba(103,193,255,.16), transparent 39%),
-        radial-gradient(circle at 88% 16%, rgba(216,184,76,.13), transparent 34%),
-        radial-gradient(circle at 52% 112%, rgba(176,108,255,.07), transparent 40%),
-        linear-gradient(180deg,rgba(17,33,68,.99),rgba(12,24,50,.97));
+        linear-gradient(180deg,rgba(255,255,255,.94),rgba(242,241,238,.78) 46%,rgba(232,235,237,.72) 100%);
       box-shadow:
-        0 24px 70px rgba(0,0,0,.34),
-        inset 0 0 0 1px rgba(255,255,255,.035);
+        0 16px 42px rgba(37,48,58,.10),
+        inset 0 1px 0 rgba(255,255,255,.86);
+      isolation:isolate;
     }
 
     .premiumCard::before{
       content:"";
       position:absolute;
-      inset:0;
+      inset:1px;
       pointer-events:none;
+      border-radius:23px;
+      border:1px solid rgba(118,108,168,.06);
       background:
-        linear-gradient(135deg,rgba(255,255,255,.048),transparent 40%),
-        radial-gradient(circle at 50% 110%, rgba(103,193,255,.095), transparent 44%);
+        linear-gradient(135deg,rgba(66,111,134,.05),transparent 36%),
+        linear-gradient(180deg,rgba(255,255,255,.52),transparent 58%);
     }
 
     .premiumCard::after{
@@ -379,7 +401,7 @@
       inset:1px;
       pointer-events:none;
       border-radius:23px;
-      border:1px solid rgba(255,255,255,.025);
+      border:1px solid rgba(255,255,255,.55);
     }
 
     .cardContent{
@@ -405,7 +427,7 @@
       line-height:1.01;
       font-weight:950;
       letter-spacing:-.045em;
-      color:var(--text);
+      color:var(--graphite);
       text-wrap:balance;
       overflow-wrap:anywhere;
     }
@@ -416,7 +438,7 @@
 
     .weatherExplain{
       margin:11px 0 0;
-      color:#c4cee6;
+      color:var(--muted);
       font-size:12px;
       line-height:1.45;
       font-weight:800;
@@ -445,14 +467,14 @@
       min-height:31px;
       padding:7px 11px;
       border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.045);
+      border:1px solid var(--softBorder2);
+      background:rgba(255,255,255,.62);
       overflow-wrap:anywhere;
-      box-shadow:inset 0 0 0 1px rgba(255,255,255,.012);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.70);
     }
 
     .pairingExplain strong{
-      color:var(--text);
+      color:var(--graphite);
       font-weight:950;
       white-space:nowrap;
     }
@@ -462,16 +484,12 @@
       width:100%;
       max-width:100%;
       min-width:0;
-      border:1px solid rgba(103,193,255,.18);
+      border:1px solid rgba(66,111,134,.15);
       border-radius:18px;
       padding:12px;
       background:
-        radial-gradient(circle at 8% 0%, rgba(103,193,255,.10), transparent 35%),
-        radial-gradient(circle at 92% 0%, rgba(216,184,76,.09), transparent 34%),
-        linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.018));
-      box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.018),
-        0 10px 26px rgba(0,0,0,.12);
+        linear-gradient(180deg,rgba(255,255,255,.66),rgba(242,241,238,.54));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.74);
     }
 
     .interactionMapLabel{
@@ -492,26 +510,26 @@
     }
 
     .interactionNode{
-      border:1px solid rgba(255,255,255,.09);
+      border:1px solid var(--softBorder2);
       border-radius:15px;
       padding:12px 13px;
-      background:rgba(255,255,255,.035);
+      background:rgba(255,255,255,.58);
       min-height:96px;
       min-width:0;
       display:grid;
       align-content:start;
       gap:6px;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
     }
 
     .interactionNode.move{
-      border-color:rgba(216,184,76,.22);
+      border-color:rgba(123,115,90,.22);
       background:
-        radial-gradient(circle at 8% 0%, rgba(216,184,76,.11), transparent 34%),
-        rgba(216,184,76,.045);
+        linear-gradient(180deg,rgba(255,255,255,.70),rgba(244,242,235,.58));
     }
 
     .interactionNodeLabel{
-      color:#b9c5e2;
+      color:var(--muted);
       font-size:10px;
       font-weight:950;
       letter-spacing:.11em;
@@ -519,7 +537,7 @@
     }
 
     .interactionNodeName{
-      color:var(--text);
+      color:var(--graphite);
       font-size:16px;
       font-weight:950;
       line-height:1.22;
@@ -528,7 +546,7 @@
     }
 
     .interactionNodeText{
-      color:#d7def1;
+      color:var(--muted);
       font-size:12px;
       line-height:1.48;
       font-weight:700;
@@ -552,16 +570,12 @@
       width:100%;
       max-width:100%;
       min-width:0;
-      border:1px solid rgba(111,224,211,.18);
+      border:1px solid rgba(79,129,122,.17);
       border-radius:18px;
       padding:12px;
       background:
-        radial-gradient(circle at 10% 0%, rgba(111,224,211,.10), transparent 35%),
-        radial-gradient(circle at 95% 0%, rgba(103,193,255,.08), transparent 34%),
-        linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.018));
-      box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.018),
-        0 10px 26px rgba(0,0,0,.12);
+        linear-gradient(180deg,rgba(255,255,255,.68),rgba(242,241,238,.54));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.74);
     }
 
     .fieldCompassLabel{
@@ -583,26 +597,26 @@
 
     .fieldCompassRead,
     .fieldCompassBalance{
-      border:1px solid rgba(255,255,255,.09);
+      border:1px solid var(--softBorder2);
       border-radius:15px;
       padding:12px 13px;
-      background:rgba(255,255,255,.035);
+      background:rgba(255,255,255,.58);
       display:grid;
       align-content:start;
       gap:7px;
       min-width:0;
       max-width:100%;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
     }
 
     .fieldCompassRead{
-      border-color:rgba(111,224,211,.18);
+      border-color:rgba(79,129,122,.17);
       background:
-        radial-gradient(circle at 10% 0%, rgba(111,224,211,.10), transparent 34%),
-        rgba(255,255,255,.032);
+        linear-gradient(180deg,rgba(255,255,255,.70),rgba(239,245,244,.58));
     }
 
     .fieldCompassMiniLabel{
-      color:#b9c5e2;
+      color:var(--muted);
       font-size:10px;
       font-weight:950;
       letter-spacing:.11em;
@@ -610,7 +624,7 @@
     }
 
     .fieldCompassState{
-      color:var(--text);
+      color:var(--graphite);
       font-size:20px;
       font-weight:950;
       line-height:1.14;
@@ -619,7 +633,7 @@
     }
 
     .fieldCompassText{
-      color:#d7def1;
+      color:var(--muted);
       font-size:12.5px;
       line-height:1.5;
       font-weight:700;
@@ -627,11 +641,9 @@
     }
 
     .fieldCompassBalance{
-      border-color:rgba(103,193,255,.13);
+      border-color:rgba(66,111,134,.13);
       background:
-        radial-gradient(circle at 50% 42%, rgba(103,193,255,.10), transparent 38%),
-        radial-gradient(circle at 78% 24%, rgba(216,184,76,.08), transparent 34%),
-        rgba(255,255,255,.028);
+        linear-gradient(180deg,rgba(255,255,255,.70),rgba(237,241,243,.58));
     }
 
     .fieldCompassGaugeWrap{
@@ -658,12 +670,12 @@
       max-width:100%;
       height:154px;
       overflow:visible;
-      filter:drop-shadow(0 12px 22px rgba(0,0,0,.22));
+      filter:drop-shadow(0 8px 14px rgba(37,48,58,.10));
     }
 
     .fieldCompassGaugeTrack{
       fill:none;
-      stroke:rgba(8,17,38,.82);
+      stroke:rgba(37,48,58,.12);
       stroke-width:10;
       stroke-linecap:round;
     }
@@ -696,11 +708,10 @@
       place-items:center;
       text-align:center;
       border-radius:50%;
-      border:1px solid rgba(103,193,255,.13);
+      border:1px solid rgba(66,111,134,.14);
       background:
-        radial-gradient(circle at 50% 0%, rgba(103,193,255,.10), transparent 55%),
-        rgba(8,17,38,.42);
-      box-shadow:inset 0 0 22px rgba(0,0,0,.20);
+        linear-gradient(180deg,rgba(255,255,255,.86),rgba(242,241,238,.74));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.76);
     }
 
     .fieldCompassGaugeCenterLabel{
@@ -746,7 +757,7 @@
       width:10px;
       height:10px;
       border-radius:999px;
-      box-shadow:0 0 14px currentColor;
+      box-shadow:none;
     }
 
     .fieldCompassGaugeDot.capacity{
@@ -773,7 +784,7 @@
     }
 
     .fieldCompassGaugeValue{
-      color:var(--text);
+      color:var(--graphite);
       font-size:11px;
       font-weight:950;
       text-align:right;
@@ -782,9 +793,9 @@
 
     .fieldCompassGaugeNote{
       margin-top:2px;
-      border-top:1px solid rgba(255,255,255,.07);
+      border-top:1px solid var(--lineSoft);
       padding-top:9px;
-      color:#d7def1;
+      color:var(--muted);
       font-size:12px;
       line-height:1.45;
       font-weight:750;
@@ -796,30 +807,28 @@
       grid-template-columns:minmax(210px,.40fr) minmax(0,1fr);
       gap:10px;
       margin-top:15px;
-      border:1px solid rgba(216,184,76,.26);
+      border:1px solid rgba(123,115,90,.22);
       border-radius:18px;
       background:
-        radial-gradient(circle at 8% 0%, rgba(216,184,76,.12), transparent 34%),
-        linear-gradient(135deg,rgba(216,184,76,.09),rgba(103,193,255,.055));
+        linear-gradient(180deg,rgba(255,255,255,.68),rgba(244,242,235,.56));
       padding:12px;
-      box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.025),
-        0 10px 26px rgba(0,0,0,.13);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.74);
       min-width:0;
       max-width:100%;
     }
 
     .motionMini{
-      border:1px solid rgba(255,255,255,.095);
+      border:1px solid var(--softBorder2);
       border-radius:15px;
-      background:rgba(255,255,255,.045);
+      background:rgba(255,255,255,.58);
       padding:12px 13px;
       min-width:0;
       max-width:100%;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
     }
 
     .motionMiniLabel{
-      color:#b9c5e2;
+      color:var(--muted);
       font-size:10px;
       font-weight:950;
       letter-spacing:.11em;
@@ -828,7 +837,7 @@
     }
 
     .motionMiniValue{
-      color:var(--text);
+      color:var(--graphite);
       font-size:16px;
       font-weight:950;
       line-height:1.25;
@@ -836,7 +845,7 @@
     }
 
     .motionMiniText{
-      color:#d7def1;
+      color:var(--muted);
       font-size:12.5px;
       line-height:1.5;
       font-weight:750;
@@ -861,7 +870,7 @@
     .todayRead{
       margin:16px 0 0;
       max-width:900px;
-      color:var(--text);
+      color:var(--graphite);
       font-size:16px;
       line-height:1.68;
       overflow-wrap:break-word;
@@ -869,13 +878,12 @@
 
     .realLifeBlock{
       margin-top:16px;
-      border:1px solid rgba(216,184,76,.24);
+      border:1px solid rgba(123,115,90,.22);
       border-radius:16px;
       padding:14px;
       background:
-        radial-gradient(circle at 10% 0%, rgba(216,184,76,.11), transparent 34%),
-        rgba(216,184,76,.045);
-      box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
+        linear-gradient(180deg,rgba(255,255,255,.72),rgba(244,242,235,.60));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.74);
       min-width:0;
       max-width:100%;
     }
@@ -890,7 +898,7 @@
     }
 
     .realLifeText{
-      color:var(--text);
+      color:var(--graphite);
       font-size:14px;
       line-height:1.58;
       font-weight:750;
@@ -906,18 +914,20 @@
     }
 
     .guidanceBlock{
-      border:1px solid rgba(255,255,255,.08);
+      border:1px solid var(--softBorder2);
       border-radius:16px;
       padding:14px;
-      background:rgba(255,255,255,.035);
+      background:rgba(255,255,255,.58);
       min-width:0;
       max-width:100%;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
     }
 
     .guidanceBlock.full{
       grid-column:1 / -1;
-      background:rgba(103,193,255,.06);
-      border-color:rgba(103,193,255,.18);
+      background:
+        linear-gradient(180deg,rgba(255,255,255,.72),rgba(237,241,243,.58));
+      border-color:rgba(66,111,134,.16);
     }
 
     .guidanceLabel{
@@ -930,7 +940,7 @@
     }
 
     .guidanceText{
-      color:var(--text);
+      color:var(--graphite);
       font-size:14px;
       line-height:1.58;
       overflow-wrap:break-word;
@@ -938,15 +948,16 @@
 
     .todayOutlookLine{
       margin-top:14px;
-      border:1px solid rgba(216,184,76,.20);
-      background:rgba(216,184,76,.065);
-      color:var(--text);
+      border:1px solid rgba(66,111,134,.16);
+      background:rgba(255,255,255,.60);
+      color:var(--graphite);
       border-radius:999px;
       padding:10px 13px;
       font-size:12px;
       font-weight:850;
       line-height:1.4;
       overflow-wrap:break-word;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.70);
     }
 
     .todayOutlookLine span{
@@ -957,16 +968,12 @@
       width:100%;
       max-width:100%;
       min-width:0;
-      border:1px solid rgba(103,193,255,.22);
+      border:1px solid var(--softBorder);
       border-radius:22px;
       padding:20px;
       background:
-        radial-gradient(circle at 10% 0%, rgba(103,193,255,.105), transparent 34%),
-        radial-gradient(circle at 92% 8%, rgba(176,108,255,.075), transparent 34%),
-        linear-gradient(180deg,rgba(15,27,56,.97),rgba(12,24,50,.94));
-      box-shadow:
-        0 18px 52px rgba(0,0,0,.26),
-        inset 0 0 0 1px rgba(255,255,255,.02);
+        linear-gradient(180deg,rgba(255,255,255,.90),rgba(242,241,238,.78));
+      box-shadow:var(--shadow);
       overflow:hidden;
     }
 
@@ -983,11 +990,12 @@
       margin:0;
       font-size:22px;
       letter-spacing:-.02em;
+      color:var(--graphite);
     }
 
     .outlookHeader p{
       margin:5px 0 0;
-      color:#c4cee6;
+      color:var(--muted);
       font-size:13px;
       line-height:1.5;
       max-width:620px;
@@ -1002,43 +1010,41 @@
     }
 
     .outlookBlock{
-      border:1px solid rgba(255,255,255,.075);
+      border:1px solid var(--softBorder2);
       border-radius:16px;
       padding:14px;
-      background:rgba(255,255,255,.03);
+      background:rgba(255,255,255,.58);
       min-height:116px;
       min-width:0;
       max-width:100%;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
     }
 
     .outlookBlock.primary{
       grid-column:1 / -1;
       min-height:150px;
       padding:18px;
-      border-color:rgba(176,108,255,.24);
+      border-color:rgba(118,108,168,.20);
       background:
-        radial-gradient(circle at 14% 0%, rgba(176,108,255,.14), transparent 34%),
-        radial-gradient(circle at 100% 14%, rgba(103,193,255,.08), transparent 30%),
-        linear-gradient(180deg,rgba(176,108,255,.075),rgba(103,193,255,.035));
-      box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.025),
-        0 12px 34px rgba(0,0,0,.18);
+        linear-gradient(180deg,rgba(255,255,255,.74),rgba(242,239,248,.58));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.74);
     }
 
     .outlookBlock.now{
-      border-color:rgba(103,193,255,.14);
-      background:rgba(103,193,255,.045);
+      border-color:rgba(66,111,134,.14);
+      background:
+        linear-gradient(180deg,rgba(255,255,255,.70),rgba(237,241,243,.58));
     }
 
     .outlookBlock.forecastShell{
-      opacity:.78;
-      border-color:rgba(255,255,255,.055);
-      background:rgba(255,255,255,.018);
+      opacity:.92;
+      border-color:var(--softBorder2);
+      background:rgba(255,255,255,.48);
     }
 
     .outlookBlock.forecastShell .outlookValue,
     .outlookBlock.forecastShell .outlookText{
-      color:rgba(244,247,255,.82);
+      color:var(--muted);
     }
 
     .outlookLabel{
@@ -1051,13 +1057,13 @@
     }
 
     .outlookBlock.primary .outlookLabel{
-      color:#cab1ff;
+      color:var(--violet);
       font-size:11px;
       letter-spacing:.12em;
     }
 
     .outlookValue{
-      color:var(--text);
+      color:var(--graphite);
       font-size:18px;
       font-weight:900;
       line-height:1.25;
@@ -1078,7 +1084,7 @@
     }
 
     .outlookBlock.primary .outlookText{
-      color:#d9e0f4;
+      color:var(--graphite2);
       margin-top:10px;
       max-width:820px;
       font-size:14px;
@@ -1087,18 +1093,18 @@
 
     .moonstampModifierBlock{
       margin-top:12px;
-      border:1px solid rgba(203,183,255,.20);
+      border:1px solid rgba(118,108,168,.18);
       border-radius:16px;
       padding:14px;
       background:
-        radial-gradient(circle at 10% 0%, rgba(203,183,255,.09), transparent 34%),
-        rgba(255,255,255,.026);
+        linear-gradient(180deg,rgba(255,255,255,.70),rgba(242,239,248,.54));
       min-width:0;
       max-width:100%;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
     }
 
     .moonstampModifierLabel{
-      color:#cab1ff;
+      color:var(--violet);
       font-size:10px;
       font-weight:950;
       letter-spacing:.12em;
@@ -1107,7 +1113,7 @@
     }
 
     .moonstampModifierTitle{
-      color:var(--text);
+      color:var(--graphite);
       font-size:15px;
       font-weight:950;
       line-height:1.3;
@@ -1116,7 +1122,7 @@
 
     .moonstampModifierText{
       margin-top:6px;
-      color:#d9e0f4;
+      color:var(--graphite2);
       font-size:12.5px;
       line-height:1.52;
       font-weight:700;
@@ -1137,7 +1143,7 @@
       color:var(--muted2);
       font-size:11px;
       line-height:1.5;
-      border-top:1px solid rgba(255,255,255,.07);
+      border-top:1px solid var(--lineSoft);
       padding-top:12px;
       overflow-wrap:break-word;
     }
@@ -1146,11 +1152,11 @@
       width:100%;
       max-width:100%;
       min-width:0;
-      border:1px solid rgba(103,193,255,.18);
+      border:1px solid var(--softBorder);
       border-radius:20px;
       padding:18px;
       background:
-        linear-gradient(180deg,rgba(15,27,56,.96),rgba(13,25,52,.94));
+        linear-gradient(180deg,rgba(255,255,255,.88),rgba(242,241,238,.76));
       box-shadow:var(--shadow);
       overflow:hidden;
     }
@@ -1167,6 +1173,7 @@
     .profileHeader h2{
       margin:0;
       font-size:20px;
+      color:var(--graphite);
     }
 
     .profileHeader p{
@@ -1185,13 +1192,14 @@
     }
 
     .profileBlock{
-      border:1px solid rgba(255,255,255,.075);
+      border:1px solid var(--softBorder2);
       border-radius:16px;
       padding:14px;
-      background:rgba(255,255,255,.03);
+      background:rgba(255,255,255,.56);
       min-height:110px;
       min-width:0;
       max-width:100%;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.70);
     }
 
     .profileBlock.wide{
@@ -1212,7 +1220,7 @@
     }
 
     .profileValue{
-      color:var(--text);
+      color:var(--graphite);
       font-size:18px;
       line-height:1.25;
       font-weight:900;
@@ -1242,8 +1250,8 @@
       min-height:30px;
       padding:0 10px;
       border-radius:999px;
-      border:1px solid rgba(103,193,255,.16);
-      background:rgba(103,193,255,.07);
+      border:1px solid rgba(66,111,134,.16);
+      background:rgba(255,255,255,.62);
       color:var(--blue);
       font-size:11px;
       font-weight:800;
@@ -1252,83 +1260,74 @@
       white-space:normal;
       max-width:100%;
       overflow-wrap:anywhere;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.70);
     }
 
     .chip.gold{
-      border-color:rgba(216,184,76,.26);
-      background:rgba(216,184,76,.09);
+      border-color:rgba(123,115,90,.24);
+      background:rgba(255,255,255,.64);
       color:var(--gold);
     }
 
     .chip.field{
-      border-color:rgba(103,193,255,.22);
-      background:rgba(103,193,255,.08);
+      border-color:rgba(66,111,134,.20);
+      background:rgba(255,255,255,.62);
       color:var(--blue);
     }
 
     .chip.violet{
-      border-color:rgba(176,108,255,.24);
-      background:rgba(176,108,255,.09);
-      color:#cab1ff;
+      border-color:rgba(118,108,168,.22);
+      background:rgba(255,255,255,.62);
+      color:var(--violet);
     }
 
     .chip.structured{
-      border-color:rgba(216,184,76,.28);
-      background:rgba(216,184,76,.09);
+      border-color:rgba(138,122,67,.25);
       color:var(--h-structured);
     }
 
     .chip.contained{
-      border-color:rgba(243,251,255,.28);
-      background:rgba(243,251,255,.075);
+      border-color:rgba(111,119,128,.24);
       color:var(--h-contained);
     }
 
     .chip.chaotic{
-      border-color:rgba(103,193,255,.28);
-      background:rgba(103,193,255,.09);
+      border-color:rgba(66,111,134,.24);
       color:var(--h-chaotic);
     }
 
     .chip.relational{
-      border-color:rgba(255,155,183,.24);
-      background:rgba(255,155,183,.08);
+      border-color:rgba(154,106,122,.22);
       color:var(--h-relational);
     }
 
     .chip.threshold{
-      border-color:rgba(255,138,61,.26);
-      background:rgba(255,138,61,.08);
+      border-color:rgba(160,113,69,.24);
       color:var(--h-threshold);
     }
 
     .chip.reconstructive{
-      border-color:rgba(176,108,255,.26);
-      background:rgba(176,108,255,.09);
+      border-color:rgba(118,108,168,.24);
       color:var(--h-reconstructive);
     }
 
     .chip.integrative{
-      border-color:rgba(169,215,255,.24);
-      background:rgba(169,215,255,.07);
+      border-color:rgba(91,120,146,.22);
       color:var(--h-integrative);
     }
 
     .chip.diffused{
-      border-color:rgba(203,183,255,.24);
-      background:rgba(203,183,255,.08);
+      border-color:rgba(129,120,174,.22);
       color:var(--h-diffused);
     }
 
     .chip.regulated{
-      border-color:rgba(111,224,211,.24);
-      background:rgba(111,224,211,.08);
+      border-color:rgba(79,129,122,.22);
       color:var(--h-regulated);
     }
 
     .chip.steady{
-      border-color:rgba(170,183,214,.20);
-      background:rgba(170,183,214,.06);
+      border-color:rgba(102,114,126,.20);
       color:var(--h-steady);
     }
 
@@ -1336,10 +1335,11 @@
       width:100%;
       max-width:100%;
       min-width:0;
-      border:1px solid rgba(103,193,255,.15);
+      border:1px solid var(--softBorder);
       border-radius:20px;
       padding:18px;
-      background:linear-gradient(180deg,rgba(15,27,56,.90),rgba(11,23,52,.86));
+      background:
+        linear-gradient(180deg,rgba(255,255,255,.86),rgba(242,241,238,.74));
       box-shadow:var(--shadow);
       overflow:hidden;
     }
@@ -1353,12 +1353,13 @@
     }
 
     .whyMini{
-      border:1px solid rgba(255,255,255,.07);
+      border:1px solid var(--softBorder2);
       border-radius:14px;
       padding:12px;
-      background:rgba(255,255,255,.026);
+      background:rgba(255,255,255,.54);
       min-width:0;
       max-width:100%;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.68);
     }
 
     .whyMini.full{
@@ -1375,7 +1376,7 @@
     }
 
     .whyMiniValue{
-      color:var(--text);
+      color:var(--graphite);
       font-size:14px;
       font-weight:800;
       line-height:1.35;
@@ -1385,7 +1386,7 @@
 
     .whyExplain{
       margin-top:14px;
-      border-top:1px solid rgba(255,255,255,.07);
+      border-top:1px solid var(--lineSoft);
       padding-top:14px;
       color:var(--muted);
       font-size:13px;
@@ -1398,12 +1399,11 @@
       width:100%;
       max-width:100%;
       min-width:0;
-      border:1px solid rgba(216,184,76,.18);
+      border:1px solid var(--softBorder);
       border-radius:20px;
       padding:18px;
       background:
-        radial-gradient(circle at 18% 0%, rgba(216,184,76,.08), transparent 34%),
-        linear-gradient(180deg,rgba(15,27,56,.94),rgba(11,23,52,.92));
+        linear-gradient(180deg,rgba(255,255,255,.86),rgba(242,241,238,.74));
       box-shadow:var(--shadow);
       overflow:hidden;
     }
@@ -1420,6 +1420,7 @@
     .shareIntro h2{
       margin:0;
       font-size:20px;
+      color:var(--graphite);
     }
 
     .shareIntro p{
@@ -1446,8 +1447,8 @@
       min-height:30px;
       padding:0 10px;
       border-radius:999px;
-      border:1px solid rgba(103,193,255,.18);
-      background:rgba(103,193,255,.075);
+      border:1px solid rgba(66,111,134,.18);
+      background:rgba(255,255,255,.62);
       color:var(--blue);
       font-size:10px;
       font-weight:900;
@@ -1457,83 +1458,71 @@
       line-height:1.25;
       max-width:100%;
       overflow-wrap:anywhere;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.70);
     }
 
     .shareChip.gold{
-      border-color:rgba(216,184,76,.22);
-      background:rgba(216,184,76,.08);
+      border-color:rgba(123,115,90,.22);
       color:var(--gold);
     }
 
     .shareChip.field{
-      border-color:rgba(103,193,255,.22);
-      background:rgba(103,193,255,.08);
+      border-color:rgba(66,111,134,.22);
       color:var(--blue);
     }
 
     .shareChip.violet{
-      border-color:rgba(176,108,255,.20);
-      background:rgba(176,108,255,.08);
-      color:#cab1ff;
+      border-color:rgba(118,108,168,.20);
+      color:var(--violet);
     }
 
     .shareChip.structured{
-      border-color:rgba(216,184,76,.26);
-      background:rgba(216,184,76,.08);
+      border-color:rgba(138,122,67,.24);
       color:var(--h-structured);
     }
 
     .shareChip.contained{
-      border-color:rgba(243,251,255,.28);
-      background:rgba(243,251,255,.075);
+      border-color:rgba(111,119,128,.24);
       color:var(--h-contained);
     }
 
     .shareChip.chaotic{
-      border-color:rgba(103,193,255,.26);
-      background:rgba(103,193,255,.08);
+      border-color:rgba(66,111,134,.24);
       color:var(--h-chaotic);
     }
 
     .shareChip.relational{
-      border-color:rgba(255,155,183,.22);
-      background:rgba(255,155,183,.07);
+      border-color:rgba(154,106,122,.22);
       color:var(--h-relational);
     }
 
     .shareChip.threshold{
-      border-color:rgba(255,138,61,.24);
-      background:rgba(255,138,61,.08);
+      border-color:rgba(160,113,69,.22);
       color:var(--h-threshold);
     }
 
     .shareChip.reconstructive{
-      border-color:rgba(176,108,255,.24);
-      background:rgba(176,108,255,.08);
+      border-color:rgba(118,108,168,.22);
       color:var(--h-reconstructive);
     }
 
     .shareChip.integrative{
-      border-color:rgba(169,215,255,.24);
-      background:rgba(169,215,255,.07);
+      border-color:rgba(91,120,146,.22);
       color:var(--h-integrative);
     }
 
     .shareChip.diffused{
-      border-color:rgba(203,183,255,.22);
-      background:rgba(203,183,255,.07);
+      border-color:rgba(129,120,174,.20);
       color:var(--h-diffused);
     }
 
     .shareChip.regulated{
-      border-color:rgba(111,224,211,.22);
-      background:rgba(111,224,211,.07);
+      border-color:rgba(79,129,122,.20);
       color:var(--h-regulated);
     }
 
     .shareChip.steady{
-      border-color:rgba(170,183,214,.18);
-      background:rgba(170,183,214,.06);
+      border-color:rgba(102,114,126,.18);
       color:var(--h-steady);
     }
 
@@ -1549,16 +1538,14 @@
       width:100%;
       max-width:100%;
       min-width:0;
-      border:1px solid rgba(216,184,76,.28);
+      border:1px solid rgba(37,48,58,.16);
       border-radius:20px;
       overflow:hidden;
       background:
-        radial-gradient(circle at 18% 0%, rgba(103,193,255,.14), transparent 34%),
-        radial-gradient(circle at 88% 10%, rgba(216,184,76,.13), transparent 34%),
-        linear-gradient(145deg,#122246 0%, #0d1b39 58%, #0a1732 100%);
+        linear-gradient(145deg,#FBFAF7 0%, #F0EFEC 58%, #E8EBED 100%);
       box-shadow:
-        0 22px 62px rgba(0,0,0,.34),
-        inset 0 0 0 1px rgba(255,255,255,.025);
+        0 18px 46px rgba(37,48,58,.12),
+        inset 0 1px 0 rgba(255,255,255,.82);
     }
 
     .shareCardInner{
@@ -1575,7 +1562,7 @@
       gap:16px;
       align-items:center;
       padding-bottom:14px;
-      border-bottom:1px solid rgba(255,255,255,.08);
+      border-bottom:1px solid var(--lineSoft);
       color:var(--muted);
       font-size:11px;
       font-weight:900;
@@ -1602,8 +1589,8 @@
       min-height:26px;
       padding:0 9px;
       border-radius:999px;
-      border:1px solid rgba(103,193,255,.16);
-      background:rgba(103,193,255,.07);
+      border:1px solid rgba(66,111,134,.16);
+      background:rgba(255,255,255,.62);
       color:var(--blue);
       font-size:9px;
       font-weight:900;
@@ -1617,80 +1604,67 @@
 
     .shareCardChip.gold{
       color:var(--gold);
-      border-color:rgba(216,184,76,.22);
-      background:rgba(216,184,76,.08);
+      border-color:rgba(123,115,90,.20);
     }
 
     .shareCardChip.field{
       color:var(--blue);
-      border-color:rgba(103,193,255,.18);
-      background:rgba(103,193,255,.08);
+      border-color:rgba(66,111,134,.18);
     }
 
     .shareCardChip.violet{
-      color:#cab1ff;
-      border-color:rgba(176,108,255,.18);
-      background:rgba(176,108,255,.08);
+      color:var(--violet);
+      border-color:rgba(118,108,168,.18);
     }
 
     .shareCardChip.structured{
       color:var(--h-structured);
-      border-color:rgba(216,184,76,.22);
-      background:rgba(216,184,76,.08);
+      border-color:rgba(138,122,67,.20);
     }
 
     .shareCardChip.contained{
       color:var(--h-contained);
-      border-color:rgba(243,251,255,.22);
-      background:rgba(243,251,255,.065);
+      border-color:rgba(111,119,128,.20);
     }
 
     .shareCardChip.chaotic{
       color:var(--h-chaotic);
-      border-color:rgba(103,193,255,.20);
-      background:rgba(103,193,255,.07);
+      border-color:rgba(66,111,134,.20);
     }
 
     .shareCardChip.relational{
       color:var(--h-relational);
-      border-color:rgba(255,155,183,.18);
-      background:rgba(255,155,183,.06);
+      border-color:rgba(154,106,122,.18);
     }
 
     .shareCardChip.threshold{
       color:var(--h-threshold);
-      border-color:rgba(255,138,61,.20);
-      background:rgba(255,138,61,.07);
+      border-color:rgba(160,113,69,.18);
     }
 
     .shareCardChip.reconstructive{
       color:var(--h-reconstructive);
-      border-color:rgba(176,108,255,.20);
-      background:rgba(176,108,255,.07);
+      border-color:rgba(118,108,168,.18);
     }
 
     .shareCardChip.integrative{
       color:var(--h-integrative);
-      border-color:rgba(169,215,255,.20);
-      background:rgba(169,215,255,.06);
+      border-color:rgba(91,120,146,.18);
     }
 
     .shareCardChip.diffused{
       color:var(--h-diffused);
-      border-color:rgba(203,183,255,.18);
-      background:rgba(203,183,255,.06);
+      border-color:rgba(129,120,174,.18);
     }
 
     .shareCardChip.regulated{
       color:var(--h-regulated);
-      border-color:rgba(111,224,211,.18);
-      background:rgba(111,224,211,.06);
+      border-color:rgba(79,129,122,.18);
     }
 
     .shareCardChip.steady{
       color:var(--h-steady);
-      border-color:rgba(170,183,214,.18);
-      background:rgba(170,183,214,.06);
+      border-color:rgba(102,114,126,.18);
     }
 
     .shareCardSection{
@@ -1716,7 +1690,7 @@
       font-weight:950;
       letter-spacing:-.05em;
       padding-bottom:8px;
-      border-bottom:1px solid rgba(255,255,255,.08);
+      border-bottom:1px solid var(--lineSoft);
       overflow-wrap:anywhere;
       min-width:0;
     }
@@ -1724,16 +1698,12 @@
     .shareCardFieldDirection{
       position:relative;
       overflow:hidden;
-      border:1px solid rgba(176,108,255,.25);
+      border:1px solid rgba(118,108,168,.22);
       border-radius:18px;
       padding:16px;
       background:
-        radial-gradient(circle at 12% 0%, rgba(176,108,255,.15), transparent 36%),
-        radial-gradient(circle at 100% 12%, rgba(103,193,255,.09), transparent 34%),
-        linear-gradient(180deg,rgba(176,108,255,.075),rgba(103,193,255,.035));
-      box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.025),
-        0 10px 28px rgba(0,0,0,.16);
+        linear-gradient(180deg,rgba(255,255,255,.72),rgba(242,239,248,.58));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
       min-width:0;
       max-width:100%;
     }
@@ -1741,9 +1711,10 @@
     .shareCardFieldDirection::before{
       content:"";
       position:absolute;
-      inset:0;
+      inset:1px;
       pointer-events:none;
-      background:linear-gradient(135deg,rgba(255,255,255,.04),transparent 46%);
+      border-radius:17px;
+      background:linear-gradient(135deg,rgba(255,255,255,.40),transparent 46%);
     }
 
     .shareCardFieldDirection > *{
@@ -1752,7 +1723,7 @@
     }
 
     .shareCardFieldTitle{
-      color:var(--text);
+      color:var(--graphite);
       font-size:22px;
       font-weight:950;
       line-height:1.15;
@@ -1761,7 +1732,7 @@
     }
 
     .shareCardFieldText{
-      color:#d9e0f4;
+      color:var(--graphite2);
       font-size:14px;
       line-height:1.58;
       font-weight:650;
@@ -1770,12 +1741,11 @@
 
     .shareCardMoonstamp{
       display:none;
-      border:1px solid rgba(203,183,255,.20);
+      border:1px solid rgba(118,108,168,.18);
       border-radius:16px;
       padding:14px;
       background:
-        radial-gradient(circle at 8% 0%, rgba(203,183,255,.10), transparent 34%),
-        rgba(255,255,255,.032);
+        linear-gradient(180deg,rgba(255,255,255,.70),rgba(242,239,248,.54));
       min-width:0;
       max-width:100%;
     }
@@ -1790,7 +1760,7 @@
     }
 
     .shareCardRead{
-      color:var(--text);
+      color:var(--graphite);
       font-size:17px;
       line-height:1.62;
       overflow-wrap:break-word;
@@ -1798,12 +1768,11 @@
     }
 
     .shareCardRealLife{
-      border:1px solid rgba(216,184,76,.24);
+      border:1px solid rgba(123,115,90,.22);
       border-radius:16px;
       padding:14px;
       background:
-        radial-gradient(circle at 10% 0%, rgba(216,184,76,.12), transparent 34%),
-        rgba(216,184,76,.045);
+        linear-gradient(180deg,rgba(255,255,255,.72),rgba(244,242,235,.58));
       min-width:0;
       max-width:100%;
     }
@@ -1816,12 +1785,13 @@
     }
 
     .shareCardMini{
-      border:1px solid rgba(255,255,255,.08);
+      border:1px solid var(--softBorder2);
       border-radius:16px;
       padding:14px;
-      background:rgba(255,255,255,.035);
+      background:rgba(255,255,255,.58);
       min-width:0;
       max-width:100%;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.70);
     }
 
     .shareCardMini .shareCardRead{
@@ -1861,17 +1831,18 @@
       width:100%;
       max-width:100%;
       min-width:0;
-      border:1px solid rgba(103,193,255,.15);
+      border:1px solid var(--softBorder);
       border-radius:20px;
-      background:rgba(6,15,34,.36);
+      background:rgba(255,255,255,.52);
       overflow:hidden;
+      box-shadow:var(--shadow);
     }
 
     .librarySection summary{
       cursor:pointer;
       list-style:none;
       padding:18px;
-      color:var(--text);
+      color:var(--graphite);
       font-size:18px;
       font-weight:900;
       overflow-wrap:break-word;
@@ -1891,7 +1862,7 @@
     }
 
     .libraryBody{
-      border-top:1px solid rgba(255,255,255,.07);
+      border-top:1px solid var(--lineSoft);
       padding:18px;
       min-width:0;
       max-width:100%;
@@ -1913,21 +1884,22 @@
     }
 
     .libraryCard{
-      border:1px solid rgba(255,255,255,.075);
+      border:1px solid var(--softBorder2);
       border-radius:16px;
       padding:14px;
-      background:rgba(255,255,255,.026);
+      background:rgba(255,255,255,.56);
       display:grid;
       gap:8px;
       min-width:0;
       max-width:100%;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.70);
     }
 
     .libraryCard.active{
-      border-color:rgba(103,193,255,.32);
+      border-color:rgba(66,111,134,.26);
       background:
-        linear-gradient(180deg,rgba(103,193,255,.09),rgba(255,255,255,.025));
-      box-shadow:inset 0 0 0 1px rgba(103,193,255,.08);
+        linear-gradient(180deg,rgba(255,255,255,.74),rgba(237,241,243,.58));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.75);
     }
 
     .libraryCard h3{
@@ -1947,24 +1919,25 @@
     }
 
     .libraryCard strong{
-      color:var(--text);
+      color:var(--graphite);
     }
 
     .engineDetails{
       width:100%;
       max-width:100%;
       min-width:0;
-      border:1px solid rgba(42,60,105,.75);
+      border:1px solid var(--softBorder);
       border-radius:20px;
-      background:rgba(6,15,34,.40);
+      background:rgba(255,255,255,.48);
       overflow:hidden;
+      box-shadow:var(--shadow);
     }
 
     .engineDetails summary{
       cursor:pointer;
       list-style:none;
       padding:18px;
-      color:var(--text);
+      color:var(--graphite);
       font-size:18px;
       font-weight:900;
       overflow-wrap:break-word;
@@ -1984,7 +1957,7 @@
     }
 
     .engineBody{
-      border-top:1px solid rgba(255,255,255,.07);
+      border-top:1px solid var(--lineSoft);
       padding:16px;
       min-width:0;
       max-width:100%;
@@ -2003,7 +1976,7 @@
     .engineHeader h2{
       margin:0;
       font-size:18px;
-      color:var(--text);
+      color:var(--graphite);
     }
 
     .engineHeader p{
@@ -2023,12 +1996,13 @@
     }
 
     .stat{
-      background:rgba(255,255,255,.025);
-      border:1px solid var(--line);
+      background:rgba(255,255,255,.54);
+      border:1px solid var(--softBorder2);
       border-radius:16px;
       padding:16px;
       min-height:138px;
       min-width:0;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.70);
     }
 
     .stat .label{
@@ -2044,6 +2018,7 @@
       margin-top:8px;
       line-height:1.05;
       overflow-wrap:anywhere;
+      color:var(--graphite);
     }
 
     .sub{
@@ -2059,8 +2034,8 @@
       height:10px;
       width:100%;
       border-radius:999px;
-      background:#081126;
-      border:1px solid var(--line);
+      background:rgba(37,48,58,.10);
+      border:1px solid var(--softBorder2);
       overflow:hidden;
     }
 
@@ -2072,11 +2047,11 @@
     }
 
     .meter-capacity > span{
-      background:linear-gradient(90deg,#67c1ff,#a1d8ff,#d8b84c);
+      background:linear-gradient(90deg,#4F6F7A,#7F9CAA,#8A7A43);
     }
 
     .meter-strain > span{
-      background:linear-gradient(90deg,#67d26f,#d8b84c,#ff6666);
+      background:linear-gradient(90deg,#4F817A,#8A7A43,#A65A5A);
     }
 
     .stateBadge{
@@ -2086,9 +2061,9 @@
       border-radius:999px;
       font-size:12px;
       font-weight:700;
-      background:rgba(103,193,255,.10);
+      background:rgba(255,255,255,.62);
       color:var(--blue);
-      border:1px solid rgba(103,193,255,.18);
+      border:1px solid rgba(66,111,134,.18);
     }
 
     .midRow{
@@ -2100,12 +2075,13 @@
     }
 
     .microCard{
-      background:rgba(255,255,255,.025);
-      border:1px solid var(--line);
+      background:rgba(255,255,255,.54);
+      border:1px solid var(--softBorder2);
       border-radius:16px;
       padding:14px 16px;
       min-height:126px;
       min-width:0;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.70);
     }
 
     .microHeader{
@@ -2134,8 +2110,8 @@
       font-size:10px;
       font-weight:700;
       color:var(--teal);
-      background:rgba(103,193,255,.08);
-      border:1px solid rgba(103,193,255,.14);
+      background:rgba(255,255,255,.60);
+      border:1px solid rgba(66,111,134,.14);
       white-space:nowrap;
     }
 
@@ -2144,6 +2120,7 @@
       font-weight:800;
       margin:2px 0 6px;
       overflow-wrap:anywhere;
+      color:var(--graphite);
     }
 
     .forecastSub{
@@ -2155,11 +2132,12 @@
 
     .whyCard{
       margin-bottom:16px;
-      background:rgba(255,255,255,.025);
-      border:1px solid var(--line);
+      background:rgba(255,255,255,.54);
+      border:1px solid var(--softBorder2);
       border-radius:16px;
       padding:18px;
       min-width:0;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.70);
     }
 
     .whyTitle{
@@ -2173,7 +2151,7 @@
 
     .whyText{
       font-size:13px;
-      color:var(--text);
+      color:var(--graphite);
       line-height:1.72;
       overflow-wrap:break-word;
     }
@@ -2181,7 +2159,7 @@
     .summaryTitle{
       margin:0 0 10px;
       font-size:14px;
-      color:var(--text);
+      color:var(--graphite);
       text-transform:uppercase;
       letter-spacing:.08em;
       font-weight:800;
@@ -2194,6 +2172,7 @@
       border-collapse:collapse;
       font-size:13px;
       table-layout:fixed;
+      color:var(--graphite);
     }
 
     .table th,
@@ -2223,11 +2202,11 @@
       overflow-wrap:anywhere;
     }
 
-    .b-blue{background:rgba(103,193,255,.12); color:var(--blue); border-color:rgba(103,193,255,.22)}
-    .b-red{background:rgba(255,102,102,.12); color:var(--red); border-color:rgba(255,102,102,.22)}
-    .b-green{background:rgba(103,210,111,.12); color:var(--green); border-color:rgba(103,210,111,.22)}
-    .b-gold{background:rgba(216,184,76,.12); color:var(--gold); border-color:rgba(216,184,76,.22)}
-    .b-violet{background:rgba(176,108,255,.08); color:#cab1ff; border-color:rgba(176,108,255,.14)}
+    .b-blue{background:rgba(66,111,134,.10); color:var(--blue); border-color:rgba(66,111,134,.22)}
+    .b-red{background:rgba(166,90,90,.10); color:var(--red); border-color:rgba(166,90,90,.22)}
+    .b-green{background:rgba(79,129,122,.10); color:var(--green); border-color:rgba(79,129,122,.22)}
+    .b-gold{background:rgba(138,122,67,.10); color:var(--gold); border-color:rgba(138,122,67,.22)}
+    .b-violet{background:rgba(118,108,168,.10); color:var(--violet); border-color:rgba(118,108,168,.18)}
 
     .softMetric td{
       opacity:.82;
@@ -2242,13 +2221,14 @@
     }
 
     .miniPanel{
-      background:rgba(255,255,255,.025);
-      border:1px solid var(--line);
+      background:rgba(255,255,255,.54);
+      border:1px solid var(--softBorder2);
       border-radius:16px;
       padding:16px;
       min-width:0;
       max-width:100%;
       overflow:hidden;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.70);
     }
 
     .metaRow{
@@ -2268,22 +2248,22 @@
       border-radius:999px;
       font-size:11px;
       font-weight:700;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.03);
+      border:1px solid var(--softBorder2);
+      background:rgba(255,255,255,.60);
       color:var(--muted);
       overflow-wrap:anywhere;
     }
 
     .metaPill.field{
-      color:#c27cff;
-      background:rgba(176,108,255,.10);
-      border-color:rgba(176,108,255,.16);
+      color:var(--violet);
+      background:rgba(255,255,255,.60);
+      border-color:rgba(118,108,168,.18);
     }
 
     .metaPill.forecast{
-      color:#6fc0ff;
-      background:rgba(103,193,255,.10);
-      border-color:rgba(103,193,255,.16);
+      color:var(--blue);
+      background:rgba(255,255,255,.60);
+      border-color:rgba(66,111,134,.18);
     }
 
     @media (max-width: 1120px){
@@ -2786,7 +2766,7 @@
             </h2>
 
             <p class="weatherExplain">
-              Signal architecture = your root pattern. Current field = what today is activating. Read this as: root pattern × current field → recommended move.
+              Your root pattern × today’s field → the cleanest move for this moment.
             </p>
 
             <div class="pairingExplain" id="pairingExplain">
@@ -2796,10 +2776,10 @@
             </div>
 
             <div class="fieldCompass">
-              <div class="fieldCompassLabel">Field Compass</div>
+              <div class="fieldCompassLabel">Current Field Direction</div>
               <div class="fieldCompassGrid">
                 <div class="fieldCompassRead">
-                  <div class="fieldCompassMiniLabel">Compass Read</div>
+                  <div class="fieldCompassMiniLabel">Main Takeaway</div>
                   <div class="fieldCompassState" id="fieldCompassState">—</div>
                   <div class="fieldCompassText" id="fieldCompassText">Waiting for field direction.</div>
                 </div>
@@ -2812,21 +2792,21 @@
                       <svg viewBox="0 0 160 160" role="img">
                         <defs>
                           <linearGradient id="capacityGaugeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#67c1ff" />
-                            <stop offset="58%" stop-color="#a1d8ff" />
-                            <stop offset="100%" stop-color="#d8b84c" />
+                            <stop offset="0%" stop-color="#4F6F7A" />
+                            <stop offset="58%" stop-color="#7F9CAA" />
+                            <stop offset="100%" stop-color="#8A7A43" />
                           </linearGradient>
 
                           <linearGradient id="loadGaugeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#67d26f" />
-                            <stop offset="50%" stop-color="#d8b84c" />
-                            <stop offset="100%" stop-color="#ff6666" />
+                            <stop offset="0%" stop-color="#4F817A" />
+                            <stop offset="50%" stop-color="#8A7A43" />
+                            <stop offset="100%" stop-color="#A65A5A" />
                           </linearGradient>
 
                           <linearGradient id="regulationGaugeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#6fe0d3" />
-                            <stop offset="64%" stop-color="#67c1ff" />
-                            <stop offset="100%" stop-color="#d8b84c" />
+                            <stop offset="0%" stop-color="#4F817A" />
+                            <stop offset="64%" stop-color="#4F6F7A" />
+                            <stop offset="100%" stop-color="#8A7A43" />
                           </linearGradient>
                         </defs>
 
@@ -2878,44 +2858,11 @@
               </div>
             </div>
 
-            <div class="interactionMap">
-              <div class="interactionMapLabel">Interaction Map</div>
-
-              <div class="interactionMapGrid">
-                <div class="interactionNode">
-                  <div class="interactionNodeLabel">Root Pattern</div>
-                  <div class="interactionNodeName" id="interactionSystemName">—</div>
-                  <div class="interactionNodeText" id="interactionSystemText">Waiting for root signal.</div>
-                </div>
-
-                <div class="interactionOperator">×</div>
-
-                <div class="interactionNode">
-                  <div class="interactionNodeLabel">Today’s Field</div>
-                  <div class="interactionNodeName" id="interactionFieldName">—</div>
-                  <div class="interactionNodeText" id="interactionFieldText">Waiting for current field.</div>
-                </div>
-
-                <div class="interactionOperator">→</div>
-
-                <div class="interactionNode move">
-                  <div class="interactionNodeLabel">Recommended Move</div>
-                  <div class="interactionNodeName" id="interactionMoveName">—</div>
-                  <div class="interactionNodeText" id="interactionMoveText">Waiting for best move.</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="motionStrip">
-              <div class="motionMini">
-                <div class="motionMiniLabel">Motion Style</div>
-                <div class="motionMiniValue" id="topMotionStyle">—</div>
-              </div>
-
-              <div class="motionMini">
-                <div class="motionMiniLabel">How to read it</div>
-                <div class="motionMiniText" id="topMotionStyleRead">Waiting for motion style read.</div>
-              </div>
+            <div class="moonstampModifierBlock" id="moonstampModifierBlock">
+              <div class="moonstampModifierLabel">Moonstamp Modifier</div>
+              <div class="moonstampModifierTitle" id="moonstampModifierTitle">Moonstamp modifier pending</div>
+              <div class="moonstampModifierText" id="moonstampModifierText">The lunar field adds timing texture to today’s read when Moonstamp data is available.</div>
+              <div class="moonstampModifierMeta" id="moonstampModifierMeta">Use it as a field modifier, not an identity label.</div>
             </div>
 
             <p class="todayRead" id="dailyTodayRead">
@@ -2949,8 +2896,48 @@
               </div>
             </div>
 
+            <div class="motionStrip">
+              <div class="motionMini">
+                <div class="motionMiniLabel">Motion Style</div>
+                <div class="motionMiniValue" id="topMotionStyle">—</div>
+              </div>
+
+              <div class="motionMini">
+                <div class="motionMiniLabel">How to read it</div>
+                <div class="motionMiniText" id="topMotionStyleRead">Waiting for motion style read.</div>
+              </div>
+            </div>
+
+            <div class="interactionMap">
+              <div class="interactionMapLabel">Engine Translation</div>
+
+              <div class="interactionMapGrid">
+                <div class="interactionNode">
+                  <div class="interactionNodeLabel">Root Pattern</div>
+                  <div class="interactionNodeName" id="interactionSystemName">—</div>
+                  <div class="interactionNodeText" id="interactionSystemText">Waiting for root signal.</div>
+                </div>
+
+                <div class="interactionOperator">×</div>
+
+                <div class="interactionNode">
+                  <div class="interactionNodeLabel">Today’s Field</div>
+                  <div class="interactionNodeName" id="interactionFieldName">—</div>
+                  <div class="interactionNodeText" id="interactionFieldText">Waiting for current field.</div>
+                </div>
+
+                <div class="interactionOperator">→</div>
+
+                <div class="interactionNode move">
+                  <div class="interactionNodeLabel">Recommended Move</div>
+                  <div class="interactionNodeName" id="interactionMoveName">—</div>
+                  <div class="interactionNodeText" id="interactionMoveText">Waiting for best move.</div>
+                </div>
+              </div>
+            </div>
+
             <div class="todayOutlookLine" id="todayOutlookLine">
-              Current Field Direction: <span>Trend: —</span> · Driver: — · —
+              Field summary: <span>Trend: —</span> · Driver: — · —
             </div>
           </div>
         </section>
@@ -2959,7 +2946,7 @@
           <div class="outlookHeader">
             <div>
               <h2>Current Field Direction</h2>
-              <p>The main live-field takeaway. Moonstamp modifies the timing field; it does not replace your harmonic profile.</p>
+              <p>The main live-field takeaway. Moonstamp adds timing texture without replacing your harmonic profile.</p>
             </div>
 
             <div class="chipRow" style="margin-top:0;">
@@ -2973,13 +2960,6 @@
               <div class="outlookLabel">Field Direction</div>
               <div class="outlookValue" id="outlookDirectionTitle">—</div>
               <div class="outlookText" id="outlookDirectionText">Waiting for field direction.</div>
-
-              <div class="moonstampModifierBlock" id="moonstampModifierBlock">
-                <div class="moonstampModifierLabel">Moonstamp Modifier</div>
-                <div class="moonstampModifierTitle" id="moonstampModifierTitle">Moonstamp modifier pending</div>
-                <div class="moonstampModifierText" id="moonstampModifierText">The lunar field adds timing texture to today’s read when Moonstamp data is available.</div>
-                <div class="moonstampModifierMeta" id="moonstampModifierMeta">Use it as a field modifier, not an identity label.</div>
-              </div>
             </div>
 
             <div class="outlookBlock now">
@@ -3002,7 +2982,7 @@
           </div>
 
           <div class="outlookNote">
-            Moonstamp reads the field. Lucy.OS reads the person inside the field. The lunar field adds timing texture to today’s read without overriding Today’s Field Harmonic.
+            Moonstamp reads the field. Lucy.OS reads the person inside the field. Treat timing as context, not identity.
           </div>
         </section>
 
@@ -3010,7 +2990,7 @@
           <div class="profileHeader">
             <div>
               <h2>Harmonic Profile</h2>
-              <p>Your root pattern, stabilizing support, movement style, and overload pathway. Today’s field shows what the live timing field is activating — not your identity.</p>
+              <p>Your root pattern, stabilizing support, movement style, and overload pathway. Today’s field shows what the live timing field is activating.</p>
             </div>
 
             <div class="chipRow">
@@ -3474,6 +3454,7 @@
   </div>
 
   <script>
+
     const API_URL = "/api/chart_inputs";
     const SAVED_PROFILES_KEY = "lucyOSProSavedProfiles";
 
@@ -3719,36 +3700,6 @@
       return `${phase} · ${moonAge} days · ${illumination}% illuminated`;
     }
 
-    function formatMoonstampModifier(moonstamp){
-      if (!moonstamp) return "Moonstamp modifier pending";
-
-      const state = String(moonstamp.state || "").trim();
-      const phase = String(moonstamp.phase || "").trim();
-      const illumination = fmtPercent(moonstamp.illumination);
-      const modifier = String(moonstamp.modifier || "").trim();
-      const forecastModifier = String(moonstamp.forecastModifier || "").trim();
-      const moonrise = String(moonstamp.moonrise || "").trim();
-      const moonset = String(moonstamp.moonset || "").trim();
-      const nextMajorPhase = String(moonstamp.nextMajorPhase || "").trim();
-
-      const headerParts = [state, phase].filter(Boolean);
-      const header = headerParts.length
-        ? `${headerParts.join(" · ")}${illumination !== "—" ? ` · ${illumination}%` : ""}`
-        : "Moonstamp modifier";
-
-      const timingParts = [];
-      if (moonrise) timingParts.push(`Moonrise ${moonrise}`);
-      if (moonset) timingParts.push(`Moonset ${moonset}`);
-      if (nextMajorPhase) timingParts.push(`Next: ${nextMajorPhase}`);
-
-      return [
-        header,
-        modifier,
-        forecastModifier,
-        timingParts.length ? timingParts.join(" · ") : ""
-      ].filter(Boolean).join(" ");
-    }
-
     function buildMoonstampModifier(data){
       const moonstamp = getMoonstamp(data);
 
@@ -3787,7 +3738,7 @@
       }
 
       const timing = formatMoonstampTiming(moonstamp);
-      const modifier = buildMoonstampModifier(data) || formatMoonstampModifier(moonstamp);
+      const modifier = buildMoonstampModifier(data);
 
       return {
         hasMoonstamp: true,
@@ -3800,6 +3751,11 @@
 
     function updateMoonstampModifierUI(data){
       const read = buildMoonstampModifierRead(data);
+      const block = document.getElementById("moonstampModifierBlock");
+
+      if (block) {
+        block.style.display = "block";
+      }
 
       setText("moonstampModifierTitle", read.title);
       setText("moonstampModifierText", read.text);
@@ -4542,8 +4498,6 @@
 
       setText("outlookDirectionTitle", direction.title);
       setText("outlookDirectionText", direction.text);
-
-      return updateMoonstampModifierUI(data);
     }
 
     function updateFieldTranslationUI(field){
@@ -4559,30 +4513,12 @@
       setText("fieldTranslationWatch", translation.watch);
     }
 
-    function setHeroGlow(modeText, fog, volatility){
+    function setHeroGlow(){
       const el = document.getElementById("heroGlow");
       if (!el) return;
 
-      const text = String(modeText || "").toLowerCase();
-      let glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.10), transparent 42%)";
-
-      if (text.includes("overload")) {
-        glow = "radial-gradient(circle at 50% 28%, rgba(255,102,102,.14), transparent 42%)";
-      } else if (text.includes("threshold") || text.includes("strain")) {
-        glow = "radial-gradient(circle at 50% 28%, rgba(216,184,76,.14), transparent 42%)";
-      } else if (text.includes("mobilized") || text.includes("active")) {
-        glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.08), rgba(216,184,76,.10), transparent 48%)";
-      }
-
-      if (safeNum(fog) > 0.72) {
-        glow = "radial-gradient(circle at 50% 28%, rgba(176,108,255,.12), rgba(103,193,255,.05), transparent 48%)";
-      }
-
-      if (safeNum(volatility) > 0.75 && !text.includes("overload")) {
-        glow = "radial-gradient(circle at 50% 28%, rgba(103,193,255,.12), rgba(176,108,255,.05), transparent 48%)";
-      }
-
-      el.style.background = glow;
+      el.style.background =
+        "radial-gradient(circle at 50% 28%, rgba(79,111,122,.09), rgba(203,183,255,.035), transparent 48%)";
     }
 
     function buildMotionStyle(normalizedNatalScores, primary){
@@ -5798,107 +5734,7 @@
       }).join("");
     }
 
-    function buildMoonstampModifier(data){
-      const moonstamp = getMoonstamp(data);
-      if (!moonstamp || !hasMoonstampData(data)) {
-        return "";
-      }
-
-      const modifier = String(moonstamp.modifier || "").trim();
-      const forecastModifier = String(moonstamp.forecastModifier || "").trim();
-
-      if (modifier && forecastModifier) {
-        return `${modifier} ${forecastModifier}`;
-      }
-
-      if (modifier) {
-        return modifier;
-      }
-
-      if (forecastModifier) {
-        return forecastModifier;
-      }
-
-      const state = String(moonstamp.state || "").trim();
-      const phase = String(moonstamp.phase || "").trim();
-
-      if (state && phase) {
-        return `${state} lunar timing adds texture to the ${phase} field.`;
-      }
-
-      if (state) {
-        return `${state} lunar timing adds texture to today’s field.`;
-      }
-
-      if (phase) {
-        return `${phase} timing adds texture to today’s read.`;
-      }
-
-      return "The lunar field adds timing texture to today’s read.";
-    }
-
-    function updateMoonstampModifierBlock(data){
-      const moonstamp = getMoonstamp(data);
-      const hasMoonstamp = hasMoonstampData(data);
-      const modifier = buildMoonstampModifier(data);
-
-      const block = document.getElementById("moonstampModifierBlock");
-
-      if (block) {
-        block.style.display = "block";
-      }
-
-      if (!hasMoonstamp) {
-        setText("moonstampModifierTitle", "Moonstamp modifier pending");
-        setText("moonstampModifierText", "Moonstamp modifies the timing field; it does not replace your harmonic profile.");
-        setText("moonstampModifierMeta", "The lunar field adds timing texture when backend Moonstamp data is available.");
-        setText("shareCardMoonstampModifier", "");
-        return {
-          hasMoonstamp: false,
-          title: "Moonstamp modifier pending",
-          text: "Moonstamp modifies the timing field; it does not replace your harmonic profile.",
-          meta: "The lunar field adds timing texture when backend Moonstamp data is available.",
-          shareLine: ""
-        };
-      }
-
-      const phase = String(moonstamp.phase || "").trim();
-      const state = String(moonstamp.state || "").trim();
-      const illumination = fmtPercent(moonstamp.illumination);
-      const moonrise = String(moonstamp.moonrise || "").trim();
-      const moonset = String(moonstamp.moonset || "").trim();
-      const nextMajorPhase = String(moonstamp.nextMajorPhase || "").trim();
-
-      const titleParts = [];
-      if (state) titleParts.push(state);
-      if (phase) titleParts.push(phase);
-
-      const title = titleParts.length ? titleParts.join(" · ") : "Lunar timing modifier";
-      const metaParts = [];
-      if (illumination !== "—") metaParts.push(`${illumination}% illuminated`);
-      if (moonrise) metaParts.push(`Moonrise ${moonrise}`);
-      if (moonset) metaParts.push(`Moonset ${moonset}`);
-      if (nextMajorPhase) metaParts.push(`Next: ${nextMajorPhase}`);
-
-      const text = modifier || "The lunar field adds timing texture to today’s read. Use it as a field modifier, not an identity label.";
-      const meta = metaParts.length ? metaParts.join(" · ") : "Moonstamp modifies the timing field only.";
-
-      setText("moonstampModifierTitle", title);
-      setText("moonstampModifierText", text);
-      setText("moonstampModifierMeta", meta);
-
-      setText("shareCardMoonstampModifier", `${title}: ${text}`);
-
-      return {
-        hasMoonstamp: true,
-        title,
-        text,
-        meta,
-        shareLine: `${title}: ${text}`
-      };
-    }
-
-    function updateWhyReadUI(harmonics, data, fieldTrend){
+    function updateWhyReadUI(harmonics, data, fieldTrend, moonstampModifier){
       const state = data?.state || {};
       const moonstamp = getMoonstamp(data);
       const hasMoonstamp = hasMoonstampData(data);
@@ -5914,8 +5750,8 @@
       const distortion = harmonics.distortion || "Diffused";
       const distortionState = DISTORTION_STATES[harmonics.distortionStateKey] || DISTORTION_STATES.overStructuring;
       const driverNote = buildDriverNote(data, harmonics, fieldTrend);
-      const moonstampLine = hasMoonstamp
-        ? `${formatMoonstampTiming(moonstamp)} · ${buildMoonstampModifier(data)}`
+      const moonstampLine = hasMoonstamp && moonstampModifier?.shareLine
+        ? moonstampModifier.shareLine
         : "Moonstamp modifier pending";
 
       setHTML("whyBaseline", harmonicLabel(primary));
@@ -6111,7 +5947,7 @@
         if (status) status.textContent = "Creating image...";
 
         const canvas = await html2canvas(card, {
-          backgroundColor: "#09142f",
+          backgroundColor: "#F4F2EF",
           scale: 2,
           useCORS: true,
           logging: false
@@ -6155,7 +5991,7 @@
       const currentState = stateLabelFromMode(data?.state?.mode || "");
       const fieldTrend = calculateFieldTrend(data, harmonics);
       const fieldDirection = buildFieldDirectionText(harmonics, data);
-      const moonstampModifier = updateMoonstampModifierBlock(data);
+      const moonstampModifier = updateMoonstampModifierUI(data);
 
       const primaryLabel = harmonicLabel(primaryMeta.label);
       const supportLabel = harmonics.support && String(harmonics.support).includes("/")
@@ -6221,7 +6057,7 @@
 
       updateFieldTranslationUI(fieldMeta.label);
       updateOutlookUI(data, harmonics);
-      updateWhyReadUI(harmonics, data, fieldTrend);
+      updateWhyReadUI(harmonics, data, fieldTrend, moonstampModifier);
       updateShareUI({
         systemWeather,
         fieldDirectionTitle: fieldDirection.title,
@@ -6414,7 +6250,7 @@
         `JD: ${ephemeris.jdUt || ephemeris.jd_ut || "—"} | Sun: ${sunDeg} | Moon: ${moonDeg} | ASC: ${ascDeg} | MC: ${mcDeg}`
       );
 
-      setHeroGlow(modeText, fog, volatility);
+      setHeroGlow();
     }
 
     async function calculate(){
