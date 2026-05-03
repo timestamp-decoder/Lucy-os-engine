@@ -1031,6 +1031,136 @@
       overflow-wrap:break-word;
     }
 
+    .coreRuleBlock{
+      position:relative;
+      margin-top:16px;
+      width:100%;
+      max-width:100%;
+      min-width:0;
+      overflow:hidden;
+      border:1px solid rgba(118,108,168,.20);
+      border-radius:18px;
+      padding:15px;
+      background:
+        linear-gradient(
+          180deg,
+          var(--field-highlight) 0%,
+          #F1EFF6 100%
+        );
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.78),
+        inset 0 -1px 0 rgba(0,0,0,.025);
+      isolation:isolate;
+      contain:paint;
+    }
+
+    .coreRuleBlock::before{
+      content:"";
+      position:absolute;
+      inset:1px;
+      border-radius:17px;
+      border:1px solid rgba(180,170,255,.12);
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .coreRuleBlock > *{
+      position:relative;
+      z-index:1;
+    }
+
+    .coreRuleLabel{
+      color:var(--violet);
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      margin-bottom:7px;
+    }
+
+    .coreRuleHelper{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+      font-weight:750;
+      margin-bottom:12px;
+      overflow-wrap:break-word;
+    }
+
+    .coreRuleGrid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+      min-width:0;
+      max-width:100%;
+    }
+
+    .coreRuleItem{
+      border:1px solid var(--border-neutral);
+      border-radius:15px;
+      padding:12px 13px;
+      background:var(--field-highlight);
+      min-width:0;
+      max-width:100%;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.76),
+        inset 0 -1px 0 rgba(0,0,0,.025);
+    }
+
+    .coreRuleItemLabel{
+      color:var(--muted);
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:.11em;
+      text-transform:uppercase;
+      margin-bottom:6px;
+      overflow-wrap:break-word;
+    }
+
+    .coreRuleItemText{
+      color:var(--graphite);
+      font-size:14px;
+      line-height:1.45;
+      font-weight:850;
+      overflow-wrap:break-word;
+    }
+
+    .engineRuleBlock{
+      margin-top:14px;
+      border:1px solid var(--border-neutral);
+      border-radius:14px;
+      padding:12px;
+      background:
+        linear-gradient(
+          180deg,
+          var(--field-highlight) 0%,
+          var(--field-base) 100%
+        );
+      min-width:0;
+      max-width:100%;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.76),
+        inset 0 -1px 0 rgba(0,0,0,.025);
+    }
+
+    .engineRuleLabel{
+      color:var(--muted);
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:.11em;
+      text-transform:uppercase;
+      margin-bottom:7px;
+    }
+
+    .engineRuleText{
+      color:var(--graphite);
+      font-size:13px;
+      line-height:1.55;
+      font-weight:750;
+      white-space:pre-line;
+      overflow-wrap:break-word;
+    }
+
     .harmonicName{
       font-weight:950;
     }
@@ -2091,6 +2221,65 @@
       overflow-wrap:break-word;
     }
 
+    .shareCardCoreRule{
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(118,108,168,.20);
+      border-radius:18px;
+      padding:16px;
+      background:
+        linear-gradient(
+          180deg,
+          var(--field-highlight) 0%,
+          #F1EFF6 100%
+        );
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.76),
+        inset 0 -1px 0 rgba(0,0,0,.025);
+      min-width:0;
+      max-width:100%;
+    }
+
+    .shareCardCoreRule::before{
+      content:"";
+      position:absolute;
+      inset:1px;
+      pointer-events:none;
+      border-radius:17px;
+      border:1px solid rgba(180,170,255,.12);
+    }
+
+    .shareCardCoreRule > *{
+      position:relative;
+      z-index:1;
+    }
+
+    .shareCardCoreRuleGrid{
+      display:grid;
+      gap:10px;
+      margin-top:2px;
+      min-width:0;
+      max-width:100%;
+    }
+
+    .shareCardCoreRuleLine{
+      color:var(--graphite);
+      font-size:16px;
+      line-height:1.45;
+      font-weight:850;
+      overflow-wrap:break-word;
+    }
+
+    .shareCardCoreRuleLine span{
+      display:block;
+      margin-bottom:2px;
+      color:var(--muted);
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:.11em;
+      text-transform:uppercase;
+    }
+
     .shareCardMoonstamp{
       display:none;
       border:1px solid rgba(118,108,168,.18);
@@ -2770,6 +2959,10 @@
         grid-template-columns:minmax(0,1fr);
       }
 
+      .coreRuleGrid{
+        grid-template-columns:minmax(0,1fr);
+      }
+
       .shareIntro{
         display:grid;
       }
@@ -2835,12 +3028,14 @@
       .weatherExplain{order:3}
       .pairingExplain{order:4}
       .fieldCompass{order:5}
-      .interactionMap{order:6}
-      .motionStrip{order:7}
+      .moonstampModifierBlock{order:6}
+      .coreRuleBlock{order:7}
       .todayRead{order:8}
       .realLifeBlock{order:9}
       .guidanceGrid{order:10}
-      .todayOutlookLine{order:11}
+      .motionStrip{order:11}
+      .interactionMap{order:12}
+      .todayOutlookLine{order:13}
 
       .weatherLine{
         font-size:29px;
@@ -2991,6 +3186,44 @@
         font-size:12px;
       }
 
+      .coreRuleBlock{
+        border-radius:15px;
+        padding:12px;
+        margin-top:13px;
+      }
+
+      .coreRuleBlock::before{
+        border-radius:14px;
+      }
+
+      .coreRuleHelper{
+        font-size:11.6px;
+        margin-bottom:10px;
+      }
+
+      .coreRuleGrid{
+        gap:8px;
+      }
+
+      .coreRuleItem{
+        border-radius:13px;
+        padding:10px 11px;
+      }
+
+      .coreRuleItemText{
+        font-size:13.5px;
+        line-height:1.42;
+      }
+
+      .engineRuleBlock{
+        border-radius:13px;
+        padding:11px;
+      }
+
+      .engineRuleText{
+        font-size:12.5px;
+      }
+
       .todayRead{
         font-size:15px;
         margin-top:13px;
@@ -3084,7 +3317,8 @@
         font-size:34px;
       }
 
-      .shareCardFieldDirection{
+      .shareCardFieldDirection,
+      .shareCardCoreRule{
         border-radius:16px;
         padding:14px;
       }
@@ -3095,6 +3329,10 @@
 
       .shareCardFieldText{
         font-size:13px;
+      }
+
+      .shareCardCoreRuleLine{
+        font-size:15px;
       }
 
       .shareCardRead{
@@ -3305,6 +3543,28 @@
               <div class="moonstampModifierTitle" id="moonstampModifierTitle">Moonstamp modifier pending</div>
               <div class="moonstampModifierText" id="moonstampModifierText">The lunar field adds timing texture to today’s read when Moonstamp data is available.</div>
               <div class="moonstampModifierMeta" id="moonstampModifierMeta">Use it as a field modifier, not an identity label.</div>
+            </div>
+
+            <div class="coreRuleBlock">
+              <div class="coreRuleLabel">Core Rule</div>
+              <div class="coreRuleHelper">Three lines for using your gift, avoiding your overload, and choosing today’s clean move.</div>
+
+              <div class="coreRuleGrid">
+                <div class="coreRuleItem">
+                  <div class="coreRuleItemLabel">Use your gift</div>
+                  <div class="coreRuleItemText" id="coreRuleGift">Waiting for core rule.</div>
+                </div>
+
+                <div class="coreRuleItem">
+                  <div class="coreRuleItemLabel">Watch the distortion</div>
+                  <div class="coreRuleItemText" id="coreRuleDistortion">Waiting for overload watch.</div>
+                </div>
+
+                <div class="coreRuleItem">
+                  <div class="coreRuleItemLabel">Make the move</div>
+                  <div class="coreRuleItemText" id="coreRuleMove">Waiting for clean move.</div>
+                </div>
+              </div>
             </div>
 
             <p class="todayRead" id="dailyTodayRead">
@@ -3594,6 +3854,11 @@
             </div>
 
             <div class="whyMini">
+              <div class="whyMiniLabel">Engine Rule</div>
+              <div class="whyMiniValue" id="whyEngineRule">Waiting for engine rule.</div>
+            </div>
+
+            <div class="whyMini">
               <div class="whyMiniLabel">Moonstamp Timing</div>
               <div class="whyMiniValue" id="whyPeakTiming">Moonstamp modifier pending</div>
             </div>
@@ -3607,6 +3872,11 @@
               <div class="whyMiniLabel">Rationale</div>
               <div class="whyMiniValue" id="whyRationale">Waiting for rationale.</div>
             </div>
+          </div>
+
+          <div class="engineRuleBlock">
+            <div class="engineRuleLabel">Engine Rule</div>
+            <div class="engineRuleText" id="engineRuleText">Waiting for engine rule.</div>
           </div>
 
           <div class="whyExplain" id="whyConfigText">
@@ -3652,6 +3922,28 @@
                     <div class="shareCardLabel">Current Field Direction</div>
                     <div class="shareCardFieldTitle" id="shareCardFieldDirectionTitle">—</div>
                     <div class="shareCardFieldText" id="shareCardFieldDirectionText">Waiting for field direction.</div>
+                  </div>
+                </div>
+
+                <div class="shareCardCoreRule">
+                  <div class="shareCardSection">
+                    <div class="shareCardLabel">Core Rule</div>
+                    <div class="shareCardCoreRuleGrid">
+                      <div class="shareCardCoreRuleLine">
+                        <span>Use your gift</span>
+                        <div id="shareCardCoreGift">Waiting for core rule.</div>
+                      </div>
+
+                      <div class="shareCardCoreRuleLine">
+                        <span>Watch the distortion</span>
+                        <div id="shareCardCoreDistortion">Waiting for overload watch.</div>
+                      </div>
+
+                      <div class="shareCardCoreRuleLine">
+                        <span>Make the move</span>
+                        <div id="shareCardCoreMove">Waiting for clean move.</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -3733,6 +4025,11 @@
                 <span class="metaPill field" id="envBand">Field: —</span>
                 <span class="metaPill forecast" id="forecastBand">Timing: —</span>
               </div>
+            </div>
+
+            <div class="engineRuleBlock">
+              <div class="engineRuleLabel">Engine Rule</div>
+              <div class="engineRuleText" id="engineDetailsEngineRule">Waiting for engine rule.</div>
             </div>
 
             <div class="heroStats">
@@ -4040,12 +4337,19 @@
         meta: "",
         shareLine: ""
       },
+      coreRule: {
+        gift: "Waiting for core rule.",
+        distortion: "Waiting for overload watch.",
+        move: "Waiting for clean move."
+      },
+      engineRule: "Waiting for engine rule.",
       todayRead: "Waiting for daily read.",
       realLifeText: "Waiting for plain-life translation.",
       driverNote: "Waiting for driver note.",
       goodMove: "—",
       returnText: "—",
       primary: "Structured",
+      support: "Regulated",
       field: "—",
       state: "—",
       motionStyle: "—",
@@ -5154,6 +5458,182 @@
       return "overStructuring";
     }
 
+    function buildCoreRule(harmonics, data){
+      const primary = harmonics?.primary || "Structured";
+      const support = getHarmonicBaseName(harmonics?.support || "Regulated");
+      const field = harmonics?.todayField || "Regulated";
+      const motionStyle = harmonicText(harmonics?.motionStyle || "");
+      const distortionState = DISTORTION_STATES[harmonics?.distortionStateKey] || DISTORTION_STATES.overStructuring;
+
+      let gift = "Use what your system notices best.";
+      let distortion = "Do not let pressure turn the read into overload.";
+      let move = "Choose one clean move and keep the scope small.";
+
+      if (primary === "Structured") {
+        gift = "Turn the signal into order.";
+        distortion = "Do not over-structure what only needs one clear frame.";
+      } else if (primary === "Contained") {
+        gift = "Protect the signal until it is ready.";
+        distortion = "Do not hold pressure so long that it has nowhere to go.";
+      } else if (primary === "Chaotic") {
+        gift = "Let the signal move.";
+        distortion = "Contain it before it becomes a shock cycle.";
+      } else if (primary === "Relational") {
+        gift = "Read the tone without losing your center.";
+        distortion = "Do not absorb the whole field as if it belongs to you.";
+      } else if (primary === "Threshold") {
+        gift = "Notice the real crossing.";
+        distortion = "Do not treat every edge like it has to be crossed now.";
+      } else if (primary === "Reconstructive") {
+        gift = "See what actually needs repair.";
+        distortion = "Do not turn every weak point into a full rebuild.";
+      } else if (primary === "Integrative") {
+        gift = "Gather the pattern into meaning.";
+        distortion = "Do not carry every layer at once.";
+      } else if (primary === "Diffused") {
+        gift = "Sense the field before forcing a conclusion.";
+        distortion = "Do not let the atmosphere become the whole answer.";
+      } else if (primary === "Regulated") {
+        gift = "Pace the signal until it becomes usable.";
+        distortion = "Do not turn regulation into over-control.";
+      }
+
+      if (support === "Structured") {
+        distortion = primary === "Chaotic"
+          ? "Contain it before it becomes a shock cycle."
+          : "Let structure support the signal without tightening too much.";
+      } else if (support === "Contained") {
+        distortion = "Protect the channel without closing it completely.";
+      } else if (support === "Regulated") {
+        distortion = "Use pacing without turning control into the whole strategy.";
+      } else if (support === "Diffused") {
+        distortion = "Let sensitivity inform you without absorbing the whole field.";
+      } else if (support === "Integrative") {
+        distortion = "Let the larger pattern help without carrying every layer.";
+      } else if (support === "Relational") {
+        distortion = "Stay connected without making the whole room yours to regulate.";
+      }
+
+      if (field === "Reconstructive") {
+        move = "Repair one weak point, not the whole field.";
+      } else if (field === "Threshold") {
+        move = "Cross only the step that is actually ready.";
+      } else if (field === "Chaotic") {
+        move = "Give the charge one safe direction.";
+      } else if (field === "Diffused") {
+        move = "Ground the field with one clear anchor.";
+      } else if (field === "Contained") {
+        move = "Let one private signal take shape.";
+      } else if (field === "Relational") {
+        move = "Say one clear thing and keep responsibility proportional.";
+      } else if (field === "Integrative") {
+        move = "Choose the one connection that makes action clearer.";
+      } else if (field === "Structured") {
+        move = "Build one useful container.";
+      } else if (field === "Regulated") {
+        move = "Let rhythm carry one practical action.";
+      }
+
+      if (motionStyle.includes("Chaotic") && motionStyle.includes("Threshold") && field === "Reconstructive") {
+        gift = "Let the signal find the pressure point.";
+        distortion = "Contain the charge before it becomes a shock cycle.";
+        move = "Repair one weak point, not the whole field.";
+      }
+
+      if (primary === "Chaotic" && support === "Structured" && field === "Reconstructive") {
+        gift = "Let the signal move.";
+        distortion = "Contain it before it becomes a shock cycle.";
+        move = "Repair one weak point, not the whole field.";
+      }
+
+      if (distortionState.label === "Emotional Fusion") {
+        distortion = "Do not absorb the shared field as if it is all yours.";
+      } else if (distortionState.label === "Rupture" && primary !== "Chaotic") {
+        distortion = "Do not break contact faster than the field requires.";
+      } else if (distortionState.label === "Over-Structuring" && primary !== "Structured") {
+        distortion = "Do not tighten the system more than the moment requires.";
+      } else if (distortionState.label === "Scatter" && primary !== "Diffused") {
+        distortion = "Do not open more channels than you can hold.";
+      }
+
+      if (primary === "Chaotic" && support === "Structured" && field === "Reconstructive") {
+        distortion = "Contain it before it becomes a shock cycle.";
+      }
+
+      return {
+        gift,
+        distortion,
+        move
+      };
+    }
+
+    function buildEngineRule(harmonics){
+      const primary = harmonics?.primary || "Structured";
+      const support = getHarmonicBaseName(harmonics?.support || "Regulated");
+      const field = harmonics?.todayField || "Regulated";
+      const motionStyle = harmonicText(harmonics?.motionStyle || "Steady");
+
+      let first = `Let ${primary} lead.`;
+      let second = `Let ${support} stabilize.`;
+      let third = `Let ${field} define the clean move.`;
+
+      if (primary === "Chaotic") first = "Let Chaotic detect.";
+      if (primary === "Structured") first = "Let Structured frame.";
+      if (primary === "Contained") first = "Let Contained protect.";
+      if (primary === "Relational") first = "Let Relational attune.";
+      if (primary === "Threshold") first = "Let Threshold time the crossing.";
+      if (primary === "Reconstructive") first = "Let Reconstructive identify the repair.";
+      if (primary === "Integrative") first = "Let Integrative gather the pattern.";
+      if (primary === "Diffused") first = "Let Diffused sense the field.";
+      if (primary === "Regulated") first = "Let Regulated pace.";
+
+      if (support === "Structured") second = "Let Structured contain.";
+      if (support === "Contained") second = "Let Contained protect the channel.";
+      if (support === "Chaotic") second = "Let Chaotic move without scattering.";
+      if (support === "Relational") second = "Let Relational keep contact clean.";
+      if (support === "Threshold") second = "Let Threshold choose timing.";
+      if (support === "Reconstructive") second = "Let Reconstructive strengthen the weak point.";
+      if (support === "Integrative") second = "Let Integrative make the pattern usable.";
+      if (support === "Diffused") second = "Let Diffused sense without absorbing.";
+      if (support === "Regulated") second = "Let Regulated pace.";
+
+      if (field === "Reconstructive") third = "Use the charge for one repair.";
+      if (field === "Threshold") third = "Use the edge for one clean crossing.";
+      if (field === "Chaotic") third = "Use the movement through one channel.";
+      if (field === "Diffused") third = "Use one anchor to clarify the field.";
+      if (field === "Contained") third = "Use the inward pull to protect formation.";
+      if (field === "Relational") third = "Use contact for one clean repair.";
+      if (field === "Integrative") third = "Use meaning to clarify action.";
+      if (field === "Structured") third = "Use structure to make the signal workable.";
+      if (field === "Regulated") third = "Use rhythm to keep the move manageable.";
+
+      if (primary === "Chaotic" && support === "Structured" && field === "Reconstructive") {
+        first = "Let Chaotic detect.";
+        second = "Let Structured contain.";
+        third = "Use the charge for one repair.";
+      }
+
+      return {
+        text: `${first}\n${second}\n${third}`,
+        short: `${first} ${second} ${third}`,
+        motion: motionStyle
+      };
+    }
+
+    function updateCoreRuleUI(coreRule, engineRule){
+      setText("coreRuleGift", coreRule.gift);
+      setText("coreRuleDistortion", coreRule.distortion);
+      setText("coreRuleMove", coreRule.move);
+
+      setText("shareCardCoreGift", coreRule.gift);
+      setText("shareCardCoreDistortion", coreRule.distortion);
+      setText("shareCardCoreMove", coreRule.move);
+
+      setText("engineRuleText", engineRule.text);
+      setText("engineDetailsEngineRule", engineRule.text);
+      setText("whyEngineRule", engineRule.text);
+    }
+
     function calculateHarmonics(data){
       const state = data?.state || {};
       const baselineState = data?.baselineState || {};
@@ -6176,7 +6656,7 @@
       }).join("");
     }
 
-    function updateWhyReadUI(harmonics, data, fieldTrend, moonstampModifier){
+    function updateWhyReadUI(harmonics, data, fieldTrend, moonstampModifier, engineRule){
       const state = data?.state || {};
       const moonstamp = getMoonstamp(data);
       const hasMoonstamp = hasMoonstampData(data);
@@ -6206,18 +6686,19 @@
       setText("whyRegulation", regulationBand);
       setText("whyDistortion", distortionState.label);
       setText("whyDirection", fieldTrend.trend);
+      setText("whyEngineRule", engineRule?.text || "Waiting for engine rule.");
       setText("whyRationale", fieldTrend.rationale);
       setText("whyPeakTiming", formatMoonstampTiming(moonstamp));
       setText("whyMoonstampModifier", moonstampLine);
 
-      let explanation = `This read comes from a ${harmonicText(primary)} signal architecture meeting a ${harmonicText(field)} field while the current state is ${currentState.toLowerCase()}. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${fieldTrend.rationale} ${driverNote}`;
+      let explanation = `This read comes from a ${harmonicText(primary)} signal architecture meeting a ${harmonicText(field)} field while the current state is ${currentState.toLowerCase()}. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Engine Rule: ${engineRule?.short || "Waiting for engine rule."} Load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${fieldTrend.rationale} ${driverNote}`;
 
       if (primary === "Chaotic" && field === "Reconstructive") {
-        explanation = `This does not mean the person is chaotic as a lifestyle or identity. It means the root signal moves quickly, nonlinearly, and toward pressure points. The ${harmonicText(field)} field adds repair pressure, so the best move is one honest adjustment, not a full rebuild. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
+        explanation = `This does not mean the person is chaotic as a lifestyle or identity. It means the root signal moves quickly, nonlinearly, and toward pressure points. The ${harmonicText(field)} field adds repair pressure, so the best move is one honest adjustment, not a full rebuild. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Engine Rule: ${engineRule?.short || "Waiting for engine rule."} Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
       }
 
       if (primary === "Structured" && field === "Reconstructive") {
-        explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${harmonicText(primary)} signal architecture wants order, sequence, and meaning, while the ${harmonicText(field)} field pushes repair pressure. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
+        explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${harmonicText(primary)} signal architecture wants order, sequence, and meaning, while the ${harmonicText(field)} field pushes repair pressure. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Engine Rule: ${engineRule?.short || "Waiting for engine rule."} ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
       }
 
       if (currentState === "Threshold" && loadBand === "Overloaded" && capacityBand === "Decent") {
@@ -6246,12 +6727,15 @@
       fieldDirectionTitle,
       fieldDirectionText,
       moonstampModifier,
+      coreRule,
+      engineRule,
       todayRead,
       realLifeText,
       driverNote,
       goodMove,
       returnText,
       primary,
+      support,
       field,
       state,
       motionStyle,
@@ -6262,12 +6746,19 @@
         fieldDirectionTitle,
         fieldDirectionText,
         moonstampModifier: moonstampModifier || { hasMoonstamp: false, title: "", text: "", shareLine: "" },
+        coreRule: coreRule || {
+          gift: "Waiting for core rule.",
+          distortion: "Waiting for overload watch.",
+          move: "Waiting for clean move."
+        },
+        engineRule: engineRule?.text || "Waiting for engine rule.",
         todayRead,
         realLifeText,
         driverNote,
         goodMove,
         returnText,
         primary,
+        support,
         field,
         state,
         motionStyle,
@@ -6293,6 +6784,9 @@
       setText("shareCardWeather", systemWeather);
       setText("shareCardFieldDirectionTitle", fieldDirectionTitle || "—");
       setText("shareCardFieldDirectionText", fieldDirectionText || "Waiting for field direction.");
+      setText("shareCardCoreGift", coreRule?.gift || "Waiting for core rule.");
+      setText("shareCardCoreDistortion", coreRule?.distortion || "Waiting for overload watch.");
+      setText("shareCardCoreMove", coreRule?.move || "Waiting for clean move.");
       setText("shareCardTodayRead", todayRead);
       setText("shareCardRealLife", realLifeText || "Translate the read into one practical action.");
       setText("shareCardMotionStyle", harmonicText(motionStyle || "—"));
@@ -6321,7 +6815,15 @@
         "",
         "Current Field Direction:",
         latestSharePayload.fieldDirectionTitle || "—",
-        latestSharePayload.fieldDirectionText || "Waiting for field direction."
+        latestSharePayload.fieldDirectionText || "Waiting for field direction.",
+        "",
+        "Core Rule:",
+        "Use your gift:",
+        latestSharePayload.coreRule?.gift || "Waiting for core rule.",
+        "Watch the distortion:",
+        latestSharePayload.coreRule?.distortion || "Waiting for overload watch.",
+        "Make the move:",
+        latestSharePayload.coreRule?.move || "Waiting for clean move."
       ];
 
       if (latestSharePayload.moonstampModifier?.hasMoonstamp) {
@@ -6434,6 +6936,8 @@
       const fieldTrend = calculateFieldTrend(data, harmonics);
       const fieldDirection = buildFieldDirectionText(harmonics, data);
       const moonstampModifier = updateMoonstampModifierUI(data);
+      const coreRule = buildCoreRule(harmonics, data);
+      const engineRule = buildEngineRule(harmonics);
 
       const primaryLabel = harmonicLabel(primaryMeta.label);
       const supportLabel = harmonics.support && String(harmonics.support).includes("/")
@@ -6466,6 +6970,7 @@
       );
 
       updateInteractionMap(primaryMeta.label, fieldMeta.label);
+      updateCoreRuleUI(coreRule, engineRule);
 
       setHTML("topMotionStyle", motionStyleLabel);
       setText("topMotionStyleRead", motionStyleRead);
@@ -6499,18 +7004,21 @@
 
       updateFieldTranslationUI(fieldMeta.label);
       updateOutlookUI(data, harmonics);
-      updateWhyReadUI(harmonics, data, fieldTrend, moonstampModifier);
+      updateWhyReadUI(harmonics, data, fieldTrend, moonstampModifier, engineRule);
       updateShareUI({
         systemWeather,
         fieldDirectionTitle: fieldDirection.title,
         fieldDirectionText: fieldDirection.text,
         moonstampModifier,
+        coreRule,
+        engineRule,
         todayRead: guidance.read,
         realLifeText,
         driverNote: shareDriverNote,
         goodMove: guidance.move,
         returnText: guidance.ret,
         primary: primaryMeta.label,
+        support: harmonics.support,
         field: fieldMeta.label,
         state: currentState,
         motionStyle: harmonicText(harmonics.motionStyle || "Steady"),
@@ -6576,6 +7084,7 @@
       updateFieldCompass(data);
 
       const distortionState = DISTORTION_STATES[harmonics.distortionStateKey] || DISTORTION_STATES.overStructuring;
+      const engineRule = buildEngineRule(harmonics);
 
       console.log("Lucy.OS normalized harmonic scores:", {
         primary: harmonics.primary,
@@ -6585,6 +7094,7 @@
         rawDistortionHarmonic: harmonics.distortion,
         primaryDistortionState: distortionState.label,
         todayField: harmonics.todayField,
+        engineRule: engineRule.text,
         moonstamp,
         natalScores: harmonics.natalScores,
         normalizedNatalScores: harmonics.normalizedNatalScores,
@@ -7031,6 +7541,7 @@
         const data = testCase.build();
         const result = calculateHarmonics(data);
         const distortionState = DISTORTION_STATES[result.distortionStateKey] || DISTORTION_STATES.overStructuring;
+        const engineRule = buildEngineRule(result);
         const passed = testCase.expected.includes(result.primary);
 
         return {
@@ -7043,6 +7554,7 @@
           rawDistortionHarmonic: result.distortion,
           primaryDistortionState: distortionState.label,
           todayField: result.todayField,
+          engineRule: engineRule.short,
           passFail: passed ? "PASS" : "FAIL"
         };
       });
