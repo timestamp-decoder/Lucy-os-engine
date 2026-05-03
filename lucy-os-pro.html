@@ -3033,6 +3033,12 @@
             </div>
 
             <div class="profileBlock">
+              <div class="profileLabel">Profile Translation</div>
+              <div class="profileValue" id="profileTranslationLabel">—</div>
+              <div class="profileDesc">Your root pattern translated through your stabilizing support.</div>
+            </div>
+
+            <div class="profileBlock">
               <div class="profileLabel">Motion Style</div>
               <div class="profileValue" id="motionStyle">—</div>
               <div class="profileDesc">How your signal tends to move when activated.</div>
@@ -3543,6 +3549,108 @@
       }
     };
 
+    const STABLE_PROFILE_LABELS = {
+      Structured: {
+        Structured: "Core System Builder",
+        Contained: "Boundary System Builder",
+        Chaotic: "Adaptive System Builder",
+        Relational: "Relational System Builder",
+        Threshold: "Threshold System Builder",
+        Reconstructive: "Repair System Builder",
+        Integrative: "Integrative System Builder",
+        Diffused: "Atmospheric System Builder",
+        Regulated: "Steady System Builder"
+      },
+      Contained: {
+        Structured: "Structured Boundary Keeper",
+        Contained: "Core Boundary Keeper",
+        Chaotic: "Activated Boundary Keeper",
+        Relational: "Relational Boundary Keeper",
+        Threshold: "Threshold Boundary Keeper",
+        Reconstructive: "Repair Boundary Keeper",
+        Integrative: "Integrative Boundary Keeper",
+        Diffused: "Sensitive Boundary Keeper",
+        Regulated: "Steady Boundary Keeper"
+      },
+      Chaotic: {
+        Structured: "Signal-to-Structure Builder",
+        Contained: "Contained Signal Mover",
+        Chaotic: "Core Signal Catalyst",
+        Relational: "Relational Signal Mover",
+        Threshold: "Threshold Signal Mover",
+        Reconstructive: "Repair Signal Catalyst",
+        Integrative: "Integrative Signal Catalyst",
+        Diffused: "Field-Sensitive Signal Mover",
+        Regulated: "Regulated Signal Mover"
+      },
+      Relational: {
+        Structured: "Structured Connection Reader",
+        Contained: "Protective Connection Stabilizer",
+        Chaotic: "Activated Connection Mover",
+        Relational: "Core Connection Stabilizer",
+        Threshold: "Threshold Connection Reader",
+        Reconstructive: "Repair Connection Stabilizer",
+        Integrative: "Integrative Connection Reader",
+        Diffused: "Field-Sensitive Connection Reader",
+        Regulated: "Steady Connection Stabilizer"
+      },
+      Threshold: {
+        Structured: "Structured Threshold Navigator",
+        Contained: "Contained Threshold Navigator",
+        Chaotic: "Activated Threshold Mover",
+        Relational: "Relational Threshold Navigator",
+        Threshold: "Core Threshold Navigator",
+        Reconstructive: "Repair Threshold Navigator",
+        Integrative: "Integrative Threshold Navigator",
+        Diffused: "Field-Sensitive Threshold Reader",
+        Regulated: "Steady Threshold Navigator"
+      },
+      Reconstructive: {
+        Structured: "Structured Repair Builder",
+        Contained: "Contained Repair Stabilizer",
+        Chaotic: "Activated Repair Catalyst",
+        Relational: "Relational Repair Stabilizer",
+        Threshold: "Threshold Repair Navigator",
+        Reconstructive: "Core Repair Builder",
+        Integrative: "Integrative Repair Builder",
+        Diffused: "Field-Sensitive Repair Reader",
+        Regulated: "Paced Repair Stabilizer"
+      },
+      Integrative: {
+        Structured: "Structured Meaning Builder",
+        Contained: "Contained Meaning Keeper",
+        Chaotic: "Activated Meaning Synthesizer",
+        Relational: "Relational Meaning Reader",
+        Threshold: "Threshold Meaning Navigator",
+        Reconstructive: "Repair Meaning Synthesizer",
+        Integrative: "Core Meaning Synthesizer",
+        Diffused: "Integrative Field Reader",
+        Regulated: "Steady Meaning Synthesizer"
+      },
+      Diffused: {
+        Structured: "Atmospheric Pattern Framer",
+        Contained: "Contained Field Sensor",
+        Chaotic: "Activated Field Sensor",
+        Relational: "Relational Field Sensor",
+        Threshold: "Threshold Field Sensor",
+        Reconstructive: "Repair Field Sensor",
+        Integrative: "Integrative Field Sensor",
+        Diffused: "Core Field Sensor",
+        Regulated: "Steady Field Sensor"
+      },
+      Regulated: {
+        Structured: "Structured Rhythm Stabilizer",
+        Contained: "Contained Rhythm Stabilizer",
+        Chaotic: "Activated Rhythm Stabilizer",
+        Relational: "Relational Rhythm Stabilizer",
+        Threshold: "Threshold Rhythm Stabilizer",
+        Reconstructive: "Repair Rhythm Stabilizer",
+        Integrative: "Integrative Rhythm Stabilizer",
+        Diffused: "Field-Sensitive Rhythm Stabilizer",
+        Regulated: "Core Rhythm Stabilizer"
+      }
+    };
+
     const HARMONIC_SCORE_WEIGHTS = {
       natal: {
         Structured: 5.50,
@@ -3827,6 +3935,12 @@
 
     function getHarmonicBaseName(value){
       return String(value || "").split("/")[0].trim();
+    }
+
+    function getStableProfileLabel(primary, support){
+      const primaryKey = getHarmonicBaseName(primary || "Structured");
+      const supportKey = getHarmonicBaseName(support || "Regulated");
+      return STABLE_PROFILE_LABELS?.[primaryKey]?.[supportKey] || `${supportKey} ${primaryKey} Profile`;
     }
 
     function harmonicClass(name){
@@ -5845,6 +5959,8 @@
       const moonstamp = getMoonstamp(data);
       const hasMoonstamp = hasMoonstampData(data);
       const primary = harmonics.primary || "Structured";
+      const support = harmonics.support || "Regulated";
+      const stableProfileLabel = getStableProfileLabel(primary, support);
       const field = harmonics.todayField || "Regulated";
       const motionStyle = harmonics.motionStyle || "—";
       const motionStyleRead = getMotionStyleRead(motionStyle);
@@ -5874,14 +5990,14 @@
       setText("whyPeakTiming", formatMoonstampTiming(moonstamp));
       setText("whyMoonstampModifier", moonstampLine);
 
-      let explanation = `Lucy.OS is reading a ${harmonicText(primary)} root pattern inside a ${harmonicText(field)} current field. That means the guidance is not just “who you are” and not just “what today is doing.” It is the interaction between the two. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Current state is ${currentState.toLowerCase()}; load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${fieldTrend.rationale} ${driverNote}`;
+      let explanation = `Lucy.OS is reading a ${harmonicText(primary)} root pattern inside a ${harmonicText(field)} current field. Stable profile translation: ${stableProfileLabel}. That means the guidance is not just “who you are” and not just “what today is doing.” It is the interaction between the two. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Current state is ${currentState.toLowerCase()}; load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${fieldTrend.rationale} ${driverNote}`;
 
       if (primary === "Chaotic" && field === "Reconstructive") {
-        explanation = `This does not mean the person is chaotic as a lifestyle or identity. It means the root signal moves quickly, nonlinearly, and toward pressure points. The ${harmonicText(field)} field adds repair pressure, so the best move is one honest adjustment, not a full rebuild. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
+        explanation = `This does not mean the person is chaotic as a lifestyle or identity. It means the root signal moves quickly, nonlinearly, and toward pressure points. Stable profile translation: ${stableProfileLabel}. The ${harmonicText(field)} field adds repair pressure, so the best move is one honest adjustment, not a full rebuild. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
       }
 
       if (primary === "Structured" && field === "Reconstructive") {
-        explanation = `This means the system is trying to repair or strengthen something, not collapse. The ${harmonicText(primary)} root pattern wants order, sequence, and meaning, while the ${harmonicText(field)} field pushes repair pressure. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
+        explanation = `This means the system is trying to repair or strengthen something, not collapse. Stable profile translation: ${stableProfileLabel}. The ${harmonicText(primary)} root pattern wants order, sequence, and meaning, while the ${harmonicText(field)} field pushes repair pressure. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
       }
 
       if (currentState === "Threshold" && loadBand === "Overloaded" && capacityBand === "Decent") {
@@ -6091,6 +6207,7 @@
       const primaryMeta = HARMONICS[harmonics.primary] || HARMONICS.Structured;
       const supportBase = getHarmonicBaseName(harmonics.support);
       const supportMeta = HARMONICS[supportBase] || HARMONICS.Regulated;
+      const stableProfileLabel = getStableProfileLabel(harmonics.primary, harmonics.support);
       const distortionMeta = HARMONICS[harmonics.distortion] || HARMONICS.Diffused;
       const distortionState = DISTORTION_STATES[harmonics.distortionStateKey] || DISTORTION_STATES.overStructuring;
       const fieldMeta = HARMONICS[harmonics.todayField] || HARMONICS.Regulated;
@@ -6147,6 +6264,7 @@
 
       setHTML("primaryHarmonic", primaryLabel);
       setHTML("supportHarmonic", supportLabel);
+      setText("profileTranslationLabel", stableProfileLabel);
       setHTML("motionStyle", motionStyleLabel);
       setText("motionStyleRead", motionStyleRead);
       setHTML("distortionHarmonic", `${distortionLabel} · ${distortionState.label}`);
@@ -6244,6 +6362,7 @@
       console.log("Lucy.OS normalized harmonic scores:", {
         primary: harmonics.primary,
         support: harmonics.support,
+        stableProfileLabel: getStableProfileLabel(harmonics.primary, harmonics.support),
         motionStyle: harmonics.motionStyle,
         motionStyleRead: getMotionStyleRead(harmonics.motionStyle),
         rawDistortionHarmonic: harmonics.distortion,
@@ -6467,6 +6586,7 @@
     function runSyntheticHarmonicBalanceTest(count = 10000) {
       const primaryCounts = {};
       const supportCounts = {};
+      const profileLabelCounts = {};
       const motionStyleCounts = {};
       const fieldCounts = {};
       const rawDistortionCounts = {};
@@ -6488,11 +6608,13 @@
         const data = randomHarmonicTestData();
         const result = calculateHarmonics(data);
         const distortionState = DISTORTION_STATES[result.distortionStateKey] || DISTORTION_STATES.overStructuring;
+        const stableProfileLabel = getStableProfileLabel(result.primary, result.support);
 
         primaryCounts[result.primary] = (primaryCounts[result.primary] || 0) + 1;
 
         const supportBase = getHarmonicBaseName(result.support);
         supportCounts[supportBase] = (supportCounts[supportBase] || 0) + 1;
+        profileLabelCounts[stableProfileLabel] = (profileLabelCounts[stableProfileLabel] || 0) + 1;
 
         String(result.motionStyle || "")
           .split("/")
@@ -6510,6 +6632,7 @@
       console.table({
         Primary: primaryCounts,
         Support: supportCounts,
+        ProfileTranslation: profileLabelCounts,
         MotionStyle: motionStyleCounts,
         Field: fieldCounts,
         RawDistortionHarmonic: rawDistortionCounts,
@@ -6519,6 +6642,7 @@
       return {
         primaryCounts,
         supportCounts,
+        profileLabelCounts,
         motionStyleCounts,
         fieldCounts,
         rawDistortionCounts,
@@ -6694,6 +6818,7 @@
         const data = testCase.build();
         const result = calculateHarmonics(data);
         const distortionState = DISTORTION_STATES[result.distortionStateKey] || DISTORTION_STATES.overStructuring;
+        const stableProfileLabel = getStableProfileLabel(result.primary, result.support);
         const passed = testCase.expected.includes(result.primary);
 
         return {
@@ -6701,6 +6826,7 @@
           expected: testCase.expected.join(" or "),
           actualPrimary: result.primary,
           support: result.support,
+          profileTranslation: stableProfileLabel,
           motionStyle: result.motionStyle,
           motionStyleRead: getMotionStyleRead(result.motionStyle),
           rawDistortionHarmonic: result.distortion,
@@ -6717,6 +6843,7 @@
     window.runSyntheticHarmonicBalanceTest = runSyntheticHarmonicBalanceTest;
     window.runAstrologyCalibrationTest = runAstrologyCalibrationTest;
     window.getMotionStyleRead = getMotionStyleRead;
+    window.getStableProfileLabel = getStableProfileLabel;
 
     document.getElementById("calcBtn").addEventListener("click", calculate);
     document.getElementById("saveShareCardBtn").addEventListener("click", saveShareCard);
