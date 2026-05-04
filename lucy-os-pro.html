@@ -4247,6 +4247,16 @@
         .map(([key]) => key);
     }
 
+    function getTopFieldCandidates(normalizedFieldScores, limit = 3){
+      return Object.entries(normalizedFieldScores || {})
+        .sort((a, b) => safeNum(b[1]) - safeNum(a[1]))
+        .slice(0, limit)
+        .map(([field, score]) => ({
+          field,
+          score: safeNum(score)
+        }));
+    }
+
     function addScore(scores, key, value){
       scores[key] = safeNum(scores[key]) + safeNum(value);
     }
@@ -5143,6 +5153,52 @@
       const normalizedFieldScores = normalizeScores(fieldScores, fieldWeights);
       const todayField = getTopHarmonic(normalizedFieldScores, "Regulated");
 
+      const dailyFieldDebug = {
+        selectedField: todayField,
+        topCandidates: getTopFieldCandidates(normalizedFieldScores, 3),
+        rawFieldScores: fieldScores,
+        fieldWeights,
+        normalizedFieldScores,
+        fastBodyInputs: {
+          transitMoon: tMoon,
+          transitMercury: tMercury,
+          transitVenus: tVenus,
+          transitMars: tMars
+        },
+        slowBodyClimateInputs: {
+          transitJupiter: tJupiter,
+          transitSaturn: tSaturn,
+          transitUranus: tUranus,
+          transitNeptune: tNeptune,
+          transitPluto: tPluto
+        },
+        stateLoadInputs: {
+          currentStrain,
+          currentLoad,
+          currentRegulation
+        },
+        timingInputs: {
+          timingPressure,
+          forecastState,
+          environmentMode: envMode
+        },
+        moonstampInputs: {
+          state: data?.moonstamp?.state || null,
+          phase: data?.moonstamp?.phase || null,
+          phaseFraction: data?.moonstamp?.phaseFraction || null,
+          forecastModifier: data?.moonstamp?.forecastModifier || null
+        },
+        backendDebug: data?.dailyFieldBackendDebug || null,
+        freshness: {
+          transitUtcDatetime: data?.ephemeris?.transitUtcDatetime || null,
+          backendServerTimestamp: data?.dailyFieldBackendDebug?.serverCalculationTimestamp || null,
+          timezoneName: data?.inputResolved?.timezoneName || data?.inputResolved?.timezone_name || null
+        },
+        note: "Frontend Today’s Field currently scores normalized transit positions plus state/load/timing inputs. These transit values are positions, not direct strength scores."
+      };
+
+      console.log("Lucy.OS Daily Field Debug:", dailyFieldDebug);
+
       const distortionScores = {
         Structured: 0,
         Contained: 0,
@@ -5207,6 +5263,7 @@
         distortion,
         distortionStateKey,
         todayField,
+        dailyFieldDebug,
         natalScores,
         normalizedNatalScores,
         fieldScores,
@@ -6692,6 +6749,7 @@
         rawDistortionHarmonic: harmonics.distortion,
         primaryDistortionState: distortionState.label,
         todayField: harmonics.todayField,
+        dailyFieldDebug: harmonics.dailyFieldDebug,
         moonstamp,
         natalScores: harmonics.natalScores,
         normalizedNatalScores: harmonics.normalizedNatalScores,
@@ -6793,9 +6851,25 @@
       const moonDeg = data?._longitudesDeg?.moon ?? moonstamp?.moonLongitudeDeg ?? "—";
       const ascDeg = data?.angles?.asc ?? "—";
       const mcDeg = data?.angles?.mc ?? "—";
+      const dailyFieldDebug = harmonics.dailyFieldDebug || {};
+      const topCandidatesText = Array.isArray(dailyFieldDebug.topCandidates) && dailyFieldDebug.topCandidates.length
+        ? dailyFieldDebug.topCandidates.map(item => `${item.field} ${fmt(item.score)}`).join(" · ")
+        : "—";
+      const transitUtcDebug =
+        dailyFieldDebug?.freshness?.transitUtcDatetime ||
+        data?.dailyFieldBackendDebug?.transitUtcDatetime ||
+        "—";
+      const moonstampDebug =
+        dailyFieldDebug?.moonstampInputs?.state || dailyFieldDebug?.moonstampInputs?.phase
+          ? `${dailyFieldDebug?.moonstampInputs?.state || "—"} / ${dailyFieldDebug?.moonstampInputs?.phase || "—"}`
+          : "—";
 
       setText(
         "chartDebug",
+        `Today’s Field: ${dailyFieldDebug.selectedField || harmonics.todayField || "—"}\n` +
+        `Top 3: ${topCandidatesText}\n` +
+        `Transit UTC: ${transitUtcDebug}\n` +
+        `Moonstamp: ${moonstampDebug}\n` +
         `JD: ${ephemeris.jdUt || ephemeris.jd_ut || "—"} | Sun: ${sunDeg} | Moon: ${moonDeg} | ASC: ${ascDeg} | MC: ${mcDeg}`
       );
 
@@ -7159,6 +7233,7 @@
           rawDistortionHarmonic: result.distortion,
           primaryDistortionState: distortionState.label,
           todayField: result.todayField,
+          dailyFieldDebug: result.dailyFieldDebug,
           passFail: passed ? "PASS" : "FAIL"
         };
       });
