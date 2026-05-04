@@ -534,6 +534,8 @@ def infer_mode(strain: float) -> str:
 
 
 def build_lucy_response(chart: dict) -> dict:
+    server_calculation_timestamp = datetime.now(timezone.utc).isoformat()
+
     sun = float(chart.get("sun", 0.0))
     moon = float(chart.get("moon", 0.0))
     mercury = float(chart.get("mercury", 0.0))
@@ -601,6 +603,9 @@ def build_lucy_response(chart: dict) -> dict:
     t_uranus = float(transit.get("uranus", 0.0))
     t_neptune = float(transit.get("neptune", 0.0))
     t_pluto = float(transit.get("pluto", 0.0))
+
+    transit_meta = transit.get("_meta", {}) or {}
+    transit_longitudes_deg = transit.get("_longitudesDeg", {}) or {}
 
     transit_load = (
         t_moon * 0.18 +
@@ -793,8 +798,8 @@ def build_lucy_response(chart: dict) -> dict:
         "utc_datetime": meta.get("utc_datetime"),
         "jdUt": meta.get("jd_ut"),
         "jd_ut": meta.get("jd_ut"),
-        "transitUtcDatetime": transit.get("_meta", {}).get("utc_datetime"),
-        "transitMode": transit.get("_meta", {}).get("mode", "transit"),
+        "transitUtcDatetime": transit_meta.get("utc_datetime"),
+        "transitMode": transit_meta.get("mode", "transit"),
     }
 
     planetary = {
@@ -819,6 +824,53 @@ def build_lucy_response(chart: dict) -> dict:
         "transitUranus": t_uranus,
         "transitNeptune": t_neptune,
         "transitPluto": t_pluto,
+    }
+
+    daily_field_backend_debug = {
+        "serverCalculationTimestamp": server_calculation_timestamp,
+        "transitUtcDatetime": transit_meta.get("utc_datetime"),
+        "transitJulianDay": transit_meta.get("jd_ut"),
+        "transitFreshlyCalculated": True,
+        "normalizedTransitValues": {
+            "transitMoon": t_moon,
+            "transitMercury": t_mercury,
+            "transitVenus": t_venus,
+            "transitMars": t_mars,
+            "transitJupiter": t_jupiter,
+            "transitSaturn": t_saturn,
+            "transitUranus": t_uranus,
+            "transitNeptune": t_neptune,
+            "transitPluto": t_pluto,
+        },
+        "transitLongitudesDeg": {
+            "moon": transit_longitudes_deg.get("moon"),
+            "mercury": transit_longitudes_deg.get("mercury"),
+            "venus": transit_longitudes_deg.get("venus"),
+            "mars": transit_longitudes_deg.get("mars"),
+            "jupiter": transit_longitudes_deg.get("jupiter"),
+            "saturn": transit_longitudes_deg.get("saturn"),
+            "uranus": transit_longitudes_deg.get("uranus"),
+            "neptune": transit_longitudes_deg.get("neptune"),
+            "pluto": transit_longitudes_deg.get("pluto"),
+        },
+        "timing": {
+            "timingPressure": timing_pressure,
+            "timingMode": timing_mode,
+        },
+        "environment": {
+            "environmentalLoad": environment_load,
+            "environmentMode": environment_mode,
+        },
+        "forecastNowState": forecast_now_state,
+        "moonstamp": {
+            "state": moonstamp.get("state"),
+            "phase": moonstamp.get("phase"),
+            "phaseFraction": moonstamp.get("phaseFraction"),
+            "illumination": moonstamp.get("illumination"),
+            "moonAge": moonstamp.get("moonAge"),
+            "forecastModifier": moonstamp.get("forecastModifier"),
+        },
+        "note": "Transit planet values are normalized zodiac positions from 0–1, not direct strength scores.",
     }
 
     return {
@@ -879,7 +931,8 @@ def build_lucy_response(chart: dict) -> dict:
         "angles": chart.get("angles", {}),
         "houses": chart.get("houses", []),
         "_longitudesDeg": chart.get("_longitudesDeg", {}),
-        "transitLongitudesDeg": transit.get("_longitudesDeg", {}),
+        "transitLongitudesDeg": transit_longitudes_deg,
+        "dailyFieldBackendDebug": daily_field_backend_debug,
         "debugEcho": {
             "ascNorm": asc_norm,
             "mcNorm": mc_norm,
@@ -889,7 +942,7 @@ def build_lucy_response(chart: dict) -> dict:
             "natalRegulation": natal_regulation,
             "transitLoad": transit_load,
             "transitRegulation": transit_regulation,
-            "transitMode": transit.get("_meta", {}).get("mode", "transit"),
+            "transitMode": transit_meta.get("mode", "transit"),
             "moonstampPhaseFraction": moonstamp.get("phaseFraction"),
             "moonstampState": moonstamp.get("state"),
             "moonstampPhase": moonstamp.get("phase"),
