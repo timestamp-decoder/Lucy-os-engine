@@ -1768,6 +1768,75 @@
       overflow-wrap:break-word;
     }
 
+    .shareCardCoreRule{
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(216,184,76,.26);
+      border-radius:18px;
+      padding:16px;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(216,184,76,.13), transparent 34%),
+        radial-gradient(circle at 100% 16%, rgba(103,193,255,.08), transparent 34%),
+        linear-gradient(180deg,rgba(216,184,76,.070),rgba(255,255,255,.026));
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.025),
+        0 10px 28px rgba(0,0,0,.14);
+      min-width:0;
+      max-width:100%;
+    }
+
+    .shareCardCoreRule::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:linear-gradient(135deg,rgba(255,255,255,.035),transparent 46%);
+    }
+
+    .shareCardCoreRule > *{
+      position:relative;
+      z-index:1;
+    }
+
+    .shareCardCoreGrid{
+      display:grid;
+      gap:10px;
+      margin-top:2px;
+      min-width:0;
+      max-width:100%;
+    }
+
+    .shareCardCoreItem{
+      display:grid;
+      gap:4px;
+      min-width:0;
+      max-width:100%;
+      padding-top:8px;
+      border-top:1px solid rgba(255,255,255,.075);
+    }
+
+    .shareCardCoreItem:first-child{
+      padding-top:0;
+      border-top:none;
+    }
+
+    .shareCardCoreTitle{
+      color:var(--gold);
+      font-size:11px;
+      font-weight:950;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      overflow-wrap:anywhere;
+    }
+
+    .shareCardCoreText{
+      color:var(--text);
+      font-size:15px;
+      line-height:1.48;
+      font-weight:750;
+      overflow-wrap:break-word;
+    }
+
     .shareCardMoonstamp{
       display:none;
       border:1px solid rgba(203,183,255,.20);
@@ -2662,7 +2731,8 @@
         font-size:34px;
       }
 
-      .shareCardFieldDirection{
+      .shareCardFieldDirection,
+      .shareCardCoreRule{
         border-radius:16px;
         padding:14px;
       }
@@ -2673,6 +2743,10 @@
 
       .shareCardFieldText{
         font-size:13px;
+      }
+
+      .shareCardCoreText{
+        font-size:14px;
       }
 
       .shareCardRead{
@@ -3239,6 +3313,28 @@
                   </div>
                 </div>
 
+                <div class="shareCardCoreRule">
+                  <div class="shareCardSection">
+                    <div class="shareCardLabel">Core Rule</div>
+                    <div class="shareCardCoreGrid">
+                      <div class="shareCardCoreItem">
+                        <div class="shareCardCoreTitle">Use your gift:</div>
+                        <div class="shareCardCoreText" id="shareCardCoreGift">—</div>
+                      </div>
+
+                      <div class="shareCardCoreItem">
+                        <div class="shareCardCoreTitle">Watch the distortion:</div>
+                        <div class="shareCardCoreText" id="shareCardCoreDistortion">—</div>
+                      </div>
+
+                      <div class="shareCardCoreItem">
+                        <div class="shareCardCoreTitle">Make the move:</div>
+                        <div class="shareCardCoreText" id="shareCardCoreMove">—</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <div class="shareCardMoonstamp" id="shareCardMoonstampBlock">
                   <div class="shareCardSection">
                     <div class="shareCardLabel">Moonstamp Modifier</div>
@@ -3718,6 +3814,11 @@
       systemWeather: "Structured signal architecture meeting a live field",
       fieldDirectionTitle: "—",
       fieldDirectionText: "Waiting for field direction.",
+      coreRule: {
+        gift: "—",
+        distortion: "—",
+        move: "—"
+      },
       moonstampModifier: {
         hasMoonstamp: false,
         title: "",
@@ -5683,7 +5784,6 @@
       const primary = harmonics?.primary || "Structured";
       const support = getHarmonicBaseName(harmonics?.support || "Regulated");
       const field = harmonics?.todayField || "Regulated";
-      const motionStyle = harmonicText(harmonics?.motionStyle || "Steady");
       const currentState = stateLabelFromMode(data?.state?.mode || "");
       const label = stableProfileLabel || getStableProfileLabel(primary, support);
       const distortion = distortionState || DISTORTION_STATES.overStructuring;
@@ -5701,77 +5801,106 @@
       };
 
       const primaryPhrases = {
-        Structured: "a system that wants pressure to become order",
-        Contained: "a system that protects signal until it is ready to release",
-        Chaotic: "a fast signal system that needs the charge to become usable",
-        Relational: "a contact-sensitive system that reads tone and shared atmosphere",
-        Threshold: "an edge-sensitive system that notices openings, crossings, and decisions",
-        Reconstructive: "a repair-oriented system that notices what needs strengthening",
-        Integrative: "a meaning-making system that gathers the wider story",
-        Diffused: "a wide receptive system that feels the atmosphere before defining it",
-        Regulated: "a paced system that manages load through rhythm and containment"
+        Structured: "turns pressure into order",
+        Contained: "protects signal until it is ready to release",
+        Chaotic: "moves fast signal into usable form",
+        Relational: "reads tone, contact, and shared atmosphere",
+        Threshold: "notices openings, crossings, and decisions",
+        Reconstructive: "strengthens what pressure exposes",
+        Integrative: "gathers the wider story into meaning",
+        Diffused: "feels the atmosphere before defining it",
+        Regulated: "manages load through rhythm and containment"
       };
 
-      const fieldPhrases = {
-        Structured: "today is offering structure, sequence, or practical form",
-        Contained: "today is pulling the field inward for protected processing",
-        Chaotic: "today is adding movement, charge, or nonlinear signal",
-        Relational: "today is bringing tone, contact, or shared-field pressure forward",
-        Threshold: "today is bringing an edge, opening, or decision point forward",
-        Reconstructive: "today is adding repair or recalibration pressure",
-        Integrative: "today is widening the pattern and asking pieces to connect",
-        Diffused: "today is making the field more subtle, porous, or harder to define",
-        Regulated: "today is supporting pacing, rhythm, and manageable movement"
+      const fieldPressures = {
+        Structured: "structure, sequence, and practical form are available",
+        Contained: "the field is pulling inward for protected processing",
+        Chaotic: "movement, charge, or disruption is active",
+        Relational: "tone, contact, or shared-field pressure is active",
+        Threshold: "an edge, opening, or decision point is active",
+        Reconstructive: "repair or recalibration pressure is active",
+        Integrative: "the pattern is widening and asking pieces to connect",
+        Diffused: "the field is more subtle, porous, or hard to define",
+        Regulated: "pacing, rhythm, and manageable movement are available"
       };
 
-      let profileSentence = `Your stable profile reads as ${label}: ${primaryPhrases[primary] || "a root signal system"} that stabilizes ${supportPhrases[support] || "through its support pattern"}. ${fieldPhrases[field] || "Today’s field is active"}, but today’s field is weather — not your whole identity.`;
-      let realLifeBridge = `In practice, let ${label} lead the day: use your support pattern first, then respond to the current field with one clear move.`;
+      const fieldBestInterpretations = {
+        Structured: "Use the available form, but do not over-tighten it.",
+        Contained: "Let the signal shape privately before forcing it outward.",
+        Chaotic: "Give the movement one safe channel.",
+        Relational: "Stay centered before trying to read or repair the room.",
+        Threshold: "Name the real crossing before moving.",
+        Reconstructive: "Treat this as one repair point, not a full-system failure.",
+        Integrative: "Let the larger pattern clarify one useful step.",
+        Diffused: "Ground first, then choose the simplest true line.",
+        Regulated: "Let rhythm carry one practical action."
+      };
+
+      let todayRead = `${label}: ${primaryPhrases[primary] || "your root pattern is active"}. Today, ${fieldPressures[field] || "the current field is active"}. ${fieldBestInterpretations[field] || "Choose one clear next move."}`;
+      let realLife = `When this shows up in normal life, use your stabilizing support ${supportPhrases[support] || "through your support pattern"} and keep the response to one clear move.`;
+      let shareRead = todayRead;
+      let shareRealLife = realLife;
       let whySentence = `The profile-aware layer keeps the stable profile primary: ${label} combines ${harmonicText(primary)} root pattern with ${harmonicText(support)} support, while the ${harmonicText(field)} field describes today’s active pressure.`;
-      let shareSentence = `${label}: ${primaryPhrases[primary] || "your root signal"} stabilizes ${supportPhrases[support] || "through support"}, while today’s ${harmonicText(field)} field shows the pressure currently active.`;
 
       if (primary === "Chaotic" && support === "Structured") {
-        profileSentence = `Your stable profile reads as ${label}: fast signal becomes usable through structure, naming, framing, and containment. ${fieldPhrases[field] || "Today’s field is active"}, so the move is not to suppress the charge — it is to give it a clear form.`;
-        realLifeBridge = "In practice, let speed become structure: name the pressure, frame the weak point, and give the charge one useful container before acting.";
+        todayRead = `${label}: fast signal becomes usable through structure, naming, framing, and containment. Today, ${fieldPressures[field] || "the current field is active"}. ${field === "Reconstructive" ? "Not every burst of energy needs to become a teardown." : "Give the charge one clear form."}`;
+        realLife = field === "Reconstructive"
+          ? "When energy rises, name the pressure, frame the weak point, and use the charge to repair one thing."
+          : "When energy rises, name it, frame it, and give it one useful container before acting.";
+        shareRead = `${label}: fast signal becomes usable through structure. Today, ${fieldPressures[field] || "the current field is active"}.`;
+        shareRealLife = field === "Reconstructive"
+          ? "Name the pressure. Frame the weak point. Repair one thing."
+          : "Name the pressure, frame it, and give the charge one useful container.";
         whySentence = `The profile-aware layer keeps ${label} visible: the root signal moves fast, but the stabilizing support turns activation into structure, naming, framing, and usable pressure.`;
-        shareSentence = `${label}: fast signal becomes usable through structure, naming, framing, and containment. Use the charge by giving it one clear form.`;
       } else if (primary === "Integrative" && support === "Diffused") {
-        profileSentence = `Your stable profile reads as ${label}: wide meaning-making becomes clearer through field sensitivity, but it has to return to one present thread. ${fieldPhrases[field] || "Today’s field is active"}, so do not make the whole story carry today’s move.`;
-        realLifeBridge = "In practice, gather the meaning, feel the wider field, then return to one present thread that can actually be handled now.";
+        todayRead = `${label}: wide meaning-making becomes clearer through field sensitivity. Today, ${fieldPressures[field] || "the current field is active"}. Return the whole story to one present thread.`;
+        realLife = "When the meaning gets wide, feel the field, then choose one thread that can actually be handled now.";
+        shareRead = `${label}: wide meaning-making needs one present thread. Today, ${fieldPressures[field] || "the current field is active"}.`;
+        shareRealLife = "Feel the wider field, then return to one thread.";
         whySentence = `The profile-aware layer keeps ${label} visible: the root pattern gathers meaning widely, while the support pattern senses atmosphere; clarity comes from returning the whole field to one present thread.`;
-        shareSentence = `${label}: wide meaning-making becomes clearer when field sensitivity returns to one present thread.`;
       } else if (primary === "Structured" && support === "Regulated") {
-        profileSentence = `Your stable profile reads as ${label}: order becomes usable when it is paced, contained, and not over-tightened. ${fieldPhrases[field] || "Today’s field is active"}, so let structure support the move without making the whole day a project.`;
-        realLifeBridge = "In practice, build the container, pace the load, and stop when the next step is clear enough.";
+        todayRead = `${label}: order becomes usable when it is paced, contained, and not over-tightened. Today, ${fieldPressures[field] || "the current field is active"}. Let structure support the move without making the whole day a project.`;
+        realLife = "When pressure rises, build the container, pace the load, and stop when the next step is clear enough.";
+        shareRead = `${label}: structure works best when pacing keeps the load manageable. Today, ${fieldPressures[field] || "the current field is active"}.`;
+        shareRealLife = "Build the container, pace the load, and stop when the next step is clear.";
         whySentence = `The profile-aware layer keeps ${label} visible: structure is primary, but regulation decides the usable pace.`;
-        shareSentence = `${label}: structure works best when pacing keeps the load manageable.`;
       } else if (primary === "Diffused" && support === "Structured") {
-        profileSentence = `Your stable profile reads as ${label}: atmospheric signal becomes useful when it is framed, named, and brought into one clear line. ${fieldPhrases[field] || "Today’s field is active"}, so clarity can be small without needing to be total.`;
-        realLifeBridge = "In practice, do not define the whole atmosphere. Give it one sentence, one boundary, or one grounded next step.";
+        todayRead = `${label}: atmospheric signal becomes useful when it is framed, named, and brought into one clear line. Today, ${fieldPressures[field] || "the current field is active"}. Clarity can be small without needing to be total.`;
+        realLife = "When the field feels vague, do not define everything. Give it one sentence, one boundary, or one grounded next step.";
+        shareRead = `${label}: atmospheric signal becomes usable through one clear frame. Today, ${fieldPressures[field] || "the current field is active"}.`;
+        shareRealLife = "Give the field one sentence, one boundary, or one grounded next step.";
         whySentence = `The profile-aware layer keeps ${label} visible: the root pattern receives widely, while structure helps the field become legible without forcing total certainty.`;
-        shareSentence = `${label}: atmospheric signal becomes usable through one clear frame.`;
       } else if (primary === "Relational" && support === "Contained") {
-        profileSentence = `Your stable profile reads as ${label}: connection stays clearer when it is protected, paced, and not overexposed. ${fieldPhrases[field] || "Today’s field is active"}, so contact should not override your center.`;
-        realLifeBridge = "In practice, keep contact gentle, say one honest thing, and protect the amount of signal you release.";
+        todayRead = `${label}: connection stays clearer when it is protected, paced, and not overexposed. Today, ${fieldPressures[field] || "the current field is active"}. Contact should not override your center.`;
+        realLife = "When contact gets loud, keep it gentle, say one honest thing, and protect the amount of signal you release.";
+        shareRead = `${label}: connection stabilizes through protected timing and clear boundaries. Today, ${fieldPressures[field] || "the current field is active"}.`;
+        shareRealLife = "Keep contact gentle. Say one honest thing. Protect your center.";
         whySentence = `The profile-aware layer keeps ${label} visible: the root pattern reads connection, while contained support protects timing and boundaries.`;
-        shareSentence = `${label}: connection stabilizes through protected timing and clear boundaries.`;
       } else if (primary === "Reconstructive" && support === "Regulated") {
-        profileSentence = `Your stable profile reads as ${label}: repair becomes safer when pacing decides how much pressure the system takes on. ${fieldPhrases[field] || "Today’s field is active"}, so one adjustment is stronger than a full rebuild.`;
-        realLifeBridge = "In practice, let pacing choose the repair size. Fix the weak point that is actually present.";
+        todayRead = `${label}: repair becomes safer when pacing decides how much pressure the system takes on. Today, ${fieldPressures[field] || "the current field is active"}. One adjustment is stronger than a full rebuild.`;
+        realLife = "When repair pressure shows up, let pacing choose the repair size. Fix the weak point that is actually present.";
+        shareRead = `${label}: repair pressure becomes usable when pacing keeps the work proportional. Today, ${fieldPressures[field] || "the current field is active"}.`;
+        shareRealLife = "Let pacing choose the repair size. Fix the weak point that is present.";
         whySentence = `The profile-aware layer keeps ${label} visible: the root pattern can work with repair pressure, but regulated support keeps the rebuild proportional.`;
-        shareSentence = `${label}: repair pressure becomes usable when pacing keeps the work proportional.`;
       }
 
       if (currentState === "Overloaded") {
-        profileSentence += " Because the current state reads overloaded, the profile needs simplification before expansion.";
-        realLifeBridge += " Reduce scope before adding another layer.";
+        todayRead += " Current state reads overloaded, so simplify before expanding.";
+        realLife += " Reduce scope before adding another layer.";
+        shareRead += " Simplify before expanding.";
+        shareRealLife += " Reduce scope first.";
         whySentence += " Current state is overloaded, so the profile-aware read prioritizes containment before interpretation.";
       } else if (currentState === "Threshold") {
-        profileSentence += " Because the current state reads near a threshold, timing matters more than intensity.";
-        realLifeBridge += " Pause at the edge before forcing the next step.";
+        todayRead += " Current state is near a threshold, so timing matters more than intensity.";
+        realLife += " Pause at the edge before forcing the next step.";
+        shareRead += " Timing matters more than intensity.";
+        shareRealLife += " Pause at the edge first.";
         whySentence += " Current state is thresholded, so the profile-aware read emphasizes timing and one clean crossing.";
       } else if (currentState === "Mobilized") {
-        profileSentence += " Because the current state is mobilized, use the available movement without stacking extra pressure.";
-        realLifeBridge += " Let momentum serve the move without multiplying demands.";
+        todayRead += " Current state is mobilized, so use the movement without stacking more pressure.";
+        realLife += " Let momentum serve the move without multiplying demands.";
+        shareRead += " Use the movement without stacking pressure.";
+        shareRealLife += " Let momentum serve one move.";
         whySentence += " Current state is mobilized, so the profile-aware read uses activation but keeps it paced.";
       }
 
@@ -5780,10 +5909,79 @@
       }
 
       return {
-        profileSentence,
-        realLifeBridge,
-        whySentence,
-        shareSentence
+        todayRead,
+        realLife,
+        shareRead,
+        shareRealLife,
+        whySentence
+      };
+    }
+
+    function buildCoreRule(harmonics, data, stableProfileLabel, distortionState, guidance){
+      const primary = harmonics?.primary || "Structured";
+      const support = getHarmonicBaseName(harmonics?.support || "Regulated");
+      const label = stableProfileLabel || getStableProfileLabel(primary, support);
+      const distortion = distortionState || DISTORTION_STATES.overStructuring;
+
+      const gifts = {
+        Structured: "Turn pressure into order.",
+        Contained: "Protect the signal until it is ready.",
+        Chaotic: "Let the signal move.",
+        Relational: "Read the field without losing your center.",
+        Threshold: "Sense the edge and time the crossing.",
+        Reconstructive: "Strengthen the weak point.",
+        Integrative: "Gather the pieces into meaning.",
+        Diffused: "Feel the field, then find one anchor.",
+        Regulated: "Pace the load."
+      };
+
+      const supportAdds = {
+        Structured: "Give it form.",
+        Contained: "Keep it protected.",
+        Chaotic: "Give it motion.",
+        Relational: "Keep contact clean.",
+        Threshold: "Move at the right edge.",
+        Reconstructive: "Repair what is real.",
+        Integrative: "Connect only what helps.",
+        Diffused: "Keep one gentle anchor.",
+        Regulated: "Keep the pace steady."
+      };
+
+      let useGift = gifts[primary] || "Use your root pattern cleanly.";
+
+      if (primary === "Chaotic" && support === "Structured") {
+        useGift = "Let the signal move, then give it form.";
+      } else if (primary === "Structured" && support === "Regulated") {
+        useGift = "Build the container, then pace the load.";
+      } else if (primary === "Integrative" && support === "Diffused") {
+        useGift = "Gather the meaning, then return to one thread.";
+      } else if (primary === "Diffused" && support === "Structured") {
+        useGift = "Feel the field, then frame one clear line.";
+      } else if (primary === "Relational" && support === "Contained") {
+        useGift = "Read the connection, then protect your center.";
+      } else if (primary === "Reconstructive" && support === "Regulated") {
+        useGift = "Repair the weak point at a manageable pace.";
+      } else if (supportAdds[support] && support !== primary) {
+        useGift = `${useGift} ${supportAdds[support]}`;
+      }
+
+      let watchDistortion = distortion.returnPath || "Return to one clear channel before responding.";
+
+      if (distortion.label === "Emotional Fusion") {
+        watchDistortion = "Separate mine / not mine before responding.";
+      } else if (distortion.label === "Rupture") {
+        watchDistortion = "Do not break contact faster than the field requires.";
+      } else if (distortion.label === "Over-Structuring") {
+        watchDistortion = "Do not add more structure than the moment needs.";
+      } else if (distortion.label === "Scatter") {
+        watchDistortion = "Choose one channel before the signal spreads.";
+      }
+
+      return {
+        label,
+        useGift,
+        watchDistortion,
+        makeMove: guidance?.move || "Choose one clear next move."
       };
     }
 
@@ -6133,6 +6331,7 @@
       systemWeather,
       fieldDirectionTitle,
       fieldDirectionText,
+      coreRule,
       moonstampModifier,
       todayRead,
       realLifeText,
@@ -6149,6 +6348,7 @@
         systemWeather,
         fieldDirectionTitle,
         fieldDirectionText,
+        coreRule,
         moonstampModifier: moonstampModifier || { hasMoonstamp: false, title: "", text: "", shareLine: "" },
         todayRead,
         realLifeText,
@@ -6181,6 +6381,11 @@
       setText("shareCardWeather", systemWeather);
       setText("shareCardFieldDirectionTitle", fieldDirectionTitle || "—");
       setText("shareCardFieldDirectionText", fieldDirectionText || "Waiting for field direction.");
+
+      setText("shareCardCoreGift", coreRule?.useGift || "Use your gift cleanly.");
+      setText("shareCardCoreDistortion", coreRule?.watchDistortion || "Watch the distortion before responding.");
+      setText("shareCardCoreMove", coreRule?.makeMove || goodMove || "Choose one clear next move.");
+
       setText("shareCardTodayRead", todayRead);
       setText("shareCardRealLife", realLifeText || "Translate the read into one practical action.");
       setText("shareCardMotionStyle", harmonicText(motionStyle || "—"));
@@ -6209,7 +6414,15 @@
         "",
         "Current Field Direction:",
         latestSharePayload.fieldDirectionTitle || "—",
-        latestSharePayload.fieldDirectionText || "Waiting for field direction."
+        latestSharePayload.fieldDirectionText || "Waiting for field direction.",
+        "",
+        "Core Rule:",
+        "Use your gift:",
+        latestSharePayload.coreRule?.useGift || "Use your gift cleanly.",
+        "Watch the distortion:",
+        latestSharePayload.coreRule?.watchDistortion || "Watch the distortion before responding.",
+        "Make the move:",
+        latestSharePayload.coreRule?.makeMove || latestSharePayload.goodMove || "Choose one clear next move."
       ];
 
       if (latestSharePayload.moonstampModifier?.hasMoonstamp) {
@@ -6342,10 +6555,8 @@
       const systemWeather = `${harmonicText(primaryMeta.label)} root pattern meeting a ${harmonicText(fieldMeta.label)} field`;
       const systemWeatherHTML = `${primaryLabel}&nbsp;root pattern<br><span>meeting a</span> ${fieldLabel}&nbsp;field`;
       const guidance = buildDailyGuidance(harmonics, data);
-      const realLifeText = buildRealLifeTranslation(harmonics, data);
       const profileAwareRead = buildProfileAwareEnglishRead(harmonics, data, stableProfileLabel, distortionState);
-      const dailyTodayRead = `${profileAwareRead.profileSentence} ${guidance.read}`;
-      const dailyRealLifeText = `${profileAwareRead.realLifeBridge} ${realLifeText}`;
+      const coreRule = buildCoreRule(harmonics, data, stableProfileLabel, distortionState, guidance);
       const driver = publicDriverName(primaryDriverName(data));
       const shareDriverNote = buildShortDriverNote(data, harmonics, fieldTrend);
 
@@ -6362,8 +6573,8 @@
       setHTML("topMotionStyle", motionStyleLabel);
       setText("topMotionStyleRead", motionStyleRead);
 
-      setText("dailyTodayRead", dailyTodayRead);
-      setText("dailyRealLife", dailyRealLifeText);
+      setText("dailyTodayRead", profileAwareRead.todayRead);
+      setText("dailyRealLife", profileAwareRead.realLife);
       setText("dailyLeanInto", guidance.lean);
       setText("dailyWatchFor", guidance.watch);
       setText("dailyGoodMove", guidance.move);
@@ -6397,9 +6608,10 @@
         systemWeather,
         fieldDirectionTitle: fieldDirection.title,
         fieldDirectionText: fieldDirection.text,
+        coreRule,
         moonstampModifier,
-        todayRead: `${profileAwareRead.shareSentence} ${guidance.read}`,
-        realLifeText: dailyRealLifeText,
+        todayRead: profileAwareRead.shareRead,
+        realLifeText: profileAwareRead.shareRealLife,
         driverNote: shareDriverNote,
         goodMove: guidance.move,
         returnText: guidance.ret,
@@ -6940,7 +7152,8 @@
           actualPrimary: result.primary,
           support: result.support,
           profileTranslation: stableProfileLabel,
-          profileAwareSentence: profileAwareRead.profileSentence,
+          profileAwareTodayRead: profileAwareRead.todayRead,
+          profileAwareRealLife: profileAwareRead.realLife,
           motionStyle: result.motionStyle,
           motionStyleRead: getMotionStyleRead(result.motionStyle),
           rawDistortionHarmonic: result.distortion,
