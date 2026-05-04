@@ -5679,6 +5679,114 @@
       return `Signal moves through ${readableParts}. Keep the interpretation practical and choose one clean next move.`;
     }
 
+    function buildProfileAwareEnglishRead(harmonics, data, stableProfileLabel, distortionState){
+      const primary = harmonics?.primary || "Structured";
+      const support = getHarmonicBaseName(harmonics?.support || "Regulated");
+      const field = harmonics?.todayField || "Regulated";
+      const motionStyle = harmonicText(harmonics?.motionStyle || "Steady");
+      const currentState = stateLabelFromMode(data?.state?.mode || "");
+      const label = stableProfileLabel || getStableProfileLabel(primary, support);
+      const distortion = distortionState || DISTORTION_STATES.overStructuring;
+
+      const supportPhrases = {
+        Structured: "through structure, naming, framing, and practical containers",
+        Contained: "through privacy, protected timing, and slower release",
+        Chaotic: "through movement, discharge, and a useful channel for activation",
+        Relational: "through contact, tone, mirroring, and proportional repair",
+        Threshold: "through timing, clean crossings, and decisive next steps",
+        Reconstructive: "through repair, strengthening weak points, and rebuilding only what needs rebuilding",
+        Integrative: "through synthesis, meaning-making, and returning scattered pieces to coherence",
+        Diffused: "through field sensitivity, spaciousness, and one gentle anchor",
+        Regulated: "through pacing, containment, rhythm, and load control"
+      };
+
+      const primaryPhrases = {
+        Structured: "a system that wants pressure to become order",
+        Contained: "a system that protects signal until it is ready to release",
+        Chaotic: "a fast signal system that needs the charge to become usable",
+        Relational: "a contact-sensitive system that reads tone and shared atmosphere",
+        Threshold: "an edge-sensitive system that notices openings, crossings, and decisions",
+        Reconstructive: "a repair-oriented system that notices what needs strengthening",
+        Integrative: "a meaning-making system that gathers the wider story",
+        Diffused: "a wide receptive system that feels the atmosphere before defining it",
+        Regulated: "a paced system that manages load through rhythm and containment"
+      };
+
+      const fieldPhrases = {
+        Structured: "today is offering structure, sequence, or practical form",
+        Contained: "today is pulling the field inward for protected processing",
+        Chaotic: "today is adding movement, charge, or nonlinear signal",
+        Relational: "today is bringing tone, contact, or shared-field pressure forward",
+        Threshold: "today is bringing an edge, opening, or decision point forward",
+        Reconstructive: "today is adding repair or recalibration pressure",
+        Integrative: "today is widening the pattern and asking pieces to connect",
+        Diffused: "today is making the field more subtle, porous, or harder to define",
+        Regulated: "today is supporting pacing, rhythm, and manageable movement"
+      };
+
+      let profileSentence = `Your stable profile reads as ${label}: ${primaryPhrases[primary] || "a root signal system"} that stabilizes ${supportPhrases[support] || "through its support pattern"}. ${fieldPhrases[field] || "Today’s field is active"}, but today’s field is weather — not your whole identity.`;
+      let realLifeBridge = `In practice, let ${label} lead the day: use your support pattern first, then respond to the current field with one clear move.`;
+      let whySentence = `The profile-aware layer keeps the stable profile primary: ${label} combines ${harmonicText(primary)} root pattern with ${harmonicText(support)} support, while the ${harmonicText(field)} field describes today’s active pressure.`;
+      let shareSentence = `${label}: ${primaryPhrases[primary] || "your root signal"} stabilizes ${supportPhrases[support] || "through support"}, while today’s ${harmonicText(field)} field shows the pressure currently active.`;
+
+      if (primary === "Chaotic" && support === "Structured") {
+        profileSentence = `Your stable profile reads as ${label}: fast signal becomes usable through structure, naming, framing, and containment. ${fieldPhrases[field] || "Today’s field is active"}, so the move is not to suppress the charge — it is to give it a clear form.`;
+        realLifeBridge = "In practice, let speed become structure: name the pressure, frame the weak point, and give the charge one useful container before acting.";
+        whySentence = `The profile-aware layer keeps ${label} visible: the root signal moves fast, but the stabilizing support turns activation into structure, naming, framing, and usable pressure.`;
+        shareSentence = `${label}: fast signal becomes usable through structure, naming, framing, and containment. Use the charge by giving it one clear form.`;
+      } else if (primary === "Integrative" && support === "Diffused") {
+        profileSentence = `Your stable profile reads as ${label}: wide meaning-making becomes clearer through field sensitivity, but it has to return to one present thread. ${fieldPhrases[field] || "Today’s field is active"}, so do not make the whole story carry today’s move.`;
+        realLifeBridge = "In practice, gather the meaning, feel the wider field, then return to one present thread that can actually be handled now.";
+        whySentence = `The profile-aware layer keeps ${label} visible: the root pattern gathers meaning widely, while the support pattern senses atmosphere; clarity comes from returning the whole field to one present thread.`;
+        shareSentence = `${label}: wide meaning-making becomes clearer when field sensitivity returns to one present thread.`;
+      } else if (primary === "Structured" && support === "Regulated") {
+        profileSentence = `Your stable profile reads as ${label}: order becomes usable when it is paced, contained, and not over-tightened. ${fieldPhrases[field] || "Today’s field is active"}, so let structure support the move without making the whole day a project.`;
+        realLifeBridge = "In practice, build the container, pace the load, and stop when the next step is clear enough.";
+        whySentence = `The profile-aware layer keeps ${label} visible: structure is primary, but regulation decides the usable pace.`;
+        shareSentence = `${label}: structure works best when pacing keeps the load manageable.`;
+      } else if (primary === "Diffused" && support === "Structured") {
+        profileSentence = `Your stable profile reads as ${label}: atmospheric signal becomes useful when it is framed, named, and brought into one clear line. ${fieldPhrases[field] || "Today’s field is active"}, so clarity can be small without needing to be total.`;
+        realLifeBridge = "In practice, do not define the whole atmosphere. Give it one sentence, one boundary, or one grounded next step.";
+        whySentence = `The profile-aware layer keeps ${label} visible: the root pattern receives widely, while structure helps the field become legible without forcing total certainty.`;
+        shareSentence = `${label}: atmospheric signal becomes usable through one clear frame.`;
+      } else if (primary === "Relational" && support === "Contained") {
+        profileSentence = `Your stable profile reads as ${label}: connection stays clearer when it is protected, paced, and not overexposed. ${fieldPhrases[field] || "Today’s field is active"}, so contact should not override your center.`;
+        realLifeBridge = "In practice, keep contact gentle, say one honest thing, and protect the amount of signal you release.";
+        whySentence = `The profile-aware layer keeps ${label} visible: the root pattern reads connection, while contained support protects timing and boundaries.`;
+        shareSentence = `${label}: connection stabilizes through protected timing and clear boundaries.`;
+      } else if (primary === "Reconstructive" && support === "Regulated") {
+        profileSentence = `Your stable profile reads as ${label}: repair becomes safer when pacing decides how much pressure the system takes on. ${fieldPhrases[field] || "Today’s field is active"}, so one adjustment is stronger than a full rebuild.`;
+        realLifeBridge = "In practice, let pacing choose the repair size. Fix the weak point that is actually present.";
+        whySentence = `The profile-aware layer keeps ${label} visible: the root pattern can work with repair pressure, but regulated support keeps the rebuild proportional.`;
+        shareSentence = `${label}: repair pressure becomes usable when pacing keeps the work proportional.`;
+      }
+
+      if (currentState === "Overloaded") {
+        profileSentence += " Because the current state reads overloaded, the profile needs simplification before expansion.";
+        realLifeBridge += " Reduce scope before adding another layer.";
+        whySentence += " Current state is overloaded, so the profile-aware read prioritizes containment before interpretation.";
+      } else if (currentState === "Threshold") {
+        profileSentence += " Because the current state reads near a threshold, timing matters more than intensity.";
+        realLifeBridge += " Pause at the edge before forcing the next step.";
+        whySentence += " Current state is thresholded, so the profile-aware read emphasizes timing and one clean crossing.";
+      } else if (currentState === "Mobilized") {
+        profileSentence += " Because the current state is mobilized, use the available movement without stacking extra pressure.";
+        realLifeBridge += " Let momentum serve the move without multiplying demands.";
+        whySentence += " Current state is mobilized, so the profile-aware read uses activation but keeps it paced.";
+      }
+
+      if (distortion?.label) {
+        whySentence += ` Distortion watch: ${distortion.label} means ${distortion.plain}`;
+      }
+
+      return {
+        profileSentence,
+        realLifeBridge,
+        whySentence,
+        shareSentence
+      };
+    }
+
     function buildRealLifeTranslation(harmonics, data){
       const primary = harmonics?.primary || "Structured";
       const field = harmonics?.todayField || "Regulated";
@@ -5954,7 +6062,7 @@
       };
     }
 
-    function updateWhyReadUI(harmonics, data, fieldTrend){
+    function updateWhyReadUI(harmonics, data, fieldTrend, profileAwareRead){
       const state = data?.state || {};
       const moonstamp = getMoonstamp(data);
       const hasMoonstamp = hasMoonstampData(data);
@@ -5990,14 +6098,14 @@
       setText("whyPeakTiming", formatMoonstampTiming(moonstamp));
       setText("whyMoonstampModifier", moonstampLine);
 
-      let explanation = `Lucy.OS is reading a ${harmonicText(primary)} root pattern inside a ${harmonicText(field)} current field. Stable profile translation: ${stableProfileLabel}. That means the guidance is not just “who you are” and not just “what today is doing.” It is the interaction between the two. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Current state is ${currentState.toLowerCase()}; load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${fieldTrend.rationale} ${driverNote}`;
+      let explanation = `${profileAwareRead?.whySentence || ""} Lucy.OS is reading a ${harmonicText(primary)} root pattern inside a ${harmonicText(field)} current field. Stable profile translation: ${stableProfileLabel}. That means the guidance is not just “who you are” and not just “what today is doing.” It is the interaction between the two. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Current state is ${currentState.toLowerCase()}; load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${fieldTrend.rationale} ${driverNote}`;
 
       if (primary === "Chaotic" && field === "Reconstructive") {
-        explanation = `This does not mean the person is chaotic as a lifestyle or identity. It means the root signal moves quickly, nonlinearly, and toward pressure points. Stable profile translation: ${stableProfileLabel}. The ${harmonicText(field)} field adds repair pressure, so the best move is one honest adjustment, not a full rebuild. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
+        explanation = `${profileAwareRead?.whySentence || ""} This does not mean the person is chaotic as a lifestyle or identity. It means the root signal moves quickly, nonlinearly, and toward pressure points. Stable profile translation: ${stableProfileLabel}. The ${harmonicText(field)} field adds repair pressure, so the best move is one honest adjustment, not a full rebuild. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
       }
 
       if (primary === "Structured" && field === "Reconstructive") {
-        explanation = `This means the system is trying to repair or strengthen something, not collapse. Stable profile translation: ${stableProfileLabel}. The ${harmonicText(primary)} root pattern wants order, sequence, and meaning, while the ${harmonicText(field)} field pushes repair pressure. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
+        explanation = `${profileAwareRead?.whySentence || ""} This means the system is trying to repair or strengthen something, not collapse. Stable profile translation: ${stableProfileLabel}. The ${harmonicText(primary)} root pattern wants order, sequence, and meaning, while the ${harmonicText(field)} field pushes repair pressure. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
       }
 
       if (currentState === "Threshold" && loadBand === "Overloaded" && capacityBand === "Decent") {
@@ -6235,6 +6343,9 @@
       const systemWeatherHTML = `${primaryLabel}&nbsp;root pattern<br><span>meeting a</span> ${fieldLabel}&nbsp;field`;
       const guidance = buildDailyGuidance(harmonics, data);
       const realLifeText = buildRealLifeTranslation(harmonics, data);
+      const profileAwareRead = buildProfileAwareEnglishRead(harmonics, data, stableProfileLabel, distortionState);
+      const dailyTodayRead = `${profileAwareRead.profileSentence} ${guidance.read}`;
+      const dailyRealLifeText = `${profileAwareRead.realLifeBridge} ${realLifeText}`;
       const driver = publicDriverName(primaryDriverName(data));
       const shareDriverNote = buildShortDriverNote(data, harmonics, fieldTrend);
 
@@ -6251,8 +6362,8 @@
       setHTML("topMotionStyle", motionStyleLabel);
       setText("topMotionStyleRead", motionStyleRead);
 
-      setText("dailyTodayRead", guidance.read);
-      setText("dailyRealLife", realLifeText);
+      setText("dailyTodayRead", dailyTodayRead);
+      setText("dailyRealLife", dailyRealLifeText);
       setText("dailyLeanInto", guidance.lean);
       setText("dailyWatchFor", guidance.watch);
       setText("dailyGoodMove", guidance.move);
@@ -6281,14 +6392,14 @@
 
       updateFieldTranslationUI(fieldMeta.label);
       updateOutlookUI(data, harmonics);
-      updateWhyReadUI(harmonics, data, fieldTrend);
+      updateWhyReadUI(harmonics, data, fieldTrend, profileAwareRead);
       updateShareUI({
         systemWeather,
         fieldDirectionTitle: fieldDirection.title,
         fieldDirectionText: fieldDirection.text,
         moonstampModifier,
-        todayRead: guidance.read,
-        realLifeText,
+        todayRead: `${profileAwareRead.shareSentence} ${guidance.read}`,
+        realLifeText: dailyRealLifeText,
         driverNote: shareDriverNote,
         goodMove: guidance.move,
         returnText: guidance.ret,
@@ -6363,6 +6474,7 @@
         primary: harmonics.primary,
         support: harmonics.support,
         stableProfileLabel: getStableProfileLabel(harmonics.primary, harmonics.support),
+        profileTranslation: getStableProfileLabel(harmonics.primary, harmonics.support),
         motionStyle: harmonics.motionStyle,
         motionStyleRead: getMotionStyleRead(harmonics.motionStyle),
         rawDistortionHarmonic: harmonics.distortion,
@@ -6819,6 +6931,7 @@
         const result = calculateHarmonics(data);
         const distortionState = DISTORTION_STATES[result.distortionStateKey] || DISTORTION_STATES.overStructuring;
         const stableProfileLabel = getStableProfileLabel(result.primary, result.support);
+        const profileAwareRead = buildProfileAwareEnglishRead(result, data, stableProfileLabel, distortionState);
         const passed = testCase.expected.includes(result.primary);
 
         return {
@@ -6827,6 +6940,7 @@
           actualPrimary: result.primary,
           support: result.support,
           profileTranslation: stableProfileLabel,
+          profileAwareSentence: profileAwareRead.profileSentence,
           motionStyle: result.motionStyle,
           motionStyleRead: getMotionStyleRead(result.motionStyle),
           rawDistortionHarmonic: result.distortion,
@@ -6844,6 +6958,7 @@
     window.runAstrologyCalibrationTest = runAstrologyCalibrationTest;
     window.getMotionStyleRead = getMotionStyleRead;
     window.getStableProfileLabel = getStableProfileLabel;
+    window.buildProfileAwareEnglishRead = buildProfileAwareEnglishRead;
 
     document.getElementById("calcBtn").addEventListener("click", calculate);
     document.getElementById("saveShareCardBtn").addEventListener("click", saveShareCard);
