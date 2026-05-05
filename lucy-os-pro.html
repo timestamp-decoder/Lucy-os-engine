@@ -315,6 +315,7 @@
       min-width:0;
       max-width:100%;
       overflow-wrap:anywhere;
+      white-space:pre-line;
     }
 
     .statusBlock strong{
@@ -324,6 +325,148 @@
       font-size:11px;
       text-transform:uppercase;
       letter-spacing:.08em;
+    }
+
+    .liveFieldDebugCard{
+      margin-bottom:16px;
+      padding:14px;
+      border:1px solid rgba(176,108,255,.24);
+      border-radius:16px;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(176,108,255,.10), transparent 36%),
+        radial-gradient(circle at 90% 0%, rgba(103,193,255,.07), transparent 34%),
+        rgba(255,255,255,.024);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.018);
+      min-width:0;
+      max-width:100%;
+      overflow:hidden;
+    }
+
+    .liveFieldDebugHeader{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:14px;
+      min-width:0;
+    }
+
+    .liveFieldDebugHeader h2{
+      margin:0;
+      font-size:16px;
+    }
+
+    .liveFieldDebugHeader p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+      overflow-wrap:break-word;
+    }
+
+    .liveFieldDebugBadge{
+      display:inline-flex;
+      align-items:center;
+      min-height:28px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(176,108,255,.24);
+      background:rgba(176,108,255,.09);
+      color:#cab1ff;
+      font-size:11px;
+      font-weight:950;
+      white-space:nowrap;
+      max-width:100%;
+    }
+
+    .liveDebugLabel{
+      color:var(--muted);
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:.11em;
+      text-transform:uppercase;
+      margin-bottom:8px;
+    }
+
+    .liveDebugSelectedValue{
+      color:var(--text);
+      font-size:18px;
+      font-weight:950;
+      overflow-wrap:anywhere;
+    }
+
+    .liveDebugBlock{
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px solid rgba(255,255,255,.075);
+      min-width:0;
+      max-width:100%;
+    }
+
+    .liveDebugTopList,
+    .liveDebugMiniGrid{
+      display:grid;
+      gap:6px;
+      min-width:0;
+    }
+
+    .liveDebugCandidateRow,
+    .liveDebugMiniItem,
+    .liveDebugScoreItem{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:8px;
+      align-items:center;
+      padding:7px 9px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.075);
+      background:rgba(255,255,255,.03);
+      color:var(--muted);
+      font-size:12px;
+      min-width:0;
+    }
+
+    .liveDebugCandidateRow span,
+    .liveDebugMiniItem span,
+    .liveDebugScoreItem span{
+      overflow-wrap:anywhere;
+      min-width:0;
+    }
+
+    .liveDebugCandidateRow strong,
+    .liveDebugMiniItem strong,
+    .liveDebugScoreItem strong{
+      color:var(--blue);
+      font-weight:950;
+      font-variant-numeric:tabular-nums;
+      text-align:right;
+      overflow-wrap:anywhere;
+    }
+
+    .liveDebugScoreGrid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:6px;
+      min-width:0;
+    }
+
+    .liveDebugThreeColumn{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+      margin-top:12px;
+      min-width:0;
+    }
+
+    .liveFieldDebugNote{
+      margin-top:12px;
+      padding-top:10px;
+      border-top:1px solid rgba(255,255,255,.075);
+      color:#d7def1;
+      font-size:11.5px;
+      line-height:1.45;
+      font-weight:750;
+      overflow-wrap:break-word;
     }
 
     .ok{
@@ -2083,6 +2226,132 @@
       overflow-wrap:break-word;
     }
 
+    .liveFieldDebugCard{
+      margin-bottom:16px;
+      padding:14px;
+      border:1px solid rgba(176,108,255,.24);
+      border-radius:16px;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(176,108,255,.10), transparent 36%),
+        radial-gradient(circle at 90% 0%, rgba(103,193,255,.07), transparent 34%),
+        rgba(255,255,255,.024);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.018);
+      min-width:0;
+      max-width:100%;
+      overflow:hidden;
+    }
+
+    .liveFieldDebugHeader{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:14px;
+      min-width:0;
+    }
+
+    .liveFieldDebugHeader h2{
+      margin:0;
+      font-size:16px;
+    }
+
+    .liveFieldDebugHeader p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+      overflow-wrap:break-word;
+    }
+
+    .liveFieldDebugBadge{
+      display:inline-flex;
+      align-items:center;
+      min-height:28px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(176,108,255,.24);
+      background:rgba(176,108,255,.09);
+      color:#cab1ff;
+      font-size:11px;
+      font-weight:950;
+      white-space:nowrap;
+    }
+
+    .liveDebugLabel{
+      color:var(--muted);
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:.11em;
+      text-transform:uppercase;
+      margin-bottom:8px;
+    }
+
+    .liveDebugSelectedValue{
+      color:var(--text);
+      font-size:18px;
+      font-weight:950;
+      overflow-wrap:anywhere;
+    }
+
+    .liveDebugBlock{
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px solid rgba(255,255,255,.075);
+      min-width:0;
+    }
+
+    .liveDebugTopList,
+    .liveDebugMiniGrid{
+      display:grid;
+      gap:6px;
+    }
+
+    .liveDebugCandidateRow,
+    .liveDebugMiniItem,
+    .liveDebugScoreItem{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:8px;
+      align-items:center;
+      padding:7px 9px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.075);
+      background:rgba(255,255,255,.03);
+      color:var(--muted);
+      font-size:12px;
+      min-width:0;
+    }
+
+    .liveDebugCandidateRow span,
+    .liveDebugMiniItem span,
+    .liveDebugScoreItem span{
+      overflow-wrap:anywhere;
+      min-width:0;
+    }
+
+    .liveDebugCandidateRow strong,
+    .liveDebugMiniItem strong,
+    .liveDebugScoreItem strong{
+      color:var(--blue);
+      font-weight:950;
+      font-variant-numeric:tabular-nums;
+      text-align:right;
+      overflow-wrap:anywhere;
+    }
+
+    .liveDebugScoreGrid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:6px;
+    }
+
+    .liveDebugThreeColumn{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+      margin-top:12px;
+    }
+
     .heroStats{
       display:grid;
       grid-template-columns:repeat(3,minmax(0,1fr));
@@ -2421,6 +2690,10 @@
         grid-template-columns:minmax(0,1fr);
       }
 
+      .liveDebugThreeColumn{
+        grid-template-columns:minmax(0,1fr);
+      }
+
       .shareIntro{
         display:grid;
       }
@@ -2715,6 +2988,19 @@
       }
 
       .whyReadGrid{
+        grid-template-columns:minmax(0,1fr);
+      }
+
+      .liveFieldDebugHeader,
+      .liveDebugThreeColumn{
+        display:grid;
+      }
+
+      .liveFieldDebugBadge{
+        white-space:normal;
+      }
+
+      .liveDebugScoreGrid{
         grid-template-columns:minmax(0,1fr);
       }
 
@@ -3415,6 +3701,91 @@
               </div>
             </div>
 
+            <div class="liveFieldDebugCard">
+              <div class="liveFieldDebugHeader">
+                <div>
+                  <h2>Live Field Debug</h2>
+                  <p>Visible readout of Today’s Field selection using the existing dailyFieldDebug object.</p>
+                </div>
+
+                <span class="liveFieldDebugBadge" id="liveDebugSelectedFieldBadge">Selected Field: —</span>
+              </div>
+
+              <div class="liveFieldSelected">
+                <div class="liveDebugLabel">Selected Field</div>
+                <div class="liveDebugSelectedValue" id="liveDebugSelectedField">—</div>
+              </div>
+
+              <div class="liveDebugBlock">
+                <div class="liveDebugLabel">Top 3 Candidates</div>
+                <div class="liveDebugTopList" id="liveDebugTopCandidates">
+                  <div class="liveDebugCandidateRow">
+                    <span>1. —</span>
+                    <strong>—</strong>
+                  </div>
+                  <div class="liveDebugCandidateRow">
+                    <span>2. —</span>
+                    <strong>—</strong>
+                  </div>
+                  <div class="liveDebugCandidateRow">
+                    <span>3. —</span>
+                    <strong>—</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="liveDebugBlock">
+                <div class="liveDebugLabel">All 9 Normalized Field Scores</div>
+                <div class="liveDebugScoreGrid" id="liveDebugAllFieldScores">
+                  <div class="liveDebugScoreItem"><span>Structured</span><strong>—</strong></div>
+                  <div class="liveDebugScoreItem"><span>Contained</span><strong>—</strong></div>
+                  <div class="liveDebugScoreItem"><span>Chaotic</span><strong>—</strong></div>
+                  <div class="liveDebugScoreItem"><span>Relational</span><strong>—</strong></div>
+                  <div class="liveDebugScoreItem"><span>Threshold</span><strong>—</strong></div>
+                  <div class="liveDebugScoreItem"><span>Reconstructive</span><strong>—</strong></div>
+                  <div class="liveDebugScoreItem"><span>Integrative</span><strong>—</strong></div>
+                  <div class="liveDebugScoreItem"><span>Diffused</span><strong>—</strong></div>
+                  <div class="liveDebugScoreItem"><span>Regulated</span><strong>—</strong></div>
+                </div>
+              </div>
+
+              <div class="liveDebugThreeColumn">
+                <div class="liveDebugBlock">
+                  <div class="liveDebugLabel">System Load Inputs</div>
+                  <div class="liveDebugMiniGrid" id="liveDebugLoadInputs">
+                    <div class="liveDebugMiniItem"><span>Current Strain</span><strong>—</strong></div>
+                    <div class="liveDebugMiniItem"><span>Current Load</span><strong>—</strong></div>
+                    <div class="liveDebugMiniItem"><span>Current Regulation</span><strong>—</strong></div>
+                  </div>
+                </div>
+
+                <div class="liveDebugBlock">
+                  <div class="liveDebugLabel">Key Transit / Field Inputs</div>
+                  <div class="liveDebugMiniGrid" id="liveDebugTransitInputs">
+                    <div class="liveDebugMiniItem"><span>Transit Pluto</span><strong>—</strong></div>
+                    <div class="liveDebugMiniItem"><span>Transit Uranus</span><strong>—</strong></div>
+                    <div class="liveDebugMiniItem"><span>Transit Neptune</span><strong>—</strong></div>
+                    <div class="liveDebugMiniItem"><span>Transit Mars</span><strong>—</strong></div>
+                    <div class="liveDebugMiniItem"><span>Transit Saturn</span><strong>—</strong></div>
+                    <div class="liveDebugMiniItem"><span>Transit Mercury</span><strong>—</strong></div>
+                  </div>
+                </div>
+
+                <div class="liveDebugBlock">
+                  <div class="liveDebugLabel">Moonstamp Inputs</div>
+                  <div class="liveDebugMiniGrid" id="liveDebugMoonstampInputs">
+                    <div class="liveDebugMiniItem"><span>Moonstamp State</span><strong>—</strong></div>
+                    <div class="liveDebugMiniItem"><span>Moonstamp Phase</span><strong>—</strong></div>
+                    <div class="liveDebugMiniItem"><span>Forecast Modifier</span><strong>—</strong></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="liveFieldDebugNote">
+                Today’s Field describes current field weather. System Load State describes how much pressure the system is carrying.
+              </div>
+            </div>
+
             <div class="heroStats">
               <div class="stat">
                 <div class="label">Capacity</div>
@@ -3849,6 +4220,11 @@
 
     function fmt(v){
       return safeNum(v).toFixed(2);
+    }
+
+    function fmtMaybe(v){
+      const n = Number(v);
+      return Number.isFinite(n) ? n.toFixed(2) : "—";
     }
 
     function fmtPercent(v){
@@ -5271,6 +5647,90 @@
         distortionScores,
         normalizedDistortionScores
       };
+    }
+
+    function renderLiveDebugPair(label, value){
+      return `<div class="liveDebugMiniItem"><span>${label}</span><strong>${value}</strong></div>`;
+    }
+
+    function renderLiveDebugScore(label, value){
+      return `<div class="liveDebugScoreItem"><span>${label}</span><strong>${fmtMaybe(value)}</strong></div>`;
+    }
+
+    function updateLiveFieldDebugUI(dailyFieldDebug){
+      const debug = dailyFieldDebug || {};
+      const selectedField = debug.selectedField || "—";
+
+      setText("liveDebugSelectedField", selectedField);
+      setText("liveDebugSelectedFieldBadge", `Selected Field: ${selectedField}`);
+
+      const topCandidates = Array.isArray(debug.topCandidates) ? debug.topCandidates : [];
+      const topCandidatesHTML = [0, 1, 2].map(index => {
+        const item = topCandidates[index] || {};
+        const field = item.field || "—";
+        const score = item.field ? fmtMaybe(item.score) : "—";
+
+        return `
+          <div class="liveDebugCandidateRow">
+            <span>${index + 1}. ${field}</span>
+            <strong>${score}</strong>
+          </div>
+        `;
+      }).join("");
+
+      setHTML("liveDebugTopCandidates", topCandidatesHTML);
+
+      const normalizedFieldScores = debug.normalizedFieldScores || {};
+      const allFields = [
+        "Structured",
+        "Contained",
+        "Chaotic",
+        "Relational",
+        "Threshold",
+        "Reconstructive",
+        "Integrative",
+        "Diffused",
+        "Regulated"
+      ];
+
+      setHTML(
+        "liveDebugAllFieldScores",
+        allFields.map(field => renderLiveDebugScore(field, normalizedFieldScores[field])).join("")
+      );
+
+      const loadInputs = debug.stateLoadInputs || {};
+      setHTML(
+        "liveDebugLoadInputs",
+        [
+          renderLiveDebugPair("Current Strain", fmtMaybe(loadInputs.currentStrain)),
+          renderLiveDebugPair("Current Load", fmtMaybe(loadInputs.currentLoad)),
+          renderLiveDebugPair("Current Regulation", fmtMaybe(loadInputs.currentRegulation))
+        ].join("")
+      );
+
+      const slowInputs = debug.slowBodyClimateInputs || {};
+      const fastInputs = debug.fastBodyInputs || {};
+      setHTML(
+        "liveDebugTransitInputs",
+        [
+          renderLiveDebugPair("Transit Pluto", fmtMaybe(slowInputs.transitPluto)),
+          renderLiveDebugPair("Transit Uranus", fmtMaybe(slowInputs.transitUranus)),
+          renderLiveDebugPair("Transit Neptune", fmtMaybe(slowInputs.transitNeptune)),
+          renderLiveDebugPair("Transit Mars", fmtMaybe(fastInputs.transitMars)),
+          renderLiveDebugPair("Transit Saturn", fmtMaybe(slowInputs.transitSaturn)),
+          renderLiveDebugPair("Transit Mercury", fmtMaybe(fastInputs.transitMercury))
+        ].join("")
+      );
+
+      const moonstampInputs = debug.moonstampInputs || {};
+      setHTML(
+        "liveDebugMoonstampInputs",
+        [
+          renderLiveDebugPair("Moonstamp State", moonstampInputs.state || "—"),
+          renderLiveDebugPair("Moonstamp Phase", moonstampInputs.phase || "—"),
+          renderLiveDebugPair("Forecast Modifier", moonstampInputs.forecastModifier || "—")
+        ].join("")
+      );
     }
 
     function buildDailyGuidance(harmonics, data){
@@ -6736,6 +7196,7 @@
 
       const harmonics = updateHarmonicUI(data);
       updateFieldCompass(data);
+      updateLiveFieldDebugUI(harmonics.dailyFieldDebug);
 
       const distortionState = DISTORTION_STATES[harmonics.distortionStateKey] || DISTORTION_STATES.overStructuring;
 
