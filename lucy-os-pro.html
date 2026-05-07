@@ -2226,132 +2226,6 @@
       overflow-wrap:break-word;
     }
 
-    .liveFieldDebugCard{
-      margin-bottom:16px;
-      padding:14px;
-      border:1px solid rgba(176,108,255,.24);
-      border-radius:16px;
-      background:
-        radial-gradient(circle at 12% 0%, rgba(176,108,255,.10), transparent 36%),
-        radial-gradient(circle at 90% 0%, rgba(103,193,255,.07), transparent 34%),
-        rgba(255,255,255,.024);
-      box-shadow:inset 0 0 0 1px rgba(255,255,255,.018);
-      min-width:0;
-      max-width:100%;
-      overflow:hidden;
-    }
-
-    .liveFieldDebugHeader{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-      margin-bottom:14px;
-      min-width:0;
-    }
-
-    .liveFieldDebugHeader h2{
-      margin:0;
-      font-size:16px;
-    }
-
-    .liveFieldDebugHeader p{
-      margin:4px 0 0;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.45;
-      overflow-wrap:break-word;
-    }
-
-    .liveFieldDebugBadge{
-      display:inline-flex;
-      align-items:center;
-      min-height:28px;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(176,108,255,.24);
-      background:rgba(176,108,255,.09);
-      color:#cab1ff;
-      font-size:11px;
-      font-weight:950;
-      white-space:nowrap;
-    }
-
-    .liveDebugLabel{
-      color:var(--muted);
-      font-size:10px;
-      font-weight:950;
-      letter-spacing:.11em;
-      text-transform:uppercase;
-      margin-bottom:8px;
-    }
-
-    .liveDebugSelectedValue{
-      color:var(--text);
-      font-size:18px;
-      font-weight:950;
-      overflow-wrap:anywhere;
-    }
-
-    .liveDebugBlock{
-      margin-top:12px;
-      padding-top:12px;
-      border-top:1px solid rgba(255,255,255,.075);
-      min-width:0;
-    }
-
-    .liveDebugTopList,
-    .liveDebugMiniGrid{
-      display:grid;
-      gap:6px;
-    }
-
-    .liveDebugCandidateRow,
-    .liveDebugMiniItem,
-    .liveDebugScoreItem{
-      display:grid;
-      grid-template-columns:minmax(0,1fr) auto;
-      gap:8px;
-      align-items:center;
-      padding:7px 9px;
-      border-radius:10px;
-      border:1px solid rgba(255,255,255,.075);
-      background:rgba(255,255,255,.03);
-      color:var(--muted);
-      font-size:12px;
-      min-width:0;
-    }
-
-    .liveDebugCandidateRow span,
-    .liveDebugMiniItem span,
-    .liveDebugScoreItem span{
-      overflow-wrap:anywhere;
-      min-width:0;
-    }
-
-    .liveDebugCandidateRow strong,
-    .liveDebugMiniItem strong,
-    .liveDebugScoreItem strong{
-      color:var(--blue);
-      font-weight:950;
-      font-variant-numeric:tabular-nums;
-      text-align:right;
-      overflow-wrap:anywhere;
-    }
-
-    .liveDebugScoreGrid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:6px;
-    }
-
-    .liveDebugThreeColumn{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:10px;
-      margin-top:12px;
-    }
-
     .heroStats{
       display:grid;
       grid-template-columns:repeat(3,minmax(0,1fr));
@@ -5496,38 +5370,161 @@
         Regulated: 0
       };
 
-      addScore(fieldScores, "Structured", tSaturn * 0.90 + tMercury * 0.70);
-      addScore(fieldScores, "Contained", tMoon * 0.65 + tSaturn * 0.55);
-      addScore(fieldScores, "Chaotic", tUranus * 1.30 + tMars * 0.85 + currentStrain * 0.50);
-      addScore(fieldScores, "Relational", tVenus * 1.00 + tMoon * 0.55);
-      addScore(fieldScores, "Threshold", tMars * 1.00 + tUranus * 0.75 + timingPressure * 0.85);
-      addScore(fieldScores, "Reconstructive", tPluto * 1.20 + currentLoad * 0.18 + currentStrain * 0.22);
-      addScore(fieldScores, "Integrative", tJupiter * 0.95 + tNeptune * 0.65);
-      addScore(fieldScores, "Diffused", tNeptune * 1.30 + tMoon * 0.45);
-      addScore(fieldScores, "Regulated", tSaturn * 1.05 + tMercury * 0.75 + currentRegulation * 0.60);
+      /*
+        Today’s Field selector correction:
+        System Load State can be high without Today’s Field becoming Reconstructive.
+        Load and strain describe intensity. Field scoring should describe texture/type.
+        Reconstructive now requires repair/recalibration signatures instead of generic load.
+      */
+      const repairSignature =
+        (tPluto * 1.10) +
+        (tSaturn * 0.45) +
+        (Math.min(tPluto, tSaturn) * 0.55);
 
-      if (envMode.includes("diffuse") || envMode.includes("volatile")) {
+      const wideFieldSignature =
+        (tJupiter * 0.80) +
+        (tNeptune * 0.42) +
+        (currentStrain * 0.10);
+
+      const activationSignature =
+        (tUranus * 0.95) +
+        (tMars * 0.70) +
+        (timingPressure * 0.35);
+
+      const containmentSignature =
+        (tSaturn * 0.80) +
+        (currentRegulation * 0.42) +
+        (tMoon * 0.25);
+
+      const relationalSignature =
+        (tVenus * 0.95) +
+        (tMoon * 0.55);
+
+      const diffusionSignature =
+        (tNeptune * 1.15) +
+        (tMoon * 0.35) +
+        (tJupiter * 0.28);
+
+      const thresholdSignature =
+        (tMars * 0.92) +
+        (tUranus * 0.62) +
+        (timingPressure * 0.75);
+
+      const structuredSignature =
+        (tSaturn * 0.82) +
+        (tMercury * 0.72);
+
+      const regulatedSignature =
+        (tSaturn * 0.92) +
+        (tMercury * 0.70) +
+        (currentRegulation * 0.55);
+
+      const repairGate =
+        repairSignature >= 0.80 ||
+        (tPluto >= 0.62 && tSaturn >= 0.45) ||
+        (tPluto >= 0.72 && currentStrain >= 0.85);
+
+      addScore(fieldScores, "Structured", structuredSignature);
+      addScore(fieldScores, "Contained", containmentSignature);
+      addScore(fieldScores, "Chaotic", activationSignature + (currentStrain * 0.14));
+      addScore(fieldScores, "Relational", relationalSignature);
+      addScore(fieldScores, "Threshold", thresholdSignature);
+      addScore(fieldScores, "Reconstructive", repairGate ? repairSignature : repairSignature * 0.58);
+      addScore(fieldScores, "Integrative", wideFieldSignature);
+      addScore(fieldScores, "Diffused", diffusionSignature);
+      addScore(fieldScores, "Regulated", regulatedSignature);
+
+      if (envMode.includes("diffuse")) {
         addScore(fieldScores, "Diffused", 0.45);
-        addScore(fieldScores, "Chaotic", 0.35);
+        addScore(fieldScores, "Integrative", 0.12);
       }
 
-      if (forecastState.includes("threshold")) addScore(fieldScores, "Threshold", 0.65);
-      if (forecastState.includes("mobilized")) addScore(fieldScores, "Chaotic", 0.35);
-      if (forecastState.includes("overload")) addScore(fieldScores, "Reconstructive", 0.25);
+      if (envMode.includes("volatile")) {
+        addScore(fieldScores, "Chaotic", 0.35);
+        addScore(fieldScores, "Threshold", 0.12);
+      }
+
+      if (forecastState.includes("threshold")) {
+        addScore(fieldScores, "Threshold", 0.55);
+      }
+
+      if (forecastState.includes("mobilized")) {
+        addScore(fieldScores, "Chaotic", 0.28);
+        addScore(fieldScores, "Threshold", 0.10);
+      }
+
+      if (forecastState.includes("overload")) {
+        addScore(fieldScores, "Contained", 0.18);
+        addScore(fieldScores, "Regulated", 0.18);
+        addScore(fieldScores, "Diffused", 0.08);
+
+        if (repairGate) {
+          addScore(fieldScores, "Reconstructive", 0.12);
+        }
+      }
+
+      if (tJupiter >= 0.60 && currentStrain >= 0.65 && !repairGate) {
+        addScore(fieldScores, "Integrative", 0.18);
+        addScore(fieldScores, "Diffused", 0.12);
+      }
+
+      if (tNeptune >= 0.60 && currentStrain >= 0.65 && !repairGate) {
+        addScore(fieldScores, "Diffused", 0.18);
+      }
 
       const fieldWeights = { ...HARMONIC_SCORE_WEIGHTS.field };
 
-      if (envMode.includes("diffuse") || envMode.includes("volatile")) {
+      if (envMode.includes("diffuse")) {
         fieldWeights.Diffused += 0.45;
-        fieldWeights.Chaotic += 0.35;
+        fieldWeights.Integrative += 0.12;
       }
 
-      if (forecastState.includes("threshold")) fieldWeights.Threshold += 0.65;
-      if (forecastState.includes("mobilized")) fieldWeights.Chaotic += 0.35;
-      if (forecastState.includes("overload")) fieldWeights.Reconstructive += 0.25;
+      if (envMode.includes("volatile")) {
+        fieldWeights.Chaotic += 0.35;
+        fieldWeights.Threshold += 0.12;
+      }
+
+      if (forecastState.includes("threshold")) {
+        fieldWeights.Threshold += 0.55;
+      }
+
+      if (forecastState.includes("mobilized")) {
+        fieldWeights.Chaotic += 0.28;
+        fieldWeights.Threshold += 0.10;
+      }
+
+      if (forecastState.includes("overload")) {
+        fieldWeights.Contained += 0.18;
+        fieldWeights.Regulated += 0.18;
+        fieldWeights.Diffused += 0.08;
+
+        if (repairGate) {
+          fieldWeights.Reconstructive += 0.12;
+        }
+      }
+
+      if (tJupiter >= 0.60 && currentStrain >= 0.65 && !repairGate) {
+        fieldWeights.Integrative += 0.18;
+        fieldWeights.Diffused += 0.12;
+      }
+
+      if (tNeptune >= 0.60 && currentStrain >= 0.65 && !repairGate) {
+        fieldWeights.Diffused += 0.18;
+      }
 
       const normalizedFieldScores = normalizeScores(fieldScores, fieldWeights);
-      const todayField = getTopHarmonic(normalizedFieldScores, "Regulated");
+      let todayField = getTopHarmonic(normalizedFieldScores, "Regulated");
+
+      /*
+        Anti-false-positive guard:
+        Reconstructive should not win from weak repair evidence when the stronger
+        field texture is widening, diffusion, activation, containment, or relation.
+      */
+      if (todayField === "Reconstructive" && !repairGate) {
+        const nonRepairCandidates = { ...normalizedFieldScores };
+        delete nonRepairCandidates.Reconstructive;
+        todayField = getTopHarmonic(nonRepairCandidates, "Regulated");
+      }
 
       const dailyFieldDebug = {
         selectedField: todayField,
@@ -5535,6 +5532,14 @@
         rawFieldScores: fieldScores,
         fieldWeights,
         normalizedFieldScores,
+        repairGate,
+        repairSignature,
+        wideFieldSignature,
+        activationSignature,
+        containmentSignature,
+        relationalSignature,
+        diffusionSignature,
+        thresholdSignature,
         fastBodyInputs: {
           transitMoon: tMoon,
           transitMercury: tMercury,
@@ -5570,7 +5575,7 @@
           backendServerTimestamp: data?.dailyFieldBackendDebug?.serverCalculationTimestamp || null,
           timezoneName: data?.inputResolved?.timezoneName || data?.inputResolved?.timezone_name || null
         },
-        note: "Frontend Today’s Field currently scores normalized transit positions plus state/load/timing inputs. These transit values are positions, not direct strength scores."
+        note: "Frontend Today’s Field now separates load intensity from field type. Reconstructive requires repair signatures instead of generic load/strain."
       };
 
       console.log("Lucy.OS Daily Field Debug:", dailyFieldDebug);
@@ -7329,6 +7334,8 @@
         "chartDebug",
         `Today’s Field: ${dailyFieldDebug.selectedField || harmonics.todayField || "—"}\n` +
         `Top 3: ${topCandidatesText}\n` +
+        `Repair Gate: ${dailyFieldDebug.repairGate ? "open" : "closed"} | Repair Signature: ${fmtMaybe(dailyFieldDebug.repairSignature)}\n` +
+        `Wide Field: ${fmtMaybe(dailyFieldDebug.wideFieldSignature)} | Activation: ${fmtMaybe(dailyFieldDebug.activationSignature)} | Diffusion: ${fmtMaybe(dailyFieldDebug.diffusionSignature)}\n` +
         `Transit UTC: ${transitUtcDebug}\n` +
         `Moonstamp: ${moonstampDebug}\n` +
         `JD: ${ephemeris.jdUt || ephemeris.jd_ut || "—"} | Sun: ${sunDeg} | Moon: ${moonDeg} | ASC: ${ascDeg} | MC: ${mcDeg}`
@@ -7450,6 +7457,7 @@
       const fieldCounts = {};
       const rawDistortionCounts = {};
       const distortionStateCounts = {};
+      let reconstructiveWithoutGateCount = 0;
 
       Object.keys(HARMONICS).forEach(key => {
         primaryCounts[key] = 0;
@@ -7486,6 +7494,10 @@
         fieldCounts[result.todayField] = (fieldCounts[result.todayField] || 0) + 1;
         rawDistortionCounts[result.distortion] = (rawDistortionCounts[result.distortion] || 0) + 1;
         distortionStateCounts[distortionState.label] = (distortionStateCounts[distortionState.label] || 0) + 1;
+
+        if (result.todayField === "Reconstructive" && !result.dailyFieldDebug?.repairGate) {
+          reconstructiveWithoutGateCount += 1;
+        }
       }
 
       console.table({
@@ -7495,7 +7507,8 @@
         MotionStyle: motionStyleCounts,
         Field: fieldCounts,
         RawDistortionHarmonic: rawDistortionCounts,
-        DistortionState: distortionStateCounts
+        DistortionState: distortionStateCounts,
+        ReconstructiveWithoutRepairGate: { count: reconstructiveWithoutGateCount }
       });
 
       return {
@@ -7505,7 +7518,8 @@
         motionStyleCounts,
         fieldCounts,
         rawDistortionCounts,
-        distortionStateCounts
+        distortionStateCounts,
+        reconstructiveWithoutGateCount
       };
     }
 
@@ -7670,6 +7684,39 @@
             data.baselineState.regulation = 0.95;
             return data;
           }
+        },
+        {
+          name: "Wide Jupiter Scatter Field Should Not Become Reconstructive",
+          expectedField: ["Integrative", "Diffused", "Chaotic"],
+          build: () => {
+            const data = baseData();
+            data.state.strain = 0.82;
+            data.state.amplifiedLoad = 0.80;
+            data.state.regulation = 0.34;
+            data.planetary.transitJupiter = 0.95;
+            data.planetary.transitNeptune = 0.72;
+            data.planetary.transitUranus = 0.55;
+            data.planetary.transitPluto = 0.22;
+            data.planetary.transitSaturn = 0.28;
+            data.forecast.now.state = "Overload";
+            return data;
+          }
+        },
+        {
+          name: "Actual Pluto Saturn Repair Field Can Become Reconstructive",
+          expectedField: ["Reconstructive"],
+          build: () => {
+            const data = baseData();
+            data.state.strain = 0.88;
+            data.state.amplifiedLoad = 0.82;
+            data.state.regulation = 0.40;
+            data.planetary.transitPluto = 0.92;
+            data.planetary.transitSaturn = 0.72;
+            data.planetary.transitJupiter = 0.30;
+            data.planetary.transitNeptune = 0.26;
+            data.forecast.now.state = "Overload";
+            return data;
+          }
         }
       ];
 
@@ -7679,12 +7726,21 @@
         const distortionState = DISTORTION_STATES[result.distortionStateKey] || DISTORTION_STATES.overStructuring;
         const stableProfileLabel = getStableProfileLabel(result.primary, result.support);
         const profileAwareRead = buildProfileAwareEnglishRead(result, data, stableProfileLabel, distortionState);
-        const passed = testCase.expected.includes(result.primary);
+        const expectedPrimary = testCase.expected || [];
+        const expectedField = testCase.expectedField || [];
+        const primaryPassed = expectedPrimary.length ? expectedPrimary.includes(result.primary) : true;
+        const fieldPassed = expectedField.length ? expectedField.includes(result.todayField) : true;
+        const passed = primaryPassed && fieldPassed;
 
         return {
           case: testCase.name,
-          expected: testCase.expected.join(" or "),
+          expectedPrimary: expectedPrimary.join(" or ") || "—",
           actualPrimary: result.primary,
+          expectedField: expectedField.join(" or ") || "—",
+          actualField: result.todayField,
+          repairGate: result.dailyFieldDebug?.repairGate,
+          repairSignature: result.dailyFieldDebug?.repairSignature,
+          wideFieldSignature: result.dailyFieldDebug?.wideFieldSignature,
           support: result.support,
           profileTranslation: stableProfileLabel,
           profileAwareTodayRead: profileAwareRead.todayRead,
@@ -7693,7 +7749,6 @@
           motionStyleRead: getMotionStyleRead(result.motionStyle),
           rawDistortionHarmonic: result.distortion,
           primaryDistortionState: distortionState.label,
-          todayField: result.todayField,
           dailyFieldDebug: result.dailyFieldDebug,
           passFail: passed ? "PASS" : "FAIL"
         };
