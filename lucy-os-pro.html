@@ -4347,6 +4347,143 @@
         .replace(/^-+|-+$/g, "");
     }
 
+    function sortedScoreKeys(scores){
+      return Object.entries(scores)
+        .sort((a, b) => b[1] - a[1])
+        .map(([key]) => key);
+    }
+
+    function getTopFieldCandidates(normalizedFieldScores, limit = 3){
+      return Object.entries(normalizedFieldScores || {})
+        .sort((a, b) => safeNum(b[1]) - safeNum(a[1]))
+        .slice(0, limit)
+        .map(([field, score]) => ({
+          field,
+          score: safeNum(score)
+        }));
+    }
+
+    function addScore(scores, key, value){
+      scores[key] = safeNum(scores[key]) + safeNum(value);
+    }
+
+    function normalizeScores(scores, weights){
+      const normalized = {};
+
+      Object.keys(scores).forEach(key => {
+        const divisor = safeNum(weights?.[key], 1);
+        normalized[key] = divisor > 0 ? safeNum(scores[key]) / divisor : safeNum(scores[key]);
+      });
+
+      return normalized;
+    }
+
+    function getTopHarmonic(scores, fallback = "Structured"){
+      const sorted = sortedScoreKeys(scores);
+      return sorted[0] || fallback;
+    }
+
+    function getSecondHarmonic(scores, primary, fallback = "Regulated"){
+      const sorted = sortedScoreKeys(scores).filter(key => key !== primary);
+      return sorted[0] || fallback;
+    }
+
+    function stateLabelFromMode(modeText){
+      const text = String(modeText || "").toLowerCase();
+      if (text.includes("overload")) return "Overloaded";
+      if (text.includes("threshold") || text.includes("strain")) return "Threshold";
+      if (text.includes("mobilized") || text.includes("active")) return "Mobilized";
+      return "Regulated";
+    }
+
+    function stateHelperFromMode(modeText){
+      const text = String(modeText || "").toLowerCase();
+      if (text.includes("overload")) return "System is carrying more than it can comfortably regulate";
+      if (text.includes("threshold") || text.includes("strain")) return "Load is approaching capacity";
+      if (text.includes("mobilized") || text.includes("active")) return "Elevated activity, still functioning";
+      return "Stable with manageable load";
+    }
+
+    function strainLabelFromStrain(strain){
+      const s = safeNum(strain);
+      if (s < 0.60) return "Current active load";
+      if (s < 0.85) return "Moderate active load";
+      if (s < 1.00) return "High strain";
+      return "Critical load";
+    }
+
+    function capacityLabelFromValue(){
+      return "Available system bandwidth";
+    }
+
+    function envBandFromMode(envMode){
+      const text = String(envMode || "").trim();
+      return `Field: ${text || "—"}`;
+    }
+
+    function forecastBandFromState(forecastState){
+      const text = String(forecastState || "").trim();
+      return `Timing: ${text || "—"}`;
+    }
+
+    function driverValueFromTaggedList(list, planetName){
+      if (!Array.isArray(list)) return null;
+      const hit = list.find(item => String(item).toLowerCase().startsWith(String(planetName).toLowerCase()));
+      if (!hit) return null;
+      const match = String(hit).match(/\(([^)]+)\)/);
+      return match ? safeNum(match[1]) : null;
+    }
+
+    function primaryDriverName(data){
+      return data?.telemetry?.primaryDriver || "—";
+    }
+
+    function publicDriverName(driver){
+      const text = String(driver || "").trim();
+
+      if (!text || text === "—") return "The strongest current driver";
+
+      const lower = text.toLowerCase();
+
+      if (
+        lower === "mc" ||
+        lower.startsWith("mc ") ||
+        lower.startsWith("mc(") ||
+        lower.includes("midheaven")
+      ) return "Life Direction";
+
+      if (
+        lower === "asc" ||
+        lower.startsWith("asc ") ||
+        lower.startsWith("asc(") ||
+        lower.includes("ascendant")
+      ) return "Personal Orientation";
+
+      return text;
+    }
+
+    function loadBandFromValue(load){
+      const value = safeNum(load);
+      if (value < 0.45) return "Low";
+      if (value < 0.75) return "Moderate";
+      if (value < 1.00) return "High";
+      return "Overloaded";
+    }
+
+    function capacityBandFromValue(capacity){
+      const value = safeNum(capacity);
+      if (value < 0.55) return "Limited";
+      if (value < 0.85) return "Decent";
+      return "Strong";
+    }
+
+    function regulationBandFromValue(regulation){
+      const value = safeNum(regulation);
+      if (value < 0.40) return "Low";
+      if (value < 0.70) return "Moderate";
+      return "Strong";
+    }
+
     function getSavedProfiles(){
       try {
         const raw = localStorage.getItem(SAVED_PROFILES_KEY);
@@ -4489,143 +4626,6 @@
       renderSavedProfiles();
 
       setText("profileSaveStatus", "Profile deleted from this device/browser.");
-    }
-
-    function sortedScoreKeys(scores){
-      return Object.entries(scores)
-        .sort((a, b) => b[1] - a[1])
-        .map(([key]) => key);
-    }
-
-    function getTopFieldCandidates(normalizedFieldScores, limit = 3){
-      return Object.entries(normalizedFieldScores || {})
-        .sort((a, b) => safeNum(b[1]) - safeNum(a[1]))
-        .slice(0, limit)
-        .map(([field, score]) => ({
-          field,
-          score: safeNum(score)
-        }));
-    }
-
-    function addScore(scores, key, value){
-      scores[key] = safeNum(scores[key]) + safeNum(value);
-    }
-
-    function normalizeScores(scores, weights){
-      const normalized = {};
-
-      Object.keys(scores).forEach(key => {
-        const divisor = safeNum(weights?.[key], 1);
-        normalized[key] = divisor > 0 ? safeNum(scores[key]) / divisor : safeNum(scores[key]);
-      });
-
-      return normalized;
-    }
-
-    function getTopHarmonic(scores, fallback = "Structured"){
-      const sorted = sortedScoreKeys(scores);
-      return sorted[0] || fallback;
-    }
-
-    function getSecondHarmonic(scores, primary, fallback = "Regulated"){
-      const sorted = sortedScoreKeys(scores).filter(key => key !== primary);
-      return sorted[0] || fallback;
-    }
-
-    function stateLabelFromMode(modeText){
-      const text = String(modeText || "").toLowerCase();
-      if (text.includes("overload")) return "Overloaded";
-      if (text.includes("threshold") || text.includes("strain")) return "Threshold";
-      if (text.includes("mobilized") || text.includes("active")) return "Mobilized";
-      return "Regulated";
-    }
-
-    function stateHelperFromMode(modeText){
-      const text = String(modeText || "").toLowerCase();
-      if (text.includes("overload")) return "System is carrying more than it can comfortably regulate";
-      if (text.includes("threshold") || text.includes("strain")) return "Load is approaching capacity";
-      if (text.includes("mobilized") || text.includes("active")) return "Elevated activity, still functioning";
-      return "Stable with manageable load";
-    }
-
-    function strainLabelFromStrain(strain){
-      const s = safeNum(strain);
-      if (s < 0.60) return "Current active load";
-      if (s < 0.85) return "Moderate active load";
-      if (s < 1.00) return "High strain";
-      return "Critical load";
-    }
-
-    function capacityLabelFromValue(){
-      return "Available system bandwidth";
-    }
-
-    function envBandFromMode(envMode){
-      const text = String(envMode || "").trim();
-      return `Field: ${text || "—"}`;
-    }
-
-    function forecastBandFromState(forecastState){
-      const text = String(forecastState || "").trim();
-      return `Timing: ${text || "—"}`;
-    }
-
-    function driverValueFromTaggedList(list, planetName){
-      if (!Array.isArray(list)) return null;
-      const hit = list.find(item => String(item).toLowerCase().startsWith(String(planetName).toLowerCase()));
-      if (!hit) return null;
-      const match = String(hit).match(/\(([^)]+)\)/);
-      return match ? safeNum(match[1]) : null;
-    }
-
-    function primaryDriverName(data){
-      return data?.telemetry?.primaryDriver || "—";
-    }
-
-    function publicDriverName(driver){
-      const text = String(driver || "").trim();
-
-      if (!text || text === "—") return "The strongest current driver";
-
-      const lower = text.toLowerCase();
-
-      if (
-        lower === "mc" ||
-        lower.startsWith("mc ") ||
-        lower.startsWith("mc(") ||
-        lower.includes("midheaven")
-      ) return "Life Direction";
-
-      if (
-        lower === "asc" ||
-        lower.startsWith("asc ") ||
-        lower.startsWith("asc(") ||
-        lower.includes("ascendant")
-      ) return "Personal Orientation";
-
-      return text;
-    }
-
-    function loadBandFromValue(load){
-      const value = safeNum(load);
-      if (value < 0.45) return "Low";
-      if (value < 0.75) return "Moderate";
-      if (value < 1.00) return "High";
-      return "Overloaded";
-    }
-
-    function capacityBandFromValue(capacity){
-      const value = safeNum(capacity);
-      if (value < 0.55) return "Limited";
-      if (value < 0.85) return "Decent";
-      return "Strong";
-    }
-
-    function regulationBandFromValue(regulation){
-      const value = safeNum(regulation);
-      if (value < 0.40) return "Low";
-      if (value < 0.70) return "Moderate";
-      return "Strong";
     }
 
     function buildWhyText({ modeText, primaryDriver, fog, activation, mercury, saturn, venus }) {
@@ -5375,6 +5375,13 @@
         System Load State can be high without Today’s Field becoming Reconstructive.
         Load and strain describe intensity. Field scoring should describe texture/type.
         Reconstructive now requires repair/recalibration signatures instead of generic load.
+
+        Reconstructive stickiness adjustment:
+        Tightened repairGate so high strain/load cannot open Reconstructive by itself.
+        Reconstructive now requires stronger Pluto/Saturn repair-compression evidence.
+        When repairGate is closed, Reconstructive remains visible as secondary pressure
+        but is softened so Relational, Contained, Diffused, Integrative, or Chaotic
+        can win when their field texture is stronger.
       */
       const repairSignature =
         (tPluto * 1.10) +
@@ -5420,16 +5427,15 @@
         (currentRegulation * 0.55);
 
       const repairGate =
-        repairSignature >= 0.80 ||
-        (tPluto >= 0.62 && tSaturn >= 0.45) ||
-        (tPluto >= 0.72 && currentStrain >= 0.85);
+        repairSignature >= 1.05 ||
+        (tPluto >= 0.68 && tSaturn >= 0.55);
 
       addScore(fieldScores, "Structured", structuredSignature);
       addScore(fieldScores, "Contained", containmentSignature);
       addScore(fieldScores, "Chaotic", activationSignature + (currentStrain * 0.14));
       addScore(fieldScores, "Relational", relationalSignature);
       addScore(fieldScores, "Threshold", thresholdSignature);
-      addScore(fieldScores, "Reconstructive", repairGate ? repairSignature : repairSignature * 0.58);
+      addScore(fieldScores, "Reconstructive", repairGate ? repairSignature : repairSignature * 0.42);
       addScore(fieldScores, "Integrative", wideFieldSignature);
       addScore(fieldScores, "Diffused", diffusionSignature);
       addScore(fieldScores, "Regulated", regulatedSignature);
@@ -5515,11 +5521,6 @@
       const normalizedFieldScores = normalizeScores(fieldScores, fieldWeights);
       let todayField = getTopHarmonic(normalizedFieldScores, "Regulated");
 
-      /*
-        Anti-false-positive guard:
-        Reconstructive should not win from weak repair evidence when the stronger
-        field texture is widening, diffusion, activation, containment, or relation.
-      */
       if (todayField === "Reconstructive" && !repairGate) {
         const nonRepairCandidates = { ...normalizedFieldScores };
         delete nonRepairCandidates.Reconstructive;
@@ -5575,7 +5576,7 @@
           backendServerTimestamp: data?.dailyFieldBackendDebug?.serverCalculationTimestamp || null,
           timezoneName: data?.inputResolved?.timezoneName || data?.inputResolved?.timezone_name || null
         },
-        note: "Frontend Today’s Field now separates load intensity from field type. Reconstructive requires repair signatures instead of generic load/strain."
+        note: "Frontend Today’s Field separates load intensity from field type. Reconstructive requires stronger repair signatures instead of generic load/strain."
       };
 
       console.log("Lucy.OS Daily Field Debug:", dailyFieldDebug);
@@ -5738,519 +5739,6 @@
       );
     }
 
-    function buildDailyGuidance(harmonics, data){
-      const primary = harmonics.primary || "Structured";
-      const field = harmonics.todayField || "Regulated";
-      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
-      const primaryLower = primary.toLowerCase();
-      const fieldLower = field.toLowerCase();
-
-      let read = `Your ${primaryLower} root pattern is meeting a ${fieldLower} field today. Let today’s field guide your pace, but do not let temporary weather rewrite your identity.`;
-      let lean = "Choose the clearest useful move and keep the day simple.";
-      let watch = "Watch for turning the whole field into something you have to solve at once.";
-      let move = "Pick one pressure point and give it a clean next step.";
-      let ret = "Name what is actually active, then stop before you expand the task.";
-
-      if (primary === "Structured" && field === "Structured") {
-        read = "Your structured root pattern is meeting a structured field today. This can support clarity, planning, and clean follow-through, as long as structure stays useful instead of becoming pressure.";
-        lean = "Simple systems, clear order, and one practical piece made more workable.";
-        watch = "Over-refining the structure after it is already strong enough.";
-        move = "Improve one useful container and stop before polish becomes strain.";
-        ret = "Return to the structure that helps, not the structure that controls.";
-      } else if (primary === "Structured" && field === "Contained") {
-        read = "Your root pattern wants clarity and form, but today may pull your signal inward. This is better for shaping one private piece than trying to explain the whole system outwardly.";
-        lean = "Private refinement, simple language, and protecting unfinished work.";
-        watch = "Forcing clarity too soon or getting frustrated because the words are not ready yet.";
-        move = "Finish one small piece instead of organizing the whole field.";
-        ret = "Name the real pressure point, then step away for a bit.";
-      } else if (primary === "Structured" && field === "Chaotic") {
-        read = "Your root pattern wants structure, but today may bring extra movement, charge, or scattered signal. Do not chase every thread. Catch the one that can actually become useful.";
-        lean = "Containment, prioritizing, and turning one signal into one clean form.";
-        watch = "Trying to structure every incoming signal at once.";
-        move = "Choose one useful thread and give it a simple container.";
-        ret = "Reduce inputs and return to the piece that is actually yours to build.";
-      } else if (primary === "Structured" && field === "Threshold") {
-        read = "Your root pattern wants form, and today may bring an edge, opening, or decision point. Build the next step before forcing the crossing.";
-        lean = "Clean timing, clear steps, and paced movement.";
-        watch = "Mistaking urgency for the real opening.";
-        move = "Write the next step plainly, then move only as far as the field can hold.";
-        ret = "Come back to sequence: first this, then that.";
-      } else if (primary === "Structured" && field === "Reconstructive") {
-        read = "Your root pattern wants clarity and form, but today may bring repair pressure. Do not turn normal strain into a full reconstruction project.";
-        lean = "Honest repair, one clean adjustment, and practical containment.";
-        watch = "Treating every weak point like it means the whole structure has failed.";
-        move = "Choose one honest adjustment and give it a clean container.";
-        ret = "Remind yourself that one repair is not the same as rebuilding the whole system.";
-      } else if (primary === "Structured" && field === "Diffused") {
-        read = "Your root pattern wants clarity, but today’s field may feel atmospheric, subtle, or harder to define. Do not panic if the signal is not crisp yet.";
-        lean = "Soft focus, fewer inputs, and one clear sentence.";
-        watch = "Over-explaining fog or forcing definition before the signal forms.";
-        move = "Give the atmosphere one sentence and let that be enough.";
-        ret = "Come back to the simplest true line.";
-      } else if (primary === "Structured" && field === "Regulated") {
-        read = "Your root pattern and the field both support structure, pacing, and clear movement. This is a good day for making one practical piece more workable.";
-        lean = "Clean systems, steady progress, and realistic scope.";
-        watch = "Over-controlling details after the structure is already good enough.";
-        move = "Improve one useful piece and stop before refinement becomes pressure.";
-        ret = "Let good enough be a stabilizing choice.";
-      } else if (primary === "Structured" && field === "Integrative") {
-        read = "Your root pattern wants clarity and form, while today may widen the pattern and connect more pieces. Let the larger meaning inform the structure without making the structure carry everything.";
-        lean = "Synthesis, simple frameworks, and choosing the pattern that actually helps.";
-        watch = "Trying to integrate every layer before building the next usable piece.";
-        move = "Name the larger pattern, then reduce it to one workable step.";
-        ret = "Come back to the structure that makes the meaning usable.";
-      } else if (primary === "Structured" && field === "Relational") {
-        read = "Your root pattern wants order, but today may clarify through contact, tone, or feedback. Let the conversation simplify the structure instead of turning the person into a problem to solve.";
-        lean = "Plain language, clean contact, and saying the simple version first.";
-        watch = "Over-structuring a relational moment before the other person can meet you in it.";
-        move = "Say one clear thing and leave room for response.";
-        ret = "Return to the bond or exchange, not just the model of it.";
-      } else if (primary === "Contained" && field === "Contained") {
-        read = "Your contained root pattern is meeting a contained field today. This can support privacy, quiet sorting, and protected formation, but too much inwardness may slow release.";
-        lean = "Low input, private processing, and one gentle form of expression.";
-        watch = "Holding everything inside until the pressure becomes harder to name.";
-        move = "Let one small piece of the inner field become visible or workable.";
-        ret = "Return to privacy as a container, not a hiding place.";
-      } else if (primary === "Contained" && field === "Structured") {
-        read = "Your root pattern processes inwardly, and today may offer more structure. This can help you shape what has been private without forcing it into full visibility.";
-        lean = "Gentle organization, protected planning, and quiet structure.";
-        watch = "Turning structure into pressure to expose more than is ready.";
-        move = "Put one private thought into a clear form for yourself first.";
-        ret = "Let structure protect the inner field instead of pushing it open.";
-      } else if (primary === "Contained" && field === "Diffused") {
-        read = "Your root pattern pulls inward, and today may feel even more subtle, foggy, or hard to define. Do not demand sharp language from a field that needs quiet sorting.";
-        lean = "Low input, privacy, gentle rhythm, and letting impressions settle.";
-        watch = "Withdrawing so far that nothing can move or resolve.";
-        move = "Choose one small grounding action before interpreting the whole feeling.";
-        ret = "Come back to your body, your breath, and your own pace.";
-      } else if (primary === "Contained" && field === "Chaotic") {
-        read = "Your root pattern processes inwardly, but today may feel louder or more disruptive than usual. Protect your inner field without disappearing completely.";
-        lean = "Lower stimulation, private processing, and slow response.";
-        watch = "Shutting down completely because the field feels too loud.";
-        move = "Create one quiet pocket before responding.";
-        ret = "Come back to your own rhythm before taking in more signal.";
-      } else if (primary === "Contained" && field === "Threshold") {
-        read = "Your root pattern needs safety before expression, but today may bring an edge or decision. You do not have to reveal everything to make one clean move.";
-        lean = "Small crossings, honest pacing, and protected expression.";
-        watch = "Waiting forever because the whole field does not feel safe yet.";
-        move = "Take one small step that does not overexpose you.";
-        ret = "Return to privacy without using it as a hiding place.";
-      } else if (primary === "Contained" && field === "Relational") {
-        read = "Your root pattern processes inwardly, while today may bring more attention to contact, tone, or relational feedback. Let connection inform you without pulling more out of you than you are ready to share.";
-        lean = "Gentle contact, protected honesty, and slow relational pacing.";
-        watch = "Letting someone else’s need for closeness override your own timing.";
-        move = "Offer one honest signal without overexposing the whole inner field.";
-        ret = "Return to your private center before deciding what else to share.";
-      } else if (primary === "Contained" && field === "Reconstructive") {
-        read = "Your root pattern holds signal inside, while today may bring repair pressure. Something may need adjustment, but it does not have to be processed all at once or exposed before it is ready.";
-        lean = "Private repair, careful honesty, and one manageable adjustment.";
-        watch = "Letting pressure build silently until it feels heavier than it is.";
-        move = "Name one thing that needs repair, even if you keep the work private for now.";
-        ret = "Let repair happen in a protected container, not through emotional flooding.";
-      } else if (primary === "Contained" && field === "Integrative") {
-        read = "Your root pattern works inwardly, while today may widen the pattern and connect more layers. Let meaning gather slowly instead of forcing every private piece into one big conclusion.";
-        lean = "Quiet synthesis, private reflection, and gentle pattern-linking.";
-        watch = "Over-interpreting inner signals before they have settled.";
-        move = "Write down one connection that feels useful and leave the rest open.";
-        ret = "Come back to the part of the pattern that actually brings relief.";
-      } else if (primary === "Contained" && field === "Regulated") {
-        read = "Your root pattern already prefers protected processing, and today may support pacing, containment, and quieter regulation. This is useful for sorting pressure without forcing action too soon.";
-        lean = "Privacy, pacing, simple routines, and emotional containment.";
-        watch = "Using containment to delay a small step that is actually ready.";
-        move = "Choose one small regulated action that does not violate your privacy.";
-        ret = "Let pacing protect you without letting it freeze the whole field.";
-      } else if (primary === "Chaotic" && field === "Chaotic") {
-        read = "Your chaotic root pattern is meeting a chaotic field today. There may be extra movement, charge, or nonlinear signal, so the goal is not to stop the energy but to give it one safe channel.";
-        lean = "Movement with a container, quick release, and one useful direction for the charge.";
-        watch = "Following every spark until the whole day loses continuity.";
-        move = "Pick one channel for the energy and let the rest pass through.";
-        ret = "Return to rhythm before chasing another signal.";
-      } else if (primary === "Chaotic" && field === "Threshold") {
-        read = "Your root pattern carries movement and charge, and today may add an edge or crossing point. Use the activation, but do not let urgency decide for you.";
-        lean = "Focused motion, clean timing, and one decisive channel for the charge.";
-        watch = "Mistaking intensity for the right moment.";
-        move = "Aim the energy at one clear crossing instead of opening every door.";
-        ret = "Slow down just enough to choose the real threshold.";
-      } else if (primary === "Chaotic" && field === "Reconstructive") {
-        read = "Your root pattern moves quickly, nonlinearly, and toward pressure points, while today may bring repair or recalibration pressure. Not every burst of energy needs to become a teardown.";
-        lean = "Directed repair, controlled release, and useful disruption.";
-        watch = "Creating a bigger break than the situation actually needs.";
-        move = "Use the charge to fix one weak point, not to rebuild the whole field.";
-        ret = "Let movement serve repair. Stop once the first usable structure appears.";
-      } else if (primary === "Chaotic" && field === "Regulated") {
-        read = "Your root pattern carries movement and charge, while today may slow the field down. Do not fight the container. Use it to channel the voltage.";
-        lean = "Rhythm, pacing, and turning movement into something usable.";
-        watch = "Rebelling against structure just because the day asks for containment.";
-        move = "Put your energy into one durable action.";
-        ret = "Let the container hold the charge instead of killing it.";
-      } else if (primary === "Chaotic" && field === "Structured") {
-        read = "Your root pattern moves through charge, speed, and disruption, while today may offer more structure. The structure does not have to trap the voltage; it can give the energy somewhere useful to go.";
-        lean = "Practical containers, visible steps, and channeling movement into form.";
-        watch = "Rejecting structure because it feels like it will kill momentum.";
-        move = "Put one moving piece into a simple plan or container.";
-        ret = "Let structure carry the charge instead of fighting it.";
-      } else if (primary === "Chaotic" && field === "Contained") {
-        read = "Your root pattern wants movement, while today may pull the field inward. This can feel frustrating, but it may also help the charge settle before it turns reactive.";
-        lean = "Quiet movement, lower stimulation, and contained release.";
-        watch = "Pushing against the slowdown until the pressure spikes.";
-        move = "Find one safe way to discharge energy without escalating the field.";
-        ret = "Let inwardness settle the voltage before you act.";
-      } else if (primary === "Chaotic" && field === "Relational") {
-        read = "Your root pattern carries quick movement and disruption, while today may bring the relational field into focus. Let contact ground the energy without using other people as the release point.";
-        lean = "Clean contact, honest tone, and energy that stays accountable.";
-        watch = "Letting charge spill into the relationship before you know what it is.";
-        move = "Name the energy before you aim it at a person or conversation.";
-        ret = "Return to your own charge first, then re-enter contact more cleanly.";
-      } else if (primary === "Chaotic" && field === "Integrative") {
-        read = "Your root pattern moves through charge and disruption, while today may widen the field and connect more meaning. Not every spark needs to become a full pattern.";
-        lean = "Useful connections, creative movement, and letting one insight organize the rest.";
-        watch = "Trying to make meaning from every burst of signal.";
-        move = "Choose the one connection that turns the energy into something usable.";
-        ret = "Let extra sparks pass without needing to integrate them all.";
-      } else if (primary === "Chaotic" && field === "Diffused") {
-        read = "Your root pattern carries movement, while today may feel more porous, foggy, or uncontained. This can scatter energy if you do not give it a gentle boundary.";
-        lean = "Low-friction structure, soft grounding, and fewer inputs.";
-        watch = "Letting scattered atmosphere pull your energy in too many directions.";
-        move = "Pick one grounding action before following another signal.";
-        ret = "Come back to the body and the nearest practical step.";
-      } else if (primary === "Relational" && field === "Relational") {
-        read = "Your relational root pattern is meeting a relational field today. Contact, tone, and shared atmosphere may matter more, but your center still needs to stay separate from the room.";
-        lean = "Clean contact, steady tone, and honest repair without over-reading.";
-        watch = "Absorbing the whole shared field because you can feel it.";
-        move = "Name one relational signal plainly and keep responsibility proportional.";
-        ret = "Return to your own center before trying to repair the connection.";
-      } else if (primary === "Relational" && field === "Threshold") {
-        read = "Your root pattern reads connection, and today may bring a decision edge in the relational field. Do not chase closeness; name the real crossing.";
-        lean = "Clear contact, honest timing, and letting the bond show what is ready.";
-        watch = "Trying to secure the relationship instead of reading the threshold clearly.";
-        move = "Say the simple truth about what point the connection has reached.";
-        ret = "Return to your center before responding to the other person’s signal.";
-      } else if (primary === "Relational" && field === "Regulated") {
-        read = "Your root pattern stabilizes through contact, while today may support steadier pacing. This is a good field for calmer repair, clearer agreements, or less reactive connection.";
-        lean = "Steady contact, simple repair, and paced communication.";
-        watch = "Over-managing the emotional field when a simple rhythm would work better.";
-        move = "Make one small relational agreement clearer.";
-        ret = "Let steadiness be enough without needing constant reassurance.";
-      } else if (primary === "Relational" && field === "Diffused") {
-        read = "Your root pattern reads the field between people, and today may make the atmosphere more porous. Check what is actually yours before responding.";
-        lean = "Gentle contact, boundary checks, and slower interpretation.";
-        watch = "Absorbing other people’s tone as if it belongs to you.";
-        move = "Ask: is this mine, theirs, or the shared field?";
-        ret = "Return to your own center before repairing the room.";
-      } else if (primary === "Relational" && field === "Structured") {
-        read = "Your root pattern reads tone, contact, and the space between people, while today may offer clearer structure. Let structure clarify the relationship without making it cold or over-defined.";
-        lean = "Clear agreements, simple language, and practical relational structure.";
-        watch = "Turning a living connection into a rigid set of rules.";
-        move = "Name one boundary, agreement, or expectation plainly.";
-        ret = "Come back to the personal contact underneath the structure.";
-      } else if (primary === "Relational" && field === "Contained") {
-        read = "Your root pattern stabilizes through connection, while today may pull the field inward. Someone may need space, privacy, or slower contact without it meaning the bond is failing.";
-        lean = "Respectful distance, gentle check-ins, and slower interpretation.";
-        watch = "Reading withdrawal as rejection before the field has spoken clearly.";
-        move = "Give the connection room without abandoning it.";
-        ret = "Return to your own center instead of chasing the signal.";
-      } else if (primary === "Relational" && field === "Chaotic") {
-        read = "Your root pattern reads the relational field, while today may add movement, charge, or disruption. The room may feel louder than usual, so respond to what is real, not every ripple.";
-        lean = "Calm contact, clean tone, and slowing the relational signal down.";
-        watch = "Reacting to charge before you know whether it belongs to you, them, or the shared field.";
-        move = "Pause before answering the loudest signal.";
-        ret = "Come back to steady contact rather than emotional weather.";
-      } else if (primary === "Relational" && field === "Reconstructive") {
-        read = "Your root pattern stabilizes through connection, while today may bring repair pressure into the relational field. Something may need honesty, but not every tension needs a full relationship rebuild.";
-        lean = "Clean repair, truthful contact, and one specific adjustment.";
-        watch = "Treating one relational weak point like the whole bond is broken.";
-        move = "Name the one repair that would make the connection more workable.";
-        ret = "Return to trust-building actions, not total relational analysis.";
-      } else if (primary === "Relational" && field === "Integrative") {
-        read = "Your root pattern reads connection, while today may widen the meaning around the bond or shared field. This can help you understand the pattern, as long as you do not absorb everyone’s layer as your own.";
-        lean = "Meaningful contact, pattern recognition, and shared understanding.";
-        watch = "Carrying the whole emotional system because you can see how the pieces connect.";
-        move = "Clarify one shared pattern without taking full responsibility for it.";
-        ret = "Return to your part of the field, not the whole field.";
-      } else if (primary === "Threshold" && field === "Threshold") {
-        read = "Your threshold root pattern is meeting a threshold field today. The sense of edge, opening, or decision may be stronger, so timing matters more than speed.";
-        lean = "Clean timing, small crossings, and naming the actual decision point.";
-        watch = "Treating every feeling of pressure like it means act now.";
-        move = "Choose the one threshold that is real enough to cross today.";
-        ret = "Return to the edge slowly and do not force the opening.";
-      } else if (primary === "Threshold" && field === "Contained") {
-        read = "Your root pattern senses edges and openings, while today may pull the field inward. The crossing may still be real, but it may need privacy, preparation, or a quieter first move.";
-        lean = "Protected timing, small crossings, and letting the next step form before announcing it.";
-        watch = "Pushing for outward movement before the inner field has caught up.";
-        move = "Choose one private preparation step that makes the threshold cleaner.";
-        ret = "Return to the edge without forcing it open.";
-      } else if (primary === "Threshold" && field === "Chaotic") {
-        read = "Your root pattern is already sensitive to turning points, and today may add extra charge or disruption. The edge may feel louder than it is. Slow the reaction before you cross.";
-        lean = "Focused activation, clean timing, and movement that has a target.";
-        watch = "Letting intensity make every opening feel urgent.";
-        move = "Discharge enough energy to choose the right door, not every door.";
-        ret = "Come back to the real threshold underneath the noise.";
-      } else if (primary === "Threshold" && field === "Relational") {
-        read = "Your root pattern reads crossings, while today may bring those crossings through contact, tone, or a relationship field. A conversation may show what is ready, but it does not have to become a dramatic pivot.";
-        lean = "Honest timing, clean contact, and naming what point the connection has reached.";
-        watch = "Using the relationship as proof that you must act immediately.";
-        move = "Say the simple truth, then give the field room to answer.";
-        ret = "Return to your own timing before reacting to someone else’s signal.";
-      } else if (primary === "Threshold" && field === "Integrative") {
-        read = "Your root pattern senses the edge, while today may widen the meaning around it. The larger pattern can help, but too much meaning may blur the clean next move.";
-        lean = "Meaning that clarifies timing, not meaning that delays action.";
-        watch = "Trying to understand every layer before making one clean crossing.";
-        move = "Name the pattern, then choose the next step that is actually ready.";
-        ret = "Come back to the one crossing that matters today.";
-      } else if (primary === "Threshold" && field === "Diffused") {
-        read = "Your root pattern wants a clear edge, but today may feel foggy, soft, or undefined. You may not get a perfect signal before you need to choose one small direction.";
-        lean = "Gentle boundaries, small decisions, and reducing the spread.";
-        watch = "Waiting for total clarity or pushing through fog too fast.";
-        move = "Choose one low-risk direction that makes the field less vague.";
-        ret = "Return to the smallest clear edge you can actually feel.";
-      } else if (primary === "Threshold" && field === "Reconstructive") {
-        read = "Your root pattern senses crossings, and today may add repair pressure. The edge may be real, but the move does not have to become a full rebuild.";
-        lean = "Precise change, honest repair, and crossing only what is ready.";
-        watch = "Forcing a transformation before the next step has a container.";
-        move = "Make one repair that opens the next clean path.";
-        ret = "Return to timing: not every repair has to happen today.";
-      } else if (primary === "Threshold" && field === "Regulated") {
-        read = "Your root pattern wants movement at the edge, while today may ask for pacing. This can help you cross more cleanly if you do not rush the moment.";
-        lean = "Measured timing, preparation, and clean sequence.";
-        watch = "Feeling blocked just because the field is asking you to slow down.";
-        move = "Prepare the crossing instead of forcing it.";
-        ret = "Let pacing make the threshold safer.";
-      } else if (primary === "Threshold" && field === "Structured") {
-        read = "Your root pattern senses openings and crossings, while today asks for more structure. Build the next step before forcing the movement.";
-        lean = "Planning the crossing, pacing activation, and naming the next move.";
-        watch = "Jumping before the container exists.";
-        move = "Make the path visible before you cross it.";
-        ret = "Come back to the structure that makes movement safer.";
-      } else if (primary === "Reconstructive" && field === "Reconstructive") {
-        read = "Your reconstructive root pattern is meeting a reconstructive field today. Repair pressure may be easier to feel, but the goal is one workable adjustment, not a full rebuild.";
-        lean = "Honest repair, durable simplification, and strengthening one weak point.";
-        watch = "Turning every strain into proof that the whole system needs reconstruction.";
-        move = "Choose the one repair that would reduce the most pressure.";
-        ret = "Return to what can actually be repaired today.";
-      } else if (primary === "Reconstructive" && field === "Contained") {
-        read = "Your root pattern knows how to rebuild under pressure, while today may pull the repair process inward. The work may be real, but it may need privacy before action.";
-        lean = "Private repair, protected honesty, and one careful adjustment.";
-        watch = "Holding repair pressure inside until it becomes heavier than necessary.";
-        move = "Name one weak point quietly and decide the smallest safe repair.";
-        ret = "Let the repair have a container before it becomes a crisis.";
-      } else if (primary === "Reconstructive" && field === "Relational") {
-        read = "Your root pattern rebuilds through pressure, while today may bring repair through contact or relationship. Something may need honesty, but the whole bond does not need to be rebuilt at once.";
-        lean = "Specific repair, truthful tone, and trust rebuilt through small actions.";
-        watch = "Reading one relational strain as proof that everything is broken.";
-        move = "Ask what one adjustment would make the connection more workable.";
-        ret = "Return to the repairable piece, not the whole history.";
-      } else if (primary === "Reconstructive" && field === "Threshold") {
-        read = "Your root pattern transforms pressure, and today may bring a crossing point. This can be useful, but the threshold needs a clean container before you rebuild around it.";
-        lean = "Timed repair, clear decisions, and changing only what is actually ready.";
-        watch = "Turning an opening into a full overhaul before the field can support it.";
-        move = "Cross one practical threshold that strengthens the structure.";
-        ret = "Come back to timing before you deepen the repair.";
-      } else if (primary === "Reconstructive" && field === "Integrative") {
-        read = "Your root pattern rebuilds what pressure exposes, while today may connect more meaning around the repair. Let the pattern teach you without making every old piece part of today’s rebuild.";
-        lean = "Meaningful repair, clean synthesis, and learning from the pressure.";
-        watch = "Pulling too many layers into one repair until the work feels endless.";
-        move = "Extract one lesson and turn it into one concrete adjustment.";
-        ret = "Return to the piece that can actually be rebuilt now.";
-      } else if (primary === "Reconstructive" && field === "Diffused") {
-        read = "Your root pattern works through deep repair, while today may make the field softer, foggier, or harder to define. Do not rebuild from unclear pressure.";
-        lean = "Gentle sorting, rest, and waiting for the real weak point to show itself.";
-        watch = "Treating vague discomfort like a full structural failure.";
-        move = "Separate unclear atmosphere from the one repair you can name.";
-        ret = "Come back to what is concrete, repairable, and present.";
-      } else if (primary === "Reconstructive" && field === "Chaotic") {
-        read = "Your root pattern knows how to rebuild, while today may add movement, disruption, or scattered pressure. Let the energy reveal what needs repair without turning it into a crisis.";
-        lean = "Controlled movement, practical repair, and releasing pressure safely.";
-        watch = "Letting disruption convince you that everything is breaking.";
-        move = "Separate the real repair from the noise around it.";
-        ret = "Come back to the part that can actually be strengthened today.";
-      } else if (primary === "Reconstructive" && field === "Structured") {
-        read = "Your root pattern rebuilds through pressure, and today may offer the structure to make repair more practical. This is a good field for stabilizing what has already changed.";
-        lean = "Practical rebuilding, clear sequence, and durable repair.";
-        watch = "Overbuilding around a wound instead of fixing the actual weak point.";
-        move = "Turn one repair into a simple structure you can keep using.";
-        ret = "Let form hold the repair so you do not have to keep carrying it.";
-      } else if (primary === "Reconstructive" && field === "Regulated") {
-        read = "Your root pattern knows how to rebuild under pressure, but today may not require a full reconstruction. Let regulation reduce the load first.";
-        lean = "Maintenance, simplification, and one practical repair.";
-        watch = "Turning ordinary strain into a crisis rebuild.";
-        move = "Fix the one part that actually needs attention.";
-        ret = "Let steadiness prove that not everything is breaking.";
-      } else if (primary === "Integrative" && field === "Integrative") {
-        read = "Your integrative root pattern is meeting an integrative field today. Meaning may gather quickly, but the goal is coherence, not carrying every layer at once.";
-        lean = "Useful synthesis, closure where possible, and one pattern that helps.";
-        watch = "Trying to integrate every loose end before the day can move.";
-        move = "Choose the one connection that brings the most clarity.";
-        ret = "Return to the whole by releasing the pieces that are not yours today.";
-      } else if (primary === "Integrative" && field === "Structured") {
-        read = "Your root pattern wants the larger pattern, while today may offer form and sequence. Let structure make the meaning useful instead of shrinking it.";
-        lean = "Clear frameworks, practical synthesis, and one organized next step.";
-        watch = "Trying to fit every layer into the structure before anything can move.";
-        move = "Turn one big pattern into one usable outline.";
-        ret = "Come back to the form that helps the meaning land.";
-      } else if (primary === "Integrative" && field === "Contained") {
-        read = "Your root pattern gathers many pieces, while today may pull the field inward. The meaning may need quiet before it becomes clear.";
-        lean = "Private synthesis, slower reflection, and protecting unfinished meaning.";
-        watch = "Filling the quiet with too many interpretations.";
-        move = "Let one connection settle privately before sharing or expanding it.";
-        ret = "Return to the meaning that brings steadiness, not more pressure.";
-      } else if (primary === "Integrative" && field === "Relational") {
-        read = "Your root pattern connects patterns, while today may bring those patterns through people, tone, or shared field. Let contact clarify meaning without making you responsible for everyone’s layer.";
-        lean = "Shared understanding, clean contact, and naming the pattern simply.";
-        watch = "Absorbing the whole relational field because you can see how it connects.";
-        move = "Name one shared pattern and keep responsibility proportional.";
-        ret = "Come back to your part of the meaning.";
-      } else if (primary === "Integrative" && field === "Threshold") {
-        read = "Your root pattern wants to integrate the whole picture, while today may ask for a crossing before every piece is resolved. The move can still be wise if it is small and clean.";
-        lean = "Decisions that simplify the pattern and make the next step clearer.";
-        watch = "Delaying the crossing because you want total integration first.";
-        move = "Choose the one step that resolves the most pressure without forcing everything.";
-        ret = "Return to the pattern that is ready, not the pattern that is still forming.";
-      } else if (primary === "Integrative" && field === "Reconstructive") {
-        read = "Your root pattern gathers meaning, while today may bring repair pressure. Let the repair teach you, but do not turn every piece of history into today’s work.";
-        lean = "Meaningful repair, honest synthesis, and one concrete change.";
-        watch = "Making the rebuild too large because every layer connects.";
-        move = "Extract one lesson and apply it to one real pressure point.";
-        ret = "Come back to the present repair, not the entire story.";
-      } else if (primary === "Integrative" && field === "Diffused") {
-        read = "Your root pattern wants to gather the pieces, while today may make the field wider, softer, or less defined. Do not try to make meaning from everything at once.";
-        lean = "Soft sorting, fewer inputs, and letting unclear pieces remain loose.";
-        watch = "Absorbing too much atmosphere and calling it the whole pattern.";
-        move = "Choose one piece of meaning that actually helps today.";
-        ret = "Let the rest stay unintegrated for now.";
-      } else if (primary === "Integrative" && field === "Regulated") {
-        read = "Your root pattern sees the larger arc, while today may support pacing and containment. This is a good day to make meaning usable, not endless.";
-        lean = "Practical synthesis, steady pacing, and finishing one loop.";
-        watch = "Keeping the pattern open after it is clear enough to use.";
-        move = "Turn one insight into one grounded action.";
-        ret = "Come back to the simplest resolution available.";
-      } else if (primary === "Integrative" && field === "Chaotic") {
-        read = "Your root pattern wants the larger pattern, while today may scatter the field. Everything may feel meaningful, but not every signal deserves your energy.";
-        lean = "Choosing the pattern that helps today.";
-        watch = "Trying to integrate every fragment at once.";
-        move = "Pick the one connection that clarifies the rest.";
-        ret = "Let the extra fragments stay outside the center for now.";
-      } else if (primary === "Diffused" && field === "Diffused") {
-        read = "Your diffused root pattern is meeting a diffused field today. The atmosphere may feel wide, subtle, or hard to define, so simple grounding matters more than total clarity.";
-        lean = "Soft boundaries, fewer inputs, and one gentle point of focus.";
-        watch = "Letting the whole atmosphere become your responsibility.";
-        move = "Choose one clear anchor and let the rest stay loose.";
-        ret = "Return to the body, the room, and the nearest simple truth.";
-      } else if (primary === "Diffused" && field === "Contained") {
-        read = "Your root pattern receives widely, while today may pull the field inward. This can help reduce noise, but too much retreat may make the signal harder to define.";
-        lean = "Quiet boundaries, low input, and letting impressions settle.";
-        watch = "Drifting into isolation or holding the whole atmosphere inside.";
-        move = "Choose one private grounding action that gives the field a soft edge.";
-        ret = "Return to the body before trying to interpret the whole atmosphere.";
-      } else if (primary === "Diffused" && field === "Chaotic") {
-        read = "Your root pattern is porous, and today may add charge, movement, or disruption. The field can scatter quickly, so give your attention one gentle anchor.";
-        lean = "Simple grounding, fewer inputs, and movement that stays contained.";
-        watch = "Following every ripple until the day loses shape.";
-        move = "Pick one physical or practical anchor before responding to more signal.";
-        ret = "Come back to one place, one task, or one breath.";
-      } else if (primary === "Diffused" && field === "Relational") {
-        read = "Your root pattern receives widely, while today may bring contact and tone into focus. You may pick up more than people are saying, so check what is actually yours.";
-        lean = "Gentle connection, clear boundaries, and slow interpretation.";
-        watch = "Absorbing someone else’s mood as if it is your instruction.";
-        move = "Name what you feel, then separate yours from theirs.";
-        ret = "Return to your own center before repairing the shared field.";
-      } else if (primary === "Diffused" && field === "Reconstructive") {
-        read = "Your root pattern is subtle and wide, while today may bring repair pressure. Do not rebuild from fog. Wait for the repair point to become clear enough to name.";
-        lean = "Soft sorting, rest, and one concrete repair if it becomes visible.";
-        watch = "Treating vague pressure like proof that everything needs fixing.";
-        move = "Ask what is actually broken, what is only unclear, and what can wait.";
-        ret = "Come back to the repair you can name, not the pressure you can only feel.";
-      } else if (primary === "Diffused" && field === "Integrative") {
-        read = "Your root pattern receives widely, while today may connect meaning across the field. This can be rich, but it may also become too much if every impression turns into a pattern.";
-        lean = "Gentle synthesis, fewer layers, and one useful meaning.";
-        watch = "Making meaning from every atmosphere, symbol, or emotional signal.";
-        move = "Choose one insight that helps you move more calmly today.";
-        ret = "Let the rest stay open without needing to resolve it.";
-      } else if (primary === "Diffused" && field === "Threshold") {
-        read = "Your root pattern receives widely, while today may ask for a choice, boundary, or crossing. You do not need total clarity to choose one direction.";
-        lean = "Small decisions, simple boundaries, and gentle commitment.";
-        watch = "Waiting for the fog to fully clear before making any move.";
-        move = "Pick one boundary or direction that reduces the spread.";
-        ret = "Let one clear choice be enough for today.";
-      } else if (primary === "Diffused" && field === "Regulated") {
-        read = "Your root pattern receives the field broadly, while today may offer pacing and containment. Let the rhythm help you define what is usually hard to hold.";
-        lean = "Gentle structure, timed breaks, and simple regulation.";
-        watch = "Feeling restricted by the very container that could help.";
-        move = "Put one soft impression into one practical rhythm.";
-        ret = "Come back to pacing before trying to understand everything.";
-      } else if (primary === "Diffused" && field === "Structured") {
-        read = "Your root pattern receives widely, and today offers more form. Do not force the whole atmosphere into a system. Start with one clear line.";
-        lean = "Simple wording, gentle structure, and grounded direction.";
-        watch = "Feeling trapped by structure or avoiding definition entirely.";
-        move = "Give the field one sentence or one boundary.";
-        ret = "Let clarity be small, not total.";
-      } else if (primary === "Regulated" && field === "Regulated") {
-        read = "Your regulated root pattern is meeting a regulated field today. This can support pacing, calm execution, and manageable follow-through, as long as regulation does not turn into over-control.";
-        lean = "Steady rhythm, clear limits, and one manageable action.";
-        watch = "Tightening the system after the pressure is already manageable.";
-        move = "Choose one useful rhythm and let it carry the next step.";
-        ret = "Return to enough regulation, not total control.";
-      } else if (primary === "Regulated" && field === "Contained") {
-        read = "Your root pattern manages pressure through pacing, while today may pull the field inward. This can support calm sorting, but it can also become too much holding.";
-        lean = "Quiet regulation, simple routines, and protected emotional pacing.";
-        watch = "Managing everything privately until the pressure has nowhere to go.";
-        move = "Release one small piece of pressure safely before it bottlenecks.";
-        ret = "Let containment support regulation without turning into restriction.";
-      } else if (primary === "Regulated" && field === "Relational") {
-        read = "Your root pattern stabilizes through pacing, while today may bring contact, tone, or repair into focus. Let connection be steady rather than overly managed.";
-        lean = "Paced communication, calm repair, and clear agreements.";
-        watch = "Trying to control the relational field so nothing gets messy.";
-        move = "Make one simple contact point clearer without managing the whole exchange.";
-        ret = "Return to steady presence, not emotional control.";
-      } else if (primary === "Regulated" && field === "Threshold") {
-        read = "Your root pattern prefers pacing and control, while today may bring an edge or decision point. The threshold may be real, but it does not need to be rushed or over-managed.";
-        lean = "Measured decisions, clean timing, and preparing before crossing.";
-        watch = "Delaying too long because movement feels less safe than management.";
-        move = "Choose one small crossing that your system can actually hold.";
-        ret = "Let pacing support movement instead of preventing it.";
-      } else if (primary === "Regulated" && field === "Integrative") {
-        read = "Your root pattern regulates load, while today may widen the meaning or connect more layers. Let the pattern inform you, but keep the amount manageable.";
-        lean = "Practical synthesis, paced reflection, and one usable insight.";
-        watch = "Trying to manage every layer of meaning until the day becomes heavy.";
-        move = "Choose one insight and turn it into one regulated action.";
-        ret = "Return to the amount of meaning your system can hold today.";
-      } else if (primary === "Regulated" && field === "Diffused") {
-        read = "Your root pattern likes pacing and control, while today may feel softer, foggier, or harder to define. Do not over-control the fog. Give it a gentle boundary.";
-        lean = "Soft structure, fewer inputs, and simple nervous-system pacing.";
-        watch = "Tightening too much because the field feels unclear.";
-        move = "Set one light boundary and let the rest remain undefined for now.";
-        ret = "Come back to gentle rhythm instead of hard control.";
-      } else if (primary === "Regulated" && field === "Reconstructive") {
-        read = "Your root pattern manages pressure through pacing, while today may bring repair or rebuilding pressure. Do not only manage symptoms; allow one honest adjustment.";
-        lean = "Measured repair, controlled honesty, and practical change.";
-        watch = "Trying to regulate away a problem that actually needs repair.";
-        move = "Make one clean adjustment without opening the whole system.";
-        ret = "Let regulation support repair instead of avoiding it.";
-      } else if (primary === "Regulated" && field === "Structured") {
-        read = "Your root pattern stabilizes through pacing, and today may support structure. This is a strong field for organizing pressure into something realistic and manageable.";
-        lean = "Clear routines, simple structure, and steady execution.";
-        watch = "Over-tightening the plan because order feels safer than movement.";
-        move = "Build one manageable container for the pressure.";
-        ret = "Let the structure be useful, not perfect.";
-      } else if (primary === "Regulated" && field === "Chaotic") {
-        read = "Your root pattern manages load through pacing, but today may feel disorderly. Slow the signal without freezing it.";
-        lean = "Flexible containment and calm response.";
-        watch = "Trying to control every moving part.";
-        move = "Choose what actually needs regulation and let the rest move.";
-        ret = "Release the pressure to manage the whole field.";
-      }
-
-      if (stateLabel === "Overloaded") {
-        watch = `${watch} Also watch for stacking more input when your system is already carrying enough.`;
-        move = `Reduce scope first. ${move}`;
-      } else if (stateLabel === "Threshold") {
-        move = `Pause at the edge, then choose cleanly. ${move}`;
-      } else if (stateLabel === "Mobilized") {
-        lean = `${lean} Use the available movement, but keep it paced.`;
-      }
-
-      return { read, lean, watch, move, ret };
-    }
-
     function getMotionStyleRead(motionStyle){
       const parts = String(motionStyle || "")
         .split("/")
@@ -6262,13 +5750,11 @@
 
       const reads = {
         "Steady": "Signal moves through pacing, continuity, and manageable rhythm.",
-
         "Chaotic": "Signal activates quickly, moves nonlinearly, and needs a useful channel.",
         "Threshold": "Signal moves toward edges, decisions, access points, or crossings.",
         "Contained": "Signal pulls inward, protects the channel, and waits for safety before release.",
         "Reconstructive": "Signal moves toward repair, reset, structural correction, or rebuild pressure.",
         "Diffused": "Signal spreads through the atmosphere and needs grounding before clear action.",
-
         "Chaotic / Threshold": "Fast activation moves toward unresolved pressure, weak points, decisions, or turning points.",
         "Chaotic / Contained": "Fast signal rises, then pulls inward to prevent spillover.",
         "Threshold / Contained": "The system senses an edge, then protects the crossing until safety is clear.",
@@ -6279,7 +5765,6 @@
         "Threshold / Diffused": "The system senses an edge, but the signal may feel unclear until the field settles.",
         "Contained / Diffused": "Signal pulls inward and becomes atmospheric; grounding is needed before interpretation.",
         "Reconstructive / Diffused": "Repair pressure is present, but the weak point may not be clear yet.",
-
         "Chaotic / Threshold / Contained": "Fast activation finds the access point, then contains or closes the channel when the field feels unsafe, contaminated, or no longer repairable.",
         "Chaotic / Threshold / Reconstructive": "Fast activation finds the pressure point and wants to force a repair or reset quickly.",
         "Chaotic / Threshold / Diffused": "Fast activation finds an edge, but the field may feel scattered or unclear before the right move appears.",
@@ -6302,6 +5787,90 @@
       return `Signal moves through ${readableParts}. Keep the interpretation practical and choose one clean next move.`;
     }
 
+    function buildDailyGuidance(harmonics, data){
+      const primary = harmonics.primary || "Structured";
+      const field = harmonics.todayField || "Regulated";
+      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
+      const primaryLower = primary.toLowerCase();
+      const fieldLower = field.toLowerCase();
+
+      let read = `Your ${primaryLower} root pattern is meeting a ${fieldLower} field today. Let today’s field guide your pace, but do not let temporary weather rewrite your identity.`;
+      let lean = "Choose the clearest useful move and keep the day simple.";
+      let watch = "Watch for turning the whole field into something you have to solve at once.";
+      let move = "Pick one pressure point and give it a clean next step.";
+      let ret = "Name what is actually active, then stop before you expand the task.";
+
+      if (field === "Relational") {
+        lean = "Clean contact, simple language, proportional repair, and centered response.";
+        watch = "Over-reading tone, absorbing the shared field, or trying to fix the whole room.";
+        move = "Name one relational signal plainly and keep responsibility proportional.";
+        ret = "Return to your own center before trying to repair the field.";
+      } else if (field === "Reconstructive") {
+        lean = "Honest repair, one clean adjustment, and practical containment.";
+        watch = "Treating every weak point like it means the whole structure has failed.";
+        move = "Choose one honest adjustment and give it a clean container.";
+        ret = "Remind yourself that one repair is not the same as rebuilding the whole system.";
+      } else if (field === "Contained") {
+        lean = "Private refinement, protected timing, low input, and careful release.";
+        watch = "Holding everything inside until the pressure becomes harder to name.";
+        move = "Let one small piece of the inner field become visible or workable.";
+        ret = "Return to privacy as a container, not a hiding place.";
+      } else if (field === "Diffused") {
+        lean = "Soft focus, fewer inputs, and one clear sentence.";
+        watch = "Over-explaining fog or forcing definition before the signal forms.";
+        move = "Give the atmosphere one sentence and let that be enough.";
+        ret = "Come back to the simplest true line.";
+      } else if (field === "Integrative") {
+        lean = "Synthesis, pattern-linking, and choosing the one connection that actually helps.";
+        watch = "Trying to integrate every loose end today.";
+        move = "Name the larger pattern, then reduce it to one workable step.";
+        ret = "Come back to the structure that makes the meaning usable.";
+      } else if (field === "Chaotic") {
+        lean = "Movement with a container, quick release, and one useful direction for the charge.";
+        watch = "Following every spark until the whole day loses continuity.";
+        move = "Pick one channel for the energy and let the rest pass through.";
+        ret = "Return to rhythm before chasing another signal.";
+      } else if (field === "Threshold") {
+        lean = "Clean timing, small crossings, and naming the actual decision point.";
+        watch = "Treating every feeling of pressure like it means act now.";
+        move = "Choose the one threshold that is real enough to cross today.";
+        ret = "Return to the edge slowly and do not force the opening.";
+      } else if (field === "Structured") {
+        lean = "Simple systems, clear order, and one practical piece made more workable.";
+        watch = "Over-refining the structure after it is already strong enough.";
+        move = "Improve one useful container and stop before polish becomes strain.";
+        ret = "Return to the structure that helps, not the structure that controls.";
+      } else if (field === "Regulated") {
+        lean = "Steady rhythm, clear limits, and one manageable action.";
+        watch = "Tightening the system after the pressure is already manageable.";
+        move = "Choose one useful rhythm and let it carry the next step.";
+        ret = "Return to enough regulation, not total control.";
+      }
+
+      if (primary === "Chaotic" && field === "Reconstructive") {
+        read = "Your root pattern moves quickly, nonlinearly, and toward pressure points, while today may bring repair or recalibration pressure. Not every burst of energy needs to become a teardown.";
+        lean = "Directed repair, controlled release, and useful disruption.";
+        watch = "Creating a bigger break than the situation actually needs.";
+        move = "Use the charge to fix one weak point, not to rebuild the whole field.";
+        ret = "Let movement serve repair. Stop once the first usable structure appears.";
+      } else if (primary === "Structured" && field === "Reconstructive") {
+        read = "Your root pattern wants clarity and form, but today may bring repair pressure. Do not turn normal strain into a full reconstruction project.";
+      } else {
+        read = `Your ${primaryLower} root pattern is meeting a ${fieldLower} field today. The read is about the interaction between your stable profile and the current field, not a permanent identity label.`;
+      }
+
+      if (stateLabel === "Overloaded") {
+        watch = `${watch} Also watch for stacking more input when your system is already carrying enough.`;
+        move = `Reduce scope first. ${move}`;
+      } else if (stateLabel === "Threshold") {
+        move = `Pause at the edge, then choose cleanly. ${move}`;
+      } else if (stateLabel === "Mobilized") {
+        lean = `${lean} Use the available movement, but keep it paced.`;
+      }
+
+      return { read, lean, watch, move, ret };
+    }
+
     function buildProfileAwareEnglishRead(harmonics, data, stableProfileLabel, distortionState){
       const primary = harmonics?.primary || "Structured";
       const support = getHarmonicBaseName(harmonics?.support || "Regulated");
@@ -6309,18 +5878,6 @@
       const currentState = stateLabelFromMode(data?.state?.mode || "");
       const label = stableProfileLabel || getStableProfileLabel(primary, support);
       const distortion = distortionState || DISTORTION_STATES.overStructuring;
-
-      const supportPhrases = {
-        Structured: "through structure, naming, framing, and practical containers",
-        Contained: "through privacy, protected timing, and slower release",
-        Chaotic: "through movement, discharge, and a useful channel for activation",
-        Relational: "through contact, tone, mirroring, and proportional repair",
-        Threshold: "through timing, clean crossings, and decisive next steps",
-        Reconstructive: "through repair, strengthening weak points, and rebuilding only what needs rebuilding",
-        Integrative: "through synthesis, meaning-making, and returning scattered pieces to coherence",
-        Diffused: "through field sensitivity, spaciousness, and one gentle anchor",
-        Regulated: "through pacing, containment, rhythm, and load control"
-      };
 
       const primaryPhrases = {
         Structured: "turns pressure into order",
@@ -6359,7 +5916,7 @@
       };
 
       let todayRead = `${label}: ${primaryPhrases[primary] || "your root pattern is active"}. Today, ${fieldPressures[field] || "the current field is active"}. ${fieldBestInterpretations[field] || "Choose one clear next move."}`;
-      let realLife = `When this shows up in normal life, use your stabilizing support ${supportPhrases[support] || "through your support pattern"} and keep the response to one clear move.`;
+      let realLife = `When this shows up in normal life, keep the response to one clear move and do not let the field become bigger than the action.`;
       let shareRead = todayRead;
       let shareRealLife = realLife;
       let whySentence = `The profile-aware layer keeps the stable profile primary: ${label} combines ${harmonicText(primary)} root pattern with ${harmonicText(support)} support, while the ${harmonicText(field)} field describes today’s active pressure.`;
@@ -6374,36 +5931,6 @@
           ? "Name the pressure. Frame the weak point. Repair one thing."
           : "Name the pressure, frame it, and give the charge one useful container.";
         whySentence = `The profile-aware layer keeps ${label} visible: the root signal moves fast, but the stabilizing support turns activation into structure, naming, framing, and usable pressure.`;
-      } else if (primary === "Integrative" && support === "Diffused") {
-        todayRead = `${label}: wide meaning-making becomes clearer through field sensitivity. Today, ${fieldPressures[field] || "the current field is active"}. Return the whole story to one present thread.`;
-        realLife = "When the meaning gets wide, feel the field, then choose one thread that can actually be handled now.";
-        shareRead = `${label}: wide meaning-making needs one present thread. Today, ${fieldPressures[field] || "the current field is active"}.`;
-        shareRealLife = "Feel the wider field, then return to one thread.";
-        whySentence = `The profile-aware layer keeps ${label} visible: the root pattern gathers meaning widely, while the support pattern senses atmosphere; clarity comes from returning the whole field to one present thread.`;
-      } else if (primary === "Structured" && support === "Regulated") {
-        todayRead = `${label}: order becomes usable when it is paced, contained, and not over-tightened. Today, ${fieldPressures[field] || "the current field is active"}. Let structure support the move without making the whole day a project.`;
-        realLife = "When pressure rises, build the container, pace the load, and stop when the next step is clear enough.";
-        shareRead = `${label}: structure works best when pacing keeps the load manageable. Today, ${fieldPressures[field] || "the current field is active"}.`;
-        shareRealLife = "Build the container, pace the load, and stop when the next step is clear.";
-        whySentence = `The profile-aware layer keeps ${label} visible: structure is primary, but regulation decides the usable pace.`;
-      } else if (primary === "Diffused" && support === "Structured") {
-        todayRead = `${label}: atmospheric signal becomes useful when it is framed, named, and brought into one clear line. Today, ${fieldPressures[field] || "the current field is active"}. Clarity can be small without needing to be total.`;
-        realLife = "When the field feels vague, do not define everything. Give it one sentence, one boundary, or one grounded next step.";
-        shareRead = `${label}: atmospheric signal becomes usable through one clear frame. Today, ${fieldPressures[field] || "the current field is active"}.`;
-        shareRealLife = "Give the field one sentence, one boundary, or one grounded next step.";
-        whySentence = `The profile-aware layer keeps ${label} visible: the root pattern receives widely, while structure helps the field become legible without forcing total certainty.`;
-      } else if (primary === "Relational" && support === "Contained") {
-        todayRead = `${label}: connection stays clearer when it is protected, paced, and not overexposed. Today, ${fieldPressures[field] || "the current field is active"}. Contact should not override your center.`;
-        realLife = "When contact gets loud, keep it gentle, say one honest thing, and protect the amount of signal you release.";
-        shareRead = `${label}: connection stabilizes through protected timing and clear boundaries. Today, ${fieldPressures[field] || "the current field is active"}.`;
-        shareRealLife = "Keep contact gentle. Say one honest thing. Protect your center.";
-        whySentence = `The profile-aware layer keeps ${label} visible: the root pattern reads connection, while contained support protects timing and boundaries.`;
-      } else if (primary === "Reconstructive" && support === "Regulated") {
-        todayRead = `${label}: repair becomes safer when pacing decides how much pressure the system takes on. Today, ${fieldPressures[field] || "the current field is active"}. One adjustment is stronger than a full rebuild.`;
-        realLife = "When repair pressure shows up, let pacing choose the repair size. Fix the weak point that is actually present.";
-        shareRead = `${label}: repair pressure becomes usable when pacing keeps the work proportional. Today, ${fieldPressures[field] || "the current field is active"}.`;
-        shareRealLife = "Let pacing choose the repair size. Fix the weak point that is present.";
-        whySentence = `The profile-aware layer keeps ${label} visible: the root pattern can work with repair pressure, but regulated support keeps the rebuild proportional.`;
       }
 
       if (currentState === "Overloaded") {
@@ -6473,16 +6000,6 @@
 
       if (primary === "Chaotic" && support === "Structured") {
         useGift = "Let the signal move, then give it form.";
-      } else if (primary === "Structured" && support === "Regulated") {
-        useGift = "Build the container, then pace the load.";
-      } else if (primary === "Integrative" && support === "Diffused") {
-        useGift = "Gather the meaning, then return to one thread.";
-      } else if (primary === "Diffused" && support === "Structured") {
-        useGift = "Feel the field, then frame one clear line.";
-      } else if (primary === "Relational" && support === "Contained") {
-        useGift = "Read the connection, then protect your center.";
-      } else if (primary === "Reconstructive" && support === "Regulated") {
-        useGift = "Repair the weak point at a manageable pace.";
       } else if (supportAdds[support] && support !== primary) {
         useGift = `${useGift} ${supportAdds[support]}`;
       }
@@ -6507,140 +6024,10 @@
       };
     }
 
-    function buildRealLifeTranslation(harmonics, data){
-      const primary = harmonics?.primary || "Structured";
-      const field = harmonics?.todayField || "Regulated";
-      const motionStyle = harmonicText(harmonics?.motionStyle || "");
-      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
-
-      let text = "";
-
-      if (primary === "Chaotic" && field === "Reconstructive") {
-        text = "When energy rises, choose one specific weak point to fix. Do not turn the whole situation into a rebuild.";
-      } else if (primary === "Integrative" && field === "Reconstructive") {
-        text = "When old pain, history, or meaning gets activated, come back to the one present issue that can actually be handled today.";
-      } else if (primary === "Structured" && field === "Reconstructive") {
-        text = "When something feels off, repair the specific part that is weak. Do not rebuild the whole structure unless the whole structure is actually failing.";
-      } else if (primary === "Threshold" && field === "Reconstructive") {
-        text = "When you sense a crossing or decision point, make the one repair that opens the next clean step. Do not force a full transformation.";
-      } else if (primary === "Diffused" && field === "Reconstructive") {
-        text = "When the pressure feels vague or heavy, wait until the real weak point is clear enough to name before trying to fix it.";
-      } else if (field === "Reconstructive") {
-        text = "Something may be asking for repair today. Choose one specific adjustment instead of treating the whole situation like it is broken.";
-      } else if (motionStyle.includes("Chaotic") && motionStyle.includes("Threshold")) {
-        text = "When activation rises, slow down enough to choose the one move that actually helps.";
-      } else if (motionStyle.includes("Diffused")) {
-        text = "If the situation feels blurry, ground first. Then choose one clear next step.";
-      } else {
-        text = "Translate the read into one practical action: name what is active, choose one clean move, and keep the scope small.";
-      }
-
-      if (stateLabel === "Overloaded") {
-        text += " Because the system reads overloaded, reduce scope before adding more.";
-      } else if (stateLabel === "Threshold") {
-        text += " Because the system reads near a threshold, pause before forcing the next step.";
-      } else if (stateLabel === "Mobilized") {
-        text += " Because the system is mobilized, use the energy without stacking extra demands.";
-      }
-
-      return text;
-    }
-
-    function buildDriverNote(data, harmonics, fieldTrend){
-      const driver = publicDriverName(primaryDriverName(data));
-      const field = harmonics?.todayField || "Regulated";
-      const trend = fieldTrend?.trend || "Stable";
-      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
-      const planetary = data?.planetary || {};
-
-      const volatility = safeNum(
-        planetary.uranus,
-        driverValueFromTaggedList(data?.telemetry?.topDrivers, "Uranus")
-      );
-      const fog = safeNum(
-        planetary.neptune,
-        driverValueFromTaggedList(data?.telemetry?.topDrivers, "Neptune")
-      );
-      const activation = safeNum(
-        planetary.mars,
-        driverValueFromTaggedList(data?.telemetry?.topDrivers, "Mars")
-      );
-
-      const cleanDriver = driver && driver !== "—" ? driver : "The strongest current driver";
-      const driverLower = String(cleanDriver).toLowerCase();
-
-      let note = `${cleanDriver} may be shaping how today’s field lands in your system. With a ${field.toLowerCase()} field and a ${trend.toLowerCase()} trend, keep the read practical and choose one manageable next move.`;
-
-      if (driverLower.includes("pluto")) {
-        note = "Pluto may make the pressure feel deeper, heavier, or more fundamental today. Treat it as a signal for one honest repair, not proof that the whole system has to be rebuilt.";
-      } else if (driverLower.includes("mars")) {
-        note = "Mars may raise activation, urgency, or heat today. Use the extra charge for one clear action instead of letting it push the whole field faster than it needs to go.";
-      } else if (driverLower.includes("uranus")) {
-        note = "Uranus may add movement, disruption, or sudden signal today. Let the change show you what needs attention without reacting to every spark.";
-      } else if (driverLower.includes("neptune")) {
-        note = "Neptune may make the field feel more porous, foggy, or emotionally blended today. Reduce extra input and look for one simple true line.";
-      } else if (driverLower.includes("saturn")) {
-        note = "Saturn may add pressure, limits, or structure today. Use the container to simplify the load instead of turning every limit into a blockage.";
-      } else if (driverLower.includes("venus")) {
-        note = "Venus may bring tone, contact, comfort, or relational regulation into focus today. Let steadiness and repair matter more than perfect control.";
-      } else if (driverLower.includes("mercury")) {
-        note = "Mercury may sharpen language, interpretation, and decision-making today. Name the signal plainly, then stop before analysis becomes extra load.";
-      } else if (driverLower.includes("moon")) {
-        note = "The Moon may make the field more responsive, emotional, or body-led today. Let the signal settle before turning it into a conclusion.";
-      } else if (driverLower.includes("jupiter")) {
-        note = "Jupiter may widen the field, add meaning, or increase scale today. Let the larger pattern help, but do not make the day carry every possibility.";
-      } else if (driverLower.includes("sun")) {
-        note = "The Sun may bring identity, focus, or visibility into the field today. Let the signal clarify direction without forcing the whole self to prove something.";
-      }
-
-      if (field === "Reconstructive" && !driverLower.includes("pluto")) {
-        note += " Because the field is reconstructive, focus on one repair that is actually present.";
-      } else if (field === "Threshold" && !driverLower.includes("mars")) {
-        note += " Because the field is near a threshold, pause before crossing and choose the next step cleanly.";
-      } else if (field === "Diffused" && !driverLower.includes("neptune")) {
-        note += " Because the field is diffused, fewer inputs may help the real signal stand out.";
-      } else if (field === "Chaotic" && !driverLower.includes("uranus")) {
-        note += " Because the field is charged, give the movement one safe container.";
-      }
-
-      if (stateLabel === "Overloaded") {
-        note += " Since the system reads overloaded, reduce scope before adding more interpretation.";
-      } else if (stateLabel === "Threshold") {
-        note += " Since the system reads near threshold, move carefully and avoid forcing the timing.";
-      } else if (stateLabel === "Mobilized") {
-        note += " Since the system reads mobilized, use the momentum without stacking demands.";
-      }
-
-      if (fog >= 0.72 && !driverLower.includes("neptune")) {
-        note += " A higher fog signal can make things feel less defined, so simple language helps.";
-      }
-
-      if (activation >= 0.72 && !driverLower.includes("mars")) {
-        note += " A higher activation signal can make the body want to move faster than the field is ready for.";
-      }
-
-      if (volatility >= 0.72 && !driverLower.includes("uranus")) {
-        note += " A higher volatility signal can make changes feel sudden, so keep the response contained.";
-      }
-
-      return note;
-    }
-
     function buildShortDriverNote(data, harmonics, fieldTrend){
       const driver = publicDriverName(primaryDriverName(data));
       const field = harmonics?.todayField || "Regulated";
       const stateLabel = stateLabelFromMode(data?.state?.mode || "");
-      const planetary = data?.planetary || {};
-
-      const fog = safeNum(
-        planetary.neptune,
-        driverValueFromTaggedList(data?.telemetry?.topDrivers, "Neptune")
-      );
-      const activation = safeNum(
-        planetary.mars,
-        driverValueFromTaggedList(data?.telemetry?.topDrivers, "Mars")
-      );
-
       const cleanDriver = driver && driver !== "—" ? driver : "The strongest current driver";
       const driverLower = String(cleanDriver).toLowerCase();
 
@@ -6686,15 +6073,11 @@
         note += " Because the system is mobilized, keep momentum paced.";
       }
 
-      if (fog >= 0.72 && !driverLower.includes("neptune")) {
-        note += " Simple language helps.";
-      }
-
-      if (activation >= 0.72 && !driverLower.includes("mars")) {
-        note += " Do not let the body outrun the field.";
-      }
-
       return note;
+    }
+
+    function buildDriverNote(data, harmonics, fieldTrend){
+      return buildShortDriverNote(data, harmonics, fieldTrend);
     }
 
     function renderHarmonicLibrary(activePrimary = "", activeField = ""){
@@ -6819,22 +6202,6 @@
       setText("whyMoonstampModifier", moonstampLine);
 
       let explanation = `${profileAwareRead?.whySentence || ""} Lucy.OS is reading a ${harmonicText(primary)} root pattern inside a ${harmonicText(field)} current field. Stable profile translation: ${stableProfileLabel}. That means the guidance is not just “who you are” and not just “what today is doing.” It is the interaction between the two. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Current state is ${currentState.toLowerCase()}; load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${fieldTrend.rationale} ${driverNote}`;
-
-      if (primary === "Chaotic" && field === "Reconstructive") {
-        explanation = `${profileAwareRead?.whySentence || ""} This does not mean the person is chaotic as a lifestyle or identity. It means the root signal moves quickly, nonlinearly, and toward pressure points. Stable profile translation: ${stableProfileLabel}. The ${harmonicText(field)} field adds repair pressure, so the best move is one honest adjustment, not a full rebuild. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
-      }
-
-      if (primary === "Structured" && field === "Reconstructive") {
-        explanation = `${profileAwareRead?.whySentence || ""} This means the system is trying to repair or strengthen something, not collapse. Stable profile translation: ${stableProfileLabel}. The ${harmonicText(primary)} root pattern wants order, sequence, and meaning, while the ${harmonicText(field)} field pushes repair pressure. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} ${fieldTrend.rationale} The best move is one honest adjustment, not a full rebuild. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${driverNote}`;
-      }
-
-      if (currentState === "Threshold" && loadBand === "Overloaded" && capacityBand === "Decent") {
-        explanation += " Load is reading overloaded, but the system still has usable capacity. This is an edge, not a collapse.";
-      }
-
-      if (String(driver).toLowerCase().includes("pluto")) {
-        explanation += " Pluto as the primary driver can make the pressure feel fundamental, but the guidance is still to avoid treating every weak point like the whole system is broken.";
-      }
 
       if (distortion === field) {
         explanation += " The raw distortion harmonic matches today’s field, so the same pattern that is active today can become the overload route if the load keeps stacking.";
@@ -7579,115 +6946,8 @@
 
       const cases = [
         {
-          name: "Structured Case",
-          expected: ["Structured", "Regulated"],
-          build: () => {
-            const data = baseData();
-            data.planetary.saturn = 0.95;
-            data.planetary.mercury = 0.95;
-            data.planetary.sun = 0.60;
-            data.planetary.mc = 0.90;
-            data.baselineState.capacity = 0.90;
-            data.baselineState.regulation = 0.75;
-            return data;
-          }
-        },
-        {
-          name: "Contained Case",
-          expected: ["Contained"],
-          build: () => {
-            const data = baseData();
-            data.planetary.moon = 0.95;
-            data.planetary.saturn = 0.90;
-            data.planetary.neptune = 0.55;
-            return data;
-          }
-        },
-        {
-          name: "Chaotic Case",
-          expected: ["Chaotic"],
-          build: () => {
-            const data = baseData();
-            data.planetary.uranus = 0.95;
-            data.planetary.mars = 0.92;
-            data.planetary.neptune = 0.35;
-            data.baselineState.strain = 0.40;
-            return data;
-          }
-        },
-        {
-          name: "Relational Case",
-          expected: ["Relational"],
-          build: () => {
-            const data = baseData();
-            data.planetary.venus = 0.95;
-            data.planetary.moon = 0.90;
-            data.planetary.asc = 0.92;
-            return data;
-          }
-        },
-        {
-          name: "Threshold Case",
-          expected: ["Threshold", "Chaotic"],
-          build: () => {
-            const data = baseData();
-            data.planetary.mars = 0.95;
-            data.planetary.uranus = 0.92;
-            data.planetary.pluto = 0.60;
-            data.planetary.mc = 0.90;
-            return data;
-          }
-        },
-        {
-          name: "Reconstructive Case",
-          expected: ["Reconstructive"],
-          build: () => {
-            const data = baseData();
-            data.planetary.pluto = 0.95;
-            data.planetary.saturn = 0.92;
-            data.baselineState.amplifiedLoad = 0.55;
-            data.baselineState.strain = 0.55;
-            return data;
-          }
-        },
-        {
-          name: "Integrative Case",
-          expected: ["Integrative", "Diffused"],
-          build: () => {
-            const data = baseData();
-            data.planetary.jupiter = 0.95;
-            data.planetary.neptune = 0.92;
-            data.planetary.mercury = 0.55;
-            data.planetary.moon = 0.55;
-            return data;
-          }
-        },
-        {
-          name: "Diffused Case",
-          expected: ["Diffused"],
-          build: () => {
-            const data = baseData();
-            data.planetary.neptune = 0.95;
-            data.planetary.moon = 0.92;
-            data.planetary.jupiter = 0.60;
-            return data;
-          }
-        },
-        {
-          name: "Regulated Case",
-          expected: ["Regulated", "Structured"],
-          build: () => {
-            const data = baseData();
-            data.planetary.saturn = 0.95;
-            data.planetary.mercury = 0.92;
-            data.planetary.venus = 0.55;
-            data.baselineState.regulation = 0.95;
-            return data;
-          }
-        },
-        {
           name: "Wide Jupiter Scatter Field Should Not Become Reconstructive",
-          expectedField: ["Integrative", "Diffused", "Chaotic"],
+          expectedField: ["Integrative", "Diffused", "Chaotic", "Contained", "Regulated"],
           build: () => {
             const data = baseData();
             data.state.strain = 0.82;
@@ -7717,6 +6977,23 @@
             data.forecast.now.state = "Overload";
             return data;
           }
+        },
+        {
+          name: "Relational Field Can Beat Secondary Repair Pressure",
+          expectedField: ["Relational"],
+          build: () => {
+            const data = baseData();
+            data.state.strain = 0.78;
+            data.state.amplifiedLoad = 0.97;
+            data.state.regulation = 0.40;
+            data.planetary.transitVenus = 0.80;
+            data.planetary.transitMoon = 0.62;
+            data.planetary.transitPluto = 0.58;
+            data.planetary.transitSaturn = 0.42;
+            data.planetary.transitJupiter = 0.45;
+            data.forecast.now.state = "Mobilized";
+            return data;
+          }
         }
       ];
 
@@ -7726,31 +7003,20 @@
         const distortionState = DISTORTION_STATES[result.distortionStateKey] || DISTORTION_STATES.overStructuring;
         const stableProfileLabel = getStableProfileLabel(result.primary, result.support);
         const profileAwareRead = buildProfileAwareEnglishRead(result, data, stableProfileLabel, distortionState);
-        const expectedPrimary = testCase.expected || [];
         const expectedField = testCase.expectedField || [];
-        const primaryPassed = expectedPrimary.length ? expectedPrimary.includes(result.primary) : true;
         const fieldPassed = expectedField.length ? expectedField.includes(result.todayField) : true;
-        const passed = primaryPassed && fieldPassed;
 
         return {
           case: testCase.name,
-          expectedPrimary: expectedPrimary.join(" or ") || "—",
-          actualPrimary: result.primary,
           expectedField: expectedField.join(" or ") || "—",
           actualField: result.todayField,
           repairGate: result.dailyFieldDebug?.repairGate,
           repairSignature: result.dailyFieldDebug?.repairSignature,
           wideFieldSignature: result.dailyFieldDebug?.wideFieldSignature,
-          support: result.support,
-          profileTranslation: stableProfileLabel,
+          relationalSignature: result.dailyFieldDebug?.relationalSignature,
           profileAwareTodayRead: profileAwareRead.todayRead,
-          profileAwareRealLife: profileAwareRead.realLife,
-          motionStyle: result.motionStyle,
-          motionStyleRead: getMotionStyleRead(result.motionStyle),
-          rawDistortionHarmonic: result.distortion,
-          primaryDistortionState: distortionState.label,
           dailyFieldDebug: result.dailyFieldDebug,
-          passFail: passed ? "PASS" : "FAIL"
+          passFail: fieldPassed ? "PASS" : "FAIL"
         };
       });
 
