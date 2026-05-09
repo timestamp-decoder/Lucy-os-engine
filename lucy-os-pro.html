@@ -1413,6 +1413,392 @@
       color:var(--h-steady);
     }
 
+    .liveFieldDashboardCard{
+      position:relative;
+      width:100%;
+      max-width:100%;
+      min-width:0;
+      overflow:hidden;
+      border:1px solid rgba(103,193,255,.22);
+      border-radius:22px;
+      padding:20px;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(103,193,255,.12), transparent 34%),
+        radial-gradient(circle at 90% 8%, rgba(176,108,255,.095), transparent 34%),
+        radial-gradient(circle at 50% 120%, rgba(216,184,76,.055), transparent 42%),
+        linear-gradient(180deg,rgba(15,27,56,.97),rgba(12,24,50,.94));
+      box-shadow:
+        0 18px 52px rgba(0,0,0,.26),
+        inset 0 0 0 1px rgba(255,255,255,.02);
+    }
+
+    .liveFieldDashboardCard::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:
+        linear-gradient(135deg,rgba(255,255,255,.035),transparent 44%),
+        radial-gradient(circle at 52% 0%, rgba(103,193,255,.055), transparent 44%);
+    }
+
+    .liveFieldDashboardCard > *{
+      position:relative;
+      z-index:1;
+    }
+
+    .liveFieldDashboardHeader{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:14px;
+      min-width:0;
+    }
+
+    .liveFieldDashboardHeader h2{
+      margin:0;
+      font-size:22px;
+      letter-spacing:-.02em;
+    }
+
+    .liveFieldDashboardHeader p{
+      margin:5px 0 0;
+      color:#c4cee6;
+      font-size:13px;
+      line-height:1.5;
+      max-width:680px;
+      overflow-wrap:break-word;
+    }
+
+    .liveDashboardDayType{
+      margin:0 0 14px;
+      padding:13px 14px;
+      border:1px solid rgba(216,184,76,.20);
+      border-radius:16px;
+      background:
+        radial-gradient(circle at 8% 0%, rgba(216,184,76,.10), transparent 34%),
+        radial-gradient(circle at 92% 10%, rgba(103,193,255,.065), transparent 32%),
+        rgba(255,255,255,.028);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.016),
+        0 10px 26px rgba(0,0,0,.12);
+      min-width:0;
+      max-width:100%;
+    }
+
+    .liveDashboardDayTypeTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      min-width:0;
+    }
+
+    .liveDashboardDayTypeLabel{
+      color:var(--gold);
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:.13em;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .liveDashboardDayTypeUse{
+      color:var(--muted);
+      font-size:11px;
+      font-weight:850;
+      line-height:1.35;
+      text-align:right;
+      overflow-wrap:break-word;
+    }
+
+    .liveDashboardDayTypeTitle{
+      margin-top:7px;
+      color:var(--text);
+      font-size:22px;
+      font-weight:950;
+      line-height:1.14;
+      letter-spacing:-.03em;
+      overflow-wrap:anywhere;
+    }
+
+    .liveDashboardDayTypeText{
+      margin-top:6px;
+      color:#d9e0f4;
+      font-size:12.5px;
+      line-height:1.52;
+      font-weight:720;
+      overflow-wrap:break-word;
+    }
+
+    .liveDashboardGrid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+      min-width:0;
+      max-width:100%;
+    }
+
+    .liveDashboardMetric{
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.085);
+      border-radius:16px;
+      padding:13px;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(103,193,255,.075), transparent 34%),
+        linear-gradient(180deg,rgba(255,255,255,.038),rgba(255,255,255,.018));
+      min-height:132px;
+      min-width:0;
+      max-width:100%;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.014);
+    }
+
+    .liveDashboardMetric::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.78;
+      background:
+        radial-gradient(circle at 92% 12%, rgba(103,193,255,.06), transparent 32%),
+        linear-gradient(135deg,rgba(255,255,255,.028),transparent 44%);
+    }
+
+    .liveDashboardMetric > *{
+      position:relative;
+      z-index:1;
+    }
+
+    .liveDashboardMetric.metric-signal{
+      border-color:rgba(103,193,255,.18);
+      background:
+        radial-gradient(circle at 18% 0%, rgba(103,193,255,.105), transparent 34%),
+        rgba(255,255,255,.028);
+    }
+
+    .liveDashboardMetric.metric-momentum{
+      border-color:rgba(111,224,211,.18);
+      background:
+        radial-gradient(circle at 18% 0%, rgba(111,224,211,.09), transparent 34%),
+        rgba(255,255,255,.028);
+    }
+
+    .liveDashboardMetric.metric-load{
+      border-color:rgba(216,184,76,.20);
+      background:
+        radial-gradient(circle at 18% 0%, rgba(216,184,76,.10), transparent 34%),
+        rgba(255,255,255,.028);
+    }
+
+    .liveDashboardMetric.metric-regulation{
+      border-color:rgba(111,224,211,.20);
+      background:
+        radial-gradient(circle at 18% 0%, rgba(111,224,211,.105), transparent 34%),
+        rgba(255,255,255,.028);
+    }
+
+    .liveDashboardMetric.metric-clarity{
+      border-color:rgba(103,193,255,.18);
+      background:
+        radial-gradient(circle at 18% 0%, rgba(103,193,255,.095), transparent 34%),
+        rgba(255,255,255,.028);
+    }
+
+    .liveDashboardMetric.metric-decision{
+      border-color:rgba(216,184,76,.20);
+      background:
+        radial-gradient(circle at 18% 0%, rgba(216,184,76,.105), transparent 34%),
+        rgba(255,255,255,.028);
+    }
+
+    .liveDashboardMetric.metric-social{
+      border-color:rgba(255,155,183,.18);
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255,155,183,.095), transparent 34%),
+        rgba(255,255,255,.028);
+    }
+
+    .liveDashboardMetric.metric-sensitivity{
+      border-color:rgba(203,183,255,.20);
+      background:
+        radial-gradient(circle at 18% 0%, rgba(203,183,255,.105), transparent 34%),
+        rgba(255,255,255,.028);
+    }
+
+    .liveDashboardMetric.metric-expansion{
+      border-color:rgba(176,108,255,.19);
+      background:
+        radial-gradient(circle at 18% 0%, rgba(176,108,255,.105), transparent 34%),
+        rgba(255,255,255,.028);
+    }
+
+    .liveDashboardMetricTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      min-width:0;
+    }
+
+    .liveDashboardIcon{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:34px;
+      height:34px;
+      flex:0 0 auto;
+      border-radius:13px;
+      border:1px solid rgba(103,193,255,.16);
+      background:rgba(103,193,255,.055);
+      color:var(--blue);
+      font-size:20px;
+      line-height:1;
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.02),
+        0 0 18px rgba(103,193,255,.08);
+    }
+
+    .liveDashboardMetric.metric-momentum .liveDashboardIcon,
+    .liveDashboardMetric.metric-regulation .liveDashboardIcon{
+      border-color:rgba(111,224,211,.18);
+      background:rgba(111,224,211,.065);
+      color:var(--teal);
+      box-shadow:0 0 18px rgba(111,224,211,.08);
+    }
+
+    .liveDashboardMetric.metric-load .liveDashboardIcon,
+    .liveDashboardMetric.metric-decision .liveDashboardIcon{
+      border-color:rgba(216,184,76,.20);
+      background:rgba(216,184,76,.070);
+      color:var(--gold);
+      box-shadow:0 0 18px rgba(216,184,76,.08);
+    }
+
+    .liveDashboardMetric.metric-social .liveDashboardIcon{
+      border-color:rgba(255,155,183,.18);
+      background:rgba(255,155,183,.065);
+      color:var(--rose);
+      box-shadow:0 0 18px rgba(255,155,183,.08);
+    }
+
+    .liveDashboardMetric.metric-sensitivity .liveDashboardIcon,
+    .liveDashboardMetric.metric-expansion .liveDashboardIcon{
+      border-color:rgba(203,183,255,.18);
+      background:rgba(176,108,255,.065);
+      color:#cab1ff;
+      box-shadow:0 0 18px rgba(176,108,255,.08);
+    }
+
+    .liveDashboardScore{
+      color:var(--text);
+      font-size:23px;
+      line-height:1;
+      font-weight:950;
+      letter-spacing:-.035em;
+      text-align:right;
+      font-variant-numeric:tabular-nums;
+      white-space:nowrap;
+    }
+
+    .liveDashboardScore span{
+      color:var(--muted2);
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:0;
+    }
+
+    .liveDashboardLabel{
+      margin-top:11px;
+      color:var(--text);
+      font-size:13px;
+      font-weight:950;
+      line-height:1.22;
+      overflow-wrap:break-word;
+    }
+
+    .liveDashboardText{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:11.5px;
+      line-height:1.42;
+      font-weight:720;
+      overflow-wrap:break-word;
+    }
+
+    .liveDashboardMeter{
+      position:relative;
+      width:100%;
+      height:8px;
+      overflow:hidden;
+      margin-top:10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.075);
+      background:rgba(7,17,38,.72);
+      box-shadow:inset 0 0 10px rgba(0,0,0,.22);
+    }
+
+    .liveDashboardMeter span{
+      display:block;
+      width:0%;
+      height:100%;
+      border-radius:999px;
+      transition:width .35s ease;
+      background:linear-gradient(90deg,rgba(103,193,255,.60),rgba(111,224,211,.78));
+      box-shadow:0 0 14px rgba(103,193,255,.13);
+    }
+
+    .liveDashboardMetric.metric-load .liveDashboardMeter span{
+      background:linear-gradient(90deg,rgba(216,184,76,.62),rgba(255,138,61,.78),rgba(255,102,102,.84));
+      box-shadow:0 0 14px rgba(255,102,102,.13);
+    }
+
+    .liveDashboardMetric.metric-decision .liveDashboardMeter span{
+      background:linear-gradient(90deg,rgba(216,184,76,.62),rgba(111,224,211,.72));
+      box-shadow:0 0 14px rgba(216,184,76,.12);
+    }
+
+    .liveDashboardMetric.metric-social .liveDashboardMeter span{
+      background:linear-gradient(90deg,rgba(255,155,183,.58),rgba(203,183,255,.76));
+      box-shadow:0 0 14px rgba(255,155,183,.12);
+    }
+
+    .liveDashboardMetric.metric-sensitivity .liveDashboardMeter span,
+    .liveDashboardMetric.metric-expansion .liveDashboardMeter span{
+      background:linear-gradient(90deg,rgba(176,108,255,.58),rgba(203,183,255,.78));
+      box-shadow:0 0 14px rgba(176,108,255,.12);
+    }
+
+    .liveDashboardBand{
+      display:inline-flex;
+      align-items:center;
+      min-height:22px;
+      margin-top:9px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.035);
+      color:var(--muted);
+      font-size:9.5px;
+      font-weight:950;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      line-height:1.15;
+      overflow-wrap:anywhere;
+    }
+
+    .liveDashboardNote{
+      margin-top:13px;
+      border-top:1px solid rgba(255,255,255,.07);
+      padding-top:12px;
+      color:var(--muted2);
+      font-size:11px;
+      line-height:1.5;
+      font-weight:760;
+      overflow-wrap:break-word;
+    }
+
     .regulationSupportCard{
       width:100%;
       max-width:100%;
@@ -3503,6 +3889,7 @@
       .whyReadCard,
       .shareSection,
       .regulationSupportCard,
+      .liveFieldDashboardCard,
       .outlookCard{
         border-radius:16px;
       }
@@ -3718,6 +4105,94 @@
         line-height:1.38;
       }
 
+      .liveFieldDashboardCard{
+        padding:18px;
+      }
+
+      .liveFieldDashboardHeader{
+        display:grid;
+        gap:10px;
+      }
+
+      .liveFieldDashboardHeader h2{
+        font-size:24px;
+      }
+
+      .liveFieldDashboardHeader p{
+        font-size:12.5px;
+      }
+
+      .liveDashboardDayType{
+        border-radius:14px;
+        padding:12px;
+        margin-bottom:12px;
+      }
+
+      .liveDashboardDayTypeTop{
+        display:grid;
+        gap:4px;
+      }
+
+      .liveDashboardDayTypeUse{
+        text-align:left;
+        font-size:10.8px;
+      }
+
+      .liveDashboardDayTypeTitle{
+        font-size:20px;
+      }
+
+      .liveDashboardDayTypeText{
+        font-size:12px;
+      }
+
+      .liveDashboardGrid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:9px;
+      }
+
+      .liveDashboardMetric{
+        min-height:134px;
+        border-radius:14px;
+        padding:11px;
+      }
+
+      .liveDashboardIcon{
+        width:30px;
+        height:30px;
+        border-radius:11px;
+        font-size:18px;
+      }
+
+      .liveDashboardScore{
+        font-size:20px;
+      }
+
+      .liveDashboardScore span{
+        font-size:10.5px;
+      }
+
+      .liveDashboardLabel{
+        margin-top:10px;
+        font-size:12.2px;
+      }
+
+      .liveDashboardText{
+        font-size:10.8px;
+        line-height:1.36;
+      }
+
+      .liveDashboardBand{
+        min-height:20px;
+        font-size:8.8px;
+        padding:3px 7px;
+      }
+
+      .liveDashboardNote{
+        font-size:10.5px;
+        line-height:1.42;
+      }
+
       .profileHeader,
       .regulationSupportHeader,
       .outlookHeader{
@@ -3868,6 +4343,16 @@
 
       .shareActions{
         grid-template-columns:minmax(0,1fr);
+      }
+    }
+
+    @media (max-width: 430px){
+      .liveDashboardGrid{
+        grid-template-columns:minmax(0,1fr);
+      }
+
+      .liveDashboardMetric{
+        min-height:118px;
       }
     }
   </style>
@@ -4134,6 +4619,136 @@
               <div class="fieldUndertoneHelp">Close second-place field. Adds texture, does not replace the main field.</div>
               <div class="fieldUndertoneMeta" id="topFieldUndertoneMeta">Secondary field stays in debug only.</div>
             </div>
+          </div>
+        </section>
+
+        <section class="liveFieldDashboardCard">
+          <div class="liveFieldDashboardHeader">
+            <div>
+              <h2>Live Field Dashboard</h2>
+              <p>A quick scan of today’s pressure, movement, clarity, contact, and regulation capacity.</p>
+            </div>
+
+            <div class="chipRow" style="margin-top:0;">
+              <span class="chip violet" id="liveDashboardStateChip">State: —</span>
+              <span class="chip field" id="liveDashboardFieldChip">Field: —</span>
+            </div>
+          </div>
+
+          <div class="liveDashboardDayType">
+            <div class="liveDashboardDayTypeTop">
+              <div class="liveDashboardDayTypeLabel">Today’s Field Type</div>
+              <div class="liveDashboardDayTypeUse" id="liveDashboardBestUse">Best use: —</div>
+            </div>
+            <div class="liveDashboardDayTypeTitle" id="liveDashboardDayTypeTitle">Waiting for field type</div>
+            <div class="liveDashboardDayTypeText" id="liveDashboardDayTypeText">
+              Calculate to see today’s compact field-type read.
+            </div>
+          </div>
+
+          <div class="liveDashboardGrid" id="liveDashboardGrid">
+            <div class="liveDashboardMetric metric-signal">
+              <div class="liveDashboardMetricTop">
+                <div class="liveDashboardIcon">⌁</div>
+                <div class="liveDashboardScore" id="liveDashboardFieldSignalScore">—<span>/10</span></div>
+              </div>
+              <div class="liveDashboardLabel">Field Signal</div>
+              <div class="liveDashboardText" id="liveDashboardFieldSignalText">Overall field strength today.</div>
+              <div class="liveDashboardMeter"><span id="liveDashboardFieldSignalBar"></span></div>
+              <div class="liveDashboardBand" id="liveDashboardFieldSignalBand">Waiting</div>
+            </div>
+
+            <div class="liveDashboardMetric metric-momentum">
+              <div class="liveDashboardMetricTop">
+                <div class="liveDashboardIcon">↗</div>
+                <div class="liveDashboardScore" id="liveDashboardMomentumScore">—<span>/10</span></div>
+              </div>
+              <div class="liveDashboardLabel">Momentum</div>
+              <div class="liveDashboardText" id="liveDashboardMomentumText">How much usable movement is available.</div>
+              <div class="liveDashboardMeter"><span id="liveDashboardMomentumBar"></span></div>
+              <div class="liveDashboardBand" id="liveDashboardMomentumBand">Waiting</div>
+            </div>
+
+            <div class="liveDashboardMetric metric-load">
+              <div class="liveDashboardMetricTop">
+                <div class="liveDashboardIcon">▰</div>
+                <div class="liveDashboardScore" id="liveDashboardSystemLoadScore">—<span>/10</span></div>
+              </div>
+              <div class="liveDashboardLabel">System Load</div>
+              <div class="liveDashboardText" id="liveDashboardSystemLoadText">How much pressure the system is carrying.</div>
+              <div class="liveDashboardMeter"><span id="liveDashboardSystemLoadBar"></span></div>
+              <div class="liveDashboardBand" id="liveDashboardSystemLoadBand">Waiting</div>
+            </div>
+
+            <div class="liveDashboardMetric metric-regulation">
+              <div class="liveDashboardMetricTop">
+                <div class="liveDashboardIcon">◉</div>
+                <div class="liveDashboardScore" id="liveDashboardRegulationScore">—<span>/10</span></div>
+              </div>
+              <div class="liveDashboardLabel">Regulation</div>
+              <div class="liveDashboardText" id="liveDashboardRegulationText">How much pacing and containment are available.</div>
+              <div class="liveDashboardMeter"><span id="liveDashboardRegulationBar"></span></div>
+              <div class="liveDashboardBand" id="liveDashboardRegulationBand">Waiting</div>
+            </div>
+
+            <div class="liveDashboardMetric metric-clarity">
+              <div class="liveDashboardMetricTop">
+                <div class="liveDashboardIcon">◌</div>
+                <div class="liveDashboardScore" id="liveDashboardClarityWindowScore">—<span>/10</span></div>
+              </div>
+              <div class="liveDashboardLabel">Clarity Window</div>
+              <div class="liveDashboardText" id="liveDashboardClarityWindowText">How readable the signal is right now.</div>
+              <div class="liveDashboardMeter"><span id="liveDashboardClarityWindowBar"></span></div>
+              <div class="liveDashboardBand" id="liveDashboardClarityWindowBand">Waiting</div>
+            </div>
+
+            <div class="liveDashboardMetric metric-decision">
+              <div class="liveDashboardMetricTop">
+                <div class="liveDashboardIcon">⟡</div>
+                <div class="liveDashboardScore" id="liveDashboardDecisionFlowScore">—<span>/10</span></div>
+              </div>
+              <div class="liveDashboardLabel">Decision Flow</div>
+              <div class="liveDashboardText" id="liveDashboardDecisionFlowText">How cleanly choices can move today.</div>
+              <div class="liveDashboardMeter"><span id="liveDashboardDecisionFlowBar"></span></div>
+              <div class="liveDashboardBand" id="liveDashboardDecisionFlowBand">Waiting</div>
+            </div>
+
+            <div class="liveDashboardMetric metric-social">
+              <div class="liveDashboardMetricTop">
+                <div class="liveDashboardIcon">∞</div>
+                <div class="liveDashboardScore" id="liveDashboardSocialFieldScore">—<span>/10</span></div>
+              </div>
+              <div class="liveDashboardLabel">Social Field</div>
+              <div class="liveDashboardText" id="liveDashboardSocialFieldText">How active tone, contact, or relational feedback is.</div>
+              <div class="liveDashboardMeter"><span id="liveDashboardSocialFieldBar"></span></div>
+              <div class="liveDashboardBand" id="liveDashboardSocialFieldBand">Waiting</div>
+            </div>
+
+            <div class="liveDashboardMetric metric-sensitivity">
+              <div class="liveDashboardMetricTop">
+                <div class="liveDashboardIcon">≋</div>
+                <div class="liveDashboardScore" id="liveDashboardFieldSensitivityScore">—<span>/10</span></div>
+              </div>
+              <div class="liveDashboardLabel">Field Sensitivity</div>
+              <div class="liveDashboardText" id="liveDashboardFieldSensitivityText">How much subtle or atmospheric signal is active.</div>
+              <div class="liveDashboardMeter"><span id="liveDashboardFieldSensitivityBar"></span></div>
+              <div class="liveDashboardBand" id="liveDashboardFieldSensitivityBand">Waiting</div>
+            </div>
+
+            <div class="liveDashboardMetric metric-expansion">
+              <div class="liveDashboardMetricTop">
+                <div class="liveDashboardIcon">◎</div>
+                <div class="liveDashboardScore" id="liveDashboardExpansionPotentialScore">—<span>/10</span></div>
+              </div>
+              <div class="liveDashboardLabel">Expansion Potential</div>
+              <div class="liveDashboardText" id="liveDashboardExpansionPotentialText">How much widening, meaning, or opportunity is available.</div>
+              <div class="liveDashboardMeter"><span id="liveDashboardExpansionPotentialBar"></span></div>
+              <div class="liveDashboardBand" id="liveDashboardExpansionPotentialBand">Waiting</div>
+            </div>
+          </div>
+
+          <div class="liveDashboardNote">
+            Dashboard scores are simplified 1–10 translations of the current read. They do not change the engine, backend, or field selection.
           </div>
         </section>
 
@@ -5335,6 +5950,23 @@
       el.style.width = pct + "%";
     }
 
+    function score10(value){
+      return clamp(Math.round(safeNum(value) * 10), 1, 10);
+    }
+
+    function score10From01(value){
+      return clamp(Math.round(safeNum(value) * 10), 1, 10);
+    }
+
+    function bandFromScore(score){
+      const n = safeNum(score);
+      if (n <= 3) return "Low";
+      if (n <= 5) return "Moderate";
+      if (n <= 7) return "Active";
+      if (n <= 8) return "High";
+      return "Very high";
+    }
+
     function isMobileLayout(){
       return window.matchMedia && window.matchMedia("(max-width: 720px)").matches;
     }
@@ -6316,6 +6948,214 @@
       };
 
       return translations[field] || translations.Regulated;
+    }
+
+    function buildLiveDashboardDayType(field, stateLabel, fieldUndertone){
+      const translation = getFieldTranslation(field || "Regulated");
+      const state = stateLabel || "Regulated";
+      let title = translation.title;
+      let text = translation.short;
+      let bestUse = translation.best || "Choose one useful next step.";
+
+      if (field === "Integrative") {
+        title = "Integration Day";
+        text = "The field is better for connecting pieces, seeing the wider pattern, and turning scattered inputs into one useful read.";
+        bestUse = "Best use: connect the pattern, then reduce it to one move.";
+      } else if (field === "Reconstructive") {
+        title = "Repair Day";
+        text = "The field may expose one weak point that wants attention. This is repair pressure, not proof the whole system has failed.";
+        bestUse = "Best use: fix one real weak point.";
+      } else if (field === "Relational") {
+        title = "Contact Day";
+        text = "The field is reading through tone, feedback, contact, and shared atmosphere. Keep responsibility proportional.";
+        bestUse = "Best use: clarify contact without absorbing the whole room.";
+      } else if (field === "Diffused") {
+        title = "Atmospheric Day";
+        text = "The field is more subtle or porous. Ground first, then look for the simplest true line.";
+        bestUse = "Best use: reduce inputs and choose one anchor.";
+      } else if (field === "Chaotic") {
+        title = "Activation Day";
+        text = "The field has extra movement or charge. Give it one channel before it scatters.";
+        bestUse = "Best use: move the charge into one useful task.";
+      } else if (field === "Threshold") {
+        title = "Threshold Day";
+        text = "The field is near an edge, opening, or choice point. Timing matters more than intensity.";
+        bestUse = "Best use: pause, name the edge, then cross cleanly.";
+      } else if (field === "Structured") {
+        title = "Structure Day";
+        text = "The field supports order, sequence, and usable form. Build the container without over-tightening it.";
+        bestUse = "Best use: make one system clearer.";
+      } else if (field === "Contained") {
+        title = "Containment Day";
+        text = "The field is pulling inward for privacy, protection, or slower formation. Let the signal shape before releasing it.";
+        bestUse = "Best use: protect the channel before explaining.";
+      } else if (field === "Regulated") {
+        title = "Pacing Day";
+        text = "The field supports rhythm, load management, and simple steady movement.";
+        bestUse = "Best use: let one routine carry the next step.";
+      }
+
+      if (state === "Overloaded") {
+        text += " Because the system reads overloaded, reduce scope before adding more interpretation.";
+      } else if (state === "Threshold") {
+        text += " Because the system is near threshold, slow the crossing.";
+      } else if (state === "Mobilized") {
+        text += " Because movement is available, keep momentum paced.";
+      }
+
+      if (fieldUndertone?.active) {
+        text += ` Undertone: ${fieldUndertone.title}.`;
+      }
+
+      return { title, text, bestUse };
+    }
+
+    function buildLiveFieldDashboardMetrics(data, harmonics){
+      const state = data?.state || {};
+      const planetary = data?.planetary || {};
+      const scores = harmonics?.normalizedFieldScores || {};
+      const debug = harmonics?.dailyFieldDebug || {};
+      const topFieldScore = safeNum(scores[harmonics?.todayField], safeNum(debug?.topCandidates?.[0]?.score, 0.5));
+
+      const strain = safeNum(state.strain);
+      const amplifiedLoad = safeNum(state.amplifiedLoad, strain);
+      const regulation = safeNum(state.regulation);
+      const capacity = safeNum(state.capacity);
+
+      const tMars = safeNum(planetary.transitMars, safeNum(planetary.mars));
+      const tUranus = safeNum(planetary.transitUranus, safeNum(planetary.uranus));
+      const tMercury = safeNum(planetary.transitMercury, safeNum(planetary.mercury));
+      const tSaturn = safeNum(planetary.transitSaturn, safeNum(planetary.saturn));
+      const tVenus = safeNum(planetary.transitVenus, safeNum(planetary.venus));
+      const tMoon = safeNum(planetary.transitMoon, safeNum(planetary.moon));
+      const tNeptune = safeNum(planetary.transitNeptune, safeNum(planetary.neptune));
+      const tJupiter = safeNum(planetary.transitJupiter, safeNum(planetary.jupiter));
+
+      const chaotic = safeNum(scores.Chaotic);
+      const threshold = safeNum(scores.Threshold);
+      const relational = safeNum(scores.Relational);
+      const diffused = safeNum(scores.Diffused);
+      const integrative = safeNum(scores.Integrative);
+      const structured = safeNum(scores.Structured);
+      const regulated = safeNum(scores.Regulated);
+
+      const activeFieldPressure = Math.max(
+        chaotic,
+        threshold,
+        relational,
+        diffused,
+        integrative,
+        structured,
+        regulated,
+        safeNum(scores.Reconstructive),
+        safeNum(scores.Contained)
+      );
+
+      const fieldSignal01 = clamp(((topFieldScore + strain + activeFieldPressure) / 3), 0.05, 1);
+      const momentum01 = clamp(((chaotic + threshold + tMars + tUranus) / 4) + (stateLabelFromMode(state.mode) === "Mobilized" ? 0.10 : 0), 0.05, 1);
+      const systemLoad01 = clamp(amplifiedLoad || strain, 0.05, 1);
+      const regulation01 = clamp(regulation, 0.05, 1);
+      const clarity01 = clamp(((tMercury + tSaturn + capacity + structured + regulated) / 5) - ((tNeptune + diffused) / 8), 0.05, 1);
+      const decision01 = clamp(((regulation + capacity + threshold + structured + regulated) / 5) - (systemLoad01 / 5), 0.05, 1);
+      const social01 = clamp((relational + tVenus + tMoon) / 3, 0.05, 1);
+      const sensitivity01 = clamp((diffused + tNeptune + tMoon) / 3, 0.05, 1);
+      const expansion01 = clamp((integrative + tJupiter + safeNum(debug.wideFieldSignature)) / 3, 0.05, 1);
+
+      return [
+        {
+          key: "FieldSignal",
+          label: "Field Signal",
+          score: score10From01(fieldSignal01),
+          helper: "Overall field strength today.",
+          value01: fieldSignal01
+        },
+        {
+          key: "Momentum",
+          label: "Momentum",
+          score: score10From01(momentum01),
+          helper: "How much usable movement is available.",
+          value01: momentum01
+        },
+        {
+          key: "SystemLoad",
+          label: "System Load",
+          score: score10From01(systemLoad01),
+          helper: "How much pressure the system is carrying.",
+          value01: systemLoad01
+        },
+        {
+          key: "Regulation",
+          label: "Regulation",
+          score: score10From01(regulation01),
+          helper: "How much pacing and containment are available.",
+          value01: regulation01
+        },
+        {
+          key: "ClarityWindow",
+          label: "Clarity Window",
+          score: score10From01(clarity01),
+          helper: "How readable the signal is right now.",
+          value01: clarity01
+        },
+        {
+          key: "DecisionFlow",
+          label: "Decision Flow",
+          score: score10From01(decision01),
+          helper: "How cleanly choices can move today.",
+          value01: decision01
+        },
+        {
+          key: "SocialField",
+          label: "Social Field",
+          score: score10From01(social01),
+          helper: "How active tone, contact, or relational feedback is.",
+          value01: social01
+        },
+        {
+          key: "FieldSensitivity",
+          label: "Field Sensitivity",
+          score: score10From01(sensitivity01),
+          helper: "How much subtle or atmospheric signal is active.",
+          value01: sensitivity01
+        },
+        {
+          key: "ExpansionPotential",
+          label: "Expansion Potential",
+          score: score10From01(expansion01),
+          helper: "How much widening, meaning, or opportunity is available.",
+          value01: expansion01
+        }
+      ];
+    }
+
+    function updateLiveFieldDashboardUI(data, harmonics){
+      const stateLabel = stateLabelFromMode(data?.state?.mode || "");
+      const field = harmonics?.todayField || "Regulated";
+      const fieldUndertone = harmonics?.fieldUndertone || getFieldUndertone(harmonics?.dailyFieldDebug);
+      const dayType = buildLiveDashboardDayType(field, stateLabel, fieldUndertone);
+      const metrics = buildLiveFieldDashboardMetrics(data, harmonics);
+
+      setText("liveDashboardStateChip", `State: ${stateLabel}`);
+      applyChipClass("liveDashboardStateChip", "chip violet", "");
+
+      setHTML("liveDashboardFieldChip", `Field:&nbsp;${harmonicLabel(field)}`);
+      applyChipClass("liveDashboardFieldChip", "chip field", field);
+
+      setText("liveDashboardDayTypeTitle", dayType.title);
+      setText("liveDashboardDayTypeText", dayType.text);
+      setText("liveDashboardBestUse", dayType.bestUse);
+
+      metrics.forEach(metric => {
+        const scoreId = `liveDashboard${metric.key}Score`;
+        const textId = `liveDashboard${metric.key}Text`;
+        const barId = `liveDashboard${metric.key}Bar`;
+        const bandId = `liveDashboard${metric.key}Band`;
+
+        setHTML(scoreId, `${metric.score}<span>/10</span>`);
+        setText(textId, metric.helper);
+        setMiniBar(barId, metric.score, 10);
+        setText(bandId, bandFromScore(metric.score));
+      });
     }
 
     function buildFieldUndertoneText(primaryField, undertoneField){
@@ -8402,6 +9242,7 @@
       const regulatorAverage = (saturn + venus + mercury) / 3;
 
       const harmonics = updateHarmonicUI(data);
+      updateLiveFieldDashboardUI(data, harmonics);
       updateFieldCompass(data);
       updateLiveFieldDebugUI(harmonics.dailyFieldDebug);
 
@@ -8962,6 +9803,9 @@
     window.getFieldUndertone = getFieldUndertone;
     window.buildFieldUndertoneText = buildFieldUndertoneText;
     window.buildRegulationSupports = buildRegulationSupports;
+    window.buildLiveFieldDashboardMetrics = buildLiveFieldDashboardMetrics;
+    window.updateLiveFieldDashboardUI = updateLiveFieldDashboardUI;
+    window.buildLiveDashboardDayType = buildLiveDashboardDayType;
     window.buildMobileSnapshotSupport = buildMobileSnapshotSupport;
     window.updateMobileReadSnapshot = updateMobileReadSnapshot;
     window.scrollToMobileReadSnapshot = scrollToMobileReadSnapshot;
