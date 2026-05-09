@@ -1223,6 +1223,196 @@
       overflow-wrap:anywhere;
     }
 
+    .fieldUndertoneHelp,
+    .shareCardFieldHelp,
+    .liveDebugHelp{
+      margin-top:8px;
+      padding-top:8px;
+      border-top:1px solid rgba(255,255,255,.075);
+      color:var(--muted2);
+      font-size:10.8px;
+      line-height:1.42;
+      font-weight:800;
+      overflow-wrap:break-word;
+    }
+
+    .liveDebugHelp{
+      margin-top:0;
+      margin-bottom:8px;
+      padding-top:0;
+      border-top:none;
+    }
+
+    .topFieldUndertoneBlock.undertone-structured,
+    .fieldUndertoneBlock.undertone-structured{
+      border-color:rgba(216,184,76,.34);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(216,184,76,.14), transparent 34%),
+        radial-gradient(circle at 100% 12%, rgba(216,184,76,.055), transparent 34%),
+        rgba(255,255,255,.03);
+      box-shadow:
+        inset 0 0 0 1px rgba(216,184,76,.055),
+        0 10px 28px rgba(216,184,76,.045);
+    }
+
+    .topFieldUndertoneBlock.undertone-structured .fieldUndertoneLabel,
+    .fieldUndertoneBlock.undertone-structured .fieldUndertoneLabel{
+      color:var(--h-structured);
+    }
+
+    .topFieldUndertoneBlock.undertone-contained,
+    .fieldUndertoneBlock.undertone-contained{
+      border-color:rgba(243,251,255,.34);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(243,251,255,.14), transparent 34%),
+        radial-gradient(circle at 100% 12%, rgba(103,193,255,.07), transparent 34%),
+        rgba(255,255,255,.028);
+      box-shadow:
+        inset 0 0 0 1px rgba(243,251,255,.055),
+        0 10px 28px rgba(243,251,255,.035);
+    }
+
+    .topFieldUndertoneBlock.undertone-contained .fieldUndertoneLabel,
+    .fieldUndertoneBlock.undertone-contained .fieldUndertoneLabel{
+      color:var(--h-contained);
+    }
+
+    .topFieldUndertoneBlock.undertone-chaotic,
+    .fieldUndertoneBlock.undertone-chaotic{
+      border-color:rgba(103,193,255,.34);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(103,193,255,.14), transparent 34%),
+        radial-gradient(circle at 100% 12%, rgba(103,193,255,.055), transparent 34%),
+        rgba(255,255,255,.03);
+      box-shadow:
+        inset 0 0 0 1px rgba(103,193,255,.055),
+        0 10px 28px rgba(103,193,255,.04);
+    }
+
+    .topFieldUndertoneBlock.undertone-chaotic .fieldUndertoneLabel,
+    .fieldUndertoneBlock.undertone-chaotic .fieldUndertoneLabel{
+      color:var(--h-chaotic);
+    }
+
+    .topFieldUndertoneBlock.undertone-relational,
+    .fieldUndertoneBlock.undertone-relational{
+      border-color:rgba(255,155,183,.30);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(255,155,183,.13), transparent 34%),
+        radial-gradient(circle at 100% 12%, rgba(255,155,183,.055), transparent 34%),
+        rgba(255,255,255,.03);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,155,183,.05),
+        0 10px 28px rgba(255,155,183,.035);
+    }
+
+    .topFieldUndertoneBlock.undertone-relational .fieldUndertoneLabel,
+    .fieldUndertoneBlock.undertone-relational .fieldUndertoneLabel{
+      color:var(--h-relational);
+    }
+
+    .topFieldUndertoneBlock.undertone-threshold,
+    .fieldUndertoneBlock.undertone-threshold{
+      border-color:rgba(255,138,61,.32);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(255,138,61,.14), transparent 34%),
+        radial-gradient(circle at 100% 12%, rgba(255,138,61,.055), transparent 34%),
+        rgba(255,255,255,.03);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,138,61,.052),
+        0 10px 28px rgba(255,138,61,.035);
+    }
+
+    .topFieldUndertoneBlock.undertone-threshold .fieldUndertoneLabel,
+    .fieldUndertoneBlock.undertone-threshold .fieldUndertoneLabel{
+      color:var(--h-threshold);
+    }
+
+    .topFieldUndertoneBlock.undertone-reconstructive,
+    .fieldUndertoneBlock.undertone-reconstructive{
+      border-color:rgba(176,108,255,.34);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(176,108,255,.14), transparent 34%),
+        radial-gradient(circle at 100% 12%, rgba(103,193,255,.08), transparent 34%),
+        rgba(255,255,255,.03);
+      box-shadow:
+        inset 0 0 0 1px rgba(176,108,255,.055),
+        0 10px 28px rgba(176,108,255,.04);
+    }
+
+    .topFieldUndertoneBlock.undertone-reconstructive .fieldUndertoneLabel,
+    .fieldUndertoneBlock.undertone-reconstructive .fieldUndertoneLabel{
+      color:var(--h-reconstructive);
+    }
+
+    .topFieldUndertoneBlock.undertone-integrative,
+    .fieldUndertoneBlock.undertone-integrative{
+      border-color:rgba(169,215,255,.32);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(169,215,255,.13), transparent 34%),
+        radial-gradient(circle at 100% 12%, rgba(103,193,255,.06), transparent 34%),
+        rgba(255,255,255,.03);
+      box-shadow:
+        inset 0 0 0 1px rgba(169,215,255,.052),
+        0 10px 28px rgba(169,215,255,.035);
+    }
+
+    .topFieldUndertoneBlock.undertone-integrative .fieldUndertoneLabel,
+    .fieldUndertoneBlock.undertone-integrative .fieldUndertoneLabel{
+      color:var(--h-integrative);
+    }
+
+    .topFieldUndertoneBlock.undertone-diffused,
+    .fieldUndertoneBlock.undertone-diffused{
+      border-color:rgba(203,183,255,.32);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(203,183,255,.14), transparent 34%),
+        radial-gradient(circle at 100% 12%, rgba(176,108,255,.06), transparent 34%),
+        rgba(255,255,255,.03);
+      box-shadow:
+        inset 0 0 0 1px rgba(203,183,255,.052),
+        0 10px 28px rgba(203,183,255,.035);
+    }
+
+    .topFieldUndertoneBlock.undertone-diffused .fieldUndertoneLabel,
+    .fieldUndertoneBlock.undertone-diffused .fieldUndertoneLabel{
+      color:var(--h-diffused);
+    }
+
+    .topFieldUndertoneBlock.undertone-regulated,
+    .fieldUndertoneBlock.undertone-regulated{
+      border-color:rgba(111,224,211,.32);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(111,224,211,.13), transparent 34%),
+        radial-gradient(circle at 100% 12%, rgba(103,193,255,.055), transparent 34%),
+        rgba(255,255,255,.03);
+      box-shadow:
+        inset 0 0 0 1px rgba(111,224,211,.052),
+        0 10px 28px rgba(111,224,211,.035);
+    }
+
+    .topFieldUndertoneBlock.undertone-regulated .fieldUndertoneLabel,
+    .fieldUndertoneBlock.undertone-regulated .fieldUndertoneLabel{
+      color:var(--h-regulated);
+    }
+
+    .topFieldUndertoneBlock.undertone-steady,
+    .fieldUndertoneBlock.undertone-steady{
+      border-color:rgba(170,183,214,.28);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(170,183,214,.11), transparent 34%),
+        radial-gradient(circle at 100% 12%, rgba(103,193,255,.045), transparent 34%),
+        rgba(255,255,255,.03);
+      box-shadow:
+        inset 0 0 0 1px rgba(170,183,214,.042),
+        0 10px 28px rgba(170,183,214,.028);
+    }
+
+    .topFieldUndertoneBlock.undertone-steady .fieldUndertoneLabel,
+    .fieldUndertoneBlock.undertone-steady .fieldUndertoneLabel{
+      color:var(--h-steady);
+    }
+
     .regulationSupportCard{
       width:100%;
       max-width:100%;
@@ -1796,6 +1986,105 @@
       white-space:pre-line;
     }
 
+    .whyMiniHelp{
+      margin-top:7px;
+      padding-top:7px;
+      border-top:1px solid rgba(255,255,255,.065);
+      color:var(--muted2);
+      font-size:10.5px;
+      line-height:1.38;
+      font-weight:800;
+      overflow-wrap:break-word;
+    }
+
+    .whyMini.whyUndertoneMini{
+      border-color:rgba(176,108,255,.18);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(176,108,255,.075), transparent 34%),
+        rgba(255,255,255,.026);
+    }
+
+    .whyMini.whyUndertoneMini.undertone-structured{
+      border-color:rgba(216,184,76,.28);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(216,184,76,.10), transparent 34%),
+        rgba(255,255,255,.026);
+    }
+
+    .whyMini.whyUndertoneMini.undertone-contained{
+      border-color:rgba(243,251,255,.30);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(243,251,255,.10), transparent 34%),
+        rgba(255,255,255,.026);
+    }
+
+    .whyMini.whyUndertoneMini.undertone-chaotic{
+      border-color:rgba(103,193,255,.28);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(103,193,255,.10), transparent 34%),
+        rgba(255,255,255,.026);
+    }
+
+    .whyMini.whyUndertoneMini.undertone-relational{
+      border-color:rgba(255,155,183,.24);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(255,155,183,.09), transparent 34%),
+        rgba(255,255,255,.026);
+    }
+
+    .whyMini.whyUndertoneMini.undertone-threshold{
+      border-color:rgba(255,138,61,.26);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(255,138,61,.10), transparent 34%),
+        rgba(255,255,255,.026);
+    }
+
+    .whyMini.whyUndertoneMini.undertone-reconstructive{
+      border-color:rgba(176,108,255,.28);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(176,108,255,.10), transparent 34%),
+        rgba(255,255,255,.026);
+    }
+
+    .whyMini.whyUndertoneMini.undertone-integrative{
+      border-color:rgba(169,215,255,.26);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(169,215,255,.09), transparent 34%),
+        rgba(255,255,255,.026);
+    }
+
+    .whyMini.whyUndertoneMini.undertone-diffused{
+      border-color:rgba(203,183,255,.26);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(203,183,255,.10), transparent 34%),
+        rgba(255,255,255,.026);
+    }
+
+    .whyMini.whyUndertoneMini.undertone-regulated{
+      border-color:rgba(111,224,211,.26);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(111,224,211,.09), transparent 34%),
+        rgba(255,255,255,.026);
+    }
+
+    .whyMini.whyUndertoneMini.undertone-steady{
+      border-color:rgba(170,183,214,.22);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(170,183,214,.08), transparent 34%),
+        rgba(255,255,255,.026);
+    }
+
+    .whyMini.whyUndertoneMini.undertone-structured .whyMiniLabel{color:var(--h-structured)}
+    .whyMini.whyUndertoneMini.undertone-contained .whyMiniLabel{color:var(--h-contained)}
+    .whyMini.whyUndertoneMini.undertone-chaotic .whyMiniLabel{color:var(--h-chaotic)}
+    .whyMini.whyUndertoneMini.undertone-relational .whyMiniLabel{color:var(--h-relational)}
+    .whyMini.whyUndertoneMini.undertone-threshold .whyMiniLabel{color:var(--h-threshold)}
+    .whyMini.whyUndertoneMini.undertone-reconstructive .whyMiniLabel{color:var(--h-reconstructive)}
+    .whyMini.whyUndertoneMini.undertone-integrative .whyMiniLabel{color:var(--h-integrative)}
+    .whyMini.whyUndertoneMini.undertone-diffused .whyMiniLabel{color:var(--h-diffused)}
+    .whyMini.whyUndertoneMini.undertone-regulated .whyMiniLabel{color:var(--h-regulated)}
+    .whyMini.whyUndertoneMini.undertone-steady .whyMiniLabel{color:var(--h-steady)}
+
     .whyExplain{
       margin-top:14px;
       border-top:1px solid rgba(255,255,255,.07);
@@ -2120,6 +2409,97 @@
       display:block;
     }
 
+    .shareCardFieldUndertone.undertone-structured{
+      border-color:rgba(216,184,76,.32);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(216,184,76,.14), transparent 36%),
+        radial-gradient(circle at 100% 16%, rgba(216,184,76,.055), transparent 34%),
+        linear-gradient(180deg,rgba(216,184,76,.055),rgba(255,255,255,.025));
+    }
+
+    .shareCardFieldUndertone.undertone-contained{
+      border-color:rgba(243,251,255,.32);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(243,251,255,.14), transparent 36%),
+        radial-gradient(circle at 100% 16%, rgba(103,193,255,.075), transparent 34%),
+        linear-gradient(180deg,rgba(243,251,255,.052),rgba(255,255,255,.024));
+    }
+
+    .shareCardFieldUndertone.undertone-chaotic{
+      border-color:rgba(103,193,255,.30);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(103,193,255,.14), transparent 36%),
+        radial-gradient(circle at 100% 16%, rgba(103,193,255,.055), transparent 34%),
+        linear-gradient(180deg,rgba(103,193,255,.052),rgba(255,255,255,.024));
+    }
+
+    .shareCardFieldUndertone.undertone-relational{
+      border-color:rgba(255,155,183,.28);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(255,155,183,.13), transparent 36%),
+        radial-gradient(circle at 100% 16%, rgba(255,155,183,.055), transparent 34%),
+        linear-gradient(180deg,rgba(255,155,183,.048),rgba(255,255,255,.024));
+    }
+
+    .shareCardFieldUndertone.undertone-threshold{
+      border-color:rgba(255,138,61,.30);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(255,138,61,.14), transparent 36%),
+        radial-gradient(circle at 100% 16%, rgba(255,138,61,.055), transparent 34%),
+        linear-gradient(180deg,rgba(255,138,61,.050),rgba(255,255,255,.024));
+    }
+
+    .shareCardFieldUndertone.undertone-reconstructive{
+      border-color:rgba(176,108,255,.30);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(176,108,255,.13), transparent 36%),
+        radial-gradient(circle at 100% 16%, rgba(103,193,255,.08), transparent 34%),
+        linear-gradient(180deg,rgba(176,108,255,.060),rgba(255,255,255,.025));
+    }
+
+    .shareCardFieldUndertone.undertone-integrative{
+      border-color:rgba(169,215,255,.29);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(169,215,255,.13), transparent 36%),
+        radial-gradient(circle at 100% 16%, rgba(103,193,255,.06), transparent 34%),
+        linear-gradient(180deg,rgba(169,215,255,.048),rgba(255,255,255,.024));
+    }
+
+    .shareCardFieldUndertone.undertone-diffused{
+      border-color:rgba(203,183,255,.29);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(203,183,255,.13), transparent 36%),
+        radial-gradient(circle at 100% 16%, rgba(176,108,255,.06), transparent 34%),
+        linear-gradient(180deg,rgba(203,183,255,.050),rgba(255,255,255,.024));
+    }
+
+    .shareCardFieldUndertone.undertone-regulated{
+      border-color:rgba(111,224,211,.29);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(111,224,211,.13), transparent 36%),
+        radial-gradient(circle at 100% 16%, rgba(103,193,255,.055), transparent 34%),
+        linear-gradient(180deg,rgba(111,224,211,.048),rgba(255,255,255,.024));
+    }
+
+    .shareCardFieldUndertone.undertone-steady{
+      border-color:rgba(170,183,214,.24);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(170,183,214,.10), transparent 36%),
+        radial-gradient(circle at 100% 16%, rgba(103,193,255,.045), transparent 34%),
+        linear-gradient(180deg,rgba(170,183,214,.038),rgba(255,255,255,.024));
+    }
+
+    .shareCardFieldUndertone.undertone-structured .shareCardLabel{color:var(--h-structured)}
+    .shareCardFieldUndertone.undertone-contained .shareCardLabel{color:var(--h-contained)}
+    .shareCardFieldUndertone.undertone-chaotic .shareCardLabel{color:var(--h-chaotic)}
+    .shareCardFieldUndertone.undertone-relational .shareCardLabel{color:var(--h-relational)}
+    .shareCardFieldUndertone.undertone-threshold .shareCardLabel{color:var(--h-threshold)}
+    .shareCardFieldUndertone.undertone-reconstructive .shareCardLabel{color:var(--h-reconstructive)}
+    .shareCardFieldUndertone.undertone-integrative .shareCardLabel{color:var(--h-integrative)}
+    .shareCardFieldUndertone.undertone-diffused .shareCardLabel{color:var(--h-diffused)}
+    .shareCardFieldUndertone.undertone-regulated .shareCardLabel{color:var(--h-regulated)}
+    .shareCardFieldUndertone.undertone-steady .shareCardLabel{color:var(--h-steady)}
+
     .shareCardRegulationSupport{
       border:1px solid rgba(111,224,211,.23);
       background:
@@ -2179,6 +2559,17 @@
       font-size:14px;
       line-height:1.58;
       font-weight:650;
+      overflow-wrap:break-word;
+    }
+
+    .shareCardFieldHelp{
+      margin-top:8px;
+      padding-top:8px;
+      border-top:1px solid rgba(255,255,255,.075);
+      color:var(--muted2);
+      font-size:10.8px;
+      line-height:1.42;
+      font-weight:850;
       overflow-wrap:break-word;
     }
 
@@ -3016,6 +3407,12 @@
         font-size:12px;
       }
 
+      .fieldUndertoneHelp,
+      .shareCardFieldHelp{
+        font-size:10.5px;
+        line-height:1.38;
+      }
+
       .profileHeader,
       .regulationSupportHeader,
       .outlookHeader{
@@ -3403,6 +3800,7 @@
               <div class="fieldUndertoneLabel">Field Undertone</div>
               <div class="fieldUndertoneTitle" id="topFieldUndertoneTitle">No strong undertone</div>
               <div class="fieldUndertoneText" id="topFieldUndertoneText">No secondary field is close enough to change the read.</div>
+              <div class="fieldUndertoneHelp">Close second-place field. Adds texture, does not replace the main field.</div>
               <div class="fieldUndertoneMeta" id="topFieldUndertoneMeta">Secondary field stays in debug only.</div>
             </div>
           </div>
@@ -3431,6 +3829,7 @@
                 <div class="fieldUndertoneLabel">Field Undertone</div>
                 <div class="fieldUndertoneTitle" id="fieldUndertoneTitle">No strong undertone</div>
                 <div class="fieldUndertoneText" id="fieldUndertoneText">No secondary field is close enough to change the read.</div>
+                <div class="fieldUndertoneHelp">Field Undertone is the close second-place field. It adds background texture without replacing the selected Current Field.</div>
                 <div class="fieldUndertoneMeta" id="fieldUndertoneMeta">Secondary field stays in debug only.</div>
               </div>
 
@@ -3654,9 +4053,10 @@
               <div class="whyMiniValue" id="whyField">—</div>
             </div>
 
-            <div class="whyMini">
+            <div class="whyMini whyUndertoneMini" id="whyFieldUndertoneMini">
               <div class="whyMiniLabel">Field Undertone</div>
               <div class="whyMiniValue" id="whyFieldUndertone">No strong undertone</div>
+              <div class="whyMiniHelp">Close second-place field. Adds texture, does not replace the main field.</div>
             </div>
 
             <div class="whyMini">
@@ -3771,6 +4171,7 @@
                     <div class="shareCardLabel">Field Undertone</div>
                     <div class="shareCardFieldTitle" id="shareCardFieldUndertoneTitle">No strong undertone</div>
                     <div class="shareCardFieldText" id="shareCardFieldUndertoneText">No secondary field is close enough to change the read.</div>
+                    <div class="shareCardFieldHelp">Close second-place field. Adds texture, does not replace the main field.</div>
                   </div>
                 </div>
 
@@ -3920,8 +4321,9 @@
                 <div class="liveDebugSelectedValue" id="liveDebugSelectedField">—</div>
               </div>
 
-              <div class="liveDebugBlock">
+              <div class="liveDebugBlock liveDebugUndertoneBlock" id="liveDebugFieldUndertoneBlock">
                 <div class="liveDebugLabel">Field Undertone</div>
+                <div class="liveDebugHelp">Close second-place field. Adds texture, does not replace the main field.</div>
                 <div class="liveDebugMiniGrid" id="liveDebugFieldUndertone">
                   <div class="liveDebugMiniItem"><span>Status</span><strong>—</strong></div>
                   <div class="liveDebugMiniItem"><span>Secondary</span><strong>—</strong></div>
@@ -4478,6 +4880,19 @@
       }
     };
 
+    const UNDERTONE_CLASS_NAMES = [
+      "undertone-structured",
+      "undertone-contained",
+      "undertone-chaotic",
+      "undertone-relational",
+      "undertone-threshold",
+      "undertone-reconstructive",
+      "undertone-integrative",
+      "undertone-diffused",
+      "undertone-regulated",
+      "undertone-steady"
+    ];
+
     let latestSharePayload = {
       systemWeather: "Structured signal architecture meeting a live field",
       fieldDirectionTitle: "—",
@@ -4771,6 +5186,31 @@
       el.className = keep && hClass
         ? `${keep} ${hClass}`
         : keep || el.className;
+    }
+
+    function applyFieldUndertoneClass(blockId, fieldUndertone){
+      const el = document.getElementById(blockId);
+      if (!el) return;
+
+      el.classList.remove(...UNDERTONE_CLASS_NAMES);
+
+      const field = fieldUndertone?.field;
+      const cls = field ? `undertone-${harmonicClass(field)}` : "";
+
+      if (cls && UNDERTONE_CLASS_NAMES.includes(cls)) {
+        el.classList.add(cls);
+      } else {
+        el.classList.add("undertone-steady");
+      }
+    }
+
+    function applyFieldUndertoneClasses(fieldUndertone){
+      [
+        "topFieldUndertoneBlock",
+        "fieldUndertoneBlock",
+        "whyFieldUndertoneMini",
+        "liveDebugFieldUndertoneBlock"
+      ].forEach(id => applyFieldUndertoneClass(id, fieldUndertone));
     }
 
     function slugify(value){
@@ -5656,6 +6096,8 @@
     function updateFieldUndertoneUI(fieldUndertone){
       const undertone = fieldUndertone || getFieldUndertone(null);
 
+      applyFieldUndertoneClasses(undertone);
+
       const blocks = [
         document.getElementById("topFieldUndertoneBlock"),
         document.getElementById("fieldUndertoneBlock")
@@ -5688,6 +6130,8 @@
     function updateShareFieldUndertoneUI(fieldUndertone){
       const undertone = fieldUndertone || getFieldUndertone(null);
       const block = document.getElementById("shareCardFieldUndertoneBlock");
+
+      applyFieldUndertoneClass("shareCardFieldUndertoneBlock", undertone);
 
       if (block) {
         block.classList.toggle("active", !!undertone.active);
@@ -8123,6 +8567,9 @@
     window.updateMobileReadSnapshot = updateMobileReadSnapshot;
     window.scrollToMobileReadSnapshot = scrollToMobileReadSnapshot;
     window.setTechnicalDetailsDefault = setTechnicalDetailsDefault;
+    window.applyFieldUndertoneClass = applyFieldUndertoneClass;
+    window.applyFieldUndertoneClasses = applyFieldUndertoneClasses;
+    window.UNDERTONE_CLASS_NAMES = UNDERTONE_CLASS_NAMES;
     window.REGULATION_SUPPORT_LIBRARY = REGULATION_SUPPORT_LIBRARY;
 
     document.getElementById("calcBtn").addEventListener("click", () => calculate({ shouldAutoScroll: true }));
