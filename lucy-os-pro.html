@@ -411,6 +411,43 @@
       letter-spacing:.08em;
     }
 
+    .mobileTechnicalDetails{
+      margin-top:14px;
+      border:1px solid rgba(103,193,255,.14);
+      border-radius:14px;
+      background:rgba(255,255,255,.02);
+      overflow:hidden;
+    }
+
+    .mobileTechnicalDetails summary{
+      cursor:pointer;
+      list-style:none;
+      padding:12px 14px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .mobileTechnicalDetails summary::-webkit-details-marker{
+      display:none;
+    }
+
+    .mobileTechnicalDetails summary::after{
+      content:" +";
+      color:var(--muted2);
+    }
+
+    .mobileTechnicalDetails[open] summary::after{
+      content:" -";
+    }
+
+    .mobileTechnicalDetails .leftStack{
+      margin-top:0;
+      padding:0 12px 12px;
+    }
+
     .liveFieldDebugCard{
       margin-bottom:16px;
       padding:14px;
@@ -3321,22 +3358,26 @@
           Birth location resolves timezone, angles, and houses for accurate chart input.
         </div>
 
-        <div class="leftStack">
-          <div class="statusBlock">
-            <strong>API Status</strong>
-            <div id="apiStatus">Waiting for calculation.</div>
-          </div>
+        <details class="mobileTechnicalDetails" id="mobileTechnicalDetails" open>
+          <summary>Technical Details</summary>
 
-          <div class="statusBlock">
-            <strong>Chart Input</strong>
-            <div id="resolvedInput">No resolved birth data yet.</div>
-          </div>
+          <div class="leftStack">
+            <div class="statusBlock">
+              <strong>API Status</strong>
+              <div id="apiStatus">Waiting for calculation.</div>
+            </div>
 
-          <div class="statusBlock">
-            <strong>Chart Debug</strong>
-            <div id="chartDebug">Awaiting first chart load.</div>
+            <div class="statusBlock">
+              <strong>Chart Input</strong>
+              <div id="resolvedInput">No resolved birth data yet.</div>
+            </div>
+
+            <div class="statusBlock">
+              <strong>Chart Debug</strong>
+              <div id="chartDebug">Awaiting first chart load.</div>
+            </div>
           </div>
-        </div>
+        </details>
       </div>
 
       <div class="mainStack">
@@ -4697,6 +4738,33 @@
 
       el.style.strokeDasharray = `${circumference} ${circumference}`;
       el.style.strokeDashoffset = String(offset);
+    }
+
+    function isMobileLayout(){
+      return window.matchMedia && window.matchMedia("(max-width: 720px)").matches;
+    }
+
+    function scrollToMobileReadSnapshot(){
+      const target = document.getElementById("mobileReadSnapshot");
+      if (!target || !isMobileLayout()) return;
+
+      window.setTimeout(() => {
+        target.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }, 120);
+    }
+
+    function setTechnicalDetailsDefault(){
+      const details = document.getElementById("mobileTechnicalDetails");
+      if (!details) return;
+
+      if (isMobileLayout()) {
+        details.removeAttribute("open");
+      } else {
+        details.setAttribute("open", "");
+      }
     }
 
     function getMoonstamp(data){
@@ -7778,7 +7846,9 @@
       setHeroGlow(modeText, fog, volatility);
     }
 
-    async function calculate(){
+    async function calculate(options = {}){
+      const shouldAutoScroll = !!options.shouldAutoScroll;
+
       const dob = document.getElementById("dob").value;
       const tobRaw = document.getElementById("tob").value.trim();
       const ampm = document.getElementById("ampm").value;
@@ -7814,6 +7884,10 @@
         }
 
         updateUI(data);
+
+        if (shouldAutoScroll) {
+          scrollToMobileReadSnapshot();
+        }
       } catch (err) {
         console.error(err);
         setText("apiStatus", `Error • ${err.message}`);
@@ -8180,9 +8254,11 @@
     window.buildRegulationSupports = buildRegulationSupports;
     window.buildMobileSnapshotSupport = buildMobileSnapshotSupport;
     window.updateMobileReadSnapshot = updateMobileReadSnapshot;
+    window.scrollToMobileReadSnapshot = scrollToMobileReadSnapshot;
+    window.setTechnicalDetailsDefault = setTechnicalDetailsDefault;
     window.REGULATION_SUPPORT_LIBRARY = REGULATION_SUPPORT_LIBRARY;
 
-    document.getElementById("calcBtn").addEventListener("click", calculate);
+    document.getElementById("calcBtn").addEventListener("click", () => calculate({ shouldAutoScroll: true }));
     document.getElementById("saveShareCardBtn").addEventListener("click", saveShareCard);
     document.getElementById("copyShareTextBtn").addEventListener("click", copyShareText);
     document.getElementById("saveProfileBtn").addEventListener("click", saveCurrentProfile);
@@ -8194,9 +8270,10 @@
     document.getElementById("ampm").value = "AM";
     document.getElementById("location").value = "Cuero, TX";
 
+    setTechnicalDetailsDefault();
     renderHarmonicLibrary();
     renderSavedProfiles();
-    calculate();
+    calculate({ shouldAutoScroll: false });
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
