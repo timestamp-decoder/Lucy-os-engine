@@ -146,6 +146,90 @@
       z-index:1;
     }
 
+    .mobileReadSnapshot{
+      display:none;
+      width:100%;
+      max-width:100%;
+      margin:0 0 14px;
+      padding:16px;
+      border-radius:18px;
+      border:1px solid rgba(111,224,211,.20);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(111,224,211,.10), transparent 34%),
+        radial-gradient(circle at 92% 8%, rgba(103,193,255,.075), transparent 34%),
+        linear-gradient(180deg,rgba(15,27,56,.96),rgba(12,24,50,.92));
+      box-shadow:0 14px 36px rgba(0,0,0,.22);
+      overflow:hidden;
+    }
+
+    .mobileSnapshotKicker{
+      color:#8bf1e6;
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:.13em;
+      text-transform:uppercase;
+      margin-bottom:8px;
+    }
+
+    .mobileSnapshotWeather{
+      color:var(--text);
+      font-size:22px;
+      line-height:1.12;
+      font-weight:950;
+      letter-spacing:-.035em;
+      overflow-wrap:anywhere;
+    }
+
+    .mobileSnapshotText{
+      margin-top:8px;
+      color:#d9e0f4;
+      font-size:13px;
+      line-height:1.55;
+      font-weight:700;
+    }
+
+    .mobileSnapshotGrid{
+      display:grid;
+      grid-template-columns:minmax(0,1fr);
+      gap:8px;
+      margin-top:12px;
+    }
+
+    .mobileSnapshotGrid div{
+      border:1px solid rgba(255,255,255,.075);
+      border-radius:13px;
+      padding:10px 11px;
+      background:rgba(255,255,255,.035);
+    }
+
+    .mobileSnapshotGrid span{
+      display:block;
+      color:var(--muted);
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      margin-bottom:5px;
+    }
+
+    .mobileSnapshotGrid strong{
+      display:block;
+      color:var(--text);
+      font-size:13px;
+      line-height:1.45;
+      font-weight:800;
+      overflow-wrap:break-word;
+    }
+
+    .mobileSnapshotMeta{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.4;
+      font-weight:800;
+      overflow-wrap:break-word;
+    }
+
     .grid{
       display:grid;
       grid-template-columns:360px minmax(0,1fr);
@@ -1292,6 +1376,90 @@
       line-height:1.5;
       border-top:1px solid rgba(255,255,255,.07);
       padding-top:12px;
+      overflow-wrap:break-word;
+    }
+
+    .mobileReadSnapshot{
+      display:none;
+      width:100%;
+      max-width:100%;
+      margin:0 0 14px;
+      padding:16px;
+      border-radius:18px;
+      border:1px solid rgba(111,224,211,.20);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(111,224,211,.10), transparent 34%),
+        radial-gradient(circle at 92% 8%, rgba(103,193,255,.075), transparent 34%),
+        linear-gradient(180deg,rgba(15,27,56,.96),rgba(12,24,50,.92));
+      box-shadow:0 14px 36px rgba(0,0,0,.22);
+      overflow:hidden;
+    }
+
+    .mobileSnapshotKicker{
+      color:#8bf1e6;
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:.13em;
+      text-transform:uppercase;
+      margin-bottom:8px;
+    }
+
+    .mobileSnapshotWeather{
+      color:var(--text);
+      font-size:22px;
+      line-height:1.12;
+      font-weight:950;
+      letter-spacing:-.035em;
+      overflow-wrap:anywhere;
+    }
+
+    .mobileSnapshotText{
+      margin-top:8px;
+      color:#d9e0f4;
+      font-size:13px;
+      line-height:1.55;
+      font-weight:700;
+    }
+
+    .mobileSnapshotGrid{
+      display:grid;
+      grid-template-columns:minmax(0,1fr);
+      gap:8px;
+      margin-top:12px;
+    }
+
+    .mobileSnapshotGrid div{
+      border:1px solid rgba(255,255,255,.075);
+      border-radius:13px;
+      padding:10px 11px;
+      background:rgba(255,255,255,.035);
+    }
+
+    .mobileSnapshotGrid span{
+      display:block;
+      color:var(--muted);
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      margin-bottom:5px;
+    }
+
+    .mobileSnapshotGrid strong{
+      display:block;
+      color:var(--text);
+      font-size:13px;
+      line-height:1.45;
+      font-weight:800;
+      overflow-wrap:break-word;
+    }
+
+    .mobileSnapshotMeta{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.4;
+      font-weight:800;
       overflow-wrap:break-word;
     }
 
@@ -2725,6 +2893,10 @@
         font-size:12px;
       }
 
+      .mobileReadSnapshot{
+        display:block;
+      }
+
       .panel,
       .premiumCard,
       .profileCard,
@@ -3075,6 +3247,27 @@
       <h1>Lucy.OS Pro</h1>
       <p>Full personal field guidance inside the live timing field</p>
     </div>
+
+    <section class="mobileReadSnapshot" id="mobileReadSnapshot">
+      <div class="mobileSnapshotKicker">TODAY’S READ SNAPSHOT</div>
+      <div class="mobileSnapshotWeather" id="mobileSnapshotWeather">Waiting for field read.</div>
+      <div class="mobileSnapshotText" id="mobileSnapshotText">Calculate to see today’s practical read.</div>
+
+      <div class="mobileSnapshotGrid">
+        <div>
+          <span>One Good Move</span>
+          <strong id="mobileSnapshotMove">—</strong>
+        </div>
+        <div>
+          <span>Regulation Support</span>
+          <strong id="mobileSnapshotSupport">—</strong>
+        </div>
+      </div>
+
+      <div class="mobileSnapshotMeta" id="mobileSnapshotMeta">
+        State: — · Field: — · Load: —
+      </div>
+    </section>
 
     <div class="grid">
       <div class="panel inputPanel">
@@ -4930,6 +5123,47 @@
         why,
         music
       };
+    }
+
+    function buildMobileSnapshotSupport(regulationSupports){
+      if (!regulationSupports) return "Choose one small support and keep the field simple.";
+
+      const tryItems = Array.isArray(regulationSupports.tryItems)
+        ? regulationSupports.tryItems
+        : [];
+
+      const light = tryItems.find(item => String(item).toLowerCase().startsWith("light/environment"));
+      const behavior = tryItems.find(item => String(item).toLowerCase().startsWith("behavior"));
+      const scent = tryItems.find(item => String(item).toLowerCase().startsWith("scent"));
+
+      const parts = [];
+
+      if (light) parts.push(light.replace(/^Light\/environment:\s*/i, ""));
+      if (scent) parts.push(scent.replace(/^Scent:\s*/i, ""));
+      if (behavior) parts.push(behavior.replace(/^Behavior:\s*/i, ""));
+
+      return parts.length
+        ? parts.slice(0, 3).join(" ")
+        : regulationSupports.quality || "Choose one small support.";
+    }
+
+    function updateMobileReadSnapshot({
+      systemWeather,
+      profileAwareRead,
+      guidance,
+      regulationSupports,
+      state,
+      field,
+      loadBand
+    }){
+      setText("mobileSnapshotWeather", systemWeather || "Waiting for field read.");
+
+      const shortRead = profileAwareRead?.shareRead || profileAwareRead?.todayRead || "Calculate to see today’s practical read.";
+      setText("mobileSnapshotText", shortRead);
+
+      setText("mobileSnapshotMove", guidance?.move || "Choose one clear next move.");
+      setText("mobileSnapshotSupport", buildMobileSnapshotSupport(regulationSupports));
+      setText("mobileSnapshotMeta", `State: ${state || "—"} · Field: ${field || "—"} · Load: ${loadBand || "—"}`);
     }
 
     function updateRegulationSupportsUI(regulationSupports){
@@ -7257,6 +7491,16 @@
       const driver = publicDriverName(primaryDriverName(data));
       const shareDriverNote = buildShortDriverNote(data, harmonics, fieldTrend);
 
+      updateMobileReadSnapshot({
+        systemWeather,
+        profileAwareRead,
+        guidance,
+        regulationSupports,
+        state: currentState,
+        field: fieldMeta.label,
+        loadBand: loadBandFromValue(data?.state?.amplifiedLoad)
+      });
+
       setHTML("systemWeatherLine", systemWeatherHTML);
       setHTML(
         "pairingExplain",
@@ -7934,6 +8178,8 @@
     window.getFieldUndertone = getFieldUndertone;
     window.buildFieldUndertoneText = buildFieldUndertoneText;
     window.buildRegulationSupports = buildRegulationSupports;
+    window.buildMobileSnapshotSupport = buildMobileSnapshotSupport;
+    window.updateMobileReadSnapshot = updateMobileReadSnapshot;
     window.REGULATION_SUPPORT_LIBRARY = REGULATION_SUPPORT_LIBRARY;
 
     document.getElementById("calcBtn").addEventListener("click", calculate);
