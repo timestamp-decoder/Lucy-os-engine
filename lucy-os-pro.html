@@ -1096,25 +1096,7 @@
       color:var(--gold);
     }
 
-    .topFieldUndertoneBlock{
-      display:none;
-      margin-top:12px;
-      border:1px solid rgba(176,108,255,.22);
-      border-radius:16px;
-      padding:13px 14px;
-      background:
-        radial-gradient(circle at 10% 0%, rgba(176,108,255,.11), transparent 34%),
-        radial-gradient(circle at 100% 18%, rgba(103,193,255,.07), transparent 34%),
-        rgba(255,255,255,.03);
-      min-width:0;
-      max-width:100%;
-      box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
-    }
-
-    .topFieldUndertoneBlock.active{
-      display:block;
-    }
-
+    .topFieldUndertoneBlock,
     .fieldUndertoneBlock{
       display:none;
       margin-top:12px;
@@ -1130,6 +1112,7 @@
       box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
     }
 
+    .topFieldUndertoneBlock.active,
     .fieldUndertoneBlock.active{
       display:block;
     }
@@ -1167,6 +1150,149 @@
       line-height:1.45;
       font-weight:750;
       overflow-wrap:anywhere;
+    }
+
+    .regulationSupportCard{
+      width:100%;
+      max-width:100%;
+      min-width:0;
+      border:1px solid rgba(111,224,211,.20);
+      border-radius:22px;
+      padding:20px;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(111,224,211,.105), transparent 34%),
+        radial-gradient(circle at 92% 8%, rgba(103,193,255,.075), transparent 34%),
+        linear-gradient(180deg,rgba(15,27,56,.97),rgba(12,24,50,.94));
+      box-shadow:
+        0 18px 52px rgba(0,0,0,.26),
+        inset 0 0 0 1px rgba(255,255,255,.02);
+      overflow:hidden;
+    }
+
+    .regulationSupportHeader{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:15px;
+      min-width:0;
+    }
+
+    .regulationSupportHeader h2{
+      margin:0;
+      font-size:22px;
+      letter-spacing:-.02em;
+    }
+
+    .regulationSupportHeader p{
+      margin:5px 0 0;
+      color:#c4cee6;
+      font-size:13px;
+      line-height:1.5;
+      max-width:680px;
+      overflow-wrap:break-word;
+    }
+
+    .regulationSupportGrid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+      min-width:0;
+    }
+
+    .regulationSupportBlock{
+      border:1px solid rgba(255,255,255,.075);
+      border-radius:16px;
+      padding:14px;
+      background:rgba(255,255,255,.03);
+      min-height:116px;
+      min-width:0;
+      max-width:100%;
+    }
+
+    .regulationSupportBlock.primary{
+      grid-column:1 / -1;
+      min-height:140px;
+      padding:18px;
+      border-color:rgba(111,224,211,.24);
+      background:
+        radial-gradient(circle at 14% 0%, rgba(111,224,211,.13), transparent 34%),
+        radial-gradient(circle at 100% 14%, rgba(103,193,255,.08), transparent 30%),
+        linear-gradient(180deg,rgba(111,224,211,.070),rgba(103,193,255,.035));
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.025),
+        0 12px 34px rgba(0,0,0,.18);
+    }
+
+    .regulationSupportBlock.full{
+      grid-column:1 / -1;
+    }
+
+    .regulationSupportLabel{
+      color:var(--muted);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      margin-bottom:7px;
+    }
+
+    .regulationSupportBlock.primary .regulationSupportLabel{
+      color:#8bf1e6;
+      font-size:11px;
+      letter-spacing:.12em;
+    }
+
+    .regulationSupportValue{
+      color:var(--text);
+      font-size:18px;
+      font-weight:900;
+      line-height:1.25;
+      overflow-wrap:anywhere;
+    }
+
+    .regulationSupportBlock.primary .regulationSupportValue{
+      font-size:clamp(25px,2.6vw,33px);
+      letter-spacing:-.035em;
+    }
+
+    .regulationSupportText{
+      color:var(--muted);
+      margin-top:8px;
+      font-size:12px;
+      line-height:1.55;
+      overflow-wrap:break-word;
+    }
+
+    .regulationSupportBlock.primary .regulationSupportText{
+      color:#d9e0f4;
+      margin-top:10px;
+      max-width:900px;
+      font-size:14px;
+      line-height:1.62;
+    }
+
+    .regulationSupportList{
+      margin:8px 0 0;
+      padding-left:18px;
+      color:var(--text);
+      font-size:13px;
+      line-height:1.62;
+    }
+
+    .regulationSupportList li{
+      margin:3px 0;
+      overflow-wrap:break-word;
+    }
+
+    .regulationSupportNote{
+      margin-top:12px;
+      color:var(--muted2);
+      font-size:11px;
+      line-height:1.5;
+      border-top:1px solid rgba(255,255,255,.07);
+      padding-top:12px;
+      overflow-wrap:break-word;
     }
 
     .outlookCard{
@@ -1693,64 +1819,74 @@
       color:#cab1ff;
     }
 
-    .shareChip.structured{
-      border-color:rgba(216,184,76,.26);
-      background:rgba(216,184,76,.08);
+    .shareChip.structured,
+    .shareCardChip.structured{
       color:var(--h-structured);
+      border-color:rgba(216,184,76,.22);
+      background:rgba(216,184,76,.08);
     }
 
-    .shareChip.contained{
-      border-color:rgba(243,251,255,.28);
-      background:rgba(243,251,255,.075);
+    .shareChip.contained,
+    .shareCardChip.contained{
       color:var(--h-contained);
+      border-color:rgba(243,251,255,.22);
+      background:rgba(243,251,255,.065);
     }
 
-    .shareChip.chaotic{
-      border-color:rgba(103,193,255,.26);
-      background:rgba(103,193,255,.08);
+    .shareChip.chaotic,
+    .shareCardChip.chaotic{
       color:var(--h-chaotic);
+      border-color:rgba(103,193,255,.20);
+      background:rgba(103,193,255,.07);
     }
 
-    .shareChip.relational{
-      border-color:rgba(255,155,183,.22);
-      background:rgba(255,155,183,.07);
+    .shareChip.relational,
+    .shareCardChip.relational{
       color:var(--h-relational);
+      border-color:rgba(255,155,183,.18);
+      background:rgba(255,155,183,.06);
     }
 
-    .shareChip.threshold{
-      border-color:rgba(255,138,61,.24);
-      background:rgba(255,138,61,.08);
+    .shareChip.threshold,
+    .shareCardChip.threshold{
       color:var(--h-threshold);
+      border-color:rgba(255,138,61,.20);
+      background:rgba(255,138,61,.07);
     }
 
-    .shareChip.reconstructive{
-      border-color:rgba(176,108,255,.24);
-      background:rgba(176,108,255,.08);
+    .shareChip.reconstructive,
+    .shareCardChip.reconstructive{
       color:var(--h-reconstructive);
+      border-color:rgba(176,108,255,.20);
+      background:rgba(176,108,255,.07);
     }
 
-    .shareChip.integrative{
-      border-color:rgba(169,215,255,.24);
-      background:rgba(169,215,255,.07);
+    .shareChip.integrative,
+    .shareCardChip.integrative{
       color:var(--h-integrative);
+      border-color:rgba(169,215,255,.20);
+      background:rgba(169,215,255,.06);
     }
 
-    .shareChip.diffused{
-      border-color:rgba(203,183,255,.22);
-      background:rgba(203,183,255,.07);
+    .shareChip.diffused,
+    .shareCardChip.diffused{
       color:var(--h-diffused);
+      border-color:rgba(203,183,255,.18);
+      background:rgba(203,183,255,.06);
     }
 
-    .shareChip.regulated{
-      border-color:rgba(111,224,211,.22);
-      background:rgba(111,224,211,.07);
+    .shareChip.regulated,
+    .shareCardChip.regulated{
       color:var(--h-regulated);
+      border-color:rgba(111,224,211,.18);
+      background:rgba(111,224,211,.06);
     }
 
-    .shareChip.steady{
+    .shareChip.steady,
+    .shareCardChip.steady{
+      color:var(--h-steady);
       border-color:rgba(170,183,214,.18);
       background:rgba(170,183,214,.06);
-      color:var(--h-steady);
     }
 
     .shareExportFrame{
@@ -1849,66 +1985,6 @@
       background:rgba(176,108,255,.08);
     }
 
-    .shareCardChip.structured{
-      color:var(--h-structured);
-      border-color:rgba(216,184,76,.22);
-      background:rgba(216,184,76,.08);
-    }
-
-    .shareCardChip.contained{
-      color:var(--h-contained);
-      border-color:rgba(243,251,255,.22);
-      background:rgba(243,251,255,.065);
-    }
-
-    .shareCardChip.chaotic{
-      color:var(--h-chaotic);
-      border-color:rgba(103,193,255,.20);
-      background:rgba(103,193,255,.07);
-    }
-
-    .shareCardChip.relational{
-      color:var(--h-relational);
-      border-color:rgba(255,155,183,.18);
-      background:rgba(255,155,183,.06);
-    }
-
-    .shareCardChip.threshold{
-      color:var(--h-threshold);
-      border-color:rgba(255,138,61,.20);
-      background:rgba(255,138,61,.07);
-    }
-
-    .shareCardChip.reconstructive{
-      color:var(--h-reconstructive);
-      border-color:rgba(176,108,255,.20);
-      background:rgba(176,108,255,.07);
-    }
-
-    .shareCardChip.integrative{
-      color:var(--h-integrative);
-      border-color:rgba(169,215,255,.20);
-      background:rgba(169,215,255,.06);
-    }
-
-    .shareCardChip.diffused{
-      color:var(--h-diffused);
-      border-color:rgba(203,183,255,.18);
-      background:rgba(203,183,255,.06);
-    }
-
-    .shareCardChip.regulated{
-      color:var(--h-regulated);
-      border-color:rgba(111,224,211,.18);
-      background:rgba(111,224,211,.06);
-    }
-
-    .shareCardChip.steady{
-      color:var(--h-steady);
-      border-color:rgba(170,183,214,.18);
-      background:rgba(170,183,214,.06);
-    }
-
     .shareCardSection{
       display:grid;
       gap:8px;
@@ -1937,122 +2013,61 @@
       min-width:0;
     }
 
-    .shareCardFieldDirection{
+    .shareCardFieldDirection,
+    .shareCardFieldUndertone,
+    .shareCardRegulationSupport,
+    .shareCardCoreRule{
       position:relative;
       overflow:hidden;
-      border:1px solid rgba(176,108,255,.25);
       border-radius:18px;
       padding:16px;
+      min-width:0;
+      max-width:100%;
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.025),
+        0 10px 28px rgba(0,0,0,.14);
+    }
+
+    .shareCardFieldDirection{
+      border:1px solid rgba(176,108,255,.25);
       background:
         radial-gradient(circle at 12% 0%, rgba(176,108,255,.15), transparent 36%),
         radial-gradient(circle at 100% 12%, rgba(103,193,255,.09), transparent 34%),
         linear-gradient(180deg,rgba(176,108,255,.075),rgba(103,193,255,.035));
-      box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.025),
-        0 10px 28px rgba(0,0,0,.16);
-      min-width:0;
-      max-width:100%;
-    }
-
-    .shareCardFieldDirection::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      background:linear-gradient(135deg,rgba(255,255,255,.04),transparent 46%);
-    }
-
-    .shareCardFieldDirection > *{
-      position:relative;
-      z-index:1;
-    }
-
-    .shareCardFieldTitle{
-      color:var(--text);
-      font-size:22px;
-      font-weight:950;
-      line-height:1.15;
-      letter-spacing:-.03em;
-      overflow-wrap:anywhere;
-    }
-
-    .shareCardFieldText{
-      color:#d9e0f4;
-      font-size:14px;
-      line-height:1.58;
-      font-weight:650;
-      overflow-wrap:break-word;
     }
 
     .shareCardFieldUndertone{
       display:none;
-      position:relative;
-      overflow:hidden;
       border:1px solid rgba(176,108,255,.22);
-      border-radius:18px;
-      padding:16px;
       background:
         radial-gradient(circle at 12% 0%, rgba(176,108,255,.13), transparent 36%),
         radial-gradient(circle at 100% 16%, rgba(103,193,255,.08), transparent 34%),
         linear-gradient(180deg,rgba(176,108,255,.060),rgba(255,255,255,.025));
-      box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.025),
-        0 10px 28px rgba(0,0,0,.13);
-      min-width:0;
-      max-width:100%;
     }
 
     .shareCardFieldUndertone.active{
       display:block;
     }
 
-    .shareCardFieldUndertone::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      background:linear-gradient(135deg,rgba(255,255,255,.035),transparent 46%);
-    }
-
-    .shareCardFieldUndertone > *{
-      position:relative;
-      z-index:1;
-    }
-
-    .shareCardUndertoneTitle{
-      color:var(--text);
-      font-size:19px;
-      font-weight:950;
-      line-height:1.2;
-      letter-spacing:-.025em;
-      overflow-wrap:anywhere;
-    }
-
-    .shareCardUndertoneText{
-      color:#d9e0f4;
-      font-size:14px;
-      line-height:1.58;
-      font-weight:650;
-      overflow-wrap:break-word;
+    .shareCardRegulationSupport{
+      border:1px solid rgba(111,224,211,.23);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(111,224,211,.12), transparent 36%),
+        radial-gradient(circle at 100% 16%, rgba(103,193,255,.08), transparent 34%),
+        linear-gradient(180deg,rgba(111,224,211,.055),rgba(255,255,255,.025));
     }
 
     .shareCardCoreRule{
-      position:relative;
-      overflow:hidden;
       border:1px solid rgba(216,184,76,.26);
-      border-radius:18px;
-      padding:16px;
       background:
         radial-gradient(circle at 10% 0%, rgba(216,184,76,.13), transparent 34%),
         radial-gradient(circle at 100% 16%, rgba(103,193,255,.08), transparent 34%),
         linear-gradient(180deg,rgba(216,184,76,.070),rgba(255,255,255,.026));
-      box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.025),
-        0 10px 28px rgba(0,0,0,.14);
-      min-width:0;
-      max-width:100%;
     }
 
+    .shareCardFieldDirection::before,
+    .shareCardFieldUndertone::before,
+    .shareCardRegulationSupport::before,
     .shareCardCoreRule::before{
       content:"";
       position:absolute;
@@ -2061,9 +2076,39 @@
       background:linear-gradient(135deg,rgba(255,255,255,.035),transparent 46%);
     }
 
+    .shareCardFieldDirection > *,
+    .shareCardFieldUndertone > *,
+    .shareCardRegulationSupport > *,
     .shareCardCoreRule > *{
       position:relative;
       z-index:1;
+    }
+
+    .shareCardFieldTitle,
+    .shareCardUndertoneTitle,
+    .shareCardRegulationTitle{
+      color:var(--text);
+      font-size:19px;
+      font-weight:950;
+      line-height:1.2;
+      letter-spacing:-.025em;
+      overflow-wrap:anywhere;
+    }
+
+    .shareCardFieldTitle{
+      font-size:22px;
+      line-height:1.15;
+      letter-spacing:-.03em;
+    }
+
+    .shareCardFieldText,
+    .shareCardUndertoneText,
+    .shareCardRegulationText{
+      color:#d9e0f4;
+      font-size:14px;
+      line-height:1.58;
+      font-weight:650;
+      overflow-wrap:break-word;
     }
 
     .shareCardCoreGrid{
@@ -2194,17 +2239,27 @@
       overflow-wrap:break-word;
     }
 
-    .librarySection{
+    .librarySection,
+    .engineDetails{
       width:100%;
       max-width:100%;
       min-width:0;
-      border:1px solid rgba(103,193,255,.15);
       border-radius:20px;
       background:rgba(6,15,34,.36);
       overflow:hidden;
     }
 
-    .librarySection summary{
+    .librarySection{
+      border:1px solid rgba(103,193,255,.15);
+    }
+
+    .engineDetails{
+      border:1px solid rgba(42,60,105,.75);
+      background:rgba(6,15,34,.40);
+    }
+
+    .librarySection summary,
+    .engineDetails summary{
       cursor:pointer;
       list-style:none;
       padding:18px;
@@ -2214,24 +2269,33 @@
       overflow-wrap:break-word;
     }
 
-    .librarySection summary::-webkit-details-marker{
+    .librarySection summary::-webkit-details-marker,
+    .engineDetails summary::-webkit-details-marker{
       display:none;
     }
 
-    .librarySection summary::after{
+    .librarySection summary::after,
+    .engineDetails summary::after{
       content:" +";
       color:var(--muted);
     }
 
-    .librarySection[open] summary::after{
+    .librarySection[open] summary::after,
+    .engineDetails[open] summary::after{
       content:" -";
     }
 
-    .libraryBody{
+    .libraryBody,
+    .engineBody{
       border-top:1px solid rgba(255,255,255,.07);
       padding:18px;
       min-width:0;
       max-width:100%;
+    }
+
+    .engineBody{
+      padding:16px;
+      overflow-x:hidden;
     }
 
     .libraryIntro{
@@ -2285,47 +2349,6 @@
 
     .libraryCard strong{
       color:var(--text);
-    }
-
-    .engineDetails{
-      width:100%;
-      max-width:100%;
-      min-width:0;
-      border:1px solid rgba(42,60,105,.75);
-      border-radius:20px;
-      background:rgba(6,15,34,.40);
-      overflow:hidden;
-    }
-
-    .engineDetails summary{
-      cursor:pointer;
-      list-style:none;
-      padding:18px;
-      color:var(--text);
-      font-size:18px;
-      font-weight:900;
-      overflow-wrap:break-word;
-    }
-
-    .engineDetails summary::-webkit-details-marker{
-      display:none;
-    }
-
-    .engineDetails summary::after{
-      content:" +";
-      color:var(--muted);
-    }
-
-    .engineDetails[open] summary::after{
-      content:" -";
-    }
-
-    .engineBody{
-      border-top:1px solid rgba(255,255,255,.07);
-      padding:16px;
-      min-width:0;
-      max-width:100%;
-      overflow-x:hidden;
     }
 
     .engineHeader{
@@ -2632,35 +2655,23 @@
         position:static;
       }
 
-      .heroStats{
-        grid-template-columns:minmax(0,1fr);
-      }
-
-      .midRow{
-        grid-template-columns:minmax(0,1fr);
-      }
-
-      .bottomGrid{
-        grid-template-columns:minmax(0,1fr);
-      }
-
-      .guidanceGrid{
-        grid-template-columns:minmax(0,1fr);
-      }
-
-      .profileGrid{
+      .heroStats,
+      .midRow,
+      .bottomGrid,
+      .guidanceGrid,
+      .profileGrid,
+      .regulationSupportGrid,
+      .outlookGrid,
+      .interactionMapGrid,
+      .fieldCompassGrid,
+      .liveDebugThreeColumn{
         grid-template-columns:minmax(0,1fr);
       }
 
       .profileBlock.wide,
-      .profileBlock.full{
-        grid-column:auto;
-      }
-
-      .outlookGrid{
-        grid-template-columns:minmax(0,1fr);
-      }
-
+      .profileBlock.full,
+      .regulationSupportBlock.primary,
+      .regulationSupportBlock.full,
       .outlookBlock.primary{
         grid-column:auto;
       }
@@ -2677,20 +2688,8 @@
         grid-template-columns:minmax(0,1fr);
       }
 
-      .interactionMapGrid{
-        grid-template-columns:minmax(0,1fr);
-      }
-
       .interactionOperator{
         min-height:18px;
-      }
-
-      .fieldCompassGrid{
-        grid-template-columns:minmax(0,1fr);
-      }
-
-      .liveDebugThreeColumn{
-        grid-template-columns:minmax(0,1fr);
       }
 
       .shareIntro{
@@ -2732,6 +2731,7 @@
       .engineDetails,
       .whyReadCard,
       .shareSection,
+      .regulationSupportCard,
       .outlookCard{
         border-radius:16px;
       }
@@ -2794,21 +2794,26 @@
         margin-right:3px;
       }
 
-      .interactionMap{
+      .interactionMap,
+      .fieldCompass{
         border-radius:15px;
         padding:9px;
         margin-top:10px;
       }
 
-      .interactionMapLabel{
+      .interactionMapLabel,
+      .fieldCompassLabel{
         margin-bottom:7px;
       }
 
-      .interactionMapGrid{
+      .interactionMapGrid,
+      .fieldCompassGrid{
         gap:7px;
       }
 
-      .interactionNode{
+      .interactionNode,
+      .fieldCompassRead,
+      .fieldCompassBalance{
         min-height:auto;
         border-radius:13px;
         padding:10px 11px;
@@ -2819,7 +2824,8 @@
         font-size:15px;
       }
 
-      .interactionNodeText{
+      .interactionNodeText,
+      .fieldCompassText{
         font-size:11.5px;
         line-height:1.42;
       }
@@ -2832,34 +2838,8 @@
         line-height:1;
       }
 
-      .fieldCompass{
-        border-radius:15px;
-        padding:9px;
-        margin-top:10px;
-      }
-
-      .fieldCompassLabel{
-        margin-bottom:7px;
-      }
-
-      .fieldCompassGrid{
-        gap:7px;
-      }
-
-      .fieldCompassRead,
-      .fieldCompassBalance{
-        border-radius:13px;
-        padding:10px 11px;
-        gap:5px;
-      }
-
       .fieldCompassState{
         font-size:18px;
-      }
-
-      .fieldCompassText{
-        font-size:11.8px;
-        line-height:1.42;
       }
 
       .fieldCompassGaugeWrap{
@@ -2957,29 +2937,39 @@
       }
 
       .profileHeader,
+      .regulationSupportHeader,
       .outlookHeader{
         display:grid;
       }
 
+      .regulationSupportCard,
       .outlookCard{
         padding:18px;
       }
 
+      .regulationSupportHeader h2,
       .outlookHeader h2{
         font-size:24px;
       }
 
+      .regulationSupportBlock.primary,
       .outlookBlock.primary{
         min-height:auto;
         padding:16px;
       }
 
+      .regulationSupportBlock.primary .regulationSupportValue,
       .outlookBlock.primary .outlookValue{
         font-size:25px;
       }
 
+      .regulationSupportBlock.primary .regulationSupportText,
       .outlookBlock.primary .outlookText{
         font-size:13px;
+      }
+
+      .regulationSupportList{
+        font-size:12.5px;
       }
 
       .moonstampModifierBlock{
@@ -3001,21 +2991,18 @@
         padding:6px 9px;
       }
 
-      .whyReadGrid{
+      .whyReadGrid,
+      .liveDebugThreeColumn,
+      .liveDebugScoreGrid{
         grid-template-columns:minmax(0,1fr);
       }
 
-      .liveFieldDebugHeader,
-      .liveDebugThreeColumn{
+      .liveFieldDebugHeader{
         display:grid;
       }
 
       .liveFieldDebugBadge{
         white-space:normal;
-      }
-
-      .liveDebugScoreGrid{
-        grid-template-columns:minmax(0,1fr);
       }
 
       .shareCardInner{
@@ -3033,6 +3020,7 @@
 
       .shareCardFieldDirection,
       .shareCardFieldUndertone,
+      .shareCardRegulationSupport,
       .shareCardCoreRule{
         border-radius:16px;
         padding:14px;
@@ -3043,11 +3031,13 @@
       }
 
       .shareCardFieldText,
-      .shareCardUndertoneText{
+      .shareCardUndertoneText,
+      .shareCardRegulationText{
         font-size:13px;
       }
 
-      .shareCardUndertoneTitle{
+      .shareCardUndertoneTitle,
+      .shareCardRegulationTitle{
         font-size:18px;
       }
 
@@ -3400,6 +3390,63 @@
           </div>
         </section>
 
+        <section class="regulationSupportCard">
+          <div class="regulationSupportHeader">
+            <div>
+              <h2>Regulation Supports</h2>
+              <p>Practical support based on current state, today’s field, motion style, load, regulation, and Moonstamp timing.</p>
+            </div>
+
+            <div class="chipRow" style="margin-top:0;">
+              <span class="chip violet" id="regulationStateChip">State: —</span>
+              <span class="chip field" id="regulationFieldChip">Field: —</span>
+            </div>
+          </div>
+
+          <div class="regulationSupportGrid">
+            <div class="regulationSupportBlock primary">
+              <div class="regulationSupportLabel">State</div>
+              <div class="regulationSupportValue" id="regulationSupportState">—</div>
+              <div class="regulationSupportText" id="regulationSupportStateText">
+                Waiting for regulation state.
+              </div>
+            </div>
+
+            <div class="regulationSupportBlock">
+              <div class="regulationSupportLabel">Support Quality Needed</div>
+              <div class="regulationSupportValue" id="regulationSupportQuality">—</div>
+              <div class="regulationSupportText">
+                The support quality tells you what kind of environment or behavior helps the field settle.
+              </div>
+            </div>
+
+            <div class="regulationSupportBlock full">
+              <div class="regulationSupportLabel">Try</div>
+              <ul class="regulationSupportList" id="regulationSupportTry">
+                <li>Waiting for support suggestions.</li>
+              </ul>
+            </div>
+
+            <div class="regulationSupportBlock">
+              <div class="regulationSupportLabel">Why</div>
+              <div class="regulationSupportText" id="regulationSupportWhy">
+                Waiting for regulation explanation.
+              </div>
+            </div>
+
+            <div class="regulationSupportBlock">
+              <div class="regulationSupportLabel">Music Support</div>
+              <div class="regulationSupportText" id="regulationSupportMusic">
+                Waiting for music support.
+              </div>
+            </div>
+          </div>
+
+          <div class="regulationSupportNote">
+            Regulation Supports are practical, non-medical support suggestions. They are meant to reduce input, clarify the next move, and make the read usable in real life.
+          </div>
+        </section>
+
         <section class="profileCard">
           <div class="profileHeader">
             <div>
@@ -3586,6 +3633,11 @@
               <div class="whyMiniValue" id="whyMoonstampModifier">Moonstamp modifier pending</div>
             </div>
 
+            <div class="whyMini">
+              <div class="whyMiniLabel">Regulation Supports</div>
+              <div class="whyMiniValue" id="whyRegulationSupports">Waiting for support read.</div>
+            </div>
+
             <div class="whyMini full">
               <div class="whyMiniLabel">Rationale</div>
               <div class="whyMiniValue" id="whyRationale">Waiting for rationale.</div>
@@ -3598,6 +3650,7 @@
         </section>
 
         <section class="shareSection">
+
           <div class="shareIntro">
             <div>
               <h2>Share Card</h2>
@@ -3649,6 +3702,7 @@
                 <div class="shareCardCoreRule">
                   <div class="shareCardSection">
                     <div class="shareCardLabel">Core Rule</div>
+
                     <div class="shareCardCoreGrid">
                       <div class="shareCardCoreItem">
                         <div class="shareCardCoreTitle">Use your gift:</div>
@@ -3684,6 +3738,34 @@
                   <div class="shareCardSection">
                     <div class="shareCardLabel">In Real Life, This Means</div>
                     <div class="shareCardRead" id="shareCardRealLife">Waiting for plain-life translation.</div>
+                  </div>
+                </div>
+
+                <div class="shareCardRegulationSupport" id="shareCardRegulationBlock">
+                  <div class="shareCardSection">
+                    <div class="shareCardLabel">Regulation Supports</div>
+
+                    <div class="shareCardCoreGrid">
+                      <div class="shareCardCoreItem">
+                        <div class="shareCardCoreTitle">State:</div>
+                        <div class="shareCardCoreText" id="shareCardRegulationState">—</div>
+                      </div>
+
+                      <div class="shareCardCoreItem">
+                        <div class="shareCardCoreTitle">Support quality:</div>
+                        <div class="shareCardCoreText" id="shareCardRegulationQuality">—</div>
+                      </div>
+
+                      <div class="shareCardCoreItem">
+                        <div class="shareCardCoreTitle">Try:</div>
+                        <div class="shareCardCoreText" id="shareCardRegulationTry">—</div>
+                      </div>
+
+                      <div class="shareCardCoreItem">
+                        <div class="shareCardCoreTitle">Music support:</div>
+                        <div class="shareCardCoreText" id="shareCardRegulationMusic">—</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -3994,7 +4076,7 @@
             </div>
 
             <div class="tiny">
-              Timing shell, regulator average, harmonic routing, field undertone, and why-line are interpretive layers on top of the current V2.5 engine. Moonstamp modifies the timing field only.
+              Timing shell, regulator average, harmonic routing, field undertone, regulation supports, and why-line are interpretive layers on top of the current V2.5 engine. Moonstamp modifies the timing field only.
             </div>
           </div>
         </details>
@@ -4262,6 +4344,13 @@
         meta: "",
         shareLine: ""
       },
+      regulationSupports: {
+        state: "—",
+        quality: "—",
+        tryItems: [],
+        why: "—",
+        music: "—"
+      },
       todayRead: "Waiting for daily read.",
       realLifeText: "Waiting for plain-life translation.",
       driverNote: "Waiting for driver note.",
@@ -4369,36 +4458,6 @@
       return `${phase} · ${moonAge} days · ${illumination}% illuminated`;
     }
 
-    function formatMoonstampModifier(moonstamp){
-      if (!moonstamp) return "Moonstamp modifier pending";
-
-      const state = String(moonstamp.state || "").trim();
-      const phase = String(moonstamp.phase || "").trim();
-      const illumination = fmtPercent(moonstamp.illumination);
-      const modifier = String(moonstamp.modifier || "").trim();
-      const forecastModifier = String(moonstamp.forecastModifier || "").trim();
-      const moonrise = String(moonstamp.moonrise || "").trim();
-      const moonset = String(moonstamp.moonset || "").trim();
-      const nextMajorPhase = String(moonstamp.nextMajorPhase || "").trim();
-
-      const headerParts = [state, phase].filter(Boolean);
-      const header = headerParts.length
-        ? `${headerParts.join(" · ")}${illumination !== "—" ? ` · ${illumination}%` : ""}`
-        : "Moonstamp modifier";
-
-      const timingParts = [];
-      if (moonrise) timingParts.push(`Moonrise ${moonrise}`);
-      if (moonset) timingParts.push(`Moonset ${moonset}`);
-      if (nextMajorPhase) timingParts.push(`Next: ${nextMajorPhase}`);
-
-      return [
-        header,
-        modifier,
-        forecastModifier,
-        timingParts.length ? timingParts.join(" · ") : ""
-      ].filter(Boolean).join(" ");
-    }
-
     function buildMoonstampModifier(data){
       const moonstamp = getMoonstamp(data);
 
@@ -4421,31 +4480,6 @@
       if (phase) return `${phase} timing adds texture to today’s read.`;
 
       return "The lunar field adds timing texture to today’s read.";
-    }
-
-    function buildMoonstampModifierRead(data){
-      const moonstamp = getMoonstamp(data);
-
-      if (!hasMoonstampData(data)) {
-        return {
-          hasMoonstamp: false,
-          title: "Moonstamp modifier pending",
-          text: "The lunar field adds timing texture to today’s read when Moonstamp data is available.",
-          meta: "Moonstamp modifies the timing field; it does not replace your harmonic profile.",
-          shareLine: ""
-        };
-      }
-
-      const timing = formatMoonstampTiming(moonstamp);
-      const modifier = buildMoonstampModifier(data) || formatMoonstampModifier(moonstamp);
-
-      return {
-        hasMoonstamp: true,
-        title: timing,
-        text: modifier || "The lunar field adds timing texture to today’s read.",
-        meta: "Use it as a field modifier, not an identity label.",
-        shareLine: `${timing}. ${modifier || "The lunar field adds timing texture to today’s read."}`
-      };
     }
 
     function moonstampForecastText(forecastItem, fallback){
@@ -4673,6 +4707,156 @@
       if (value < 0.40) return "Low";
       if (value < 0.70) return "Moderate";
       return "Strong";
+    }
+
+    function motionHas(motionStyle, target){
+      return String(motionStyle || "")
+        .split("/")
+        .map(part => part.trim())
+        .includes(target);
+    }
+
+    function buildRegulationSupports(harmonics, data, moonstampModifierRead){
+      const state = data?.state || {};
+      const currentState = stateLabelFromMode(state.mode || "");
+      const field = harmonics?.todayField || "Regulated";
+      const motionStyle = harmonics?.motionStyle || "Steady";
+      const load = safeNum(state.amplifiedLoad);
+      const strain = safeNum(state.strain);
+      const regulation = safeNum(state.regulation);
+      const moonstampText = String(moonstampModifierRead?.text || "").toLowerCase();
+
+      const supportQualities = [];
+      const tryItems = [];
+      let why = "The goal is not to solve everything. The goal is to reduce input and give the system one usable channel.";
+      let music = "Choose steady, lower-intensity music. Best use: one song on repeat while doing one small task.";
+
+      if (currentState === "Overloaded" || load >= 0.95 || strain >= 0.95) {
+        supportQualities.push("grounding", "narrowing", "cooling", "steadying");
+        tryItems.push("dim light", "one simple task", "reduced phone/social input", "warm shower or water reset", "no major relationship decisions while activated");
+        why = "The system is carrying too much input. The first move is to lower load before interpreting the whole field.";
+        music = "Use slow, repetitive, low-intensity music. Avoid emotionally explosive songs if the field is already charged.";
+      } else if (currentState === "Threshold") {
+        supportQualities.push("pausing", "sequencing", "containment", "clean timing");
+        tryItems.push("pause before replying", "write the actual decision in one sentence", "one grounding object", "slow walk", "delay non-urgent choices");
+        why = "The system is near an edge. The point is to keep the crossing clean, not to force the opening.";
+        music = "Use steady-tempo music with a clear beat. Avoid songs that push urgency or escalation.";
+      } else if (currentState === "Mobilized") {
+        supportQualities.push("channeling", "pacing", "containment", "rhythm");
+        tryItems.push("one repetitive song", "one small repair task", "short walk", "hands-on work", "finish one open loop");
+        why = "The system has usable movement. Regulation means giving the charge one practical channel.";
+        music = "Choose rhythmic, steady music that gives momentum without emotional overload.";
+      } else {
+        supportQualities.push("steady rhythm", "simple focus", "clear pacing");
+        tryItems.push("one task at a time", "normal light", "hydration", "simple movement", "finish one clean step");
+        why = "The system is regulated enough for simple action. Keep the support light so the field does not become over-managed.";
+        music = "Choose music that keeps the pace steady without pulling attention away from the task.";
+      }
+
+      if (field === "Relational") {
+        supportQualities.push("centered contact", "proportional response");
+        tryItems.push("name mine / not mine", "use plain language", "keep responsibility proportional");
+      }
+
+      if (field === "Reconstructive") {
+        supportQualities.push("repair focus");
+        tryItems.push("fix one weak point only", "stop after one repair");
+      }
+
+      if (field === "Diffused") {
+        supportQualities.push("anchoring", "reduced input");
+        tryItems.push("reduce background noise", "write one true sentence");
+      }
+
+      if (field === "Chaotic" || motionHas(motionStyle, "Chaotic")) {
+        supportQualities.push("discharge");
+        tryItems.push("short movement discharge", "give the charge one safe channel");
+      }
+
+      if (field === "Threshold" || motionHas(motionStyle, "Threshold")) {
+        supportQualities.push("edge pacing");
+        tryItems.push("do not cross while flooded", "choose the next step, not the whole path");
+      }
+
+      if (motionHas(motionStyle, "Contained")) {
+        supportQualities.push("privacy");
+        tryItems.push("protect the channel", "take space before explaining");
+      }
+
+      if (motionHas(motionStyle, "Diffused")) {
+        supportQualities.push("field clearing");
+        tryItems.push("lower sensory input", "ground through the body before interpreting");
+      }
+
+      if (moonstampText.includes("lower-load") || moonstampText.includes("simplify") || moonstampText.includes("reduce")) {
+        supportQualities.push("simplification");
+        tryItems.push("remove one unnecessary demand");
+        why += " Moonstamp is also supporting simplification, so less input is part of the timing support.";
+      }
+
+      if (regulation < 0.40) {
+        supportQualities.push("external structure");
+        tryItems.push("use a timer", "make the task visibly small");
+      }
+
+      const uniqueQualities = [...new Set(supportQualities)].slice(0, 5);
+      const uniqueTryItems = [...new Set(tryItems)].slice(0, 7);
+
+      let stateLine = `${currentState} state + ${field} field`;
+
+      if (currentState === "Overloaded" && field === "Relational") {
+        stateLine = "High relational load";
+      } else if (currentState === "Mobilized" && field === "Reconstructive") {
+        stateLine = "High activation + repair pressure";
+      } else if (currentState === "Mobilized" && field === "Relational") {
+        stateLine = "Activated contact field";
+      } else if (currentState === "Threshold") {
+        stateLine = `Threshold state + ${field} field`;
+      }
+
+      return {
+        state: stateLine,
+        quality: uniqueQualities.join(", "),
+        tryItems: uniqueTryItems,
+        why,
+        music
+      };
+    }
+
+    function updateRegulationSupportsUI(regulationSupports){
+      const supports = regulationSupports || {
+        state: "—",
+        quality: "—",
+        tryItems: [],
+        why: "—",
+        music: "—"
+      };
+
+      setText("regulationSupportState", supports.state || "—");
+      setText("regulationSupportStateText", "Use this as the practical regulation read for the current field. It does not change your root pattern.");
+      setText("regulationSupportQuality", supports.quality || "—");
+
+      const list = document.getElementById("regulationSupportTry");
+      if (list) {
+        list.innerHTML = Array.isArray(supports.tryItems) && supports.tryItems.length
+          ? supports.tryItems.map(item => `<li>${item}</li>`).join("")
+          : "<li>Choose one small support and keep the field simple.</li>";
+      }
+
+      setText("regulationSupportWhy", supports.why || "—");
+      setText("regulationSupportMusic", supports.music || "—");
+
+      setText("whyRegulationSupports", `${supports.state || "—"} · ${supports.quality || "—"}`);
+
+      setText("shareCardRegulationState", supports.state || "—");
+      setText("shareCardRegulationQuality", supports.quality || "—");
+      setText(
+        "shareCardRegulationTry",
+        Array.isArray(supports.tryItems) && supports.tryItems.length
+          ? supports.tryItems.slice(0, 4).join(" · ")
+          : "Choose one small support."
+      );
+      setText("shareCardRegulationMusic", supports.music || "—");
     }
 
     function getSavedProfiles(){
@@ -5058,6 +5242,10 @@
         return "No secondary field is close enough to change the read.";
       }
 
+      if (primary === "Relational" && undertone === "Contained") {
+        return "Relational is the main field. Contained pressure is close underneath, so part of the signal may need privacy, protection, or slower release.";
+      }
+
       if (primary === "Relational" && undertone === "Reconstructive") {
         return "Contact is the main field. Repair pressure is close underneath, so one weak point may ask for attention — but the whole field does not need to be rebuilt. Clarify the contact first. Repair only the part that is actually asking for attention.";
       }
@@ -5158,11 +5346,6 @@
       const gap = primaryScore - secondaryScore;
       const ratio = primaryScore > 0 ? secondaryScore / primaryScore : 0;
 
-      /*
-        Field Undertone should only surface when the secondary field is truly close.
-        Ratio alone was too permissive and caused strong selected fields to show
-        undertones even when the second-place field should stay in debug.
-      */
       const active =
         second.field !== top.field &&
         secondaryScore > 0 &&
@@ -5583,7 +5766,7 @@
       const highLoad = strain >= 0.85 || load >= 0.85;
       const lowRegulation = regulation < 0.45;
 
-      const motionHas = (name) => String(motion).includes(name);
+      const motionHasLocal = (name) => String(motion).includes(name);
 
       if (
         primary === "Relational" ||
@@ -5605,8 +5788,8 @@
       }
 
       if (
-        motionHas("Chaotic") ||
-        motionHas("Threshold") ||
+        motionHasLocal("Chaotic") ||
+        motionHasLocal("Threshold") ||
         distortion === "Chaotic" ||
         distortion === "Threshold" ||
         (highLoad && field === "Threshold")
@@ -5628,478 +5811,6 @@
       }
 
       return "overStructuring";
-    }
-
-    function calculateHarmonics(data){
-      const state = data?.state || {};
-      const baselineState = data?.baselineState || {};
-      const planetary = data?.planetary || {};
-      const environment = data?.environment || {};
-      const forecast = data?.forecast || {};
-      const timing = data?.timing || {};
-
-      const sun = safeNum(planetary.sun);
-      const moon = safeNum(planetary.moon);
-      const mercury = safeNum(planetary.mercury);
-      const venus = safeNum(planetary.venus);
-      const mars = safeNum(planetary.mars);
-      const jupiter = safeNum(planetary.jupiter);
-      const saturn = safeNum(planetary.saturn);
-      const uranus = safeNum(planetary.uranus);
-      const neptune = safeNum(planetary.neptune);
-      const pluto = safeNum(planetary.pluto);
-      const asc = safeNum(planetary.asc);
-      const mc = safeNum(planetary.mc);
-
-      const tMoon = safeNum(planetary.transitMoon);
-      const tMercury = safeNum(planetary.transitMercury);
-      const tVenus = safeNum(planetary.transitVenus);
-      const tMars = safeNum(planetary.transitMars);
-      const tJupiter = safeNum(planetary.transitJupiter);
-      const tSaturn = safeNum(planetary.transitSaturn);
-      const tUranus = safeNum(planetary.transitUranus);
-      const tNeptune = safeNum(planetary.transitNeptune);
-      const tPluto = safeNum(planetary.transitPluto);
-
-      const currentStrain = safeNum(state.strain);
-      const currentLoad = safeNum(state.amplifiedLoad);
-      const currentRegulation = safeNum(state.regulation);
-      const baselineCapacity = safeNum(baselineState.capacity);
-      const baselineRegulation = safeNum(baselineState.regulation);
-      const envMode = String(environment.environmentMode || "").toLowerCase();
-      const forecastState = String(forecast?.now?.state || "").toLowerCase();
-      const timingPressure = safeNum(timing.timingPressure);
-
-      const natalScores = {
-        Structured: 0,
-        Contained: 0,
-        Chaotic: 0,
-        Relational: 0,
-        Threshold: 0,
-        Reconstructive: 0,
-        Integrative: 0,
-        Diffused: 0,
-        Regulated: 0
-      };
-
-      addScore(natalScores, "Structured", saturn * 1.40 + mercury * 1.30 + sun * 0.75 + mc * 0.65 + baselineCapacity * 0.85 + baselineRegulation * 0.55);
-      addScore(natalScores, "Contained", moon * 1.05 + saturn * 0.75 + neptune * 0.45 + baselineRegulation * 0.35);
-      addScore(natalScores, "Chaotic", uranus * 1.05 + mars * 0.85 + neptune * 0.35);
-      addScore(natalScores, "Relational", venus * 1.15 + moon * 0.85 + asc * 0.55);
-      addScore(natalScores, "Threshold", mars * 1.05 + uranus * 0.85 + pluto * 0.45 + mc * 0.45);
-      addScore(natalScores, "Reconstructive", pluto * 1.25 + saturn * 0.80);
-      addScore(natalScores, "Integrative", jupiter * 1.10 + neptune * 0.85 + moon * 0.35 + mercury * 0.25);
-      addScore(natalScores, "Diffused", neptune * 1.35 + moon * 0.70 + jupiter * 0.35);
-      addScore(natalScores, "Regulated", saturn * 1.25 + mercury * 0.85 + baselineRegulation * 0.90 + venus * 0.35);
-
-      const normalizedNatalScores = normalizeScores(natalScores, HARMONIC_SCORE_WEIGHTS.natal);
-
-      let primary = getTopHarmonic(normalizedNatalScores, "Structured");
-
-      const structuredScore = normalizedNatalScores.Structured || 0;
-      const chaoticScore = normalizedNatalScores.Chaotic || 0;
-      const thresholdScore = normalizedNatalScores.Threshold || 0;
-
-      const structuredSupport =
-        saturn >= 0.58 &&
-        mercury >= 0.58 &&
-        mc >= 0.48;
-
-      const chaoticBarelyWins =
-        primary === "Chaotic" &&
-        structuredScore >= chaoticScore * 0.96 &&
-        structuredSupport;
-
-      const thresholdBarelyWins =
-        primary === "Threshold" &&
-        structuredScore >= thresholdScore * 0.96 &&
-        structuredSupport;
-
-      if (chaoticBarelyWins || thresholdBarelyWins) {
-        primary = "Structured";
-      }
-
-      const motionStyle = buildMotionStyle(normalizedNatalScores, primary);
-
-      let support = getSecondHarmonic(normalizedNatalScores, primary, "Regulated");
-
-      const activationHeavySupport =
-        support === "Chaotic" ||
-        support === "Threshold";
-
-      if (activationHeavySupport) {
-        const supportCandidates = {
-          Structured: safeNum(normalizedNatalScores.Structured),
-          Regulated: safeNum(normalizedNatalScores.Regulated),
-          Integrative: safeNum(normalizedNatalScores.Integrative),
-          Contained: safeNum(normalizedNatalScores.Contained),
-          Relational: safeNum(normalizedNatalScores.Relational)
-        };
-
-        support = getTopHarmonic(supportCandidates, "Regulated");
-      }
-
-      if (primary === "Structured" || primary === "Chaotic") {
-        const regulatedScore = normalizedNatalScores.Regulated || 0;
-        const integrativeScore = normalizedNatalScores.Integrative || 0;
-        const structuredSupportScore = normalizedNatalScores.Structured || 0;
-        const secondScore = normalizedNatalScores[support] || 0;
-
-        if (primary === "Chaotic" && structuredSupportScore >= secondScore * 0.88) {
-          support = "Structured";
-        } else if (regulatedScore >= secondScore * 0.88 && integrativeScore >= secondScore * 0.78) {
-          support = "Regulated / Integrative";
-        } else if (regulatedScore >= secondScore * 0.88) {
-          support = "Regulated";
-        } else if (integrativeScore >= secondScore * 0.88) {
-          support = "Integrative";
-        }
-      }
-
-      const fieldScores = {
-        Structured: 0,
-        Contained: 0,
-        Chaotic: 0,
-        Relational: 0,
-        Threshold: 0,
-        Reconstructive: 0,
-        Integrative: 0,
-        Diffused: 0,
-        Regulated: 0
-      };
-
-      /*
-        Today’s Field selector correction:
-        System Load State can be high without Today’s Field becoming Reconstructive.
-        Load and strain describe intensity. Field scoring should describe texture/type.
-        Reconstructive now requires repair/recalibration signatures instead of generic load.
-
-        Reconstructive stickiness adjustment:
-        Tightened repairGate so high strain/load cannot open Reconstructive by itself.
-        Reconstructive now requires stronger Pluto/Saturn repair-compression evidence.
-        When repairGate is closed, Reconstructive remains visible as secondary pressure
-        but is softened so Relational, Contained, Diffused, Integrative, or Chaotic
-        can win when their field texture is stronger.
-      */
-      const repairSignature =
-        (tPluto * 1.10) +
-        (tSaturn * 0.45) +
-        (Math.min(tPluto, tSaturn) * 0.55);
-
-      const wideFieldSignature =
-        (tJupiter * 0.80) +
-        (tNeptune * 0.42) +
-        (currentStrain * 0.10);
-
-      const activationSignature =
-        (tUranus * 0.95) +
-        (tMars * 0.70) +
-        (timingPressure * 0.35);
-
-      const containmentSignature =
-        (tSaturn * 0.80) +
-        (currentRegulation * 0.42) +
-        (tMoon * 0.25);
-
-      const relationalSignature =
-        (tVenus * 0.95) +
-        (tMoon * 0.55);
-
-      const diffusionSignature =
-        (tNeptune * 1.15) +
-        (tMoon * 0.35) +
-        (tJupiter * 0.28);
-
-      const thresholdSignature =
-        (tMars * 0.92) +
-        (tUranus * 0.62) +
-        (timingPressure * 0.75);
-
-      const structuredSignature =
-        (tSaturn * 0.82) +
-        (tMercury * 0.72);
-
-      const regulatedSignature =
-        (tSaturn * 0.92) +
-        (tMercury * 0.70) +
-        (currentRegulation * 0.55);
-
-      const repairGate =
-        repairSignature >= 1.05 ||
-        (tPluto >= 0.68 && tSaturn >= 0.55);
-
-      addScore(fieldScores, "Structured", structuredSignature);
-      addScore(fieldScores, "Contained", containmentSignature);
-      addScore(fieldScores, "Chaotic", activationSignature + (currentStrain * 0.14));
-      addScore(fieldScores, "Relational", relationalSignature);
-      addScore(fieldScores, "Threshold", thresholdSignature);
-      addScore(fieldScores, "Reconstructive", repairGate ? repairSignature : repairSignature * 0.42);
-      addScore(fieldScores, "Integrative", wideFieldSignature);
-      addScore(fieldScores, "Diffused", diffusionSignature);
-      addScore(fieldScores, "Regulated", regulatedSignature);
-
-      if (envMode.includes("diffuse")) {
-        addScore(fieldScores, "Diffused", 0.45);
-        addScore(fieldScores, "Integrative", 0.12);
-      }
-
-      if (envMode.includes("volatile")) {
-        addScore(fieldScores, "Chaotic", 0.35);
-        addScore(fieldScores, "Threshold", 0.12);
-      }
-
-      if (forecastState.includes("threshold")) {
-        addScore(fieldScores, "Threshold", 0.55);
-      }
-
-      if (forecastState.includes("mobilized")) {
-        addScore(fieldScores, "Chaotic", 0.28);
-        addScore(fieldScores, "Threshold", 0.10);
-      }
-
-      if (forecastState.includes("overload")) {
-        addScore(fieldScores, "Contained", 0.18);
-        addScore(fieldScores, "Regulated", 0.18);
-        addScore(fieldScores, "Diffused", 0.08);
-
-        if (repairGate) {
-          addScore(fieldScores, "Reconstructive", 0.12);
-        }
-      }
-
-      if (tJupiter >= 0.60 && currentStrain >= 0.65 && !repairGate) {
-        addScore(fieldScores, "Integrative", 0.18);
-        addScore(fieldScores, "Diffused", 0.12);
-      }
-
-      if (tNeptune >= 0.60 && currentStrain >= 0.65 && !repairGate) {
-        addScore(fieldScores, "Diffused", 0.18);
-      }
-
-      const fieldWeights = { ...HARMONIC_SCORE_WEIGHTS.field };
-
-      if (envMode.includes("diffuse")) {
-        fieldWeights.Diffused += 0.45;
-        fieldWeights.Integrative += 0.12;
-      }
-
-      if (envMode.includes("volatile")) {
-        fieldWeights.Chaotic += 0.35;
-        fieldWeights.Threshold += 0.12;
-      }
-
-      if (forecastState.includes("threshold")) {
-        fieldWeights.Threshold += 0.55;
-      }
-
-      if (forecastState.includes("mobilized")) {
-        fieldWeights.Chaotic += 0.28;
-        fieldWeights.Threshold += 0.10;
-      }
-
-      if (forecastState.includes("overload")) {
-        fieldWeights.Contained += 0.18;
-        fieldWeights.Regulated += 0.18;
-        fieldWeights.Diffused += 0.08;
-
-        if (repairGate) {
-          fieldWeights.Reconstructive += 0.12;
-        }
-      }
-
-      if (tJupiter >= 0.60 && currentStrain >= 0.65 && !repairGate) {
-        fieldWeights.Integrative += 0.18;
-        fieldWeights.Diffused += 0.12;
-      }
-
-      if (tNeptune >= 0.60 && currentStrain >= 0.65 && !repairGate) {
-        fieldWeights.Diffused += 0.18;
-      }
-
-      const normalizedFieldScores = normalizeScores(fieldScores, fieldWeights);
-      let todayField = getTopHarmonic(normalizedFieldScores, "Regulated");
-
-      if (todayField === "Reconstructive" && !repairGate) {
-        const nonRepairCandidates = { ...normalizedFieldScores };
-        delete nonRepairCandidates.Reconstructive;
-        todayField = getTopHarmonic(nonRepairCandidates, "Regulated");
-      }
-
-      /*
-        Repair close-call protection:
-        Contained should not become the new catch-all fallback when true repair
-        signatures are present. If repairGate is open, repairSignature is strong,
-        and Reconstructive is within close range of the top field, let
-        Reconstructive remain the main selected field.
-
-        This preserves the Relational improvement because it only applies when
-        actual repair signatures are strong. High load alone still cannot make
-        Reconstructive win.
-      */
-      const topFieldScore = safeNum(normalizedFieldScores[todayField]);
-      const reconstructiveScore = safeNum(normalizedFieldScores.Reconstructive);
-      const reconstructiveCloseCall =
-        repairGate &&
-        repairSignature >= 1.45 &&
-        reconstructiveScore > 0 &&
-        topFieldScore > 0 &&
-        reconstructiveScore >= topFieldScore * 0.96;
-
-      if (
-        todayField !== "Reconstructive" &&
-        reconstructiveCloseCall
-      ) {
-        todayField = "Reconstructive";
-      }
-
-      const topCandidates = getTopFieldCandidates(normalizedFieldScores, 3);
-
-      /*
-        Field Undertone layer:
-        Uses the existing topCandidates list after Today’s Field selection.
-        Today’s Field stays primary. Undertone only appears when second place is close enough
-        to act as secondary pressure/background texture.
-      */
-      if (Array.isArray(topCandidates) && topCandidates.length) {
-        const selectedIndex = topCandidates.findIndex(item => item.field === todayField);
-
-        if (selectedIndex > 0) {
-          const selectedCandidate = topCandidates[selectedIndex];
-          topCandidates.splice(selectedIndex, 1);
-          topCandidates.unshift(selectedCandidate);
-        }
-      }
-
-      const dailyFieldDebug = {
-        selectedField: todayField,
-        topCandidates,
-        rawFieldScores: fieldScores,
-        fieldWeights,
-        normalizedFieldScores,
-        repairGate,
-        repairSignature,
-        wideFieldSignature,
-        activationSignature,
-        containmentSignature,
-        relationalSignature,
-        diffusionSignature,
-        thresholdSignature,
-        fastBodyInputs: {
-          transitMoon: tMoon,
-          transitMercury: tMercury,
-          transitVenus: tVenus,
-          transitMars: tMars
-        },
-        slowBodyClimateInputs: {
-          transitJupiter: tJupiter,
-          transitSaturn: tSaturn,
-          transitUranus: tUranus,
-          transitNeptune: tNeptune,
-          transitPluto: tPluto
-        },
-        stateLoadInputs: {
-          currentStrain,
-          currentLoad,
-          currentRegulation
-        },
-        timingInputs: {
-          timingPressure,
-          forecastState,
-          environmentMode: envMode
-        },
-        moonstampInputs: {
-          state: data?.moonstamp?.state || null,
-          phase: data?.moonstamp?.phase || null,
-          phaseFraction: data?.moonstamp?.phaseFraction || null,
-          forecastModifier: data?.moonstamp?.forecastModifier || null
-        },
-        backendDebug: data?.dailyFieldBackendDebug || null,
-        freshness: {
-          transitUtcDatetime: data?.ephemeris?.transitUtcDatetime || null,
-          backendServerTimestamp: data?.dailyFieldBackendDebug?.serverCalculationTimestamp || null,
-          timezoneName: data?.inputResolved?.timezoneName || data?.inputResolved?.timezone_name || null
-        },
-        note: "Frontend Today’s Field separates load intensity from field type. Reconstructive requires stronger repair signatures instead of generic load/strain."
-      };
-
-      const fieldUndertone = getFieldUndertone(dailyFieldDebug);
-      dailyFieldDebug.fieldUndertone = fieldUndertone;
-
-      console.log("Lucy.OS Daily Field Debug:", dailyFieldDebug);
-
-      const distortionScores = {
-        Structured: 0,
-        Contained: 0,
-        Chaotic: 0,
-        Relational: 0,
-        Threshold: 0,
-        Reconstructive: 0,
-        Integrative: 0,
-        Diffused: 0,
-        Regulated: 0
-      };
-
-      const regulationRatio = currentLoad > 0.15
-        ? clamp(currentRegulation / currentLoad, 0, 1.25)
-        : currentRegulation;
-      const overloadGap = Math.max(currentStrain - 0.85, 0);
-
-      addScore(distortionScores, "Diffused", neptune * 1.00 + tNeptune * 1.20 + overloadGap * 1.40);
-      addScore(distortionScores, "Chaotic", uranus * 0.70 + tUranus * 1.05 + tMars * 0.65 + overloadGap * 0.80);
-      addScore(distortionScores, "Reconstructive", pluto * 0.85 + tPluto * 1.00 + currentLoad * 0.35 + overloadGap * 1.00);
-      addScore(distortionScores, "Regulated", saturn * 0.75 + tSaturn * 0.65 + regulationRatio * 1.10);
-      addScore(distortionScores, "Threshold", mars * 0.65 + tMars * 0.85 + timingPressure * 0.80);
-      addScore(distortionScores, "Integrative", jupiter * 0.55 + neptune * 0.45 + tJupiter * 0.45 + tNeptune * 0.45);
-      addScore(distortionScores, "Contained", moon * 0.65 + saturn * 0.45);
-      addScore(distortionScores, "Relational", venus * 0.55 + moon * 0.45);
-      addScore(distortionScores, "Structured", mercury * 0.55 + saturn * 0.50);
-
-      const distortionWeights = { ...HARMONIC_SCORE_WEIGHTS.distortion };
-
-      if (overloadGap > 0) {
-        distortionWeights.Diffused += 1.40;
-        distortionWeights.Chaotic += 0.80;
-        distortionWeights.Reconstructive += 1.00;
-      }
-
-      const normalizedDistortionScores = normalizeScores(distortionScores, distortionWeights);
-      let distortion = getTopHarmonic(normalizedDistortionScores, "Diffused");
-
-      if (primary === "Structured" && normalizedDistortionScores.Diffused >= normalizedDistortionScores[distortion] * 0.82) {
-        distortion = "Diffused";
-      }
-
-      if (primary === "Chaotic" && normalizedDistortionScores.Structured >= normalizedDistortionScores[distortion] * 0.78) {
-        distortion = "Structured";
-      }
-
-      const distortionStateKey = getDistortionState(
-        {
-          primary,
-          support,
-          motionStyle,
-          distortion,
-          todayField
-        },
-        data
-      );
-
-      return {
-        primary,
-        support,
-        motionStyle,
-        distortion,
-        distortionStateKey,
-        todayField,
-        fieldUndertone,
-        dailyFieldDebug,
-        natalScores,
-        normalizedNatalScores,
-        fieldScores,
-        normalizedFieldScores,
-        distortionScores,
-        normalizedDistortionScores
-      };
     }
 
     function renderLiveDebugPair(label, value){
@@ -6379,7 +6090,7 @@
 
       if (fieldUndertone?.active) {
         todayRead += ` Field Undertone: ${fieldUndertone.text}`;
-        realLife += ` Background pressure: ${fieldUndertone.title}.`;
+        realLife += ` ${fieldUndertone.text}`;
         shareRead += ` Field Undertone: ${fieldUndertone.title}.`;
         shareRealLife += ` ${fieldUndertone.text}`;
         whySentence += ` Field Undertone is active: ${fieldUndertone.title}. This modifies the read as secondary pressure only; it does not replace the selected field.`;
@@ -6398,7 +6109,7 @@
 
         if (fieldUndertone?.active) {
           todayRead += ` Field Undertone: ${fieldUndertone.text}`;
-          realLife += ` Background pressure: ${fieldUndertone.title}.`;
+          realLife += ` ${fieldUndertone.text}`;
           shareRead += ` Field Undertone: ${fieldUndertone.title}.`;
           shareRealLife += ` ${fieldUndertone.text}`;
           whySentence += ` Field Undertone is active: ${fieldUndertone.title}. This modifies the read as secondary pressure only; it does not replace the selected field.`;
@@ -6407,19 +6118,19 @@
 
       if (currentState === "Overloaded") {
         todayRead += " Current state reads overloaded, so simplify before expanding.";
-        realLife += " Reduce scope before adding another layer.";
+        realLife += " Reduce scope first.";
         shareRead += " Simplify before expanding.";
         shareRealLife += " Reduce scope first.";
         whySentence += " Current state is overloaded, so the profile-aware read prioritizes containment before interpretation.";
       } else if (currentState === "Threshold") {
         todayRead += " Current state is near a threshold, so timing matters more than intensity.";
-        realLife += " Pause at the edge before forcing the next step.";
+        realLife += " Pause at the edge first.";
         shareRead += " Timing matters more than intensity.";
         shareRealLife += " Pause at the edge first.";
         whySentence += " Current state is thresholded, so the profile-aware read emphasizes timing and one clean crossing.";
       } else if (currentState === "Mobilized") {
         todayRead += " Current state is mobilized, so use the movement without stacking more pressure.";
-        realLife += " Let momentum serve the move without multiplying demands.";
+        realLife += " Let momentum serve one move.";
         shareRead += " Use the movement without stacking pressure.";
         shareRealLife += " Let momentum serve one move.";
         whySentence += " Current state is mobilized, so the profile-aware read uses activation but keeps it paced.";
@@ -6642,7 +6353,7 @@
       };
     }
 
-    function updateWhyReadUI(harmonics, data, fieldTrend, profileAwareRead){
+    function updateWhyReadUI(harmonics, data, fieldTrend, profileAwareRead, regulationSupports){
       const state = data?.state || {};
       const moonstamp = getMoonstamp(data);
       const hasMoonstamp = hasMoonstampData(data);
@@ -6694,6 +6405,10 @@
         explanation += " The raw distortion harmonic matches today’s field, so the same pattern that is active today can become the overload route if the load keeps stacking.";
       }
 
+      if (regulationSupports) {
+        explanation += ` Regulation Supports V1 selected: ${regulationSupports.state}. Support quality: ${regulationSupports.quality}. This is a practical regulation layer only; it does not change identity routing, Today’s Field selection, or engine scoring.`;
+      }
+
       if (hasMoonstamp) {
         explanation += ` Moonstamp line: ${moonstampLine}. Moonstamp modifies the timing field; it does not replace your harmonic profile. Use it as a field modifier, not an identity label.`;
       } else {
@@ -6710,6 +6425,7 @@
       fieldUndertone,
       coreRule,
       moonstampModifier,
+      regulationSupports,
       todayRead,
       realLifeText,
       driverNote,
@@ -6736,6 +6452,13 @@
         },
         coreRule,
         moonstampModifier: moonstampModifier || { hasMoonstamp: false, title: "", text: "", shareLine: "" },
+        regulationSupports: regulationSupports || {
+          state: "—",
+          quality: "—",
+          tryItems: [],
+          why: "—",
+          music: "—"
+        },
         todayRead,
         realLifeText,
         driverNote,
@@ -6780,6 +6503,8 @@
       setText("shareCardDriverNote", driverNote);
       setText("shareCardGoodMove", goodMove);
       setText("shareCardReturn", returnText);
+
+      updateRegulationSupportsUI(regulationSupports);
 
       const shareMoonstampBlock = document.getElementById("shareCardMoonstampBlock");
       if (shareMoonstampBlock) {
@@ -6833,6 +6558,25 @@
           latestSharePayload.moonstampModifier.text || "The lunar field adds timing texture to today’s read."
         );
       }
+
+      const supports = latestSharePayload.regulationSupports || {};
+
+      lines.push(
+        "",
+        "Regulation Supports:",
+        "State:",
+        supports.state || "—",
+        "Support quality needed:",
+        supports.quality || "—",
+        "Try:",
+        Array.isArray(supports.tryItems) && supports.tryItems.length
+          ? supports.tryItems.map(item => `- ${item}`).join("\n")
+          : "- Choose one small support and keep the field simple.",
+        "Why:",
+        supports.why || "—",
+        "Music Support:",
+        supports.music || "—"
+      );
 
       lines.push(
         "",
@@ -6923,6 +6667,448 @@
       }
     }
 
+    function calculateHarmonics(data){
+      const state = data?.state || {};
+      const baselineState = data?.baselineState || {};
+      const planetary = data?.planetary || {};
+      const environment = data?.environment || {};
+      const forecast = data?.forecast || {};
+      const timing = data?.timing || {};
+
+      const sun = safeNum(planetary.sun);
+      const moon = safeNum(planetary.moon);
+      const mercury = safeNum(planetary.mercury);
+      const venus = safeNum(planetary.venus);
+      const mars = safeNum(planetary.mars);
+      const jupiter = safeNum(planetary.jupiter);
+      const saturn = safeNum(planetary.saturn);
+      const uranus = safeNum(planetary.uranus);
+      const neptune = safeNum(planetary.neptune);
+      const pluto = safeNum(planetary.pluto);
+      const asc = safeNum(planetary.asc);
+      const mc = safeNum(planetary.mc);
+
+      const tMoon = safeNum(planetary.transitMoon);
+      const tMercury = safeNum(planetary.transitMercury);
+      const tVenus = safeNum(planetary.transitVenus);
+      const tMars = safeNum(planetary.transitMars);
+      const tJupiter = safeNum(planetary.transitJupiter);
+      const tSaturn = safeNum(planetary.transitSaturn);
+      const tUranus = safeNum(planetary.transitUranus);
+      const tNeptune = safeNum(planetary.transitNeptune);
+      const tPluto = safeNum(planetary.transitPluto);
+
+      const currentStrain = safeNum(state.strain);
+      const currentLoad = safeNum(state.amplifiedLoad);
+      const currentRegulation = safeNum(state.regulation);
+      const baselineCapacity = safeNum(baselineState.capacity);
+      const baselineRegulation = safeNum(baselineState.regulation);
+      const envMode = String(environment.environmentMode || "").toLowerCase();
+      const forecastState = String(forecast?.now?.state || "").toLowerCase();
+      const timingPressure = safeNum(timing.timingPressure);
+
+      const natalScores = {
+        Structured: 0,
+        Contained: 0,
+        Chaotic: 0,
+        Relational: 0,
+        Threshold: 0,
+        Reconstructive: 0,
+        Integrative: 0,
+        Diffused: 0,
+        Regulated: 0
+      };
+
+      addScore(natalScores, "Structured", saturn * 1.40 + mercury * 1.30 + sun * 0.75 + mc * 0.65 + baselineCapacity * 0.85 + baselineRegulation * 0.55);
+      addScore(natalScores, "Contained", moon * 1.05 + saturn * 0.75 + neptune * 0.45 + baselineRegulation * 0.35);
+      addScore(natalScores, "Chaotic", uranus * 1.05 + mars * 0.85 + neptune * 0.35);
+      addScore(natalScores, "Relational", venus * 1.15 + moon * 0.85 + asc * 0.55);
+      addScore(natalScores, "Threshold", mars * 1.05 + uranus * 0.85 + pluto * 0.45 + mc * 0.45);
+      addScore(natalScores, "Reconstructive", pluto * 1.25 + saturn * 0.80);
+      addScore(natalScores, "Integrative", jupiter * 1.10 + neptune * 0.85 + moon * 0.35 + mercury * 0.25);
+      addScore(natalScores, "Diffused", neptune * 1.35 + moon * 0.70 + jupiter * 0.35);
+      addScore(natalScores, "Regulated", saturn * 1.25 + mercury * 0.85 + baselineRegulation * 0.90 + venus * 0.35);
+
+      const normalizedNatalScores = normalizeScores(natalScores, HARMONIC_SCORE_WEIGHTS.natal);
+
+      let primary = getTopHarmonic(normalizedNatalScores, "Structured");
+
+      const structuredScore = normalizedNatalScores.Structured || 0;
+      const chaoticScore = normalizedNatalScores.Chaotic || 0;
+      const thresholdScore = normalizedNatalScores.Threshold || 0;
+
+      const structuredSupport =
+        saturn >= 0.58 &&
+        mercury >= 0.58 &&
+        mc >= 0.48;
+
+      const chaoticBarelyWins =
+        primary === "Chaotic" &&
+        structuredScore >= chaoticScore * 0.96 &&
+        structuredSupport;
+
+      const thresholdBarelyWins =
+        primary === "Threshold" &&
+        structuredScore >= thresholdScore * 0.96 &&
+        structuredSupport;
+
+      if (chaoticBarelyWins || thresholdBarelyWins) {
+        primary = "Structured";
+      }
+
+      const motionStyle = buildMotionStyle(normalizedNatalScores, primary);
+
+      let support = getSecondHarmonic(normalizedNatalScores, primary, "Regulated");
+
+      const activationHeavySupport =
+        support === "Chaotic" ||
+        support === "Threshold";
+
+      if (activationHeavySupport) {
+        const supportCandidates = {
+          Structured: safeNum(normalizedNatalScores.Structured),
+          Regulated: safeNum(normalizedNatalScores.Regulated),
+          Integrative: safeNum(normalizedNatalScores.Integrative),
+          Contained: safeNum(normalizedNatalScores.Contained),
+          Relational: safeNum(normalizedNatalScores.Relational)
+        };
+
+        support = getTopHarmonic(supportCandidates, "Regulated");
+      }
+
+      if (primary === "Structured" || primary === "Chaotic") {
+        const regulatedScore = normalizedNatalScores.Regulated || 0;
+        const integrativeScore = normalizedNatalScores.Integrative || 0;
+        const structuredSupportScore = normalizedNatalScores.Structured || 0;
+        const secondScore = normalizedNatalScores[support] || 0;
+
+        if (primary === "Chaotic" && structuredSupportScore >= secondScore * 0.88) {
+          support = "Structured";
+        } else if (regulatedScore >= secondScore * 0.88 && integrativeScore >= secondScore * 0.78) {
+          support = "Regulated / Integrative";
+        } else if (regulatedScore >= secondScore * 0.88) {
+          support = "Regulated";
+        } else if (integrativeScore >= secondScore * 0.88) {
+          support = "Integrative";
+        }
+      }
+
+      const fieldScores = {
+        Structured: 0,
+        Contained: 0,
+        Chaotic: 0,
+        Relational: 0,
+        Threshold: 0,
+        Reconstructive: 0,
+        Integrative: 0,
+        Diffused: 0,
+        Regulated: 0
+      };
+
+      const repairSignature =
+        (tPluto * 1.10) +
+        (tSaturn * 0.45) +
+        (Math.min(tPluto, tSaturn) * 0.55);
+
+      const wideFieldSignature =
+        (tJupiter * 0.80) +
+        (tNeptune * 0.42) +
+        (currentStrain * 0.10);
+
+      const activationSignature =
+        (tUranus * 0.95) +
+        (tMars * 0.70) +
+        (timingPressure * 0.35);
+
+      const containmentSignature =
+        (tSaturn * 0.80) +
+        (currentRegulation * 0.42) +
+        (tMoon * 0.25);
+
+      const relationalSignature =
+        (tVenus * 0.95) +
+        (tMoon * 0.55);
+
+      const diffusionSignature =
+        (tNeptune * 1.15) +
+        (tMoon * 0.35) +
+        (tJupiter * 0.28);
+
+      const thresholdSignature =
+        (tMars * 0.92) +
+        (tUranus * 0.62) +
+        (timingPressure * 0.75);
+
+      const structuredSignature =
+        (tSaturn * 0.82) +
+        (tMercury * 0.72);
+
+      const regulatedSignature =
+        (tSaturn * 0.92) +
+        (tMercury * 0.70) +
+        (currentRegulation * 0.55);
+
+      const repairGate =
+        repairSignature >= 1.05 ||
+        (tPluto >= 0.68 && tSaturn >= 0.55);
+
+      addScore(fieldScores, "Structured", structuredSignature);
+      addScore(fieldScores, "Contained", containmentSignature);
+      addScore(fieldScores, "Chaotic", activationSignature + (currentStrain * 0.14));
+      addScore(fieldScores, "Relational", relationalSignature);
+      addScore(fieldScores, "Threshold", thresholdSignature);
+      addScore(fieldScores, "Reconstructive", repairGate ? repairSignature : repairSignature * 0.42);
+      addScore(fieldScores, "Integrative", wideFieldSignature);
+      addScore(fieldScores, "Diffused", diffusionSignature);
+      addScore(fieldScores, "Regulated", regulatedSignature);
+
+      if (envMode.includes("diffuse")) {
+        addScore(fieldScores, "Diffused", 0.45);
+        addScore(fieldScores, "Integrative", 0.12);
+      }
+
+      if (envMode.includes("volatile")) {
+        addScore(fieldScores, "Chaotic", 0.35);
+        addScore(fieldScores, "Threshold", 0.12);
+      }
+
+      if (forecastState.includes("threshold")) {
+        addScore(fieldScores, "Threshold", 0.55);
+      }
+
+      if (forecastState.includes("mobilized")) {
+        addScore(fieldScores, "Chaotic", 0.28);
+        addScore(fieldScores, "Threshold", 0.10);
+      }
+
+      if (forecastState.includes("overload")) {
+        addScore(fieldScores, "Contained", 0.18);
+        addScore(fieldScores, "Regulated", 0.18);
+        addScore(fieldScores, "Diffused", 0.08);
+
+        if (repairGate) {
+          addScore(fieldScores, "Reconstructive", 0.12);
+        }
+      }
+
+      if (tJupiter >= 0.60 && currentStrain >= 0.65 && !repairGate) {
+        addScore(fieldScores, "Integrative", 0.18);
+        addScore(fieldScores, "Diffused", 0.12);
+      }
+
+      if (tNeptune >= 0.60 && currentStrain >= 0.65 && !repairGate) {
+        addScore(fieldScores, "Diffused", 0.18);
+      }
+
+      const fieldWeights = { ...HARMONIC_SCORE_WEIGHTS.field };
+
+      if (envMode.includes("diffuse")) {
+        fieldWeights.Diffused += 0.45;
+        fieldWeights.Integrative += 0.12;
+      }
+
+      if (envMode.includes("volatile")) {
+        fieldWeights.Chaotic += 0.35;
+        fieldWeights.Threshold += 0.12;
+      }
+
+      if (forecastState.includes("threshold")) {
+        fieldWeights.Threshold += 0.55;
+      }
+
+      if (forecastState.includes("mobilized")) {
+        fieldWeights.Chaotic += 0.28;
+        fieldWeights.Threshold += 0.10;
+      }
+
+      if (forecastState.includes("overload")) {
+        fieldWeights.Contained += 0.18;
+        fieldWeights.Regulated += 0.18;
+        fieldWeights.Diffused += 0.08;
+
+        if (repairGate) {
+          fieldWeights.Reconstructive += 0.12;
+        }
+      }
+
+      if (tJupiter >= 0.60 && currentStrain >= 0.65 && !repairGate) {
+        fieldWeights.Integrative += 0.18;
+        fieldWeights.Diffused += 0.12;
+      }
+
+      if (tNeptune >= 0.60 && currentStrain >= 0.65 && !repairGate) {
+        fieldWeights.Diffused += 0.18;
+      }
+
+      const normalizedFieldScores = normalizeScores(fieldScores, fieldWeights);
+      let todayField = getTopHarmonic(normalizedFieldScores, "Regulated");
+
+      if (todayField === "Reconstructive" && !repairGate) {
+        const nonRepairCandidates = { ...normalizedFieldScores };
+        delete nonRepairCandidates.Reconstructive;
+        todayField = getTopHarmonic(nonRepairCandidates, "Regulated");
+      }
+
+      const topFieldScore = safeNum(normalizedFieldScores[todayField]);
+      const reconstructiveScore = safeNum(normalizedFieldScores.Reconstructive);
+      const reconstructiveCloseCall =
+        repairGate &&
+        repairSignature >= 1.45 &&
+        reconstructiveScore > 0 &&
+        topFieldScore > 0 &&
+        reconstructiveScore >= topFieldScore * 0.96;
+
+      if (
+        todayField !== "Reconstructive" &&
+        reconstructiveCloseCall
+      ) {
+        todayField = "Reconstructive";
+      }
+
+      const topCandidates = getTopFieldCandidates(normalizedFieldScores, 3);
+
+      if (Array.isArray(topCandidates) && topCandidates.length) {
+        const selectedIndex = topCandidates.findIndex(item => item.field === todayField);
+
+        if (selectedIndex > 0) {
+          const selectedCandidate = topCandidates[selectedIndex];
+          topCandidates.splice(selectedIndex, 1);
+          topCandidates.unshift(selectedCandidate);
+        }
+      }
+
+      const dailyFieldDebug = {
+        selectedField: todayField,
+        topCandidates,
+        rawFieldScores: fieldScores,
+        fieldWeights,
+        normalizedFieldScores,
+        repairGate,
+        repairSignature,
+        wideFieldSignature,
+        activationSignature,
+        containmentSignature,
+        relationalSignature,
+        diffusionSignature,
+        thresholdSignature,
+        fastBodyInputs: {
+          transitMoon: tMoon,
+          transitMercury: tMercury,
+          transitVenus: tVenus,
+          transitMars: tMars
+        },
+        slowBodyClimateInputs: {
+          transitJupiter: tJupiter,
+          transitSaturn: tSaturn,
+          transitUranus: tUranus,
+          transitNeptune: tNeptune,
+          transitPluto: tPluto
+        },
+        stateLoadInputs: {
+          currentStrain,
+          currentLoad,
+          currentRegulation
+        },
+        timingInputs: {
+          timingPressure,
+          forecastState,
+          environmentMode: envMode
+        },
+        moonstampInputs: {
+          state: data?.moonstamp?.state || null,
+          phase: data?.moonstamp?.phase || null,
+          phaseFraction: data?.moonstamp?.phaseFraction || null,
+          forecastModifier: data?.moonstamp?.forecastModifier || null
+        },
+        backendDebug: data?.dailyFieldBackendDebug || null,
+        freshness: {
+          transitUtcDatetime: data?.ephemeris?.transitUtcDatetime || null,
+          backendServerTimestamp: data?.dailyFieldBackendDebug?.serverCalculationTimestamp || null,
+          timezoneName: data?.inputResolved?.timezoneName || data?.inputResolved?.timezone_name || null
+        },
+        note: "Frontend Today’s Field separates load intensity from field type. Reconstructive requires stronger repair signatures instead of generic load/strain."
+      };
+
+      const fieldUndertone = getFieldUndertone(dailyFieldDebug);
+      dailyFieldDebug.fieldUndertone = fieldUndertone;
+
+      console.log("Lucy.OS Daily Field Debug:", dailyFieldDebug);
+
+      const distortionScores = {
+        Structured: 0,
+        Contained: 0,
+        Chaotic: 0,
+        Relational: 0,
+        Threshold: 0,
+        Reconstructive: 0,
+        Integrative: 0,
+        Diffused: 0,
+        Regulated: 0
+      };
+
+      const regulationRatio = currentLoad > 0.15
+        ? clamp(currentRegulation / currentLoad, 0, 1.25)
+        : currentRegulation;
+      const overloadGap = Math.max(currentStrain - 0.85, 0);
+
+      addScore(distortionScores, "Diffused", neptune * 1.00 + tNeptune * 1.20 + overloadGap * 1.40);
+      addScore(distortionScores, "Chaotic", uranus * 0.70 + tUranus * 1.05 + tMars * 0.65 + overloadGap * 0.80);
+      addScore(distortionScores, "Reconstructive", pluto * 0.85 + tPluto * 1.00 + currentLoad * 0.35 + overloadGap * 1.00);
+      addScore(distortionScores, "Regulated", saturn * 0.75 + tSaturn * 0.65 + regulationRatio * 1.10);
+      addScore(distortionScores, "Threshold", mars * 0.65 + tMars * 0.85 + timingPressure * 0.80);
+      addScore(distortionScores, "Integrative", jupiter * 0.55 + neptune * 0.45 + tJupiter * 0.45 + tNeptune * 0.45);
+      addScore(distortionScores, "Contained", moon * 0.65 + saturn * 0.45);
+      addScore(distortionScores, "Relational", venus * 0.55 + moon * 0.45);
+      addScore(distortionScores, "Structured", mercury * 0.55 + saturn * 0.50);
+
+      const distortionWeights = { ...HARMONIC_SCORE_WEIGHTS.distortion };
+
+      if (overloadGap > 0) {
+        distortionWeights.Diffused += 1.40;
+        distortionWeights.Chaotic += 0.80;
+        distortionWeights.Reconstructive += 1.00;
+      }
+
+      const normalizedDistortionScores = normalizeScores(distortionScores, distortionWeights);
+      let distortion = getTopHarmonic(normalizedDistortionScores, "Diffused");
+
+      if (primary === "Structured" && normalizedDistortionScores.Diffused >= normalizedDistortionScores[distortion] * 0.82) {
+        distortion = "Diffused";
+      }
+
+      if (primary === "Chaotic" && normalizedDistortionScores.Structured >= normalizedDistortionScores[distortion] * 0.78) {
+        distortion = "Structured";
+      }
+
+      const distortionStateKey = getDistortionState(
+        {
+          primary,
+          support,
+          motionStyle,
+          distortion,
+          todayField
+        },
+        data
+      );
+
+      return {
+        primary,
+        support,
+        motionStyle,
+        distortion,
+        distortionStateKey,
+        todayField,
+        fieldUndertone,
+        dailyFieldDebug,
+        natalScores,
+        normalizedNatalScores,
+        fieldScores,
+        normalizedFieldScores,
+        distortionScores,
+        normalizedDistortionScores
+      };
+    }
+
     function updateHarmonicUI(data){
       const harmonics = calculateHarmonics(data);
       const primaryMeta = HARMONICS[harmonics.primary] || HARMONICS.Structured;
@@ -6937,6 +7123,7 @@
       const fieldTrend = calculateFieldTrend(data, harmonics);
       const fieldDirection = buildFieldDirectionText(harmonics, data);
       const moonstampModifier = updateMoonstampModifierBlock(data);
+      const regulationSupports = buildRegulationSupports(harmonics, data, moonstampModifier);
 
       const primaryLabel = harmonicLabel(primaryMeta.label);
       const supportLabel = harmonics.support && String(harmonics.support).includes("/")
@@ -7003,9 +7190,15 @@
       applyChipClass("profileStateChip", "chip", primaryMeta.label);
       applyChipClass("profileFieldChip", "chip", fieldMeta.label);
 
+      setText("regulationStateChip", `State: ${currentState}`);
+      setHTML("regulationFieldChip", `Field:&nbsp;${fieldLabel}`);
+      applyChipClass("regulationStateChip", "chip violet", "");
+      applyChipClass("regulationFieldChip", "chip field", fieldMeta.label);
+
       updateFieldTranslationUI(fieldMeta.label);
       updateOutlookUI(data, harmonics);
-      updateWhyReadUI(harmonics, data, fieldTrend, profileAwareRead);
+      updateRegulationSupportsUI(regulationSupports);
+      updateWhyReadUI(harmonics, data, fieldTrend, profileAwareRead, regulationSupports);
       updateShareUI({
         systemWeather,
         fieldDirectionTitle: fieldDirection.title,
@@ -7013,6 +7206,7 @@
         fieldUndertone,
         coreRule,
         moonstampModifier,
+        regulationSupports,
         todayRead: profileAwareRead.shareRead,
         realLifeText: profileAwareRead.shareRealLife,
         driverNote: shareDriverNote,
@@ -7590,6 +7784,7 @@
         const stableProfileLabel = getStableProfileLabel(result.primary, result.support);
         const fieldUndertone = result.fieldUndertone || getFieldUndertone(result.dailyFieldDebug);
         const profileAwareRead = buildProfileAwareEnglishRead(result, data, stableProfileLabel, distortionState);
+        const regulationSupports = buildRegulationSupports(result, data, { text: "" });
         const expectedField = testCase.expectedField || [];
         const fieldPassed = expectedField.length ? expectedField.includes(result.todayField) : true;
         const undertonePassed =
@@ -7609,6 +7804,7 @@
           repairSignature: result.dailyFieldDebug?.repairSignature,
           wideFieldSignature: result.dailyFieldDebug?.wideFieldSignature,
           relationalSignature: result.dailyFieldDebug?.relationalSignature,
+          regulationSupportState: regulationSupports.state,
           profileAwareTodayRead: profileAwareRead.todayRead,
           dailyFieldDebug: result.dailyFieldDebug,
           passFail: fieldPassed && undertonePassed ? "PASS" : "FAIL"
@@ -7626,6 +7822,7 @@
     window.buildProfileAwareEnglishRead = buildProfileAwareEnglishRead;
     window.getFieldUndertone = getFieldUndertone;
     window.buildFieldUndertoneText = buildFieldUndertoneText;
+    window.buildRegulationSupports = buildRegulationSupports;
 
     document.getElementById("calcBtn").addEventListener("click", calculate);
     document.getElementById("saveShareCardBtn").addEventListener("click", saveShareCard);
