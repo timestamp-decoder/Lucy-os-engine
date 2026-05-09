@@ -132,6 +132,9 @@
       border:1px solid var(--border-neutral);
       border-radius:20px;
       background:
+        radial-gradient(circle at 50% 18%, rgba(103,193,255,.16), transparent 34%),
+        radial-gradient(circle at 68% 22%, rgba(176,108,255,.10), transparent 32%),
+        radial-gradient(circle at 38% 10%, rgba(216,184,76,.08), transparent 30%),
         linear-gradient(
           180deg,
           var(--field-highlight) 0%,
@@ -141,6 +144,8 @@
       box-shadow:
         inset 0 1px 0 rgba(255,255,255,.88),
         inset 0 -1px 0 rgba(0,0,0,.035),
+        inset 1px 0 0 var(--spectral-blue),
+        inset -1px 0 0 var(--spectral-violet),
         0 1px 2px rgba(0,0,0,.035);
       isolation:isolate;
       contain:paint;
@@ -149,14 +154,46 @@
     .hero::before{
       content:"";
       position:absolute;
-      inset:1px;
-      border-radius:19px;
-      border:1px solid var(--spectral-edge);
-      box-shadow:
-        inset 1px 0 0 var(--spectral-blue),
-        inset -1px 0 0 var(--spectral-violet);
+      width:260px;
+      height:260px;
+      left:50%;
+      top:-90px;
+      transform:translateX(-50%);
+      border-radius:999px;
+      background:
+        radial-gradient(
+          circle,
+          rgba(103,193,255,.18) 0%,
+          rgba(176,108,255,.08) 42%,
+          transparent 70%
+        );
+      filter:blur(10px);
+      opacity:.85;
       pointer-events:none;
       z-index:0;
+    }
+
+    .hero::after{
+      content:"";
+      position:absolute;
+      width:310px;
+      height:310px;
+      left:50%;
+      top:-115px;
+      transform:translateX(-50%);
+      border-radius:999px;
+      border:1px solid rgba(103,193,255,.11);
+      box-shadow:
+        0 0 38px rgba(103,193,255,.08),
+        inset 0 0 28px rgba(176,108,255,.035);
+      opacity:.72;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .hero > *{
+      position:relative;
+      z-index:1;
     }
 
     .heroGlow{
@@ -164,20 +201,16 @@
     }
 
     .hero h1{
-      position:relative;
       margin:0;
       font-size:34px;
       letter-spacing:.2px;
       color:var(--text-primary);
-      z-index:1;
     }
 
     .hero p{
-      position:relative;
       margin:6px 0 0;
       color:var(--muted);
       font-size:13px;
-      z-index:1;
     }
 
     .grid{
@@ -1064,7 +1097,15 @@
       }
 
       .hero::before{
-        border-radius:15px;
+        width:220px;
+        height:220px;
+        top:-78px;
+      }
+
+      .hero::after{
+        width:260px;
+        height:260px;
+        top:-96px;
       }
 
       .hero h1{
