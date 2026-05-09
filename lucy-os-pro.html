@@ -1096,6 +1096,79 @@
       color:var(--gold);
     }
 
+    .topFieldUndertoneBlock{
+      display:none;
+      margin-top:12px;
+      border:1px solid rgba(176,108,255,.22);
+      border-radius:16px;
+      padding:13px 14px;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(176,108,255,.11), transparent 34%),
+        radial-gradient(circle at 100% 18%, rgba(103,193,255,.07), transparent 34%),
+        rgba(255,255,255,.03);
+      min-width:0;
+      max-width:100%;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
+    }
+
+    .topFieldUndertoneBlock.active{
+      display:block;
+    }
+
+    .fieldUndertoneBlock{
+      display:none;
+      margin-top:12px;
+      border:1px solid rgba(176,108,255,.24);
+      border-radius:16px;
+      padding:14px;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(176,108,255,.12), transparent 34%),
+        radial-gradient(circle at 100% 12%, rgba(103,193,255,.08), transparent 34%),
+        rgba(255,255,255,.03);
+      min-width:0;
+      max-width:100%;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
+    }
+
+    .fieldUndertoneBlock.active{
+      display:block;
+    }
+
+    .fieldUndertoneLabel{
+      color:#cab1ff;
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      margin-bottom:7px;
+    }
+
+    .fieldUndertoneTitle{
+      color:var(--text);
+      font-size:16px;
+      font-weight:950;
+      line-height:1.28;
+      overflow-wrap:anywhere;
+    }
+
+    .fieldUndertoneText{
+      margin-top:7px;
+      color:#d9e0f4;
+      font-size:12.8px;
+      line-height:1.55;
+      font-weight:720;
+      overflow-wrap:break-word;
+    }
+
+    .fieldUndertoneMeta{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.45;
+      font-weight:750;
+      overflow-wrap:anywhere;
+    }
+
     .outlookCard{
       width:100%;
       max-width:100%;
@@ -1911,6 +1984,58 @@
       overflow-wrap:break-word;
     }
 
+    .shareCardFieldUndertone{
+      display:none;
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(176,108,255,.22);
+      border-radius:18px;
+      padding:16px;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(176,108,255,.13), transparent 36%),
+        radial-gradient(circle at 100% 16%, rgba(103,193,255,.08), transparent 34%),
+        linear-gradient(180deg,rgba(176,108,255,.060),rgba(255,255,255,.025));
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.025),
+        0 10px 28px rgba(0,0,0,.13);
+      min-width:0;
+      max-width:100%;
+    }
+
+    .shareCardFieldUndertone.active{
+      display:block;
+    }
+
+    .shareCardFieldUndertone::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:linear-gradient(135deg,rgba(255,255,255,.035),transparent 46%);
+    }
+
+    .shareCardFieldUndertone > *{
+      position:relative;
+      z-index:1;
+    }
+
+    .shareCardUndertoneTitle{
+      color:var(--text);
+      font-size:19px;
+      font-weight:950;
+      line-height:1.2;
+      letter-spacing:-.025em;
+      overflow-wrap:anywhere;
+    }
+
+    .shareCardUndertoneText{
+      color:#d9e0f4;
+      font-size:14px;
+      line-height:1.58;
+      font-weight:650;
+      overflow-wrap:break-word;
+    }
+
     .shareCardCoreRule{
       position:relative;
       overflow:hidden;
@@ -2635,6 +2760,7 @@
       .realLifeBlock{order:9}
       .guidanceGrid{order:10}
       .todayOutlookLine{order:11}
+      .topFieldUndertoneBlock{order:12}
 
       .weatherLine{
         font-size:29px;
@@ -2816,6 +2942,20 @@
         border-radius:14px;
       }
 
+      .topFieldUndertoneBlock,
+      .fieldUndertoneBlock{
+        border-radius:14px;
+        padding:12px;
+      }
+
+      .fieldUndertoneTitle{
+        font-size:15px;
+      }
+
+      .fieldUndertoneText{
+        font-size:12px;
+      }
+
       .profileHeader,
       .outlookHeader{
         display:grid;
@@ -2892,6 +3032,7 @@
       }
 
       .shareCardFieldDirection,
+      .shareCardFieldUndertone,
       .shareCardCoreRule{
         border-radius:16px;
         padding:14px;
@@ -2901,8 +3042,13 @@
         font-size:20px;
       }
 
-      .shareCardFieldText{
+      .shareCardFieldText,
+      .shareCardUndertoneText{
         font-size:13px;
+      }
+
+      .shareCardUndertoneTitle{
+        font-size:18px;
       }
 
       .shareCardCoreText{
@@ -3186,6 +3332,13 @@
             <div class="todayOutlookLine" id="todayOutlookLine">
               Current Field Direction: <span>Trend: —</span> · Driver: — · —
             </div>
+
+            <div class="topFieldUndertoneBlock" id="topFieldUndertoneBlock">
+              <div class="fieldUndertoneLabel">Field Undertone</div>
+              <div class="fieldUndertoneTitle" id="topFieldUndertoneTitle">No strong undertone</div>
+              <div class="fieldUndertoneText" id="topFieldUndertoneText">No secondary field is close enough to change the read.</div>
+              <div class="fieldUndertoneMeta" id="topFieldUndertoneMeta">Secondary field stays in debug only.</div>
+            </div>
           </div>
         </section>
 
@@ -3207,6 +3360,13 @@
               <div class="outlookLabel">Field Direction</div>
               <div class="outlookValue" id="outlookDirectionTitle">—</div>
               <div class="outlookText" id="outlookDirectionText">Waiting for field direction.</div>
+
+              <div class="fieldUndertoneBlock" id="fieldUndertoneBlock">
+                <div class="fieldUndertoneLabel">Field Undertone</div>
+                <div class="fieldUndertoneTitle" id="fieldUndertoneTitle">No strong undertone</div>
+                <div class="fieldUndertoneText" id="fieldUndertoneText">No secondary field is close enough to change the read.</div>
+                <div class="fieldUndertoneMeta" id="fieldUndertoneMeta">Secondary field stays in debug only.</div>
+              </div>
 
               <div class="moonstampModifierBlock" id="moonstampModifierBlock">
                 <div class="moonstampModifierLabel">Moonstamp Modifier</div>
@@ -3372,6 +3532,11 @@
             </div>
 
             <div class="whyMini">
+              <div class="whyMiniLabel">Field Undertone</div>
+              <div class="whyMiniValue" id="whyFieldUndertone">No strong undertone</div>
+            </div>
+
+            <div class="whyMini">
               <div class="whyMiniLabel">Motion Style</div>
               <div class="whyMiniValue" id="whyMotionStyle">—</div>
             </div>
@@ -3470,6 +3635,14 @@
                     <div class="shareCardLabel">Current Field Direction</div>
                     <div class="shareCardFieldTitle" id="shareCardFieldDirectionTitle">—</div>
                     <div class="shareCardFieldText" id="shareCardFieldDirectionText">Waiting for field direction.</div>
+                  </div>
+                </div>
+
+                <div class="shareCardFieldUndertone" id="shareCardFieldUndertoneBlock">
+                  <div class="shareCardSection">
+                    <div class="shareCardLabel">Field Undertone</div>
+                    <div class="shareCardFieldTitle" id="shareCardFieldUndertoneTitle">No strong undertone</div>
+                    <div class="shareCardFieldText" id="shareCardFieldUndertoneText">No secondary field is close enough to change the read.</div>
                   </div>
                 </div>
 
@@ -3591,6 +3764,15 @@
               </div>
 
               <div class="liveDebugBlock">
+                <div class="liveDebugLabel">Field Undertone</div>
+                <div class="liveDebugMiniGrid" id="liveDebugFieldUndertone">
+                  <div class="liveDebugMiniItem"><span>Status</span><strong>—</strong></div>
+                  <div class="liveDebugMiniItem"><span>Secondary</span><strong>—</strong></div>
+                  <div class="liveDebugMiniItem"><span>Gap / Ratio</span><strong>—</strong></div>
+                </div>
+              </div>
+
+              <div class="liveDebugBlock">
                 <div class="liveDebugLabel">Top 3 Candidates</div>
                 <div class="liveDebugTopList" id="liveDebugTopCandidates">
                   <div class="liveDebugCandidateRow">
@@ -3656,7 +3838,7 @@
               </div>
 
               <div class="liveFieldDebugNote">
-                Today’s Field describes current field weather. System Load State describes how much pressure the system is carrying.
+                Today’s Field describes current field weather. Field Undertone is a close second-place field only when it is close enough to matter. System Load State describes how much pressure the system is carrying.
               </div>
             </div>
 
@@ -3812,7 +3994,7 @@
             </div>
 
             <div class="tiny">
-              Timing shell, regulator average, harmonic routing, and why-line are interpretive layers on top of the current V2.5 engine. Moonstamp modifies the timing field only.
+              Timing shell, regulator average, harmonic routing, field undertone, and why-line are interpretive layers on top of the current V2.5 engine. Moonstamp modifies the timing field only.
             </div>
           </div>
         </details>
@@ -4059,6 +4241,15 @@
       systemWeather: "Structured signal architecture meeting a live field",
       fieldDirectionTitle: "—",
       fieldDirectionText: "Waiting for field direction.",
+      fieldUndertone: {
+        active: false,
+        field: null,
+        score: null,
+        gap: null,
+        ratio: null,
+        title: "No strong undertone",
+        text: "No secondary field is close enough to change the read."
+      },
       coreRule: {
         gift: "—",
         distortion: "—",
@@ -4859,6 +5050,204 @@
       return translations[field] || translations.Regulated;
     }
 
+    function buildFieldUndertoneText(primaryField, undertoneField){
+      const primary = String(primaryField || "").trim();
+      const undertone = String(undertoneField || "").trim();
+
+      if (!primary || !undertone) {
+        return "No secondary field is close enough to change the read.";
+      }
+
+      if (primary === "Relational" && undertone === "Reconstructive") {
+        return "Contact is the main field. Repair pressure is close underneath, so one weak point may ask for attention — but the whole field does not need to be rebuilt. Clarify the contact first. Repair only the part that is actually asking for attention.";
+      }
+
+      if (primary === "Diffused" && undertone === "Reconstructive") {
+        return "The field is mostly atmospheric or unclear. Repair pressure may be underneath, but wait until the actual weak point is clear before acting.";
+      }
+
+      if (primary === "Integrative" && undertone === "Reconstructive") {
+        return "The main field is meaning-gathering. Repair pressure is present underneath, but the first move is to connect the pattern, then repair only what is actually exposed.";
+      }
+
+      if (primary === "Chaotic" && undertone === "Reconstructive") {
+        return "Movement is the main field. Repair pressure is close underneath, so give the charge one repair channel instead of turning the whole field into a teardown.";
+      }
+
+      if (primary === "Threshold" && undertone === "Reconstructive") {
+        return "The main field is an edge or crossing. Repair pressure is underneath, so cross only the repair that is ready.";
+      }
+
+      if (primary === "Reconstructive" && undertone === "Relational") {
+        return "Repair is the main field. Relational pressure is underneath, so make the repair specific and avoid turning contact into a whole-field judgment.";
+      }
+
+      if (primary === "Reconstructive" && undertone === "Diffused") {
+        return "Repair is the main field, but the background may feel unclear or atmospheric. Name the actual weak point before acting.";
+      }
+
+      if (primary === "Reconstructive" && undertone === "Integrative") {
+        return "Repair is the main field, while meaning-gathering is close underneath. Fix what is actually exposed without trying to integrate every layer at once.";
+      }
+
+      if (primary === "Reconstructive" && undertone === "Chaotic") {
+        return "Repair is the main field, while movement pressure is close underneath. Use the charge for one specific repair, not a full teardown.";
+      }
+
+      if (primary === "Reconstructive" && undertone === "Threshold") {
+        return "Repair is the main field, while an edge or crossing is close underneath. Let the repair determine the timing, not urgency alone.";
+      }
+
+      if (undertone === "Reconstructive") {
+        return `${primary} is the main field. Repair pressure is close underneath, so one weak point may ask for attention — but the whole field does not need to be rebuilt. Repair only what is actually exposed.`;
+      }
+
+      if (undertone === "Relational") {
+        return `${primary} is the main field. Relational pressure is close underneath, so tone, contact, or shared-field feedback may matter. Keep contact clean and responsibility proportional.`;
+      }
+
+      if (undertone === "Diffused") {
+        return `${primary} is the main field. Diffused pressure is close underneath, so the background may feel more atmospheric or harder to define. Ground before interpreting.`;
+      }
+
+      if (undertone === "Integrative") {
+        return `${primary} is the main field. Integrative pressure is close underneath, so meaning may be gathering in the background. Let the larger pattern clarify one useful step.`;
+      }
+
+      if (undertone === "Chaotic") {
+        return `${primary} is the main field. Chaotic movement is close underneath, so extra charge or disruption may be present. Give the energy one safe channel.`;
+      }
+
+      if (undertone === "Threshold") {
+        return `${primary} is the main field. Threshold pressure is close underneath, so an edge, choice, or crossing may be near. Do not force the opening.`;
+      }
+
+      if (undertone === "Contained") {
+        return `${primary} is the main field. Contained pressure is close underneath, so part of the signal may need privacy, protection, or slower release.`;
+      }
+
+      if (undertone === "Structured") {
+        return `${primary} is the main field. Structured pressure is close underneath, so form, sequence, or a practical container may help stabilize the read.`;
+      }
+
+      if (undertone === "Regulated") {
+        return `${primary} is the main field. Regulated pressure is close underneath, so pacing and load management may be the stabilizing background.`;
+      }
+
+      return `${primary} is the main field. ${undertone} pressure is close underneath as a secondary texture, but it does not replace the selected field.`;
+    }
+
+    function getFieldUndertone(dailyFieldDebug){
+      const top = dailyFieldDebug?.topCandidates?.[0];
+      const second = dailyFieldDebug?.topCandidates?.[1];
+
+      if (!top || !second || !top.field || !second.field) {
+        return {
+          active: false,
+          field: null,
+          score: null,
+          gap: null,
+          ratio: null,
+          title: "No strong undertone",
+          text: "No secondary field is close enough to change the read."
+        };
+      }
+
+      const primaryScore = safeNum(top.score);
+      const secondaryScore = safeNum(second.score);
+      const gap = primaryScore - secondaryScore;
+      const ratio = primaryScore > 0 ? secondaryScore / primaryScore : 0;
+
+      const active =
+        second.field !== top.field &&
+        secondaryScore > 0 &&
+        (ratio >= 0.88 || gap <= 0.06);
+
+      if (!active) {
+        return {
+          active: false,
+          field: second.field,
+          score: secondaryScore,
+          gap,
+          ratio,
+          title: "No strong undertone",
+          text: "The selected field is clear enough that the secondary field should stay in debug only."
+        };
+      }
+
+      return {
+        active: true,
+        field: second.field,
+        score: secondaryScore,
+        gap,
+        ratio,
+        title: `${second.field} pressure is close underneath`,
+        text: buildFieldUndertoneText(top.field, second.field)
+      };
+    }
+
+    function updateFieldUndertoneUI(fieldUndertone){
+      const undertone = fieldUndertone || getFieldUndertone(null);
+
+      const blocks = [
+        document.getElementById("topFieldUndertoneBlock"),
+        document.getElementById("fieldUndertoneBlock")
+      ];
+
+      blocks.forEach(block => {
+        if (!block) return;
+        block.classList.toggle("active", !!undertone.active);
+      });
+
+      setText("topFieldUndertoneTitle", undertone.title || "No strong undertone");
+      setText("topFieldUndertoneText", undertone.text || "No secondary field is close enough to change the read.");
+      setText(
+        "topFieldUndertoneMeta",
+        undertone.active
+          ? `Secondary field: ${undertone.field || "—"} · Gap: ${fmtMaybe(undertone.gap)} · Ratio: ${fmtMaybe(undertone.ratio)}`
+          : "Secondary field stays in debug only."
+      );
+
+      setText("fieldUndertoneTitle", undertone.title || "No strong undertone");
+      setText("fieldUndertoneText", undertone.text || "No secondary field is close enough to change the read.");
+      setText(
+        "fieldUndertoneMeta",
+        undertone.active
+          ? `Close underneath · Gap: ${fmtMaybe(undertone.gap)} · Ratio: ${fmtMaybe(undertone.ratio)}`
+          : "Secondary field stays in debug only."
+      );
+    }
+
+    function updateShareFieldUndertoneUI(fieldUndertone){
+      const undertone = fieldUndertone || getFieldUndertone(null);
+      const block = document.getElementById("shareCardFieldUndertoneBlock");
+
+      if (block) {
+        block.classList.toggle("active", !!undertone.active);
+      }
+
+      setText("shareCardFieldUndertoneTitle", undertone.title || "No strong undertone");
+      setText("shareCardFieldUndertoneText", undertone.text || "No secondary field is close enough to change the read.");
+    }
+
+    function updateLiveDebugFieldUndertoneUI(fieldUndertone){
+      const undertone = fieldUndertone || getFieldUndertone(null);
+      const status = undertone.active ? "Active" : "Inactive";
+      const secondary = undertone.field || "—";
+      const gapRatio = undertone.gap !== null && undertone.ratio !== null
+        ? `${fmtMaybe(undertone.gap)} / ${fmtMaybe(undertone.ratio)}`
+        : "—";
+
+      setHTML(
+        "liveDebugFieldUndertone",
+        [
+          renderLiveDebugPair("Status", status),
+          renderLiveDebugPair("Secondary", secondary),
+          renderLiveDebugPair("Gap / Ratio", gapRatio)
+        ].join("")
+      );
+    }
+
     function calculateFieldTrend(data, harmonics){
       const state = data?.state || {};
       const field = harmonics?.todayField || "Regulated";
@@ -4900,68 +5289,70 @@
 
     function buildFieldDirectionText(harmonics, data){
       const field = harmonics?.todayField || "Regulated";
+      const undertone = harmonics?.fieldUndertone || getFieldUndertone(harmonics?.dailyFieldDebug);
       const driver = publicDriverName(primaryDriverName(data));
       const driverText = driver && driver !== "—" ? ` ${driver} is the strongest active driver.` : "";
+      const undertoneText = undertone?.active ? ` ${undertone.text}` : "";
 
       if (field === "Reconstructive") {
         return {
           title: "Repair pressure is active",
-          text: `Something may be asking for adjustment today, but this does not mean collapse. Choose one repair instead of rebuilding the whole system.${driverText}`
+          text: `Something may be asking for adjustment today, but this does not mean collapse. Choose one repair instead of rebuilding the whole system.${undertoneText}${driverText}`
         };
       }
 
       if (field === "Chaotic") {
         return {
           title: "Extra movement is active",
-          text: `The field may feel more mobile, scattered, or charged. Let movement happen, but give it one clean container.${driverText}`
+          text: `The field may feel more mobile, scattered, or charged. Let movement happen, but give it one clean container.${undertoneText}${driverText}`
         };
       }
 
       if (field === "Threshold") {
         return {
           title: "The field is near an edge",
-          text: `The field may bring openings, decisions, or crossings. Do not rush the threshold. Name the next step before moving.${driverText}`
+          text: `The field may bring openings, decisions, or crossings. Do not rush the threshold. Name the next step before moving.${undertoneText}${driverText}`
         };
       }
 
       if (field === "Diffused") {
         return {
           title: "The field is more atmospheric",
-          text: `The field may feel subtle, foggy, or harder to define. Reduce inputs and look for one simple true line.${driverText}`
+          text: `The field may feel subtle, foggy, or harder to define. Reduce inputs and look for one simple true line.${undertoneText}${driverText}`
         };
       }
 
       if (field === "Contained") {
         return {
           title: "The field is pulling inward",
-          text: `The field favors privacy, inward processing, and protected formation. Let the signal shape quietly before forcing it outward.${driverText}`
+          text: `The field favors privacy, inward processing, and protected formation. Let the signal shape quietly before forcing it outward.${undertoneText}${driverText}`
         };
       }
 
       if (field === "Relational") {
         return {
           title: "Contact is part of the field",
-          text: `The field may clarify through tone, contact, or repair. Stay centered before trying to read or fix the room.${driverText}`
+          text: `The field may clarify through tone, contact, or repair. Stay centered before trying to read or fix the room.${undertoneText}${driverText}`
         };
       }
 
       if (field === "Integrative") {
         return {
           title: "Meaning is gathering",
-          text: `The field may connect pieces and widen the pattern. Integrate what helps today without carrying every fragment.${driverText}`
+          text: `The field may connect pieces and widen the pattern. Integrate what helps today without carrying every fragment.${undertoneText}${driverText}`
         };
       }
 
       if (field === "Structured") {
         return {
           title: "Structure is available",
-          text: `The field supports form, sequence, and practical order. Use the container, but do not over-tighten it.${driverText}`
+          text: `The field supports form, sequence, and practical order. Use the container, but do not over-tighten it.${undertoneText}${driverText}`
         };
       }
 
       return {
         title: "Stable field",
-        text: `The field is readable enough to pace your next move. Keep the guidance practical and avoid turning the whole day into a problem to solve.${driverText}`
+        text: `The field is readable enough to pace your next move. Keep the guidance practical and avoid turning the whole day into a problem to solve.${undertoneText}${driverText}`
       };
     }
 
@@ -5000,6 +5391,7 @@
 
       setText("outlookDirectionTitle", direction.title);
       setText("outlookDirectionText", direction.text);
+      updateFieldUndertoneUI(harmonics?.fieldUndertone);
     }
 
     function updateFieldTranslationUI(field){
@@ -5527,9 +5919,27 @@
         todayField = getTopHarmonic(nonRepairCandidates, "Regulated");
       }
 
+      const topCandidates = getTopFieldCandidates(normalizedFieldScores, 3);
+
+      /*
+        Field Undertone layer:
+        Uses the existing topCandidates list after Today’s Field selection.
+        Today’s Field stays primary. Undertone only appears when second place is close enough
+        to act as secondary pressure/background texture.
+      */
+      if (Array.isArray(topCandidates) && topCandidates.length) {
+        const selectedIndex = topCandidates.findIndex(item => item.field === todayField);
+
+        if (selectedIndex > 0) {
+          const selectedCandidate = topCandidates[selectedIndex];
+          topCandidates.splice(selectedIndex, 1);
+          topCandidates.unshift(selectedCandidate);
+        }
+      }
+
       const dailyFieldDebug = {
         selectedField: todayField,
-        topCandidates: getTopFieldCandidates(normalizedFieldScores, 3),
+        topCandidates,
         rawFieldScores: fieldScores,
         fieldWeights,
         normalizedFieldScores,
@@ -5578,6 +5988,9 @@
         },
         note: "Frontend Today’s Field separates load intensity from field type. Reconstructive requires stronger repair signatures instead of generic load/strain."
       };
+
+      const fieldUndertone = getFieldUndertone(dailyFieldDebug);
+      dailyFieldDebug.fieldUndertone = fieldUndertone;
 
       console.log("Lucy.OS Daily Field Debug:", dailyFieldDebug);
 
@@ -5645,6 +6058,7 @@
         distortion,
         distortionStateKey,
         todayField,
+        fieldUndertone,
         dailyFieldDebug,
         natalScores,
         normalizedNatalScores,
@@ -5666,6 +6080,7 @@
     function updateLiveFieldDebugUI(dailyFieldDebug){
       const debug = dailyFieldDebug || {};
       const selectedField = debug.selectedField || "—";
+      const fieldUndertone = debug.fieldUndertone || getFieldUndertone(debug);
 
       setText("liveDebugSelectedField", selectedField);
       setText("liveDebugSelectedFieldBadge", `Selected Field: ${selectedField}`);
@@ -5737,6 +6152,8 @@
           renderLiveDebugPair("Forecast Modifier", moonstampInputs.forecastModifier || "—")
         ].join("")
       );
+
+      updateLiveDebugFieldUndertoneUI(fieldUndertone);
     }
 
     function getMotionStyleRead(motionStyle){
@@ -5790,6 +6207,7 @@
     function buildDailyGuidance(harmonics, data){
       const primary = harmonics.primary || "Structured";
       const field = harmonics.todayField || "Regulated";
+      const fieldUndertone = harmonics.fieldUndertone || getFieldUndertone(harmonics.dailyFieldDebug);
       const stateLabel = stateLabelFromMode(data?.state?.mode || "");
       const primaryLower = primary.toLowerCase();
       const fieldLower = field.toLowerCase();
@@ -5859,6 +6277,10 @@
         read = `Your ${primaryLower} root pattern is meeting a ${fieldLower} field today. The read is about the interaction between your stable profile and the current field, not a permanent identity label.`;
       }
 
+      if (fieldUndertone?.active) {
+        watch = `${watch} Background note: ${fieldUndertone.title}.`;
+      }
+
       if (stateLabel === "Overloaded") {
         watch = `${watch} Also watch for stacking more input when your system is already carrying enough.`;
         move = `Reduce scope first. ${move}`;
@@ -5875,6 +6297,7 @@
       const primary = harmonics?.primary || "Structured";
       const support = getHarmonicBaseName(harmonics?.support || "Regulated");
       const field = harmonics?.todayField || "Regulated";
+      const fieldUndertone = harmonics?.fieldUndertone || getFieldUndertone(harmonics?.dailyFieldDebug);
       const currentState = stateLabelFromMode(data?.state?.mode || "");
       const label = stableProfileLabel || getStableProfileLabel(primary, support);
       const distortion = distortionState || DISTORTION_STATES.overStructuring;
@@ -5921,6 +6344,14 @@
       let shareRealLife = realLife;
       let whySentence = `The profile-aware layer keeps the stable profile primary: ${label} combines ${harmonicText(primary)} root pattern with ${harmonicText(support)} support, while the ${harmonicText(field)} field describes today’s active pressure.`;
 
+      if (fieldUndertone?.active) {
+        todayRead += ` Field Undertone: ${fieldUndertone.text}`;
+        realLife += ` Background pressure: ${fieldUndertone.title}.`;
+        shareRead += ` Field Undertone: ${fieldUndertone.title}.`;
+        shareRealLife += ` ${fieldUndertone.text}`;
+        whySentence += ` Field Undertone is active: ${fieldUndertone.title}. This modifies the read as secondary pressure only; it does not replace the selected field.`;
+      }
+
       if (primary === "Chaotic" && support === "Structured") {
         todayRead = `${label}: fast signal becomes usable through structure, naming, framing, and containment. Today, ${fieldPressures[field] || "the current field is active"}. ${field === "Reconstructive" ? "Not every burst of energy needs to become a teardown." : "Give the charge one clear form."}`;
         realLife = field === "Reconstructive"
@@ -5931,6 +6362,14 @@
           ? "Name the pressure. Frame the weak point. Repair one thing."
           : "Name the pressure, frame it, and give the charge one useful container.";
         whySentence = `The profile-aware layer keeps ${label} visible: the root signal moves fast, but the stabilizing support turns activation into structure, naming, framing, and usable pressure.`;
+
+        if (fieldUndertone?.active) {
+          todayRead += ` Field Undertone: ${fieldUndertone.text}`;
+          realLife += ` Background pressure: ${fieldUndertone.title}.`;
+          shareRead += ` Field Undertone: ${fieldUndertone.title}.`;
+          shareRealLife += ` ${fieldUndertone.text}`;
+          whySentence += ` Field Undertone is active: ${fieldUndertone.title}. This modifies the read as secondary pressure only; it does not replace the selected field.`;
+        }
       }
 
       if (currentState === "Overloaded") {
@@ -6027,6 +6466,7 @@
     function buildShortDriverNote(data, harmonics, fieldTrend){
       const driver = publicDriverName(primaryDriverName(data));
       const field = harmonics?.todayField || "Regulated";
+      const fieldUndertone = harmonics?.fieldUndertone || getFieldUndertone(harmonics?.dailyFieldDebug);
       const stateLabel = stateLabelFromMode(data?.state?.mode || "");
       const cleanDriver = driver && driver !== "—" ? driver : "The strongest current driver";
       const driverLower = String(cleanDriver).toLowerCase();
@@ -6063,6 +6503,10 @@
         note += " Fewer inputs can help the real signal stand out.";
       } else if (field === "Chaotic" && !driverLower.includes("uranus")) {
         note += " Give the movement one safe container.";
+      }
+
+      if (fieldUndertone?.active) {
+        note += ` Field Undertone: ${fieldUndertone.title}. Treat it as background pressure, not the main field.`;
       }
 
       if (stateLabel === "Overloaded") {
@@ -6173,6 +6617,7 @@
       const support = harmonics.support || "Regulated";
       const stableProfileLabel = getStableProfileLabel(primary, support);
       const field = harmonics.todayField || "Regulated";
+      const fieldUndertone = harmonics.fieldUndertone || getFieldUndertone(harmonics.dailyFieldDebug);
       const motionStyle = harmonics.motionStyle || "—";
       const motionStyleRead = getMotionStyleRead(motionStyle);
       const currentState = stateLabelFromMode(state.mode || "");
@@ -6189,6 +6634,7 @@
 
       setHTML("whyBaseline", harmonicLabel(primary));
       setHTML("whyField", harmonicLabel(field));
+      setText("whyFieldUndertone", fieldUndertone?.active ? `${fieldUndertone.title} (${fmtMaybe(fieldUndertone.score)})` : "No strong undertone");
       setHTML("whyMotionStyle", harmonicLabel(motionStyle));
       setText("whyState", currentState);
       setText("whyDriver", driver);
@@ -6201,7 +6647,15 @@
       setText("whyPeakTiming", formatMoonstampTiming(moonstamp));
       setText("whyMoonstampModifier", moonstampLine);
 
-      let explanation = `${profileAwareRead?.whySentence || ""} Lucy.OS is reading a ${harmonicText(primary)} root pattern inside a ${harmonicText(field)} current field. Stable profile translation: ${stableProfileLabel}. That means the guidance is not just “who you are” and not just “what today is doing.” It is the interaction between the two. Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Current state is ${currentState.toLowerCase()}; load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${fieldTrend.rationale} ${driverNote}`;
+      let explanation = `${profileAwareRead?.whySentence || ""} Lucy.OS is reading a ${harmonicText(primary)} root pattern inside a ${harmonicText(field)} current field. Stable profile translation: ${stableProfileLabel}. That means the guidance is not just “who you are” and not just “what today is doing.” It is the interaction between the two.`;
+
+      if (fieldUndertone?.active) {
+        explanation += ` Field Undertone is ${fieldUndertone.title}. ${fieldUndertone.text} Undertone stays secondary: it adds background texture without replacing the selected field.`;
+      } else {
+        explanation += " No strong Field Undertone is active, so the selected field is clear enough to carry the read without a visible secondary layer.";
+      }
+
+      explanation += ` Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Current state is ${currentState.toLowerCase()}; load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${fieldTrend.rationale} ${driverNote}`;
 
       if (distortion === field) {
         explanation += " The raw distortion harmonic matches today’s field, so the same pattern that is active today can become the overload route if the load keeps stacking.";
@@ -6220,6 +6674,7 @@
       systemWeather,
       fieldDirectionTitle,
       fieldDirectionText,
+      fieldUndertone,
       coreRule,
       moonstampModifier,
       todayRead,
@@ -6237,6 +6692,15 @@
         systemWeather,
         fieldDirectionTitle,
         fieldDirectionText,
+        fieldUndertone: fieldUndertone || {
+          active: false,
+          field: null,
+          score: null,
+          gap: null,
+          ratio: null,
+          title: "No strong undertone",
+          text: "No secondary field is close enough to change the read."
+        },
         coreRule,
         moonstampModifier: moonstampModifier || { hasMoonstamp: false, title: "", text: "", shareLine: "" },
         todayRead,
@@ -6271,6 +6735,8 @@
       setText("shareCardFieldDirectionTitle", fieldDirectionTitle || "—");
       setText("shareCardFieldDirectionText", fieldDirectionText || "Waiting for field direction.");
 
+      updateShareFieldUndertoneUI(fieldUndertone);
+
       setText("shareCardCoreGift", coreRule?.useGift || "Use your gift cleanly.");
       setText("shareCardCoreDistortion", coreRule?.watchDistortion || "Watch the distortion before responding.");
       setText("shareCardCoreMove", coreRule?.makeMove || goodMove || "Choose one clear next move.");
@@ -6284,7 +6750,7 @@
 
       const shareMoonstampBlock = document.getElementById("shareCardMoonstampBlock");
       if (shareMoonstampBlock) {
-        shareMoonstampBlock.style.display = moonstampModifier?.hasMoonstamp ? "block" : "none";
+        shareMoonstampBlock.classList.toggle("active", !!moonstampModifier?.hasMoonstamp);
       }
 
       if (moonstampModifier?.hasMoonstamp) {
@@ -6303,7 +6769,19 @@
         "",
         "Current Field Direction:",
         latestSharePayload.fieldDirectionTitle || "—",
-        latestSharePayload.fieldDirectionText || "Waiting for field direction.",
+        latestSharePayload.fieldDirectionText || "Waiting for field direction."
+      ];
+
+      if (latestSharePayload.fieldUndertone?.active) {
+        lines.push(
+          "",
+          "Field Undertone:",
+          latestSharePayload.fieldUndertone.title || "Secondary pressure is close underneath",
+          latestSharePayload.fieldUndertone.text || "The secondary field modifies the read without replacing the selected field."
+        );
+      }
+
+      lines.push(
         "",
         "Core Rule:",
         "Use your gift:",
@@ -6312,7 +6790,7 @@
         latestSharePayload.coreRule?.watchDistortion || "Watch the distortion before responding.",
         "Make the move:",
         latestSharePayload.coreRule?.makeMove || latestSharePayload.goodMove || "Choose one clear next move."
-      ];
+      );
 
       if (latestSharePayload.moonstampModifier?.hasMoonstamp) {
         lines.push(
@@ -6421,6 +6899,7 @@
       const distortionMeta = HARMONICS[harmonics.distortion] || HARMONICS.Diffused;
       const distortionState = DISTORTION_STATES[harmonics.distortionStateKey] || DISTORTION_STATES.overStructuring;
       const fieldMeta = HARMONICS[harmonics.todayField] || HARMONICS.Regulated;
+      const fieldUndertone = harmonics.fieldUndertone || getFieldUndertone(harmonics.dailyFieldDebug);
       const currentState = stateLabelFromMode(data?.state?.mode || "");
       const fieldTrend = calculateFieldTrend(data, harmonics);
       const fieldDirection = buildFieldDirectionText(harmonics, data);
@@ -6458,6 +6937,7 @@
       );
 
       updateInteractionMap(primaryMeta.label, fieldMeta.label);
+      updateFieldUndertoneUI(fieldUndertone);
 
       setHTML("topMotionStyle", motionStyleLabel);
       setText("topMotionStyleRead", motionStyleRead);
@@ -6470,7 +6950,7 @@
       setText("dailyReturn", guidance.ret);
       setText(
         "todayOutlookLine",
-        `Current Field Direction: Trend: ${fieldTrend.trend} · Driver: ${driver} · ${fieldTrend.fieldPhrase}`
+        `Current Field Direction: Trend: ${fieldTrend.trend} · Driver: ${driver} · ${fieldTrend.fieldPhrase}${fieldUndertone?.active ? ` · Undertone: ${fieldUndertone.field}` : ""}`
       );
 
       setHTML("primaryHarmonic", primaryLabel);
@@ -6497,6 +6977,7 @@
         systemWeather,
         fieldDirectionTitle: fieldDirection.title,
         fieldDirectionText: fieldDirection.text,
+        fieldUndertone,
         coreRule,
         moonstampModifier,
         todayRead: profileAwareRead.shareRead,
@@ -6571,6 +7052,7 @@
       updateLiveFieldDebugUI(harmonics.dailyFieldDebug);
 
       const distortionState = DISTORTION_STATES[harmonics.distortionStateKey] || DISTORTION_STATES.overStructuring;
+      const fieldUndertone = harmonics.fieldUndertone || getFieldUndertone(harmonics.dailyFieldDebug);
 
       console.log("Lucy.OS normalized harmonic scores:", {
         primary: harmonics.primary,
@@ -6582,6 +7064,7 @@
         rawDistortionHarmonic: harmonics.distortion,
         primaryDistortionState: distortionState.label,
         todayField: harmonics.todayField,
+        fieldUndertone,
         dailyFieldDebug: harmonics.dailyFieldDebug,
         moonstamp,
         natalScores: harmonics.natalScores,
@@ -6696,10 +7179,14 @@
         dailyFieldDebug?.moonstampInputs?.state || dailyFieldDebug?.moonstampInputs?.phase
           ? `${dailyFieldDebug?.moonstampInputs?.state || "—"} / ${dailyFieldDebug?.moonstampInputs?.phase || "—"}`
           : "—";
+      const undertoneDebug = fieldUndertone?.active
+        ? `${fieldUndertone.field} active | gap ${fmtMaybe(fieldUndertone.gap)} | ratio ${fmtMaybe(fieldUndertone.ratio)}`
+        : "No strong undertone";
 
       setText(
         "chartDebug",
         `Today’s Field: ${dailyFieldDebug.selectedField || harmonics.todayField || "—"}\n` +
+        `Field Undertone: ${undertoneDebug}\n` +
         `Top 3: ${topCandidatesText}\n` +
         `Repair Gate: ${dailyFieldDebug.repairGate ? "open" : "closed"} | Repair Signature: ${fmtMaybe(dailyFieldDebug.repairSignature)}\n` +
         `Wide Field: ${fmtMaybe(dailyFieldDebug.wideFieldSignature)} | Activation: ${fmtMaybe(dailyFieldDebug.activationSignature)} | Diffusion: ${fmtMaybe(dailyFieldDebug.diffusionSignature)}\n` +
@@ -6822,15 +7309,18 @@
       const profileLabelCounts = {};
       const motionStyleCounts = {};
       const fieldCounts = {};
+      const fieldUndertoneCounts = {};
       const rawDistortionCounts = {};
       const distortionStateCounts = {};
       let reconstructiveWithoutGateCount = 0;
+      let activeUndertoneCount = 0;
 
       Object.keys(HARMONICS).forEach(key => {
         primaryCounts[key] = 0;
         supportCounts[key] = 0;
         motionStyleCounts[key] = 0;
         fieldCounts[key] = 0;
+        fieldUndertoneCounts[key] = 0;
         rawDistortionCounts[key] = 0;
       });
 
@@ -6843,6 +7333,7 @@
         const result = calculateHarmonics(data);
         const distortionState = DISTORTION_STATES[result.distortionStateKey] || DISTORTION_STATES.overStructuring;
         const stableProfileLabel = getStableProfileLabel(result.primary, result.support);
+        const fieldUndertone = result.fieldUndertone || getFieldUndertone(result.dailyFieldDebug);
 
         primaryCounts[result.primary] = (primaryCounts[result.primary] || 0) + 1;
 
@@ -6859,6 +7350,12 @@
           });
 
         fieldCounts[result.todayField] = (fieldCounts[result.todayField] || 0) + 1;
+
+        if (fieldUndertone?.active && fieldUndertone.field) {
+          activeUndertoneCount += 1;
+          fieldUndertoneCounts[fieldUndertone.field] = (fieldUndertoneCounts[fieldUndertone.field] || 0) + 1;
+        }
+
         rawDistortionCounts[result.distortion] = (rawDistortionCounts[result.distortion] || 0) + 1;
         distortionStateCounts[distortionState.label] = (distortionStateCounts[distortionState.label] || 0) + 1;
 
@@ -6873,9 +7370,11 @@
         ProfileTranslation: profileLabelCounts,
         MotionStyle: motionStyleCounts,
         Field: fieldCounts,
+        FieldUndertone: fieldUndertoneCounts,
         RawDistortionHarmonic: rawDistortionCounts,
         DistortionState: distortionStateCounts,
-        ReconstructiveWithoutRepairGate: { count: reconstructiveWithoutGateCount }
+        ReconstructiveWithoutRepairGate: { count: reconstructiveWithoutGateCount },
+        ActiveUndertoneCount: { count: activeUndertoneCount }
       });
 
       return {
@@ -6884,9 +7383,11 @@
         profileLabelCounts,
         motionStyleCounts,
         fieldCounts,
+        fieldUndertoneCounts,
         rawDistortionCounts,
         distortionStateCounts,
-        reconstructiveWithoutGateCount
+        reconstructiveWithoutGateCount,
+        activeUndertoneCount
       };
     }
 
@@ -6981,6 +7482,7 @@
         {
           name: "Relational Field Can Beat Secondary Repair Pressure",
           expectedField: ["Relational"],
+          expectedUndertone: ["Reconstructive", null],
           build: () => {
             const data = baseData();
             data.state.strain = 0.78;
@@ -6994,6 +7496,57 @@
             data.forecast.now.state = "Mobilized";
             return data;
           }
+        },
+        {
+          name: "Close Relational / Reconstructive Scores Should Show Undertone",
+          expectedField: ["Relational", "Reconstructive"],
+          expectedUndertoneActive: true,
+          build: () => {
+            const data = baseData();
+            data.state.strain = 0.76;
+            data.state.amplifiedLoad = 0.78;
+            data.state.regulation = 0.43;
+            data.planetary.transitVenus = 0.78;
+            data.planetary.transitMoon = 0.58;
+            data.planetary.transitPluto = 0.66;
+            data.planetary.transitSaturn = 0.53;
+            data.planetary.transitMars = 0.42;
+            data.forecast.now.state = "Mobilized";
+            return data;
+          }
+        },
+        {
+          name: "Strong Selected Field With Distant Second Should Hide Undertone",
+          expectedUndertoneActive: false,
+          build: () => {
+            const data = baseData();
+            data.state.strain = 0.38;
+            data.state.amplifiedLoad = 0.40;
+            data.state.regulation = 0.70;
+            data.planetary.transitSaturn = 0.95;
+            data.planetary.transitMercury = 0.82;
+            data.planetary.transitVenus = 0.22;
+            data.planetary.transitPluto = 0.18;
+            data.planetary.transitNeptune = 0.18;
+            data.forecast.now.state = "Regulated";
+            return data;
+          }
+        },
+        {
+          name: "Reconstructive Selected With Relational Second Keeps Reconstructive Main",
+          expectedField: ["Reconstructive"],
+          build: () => {
+            const data = baseData();
+            data.state.strain = 0.82;
+            data.state.amplifiedLoad = 0.84;
+            data.state.regulation = 0.46;
+            data.planetary.transitPluto = 0.90;
+            data.planetary.transitSaturn = 0.70;
+            data.planetary.transitVenus = 0.66;
+            data.planetary.transitMoon = 0.52;
+            data.forecast.now.state = "Overload";
+            return data;
+          }
         }
       ];
 
@@ -7002,21 +7555,30 @@
         const result = calculateHarmonics(data);
         const distortionState = DISTORTION_STATES[result.distortionStateKey] || DISTORTION_STATES.overStructuring;
         const stableProfileLabel = getStableProfileLabel(result.primary, result.support);
+        const fieldUndertone = result.fieldUndertone || getFieldUndertone(result.dailyFieldDebug);
         const profileAwareRead = buildProfileAwareEnglishRead(result, data, stableProfileLabel, distortionState);
         const expectedField = testCase.expectedField || [];
         const fieldPassed = expectedField.length ? expectedField.includes(result.todayField) : true;
+        const undertonePassed =
+          typeof testCase.expectedUndertoneActive === "boolean"
+            ? fieldUndertone.active === testCase.expectedUndertoneActive
+            : true;
 
         return {
           case: testCase.name,
           expectedField: expectedField.join(" or ") || "—",
           actualField: result.todayField,
+          undertoneActive: fieldUndertone.active,
+          undertoneField: fieldUndertone.field || "—",
+          undertoneGap: fieldUndertone.gap,
+          undertoneRatio: fieldUndertone.ratio,
           repairGate: result.dailyFieldDebug?.repairGate,
           repairSignature: result.dailyFieldDebug?.repairSignature,
           wideFieldSignature: result.dailyFieldDebug?.wideFieldSignature,
           relationalSignature: result.dailyFieldDebug?.relationalSignature,
           profileAwareTodayRead: profileAwareRead.todayRead,
           dailyFieldDebug: result.dailyFieldDebug,
-          passFail: fieldPassed ? "PASS" : "FAIL"
+          passFail: fieldPassed && undertonePassed ? "PASS" : "FAIL"
         };
       });
 
@@ -7029,6 +7591,8 @@
     window.getMotionStyleRead = getMotionStyleRead;
     window.getStableProfileLabel = getStableProfileLabel;
     window.buildProfileAwareEnglishRead = buildProfileAwareEnglishRead;
+    window.getFieldUndertone = getFieldUndertone;
+    window.buildFieldUndertoneText = buildFieldUndertoneText;
 
     document.getElementById("calcBtn").addEventListener("click", calculate);
     document.getElementById("saveShareCardBtn").addEventListener("click", saveShareCard);
