@@ -2212,8 +2212,85 @@
       color:var(--muted);
       font-size:13px;
       line-height:1.65;
-      white-space:pre-line;
+      white-space:normal;
       overflow-wrap:break-word;
+    }
+
+    .whyExplainStack{
+      display:grid;
+      grid-template-columns:minmax(0,1fr);
+      gap:10px;
+      width:100%;
+      min-width:0;
+      max-width:100%;
+    }
+
+    .whyExplainBlock{
+      border:1px solid rgba(255,255,255,.075);
+      border-radius:15px;
+      padding:13px 14px;
+      background:
+        radial-gradient(circle at 8% 0%, rgba(103,193,255,.055), transparent 34%),
+        rgba(255,255,255,.026);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.012);
+      min-width:0;
+      max-width:100%;
+    }
+
+    .whyExplainBlock.emphasis{
+      border-color:rgba(216,184,76,.18);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(216,184,76,.08), transparent 34%),
+        rgba(255,255,255,.028);
+    }
+
+    .whyExplainBlock.undertone{
+      border-color:rgba(176,108,255,.18);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(176,108,255,.08), transparent 34%),
+        rgba(255,255,255,.028);
+    }
+
+    .whyExplainBlock.support{
+      border-color:rgba(111,224,211,.18);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(111,224,211,.075), transparent 34%),
+        rgba(255,255,255,.028);
+    }
+
+    .whyExplainTitle{
+      color:var(--text);
+      font-size:12px;
+      font-weight:950;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      margin-bottom:7px;
+      overflow-wrap:anywhere;
+    }
+
+    .whyExplainBlock.emphasis .whyExplainTitle{
+      color:var(--gold);
+    }
+
+    .whyExplainBlock.undertone .whyExplainTitle{
+      color:#cab1ff;
+    }
+
+    .whyExplainBlock.support .whyExplainTitle{
+      color:#8bf1e6;
+    }
+
+    .whyExplainText{
+      color:#d7def1;
+      font-size:13px;
+      line-height:1.58;
+      font-weight:720;
+      overflow-wrap:break-word;
+    }
+
+    .whyExplainText strong{
+      color:var(--text);
+      font-weight:950;
     }
 
     .shareSection{
@@ -3700,6 +3777,31 @@
       .liveDebugThreeColumn,
       .liveDebugScoreGrid{
         grid-template-columns:minmax(0,1fr);
+      }
+
+      .whyExplain{
+        font-size:13px;
+        line-height:1.55;
+      }
+
+      .whyExplainStack{
+        gap:10px;
+        margin-top:12px;
+      }
+
+      .whyExplainBlock{
+        border-radius:13px;
+        padding:12px;
+      }
+
+      .whyExplainTitle{
+        font-size:10.5px;
+        margin-bottom:6px;
+      }
+
+      .whyExplainText{
+        font-size:12.5px;
+        line-height:1.52;
       }
 
       .liveFieldDebugHeader{
@@ -7340,6 +7442,15 @@
       };
     }
 
+    function renderWhyExplainBlock(title, text){
+      return `
+        <div class="whyExplainBlock">
+          <div class="whyExplainTitle">${title}</div>
+          <div class="whyExplainText">${text}</div>
+        </div>
+      `;
+    }
+
     function updateWhyReadUI(harmonics, data, fieldTrend, profileAwareRead, regulationSupports){
       const state = data?.state || {};
       const moonstamp = getMoonstamp(data);
@@ -7378,31 +7489,49 @@
       setText("whyPeakTiming", formatMoonstampTiming(moonstamp));
       setText("whyMoonstampModifier", moonstampLine);
 
-      let explanation = `${profileAwareRead?.whySentence || ""} Lucy.OS is reading a ${harmonicText(primary)} root pattern inside a ${harmonicText(field)} current field. Stable profile translation: ${stableProfileLabel}. That means the guidance is not just “who you are” and not just “what today is doing.” It is the interaction between the two.`;
+      const stableProfileText = `${profileAwareRead?.whySentence || ""} Lucy.OS is reading a ${harmonicText(primary)} root pattern inside a ${harmonicText(field)} current field. Stable profile translation: ${stableProfileLabel}. This means the guidance is not only “who you are” and not only “what today is doing.” It is the interaction between your stable profile and the current field.`;
 
-      if (fieldUndertone?.active) {
-        explanation += ` Field Undertone is ${fieldUndertone.title}. ${fieldUndertone.text} Undertone stays secondary: it adds background texture without replacing the selected field.`;
-      } else {
-        explanation += " No strong Field Undertone is active, so the selected field is clear enough to carry the read without a visible secondary layer.";
-      }
+      const currentFieldText = `${harmonicText(field)} is the selected Current Field. ${fieldTrend.rationale} The field shows what pressure is active right now; it does not rewrite your root pattern.`;
 
-      explanation += ` Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Current state is ${currentState.toLowerCase()}; load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}. Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath} ${fieldTrend.rationale} ${driverNote}`;
+      const fieldUndertoneText = fieldUndertone?.active
+        ? `Field Undertone is ${fieldUndertone.title}. ${fieldUndertone.text} Undertone stays secondary: it adds background texture without replacing the selected field.`
+        : "No strong Field Undertone is active, so the selected field is clear enough to carry the read without a visible secondary layer.";
 
-      if (distortion === field) {
-        explanation += " The raw distortion harmonic matches today’s field, so the same pattern that is active today can become the overload route if the load keeps stacking.";
-      }
+      const motionLoadText = `Motion Style is ${harmonicText(motionStyle).toLowerCase()}: ${motionStyleRead} Current state is ${currentState.toLowerCase()}; load is ${loadBand.toLowerCase()}, capacity is ${capacityBand.toLowerCase()}, and regulation is ${regulationBand.toLowerCase()}.`;
 
-      if (regulationSupports) {
-        explanation += ` Regulation Supports V2 selected: ${regulationSupports.state}. Support quality: ${regulationSupports.quality}. This is a practical sensory/environment layer only; it does not change identity routing, Today’s Field selection, Field Undertone, repairGate, or engine scoring.`;
-      }
+      const distortionWatchText = `Primary distortion state is ${distortionState.label}: ${distortionState.plain} Return path: ${distortionState.returnPath}`;
 
-      if (hasMoonstamp) {
-        explanation += ` Moonstamp line: ${moonstampLine}. Moonstamp modifies the timing field; it does not replace your harmonic profile. Use it as a field modifier, not an identity label.`;
-      } else {
-        explanation += " Moonstamp line: Moonstamp modifier pending. The app is waiting for backend Moonstamp data before adding lunar timing texture.";
-      }
+      const driverNoteText = driverNote;
 
-      setText("whyConfigText", explanation);
+      const regulationSupportsText = regulationSupports
+        ? `Regulation Supports selected: ${regulationSupports.state}. Support quality: ${regulationSupports.quality}. This is a practical sensory/environment layer only; it does not change identity routing, Today’s Field selection, Field Undertone, repairGate, or engine scoring.`
+        : "Regulation Supports are waiting for the support read. When active, this layer translates the current field into practical environment and behavior support.";
+
+      const moonstampModifierText = hasMoonstamp
+        ? `Moonstamp line: ${moonstampLine}. Moonstamp modifies the timing field; it does not replace your harmonic profile. Use it as a field modifier, not an identity label.`
+        : "Moonstamp line: Moonstamp modifier pending. The app is waiting for backend Moonstamp data before adding lunar timing texture.";
+
+      const optionalMatchText = distortion === field
+        ? renderWhyExplainBlock(
+            "Field / Distortion Match",
+            "The raw distortion harmonic matches today’s field, so the same pattern that is active today can become the overload route if the load keeps stacking."
+          )
+        : "";
+
+      setHTML(
+        "whyConfigText",
+        `<div class="whyExplainStack">
+          ${renderWhyExplainBlock("Stable Profile", stableProfileText)}
+          ${renderWhyExplainBlock("Current Field", currentFieldText)}
+          ${renderWhyExplainBlock("Field Undertone", fieldUndertoneText)}
+          ${renderWhyExplainBlock("Motion + Load", motionLoadText)}
+          ${renderWhyExplainBlock("Distortion Watch", distortionWatchText)}
+          ${optionalMatchText}
+          ${renderWhyExplainBlock("Driver Note", driverNoteText)}
+          ${renderWhyExplainBlock("Regulation Supports", regulationSupportsText)}
+          ${renderWhyExplainBlock("Moonstamp Modifier", moonstampModifierText)}
+        </div>`
+      );
     }
 
     function updateShareUI({
@@ -8163,6 +8292,7 @@
       setText("dailyRealLife", profileAwareRead.realLife);
       setText("dailyLeanInto", guidance.lean);
       setText("dailyWatchFor", guidance.watch);
+
       setText("dailyGoodMove", guidance.move);
       setText("dailyReturn", guidance.ret);
       setText(
