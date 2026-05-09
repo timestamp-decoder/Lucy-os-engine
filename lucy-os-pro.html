@@ -5158,10 +5158,16 @@
       const gap = primaryScore - secondaryScore;
       const ratio = primaryScore > 0 ? secondaryScore / primaryScore : 0;
 
+      /*
+        Field Undertone should only surface when the secondary field is truly close.
+        Ratio alone was too permissive and caused strong selected fields to show
+        undertones even when the second-place field should stay in debug.
+      */
       const active =
         second.field !== top.field &&
         secondaryScore > 0 &&
-        (ratio >= 0.88 || gap <= 0.06);
+        ratio >= 0.88 &&
+        gap <= 0.06;
 
       if (!active) {
         return {
@@ -5917,6 +5923,33 @@
         const nonRepairCandidates = { ...normalizedFieldScores };
         delete nonRepairCandidates.Reconstructive;
         todayField = getTopHarmonic(nonRepairCandidates, "Regulated");
+      }
+
+      /*
+        Repair close-call protection:
+        Contained should not become the new catch-all fallback when true repair
+        signatures are present. If repairGate is open, repairSignature is strong,
+        and Reconstructive is within close range of the top field, let
+        Reconstructive remain the main selected field.
+
+        This preserves the Relational improvement because it only applies when
+        actual repair signatures are strong. High load alone still cannot make
+        Reconstructive win.
+      */
+      const topFieldScore = safeNum(normalizedFieldScores[todayField]);
+      const reconstructiveScore = safeNum(normalizedFieldScores.Reconstructive);
+      const reconstructiveCloseCall =
+        repairGate &&
+        repairSignature >= 1.45 &&
+        reconstructiveScore > 0 &&
+        topFieldScore > 0 &&
+        reconstructiveScore >= topFieldScore * 0.96;
+
+      if (
+        todayField !== "Reconstructive" &&
+        reconstructiveCloseCall
+      ) {
+        todayField = "Reconstructive";
       }
 
       const topCandidates = getTopFieldCandidates(normalizedFieldScores, 3);
