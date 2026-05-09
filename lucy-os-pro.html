@@ -4154,6 +4154,10 @@
         gap:9px;
       }
 
+      .liveDashboardGrid .liveDashboardMetric:last-child{
+        grid-column:1 / -1;
+      }
+
       .liveDashboardMetric{
         display:grid;
         align-content:start;
@@ -4375,6 +4379,10 @@
       .liveDashboardGrid{
         grid-template-columns:repeat(2,minmax(0,1fr));
         gap:8px;
+      }
+
+      .liveDashboardGrid .liveDashboardMetric:last-child{
+        grid-column:1 / -1;
       }
 
       .liveDashboardMetric{
@@ -4813,7 +4821,7 @@
           </div>
 
           <div class="liveDashboardNote">
-            Dashboard scores are simplified 1–10 translations of the current read. They do not change the engine, backend, or field selection.
+            Dashboard scores are simplified 1–10 translations of the current read. They do not change the engine, backend, or field selection. High load does not mean collapse; it means reduce scope before adding pressure.
           </div>
         </section>
 
@@ -6075,9 +6083,10 @@
         moonstamp.state,
         moonstamp.modifier,
         moonstamp.forecastModifier,
-        moonstamp.moonrise,
-        moonstamp.moonset,
-        moonstamp.nextMajorPhase
+        moonstamp.phaseFraction,
+        moonstamp.sunLongitudeDeg,
+        moonstamp.moonLongitudeDeg,
+        moonstamp.utcDatetime
       ].some(value => value !== undefined && value !== null && String(value).trim() !== "");
     }
 
@@ -6472,7 +6481,7 @@
         items.push("Motion modifier: protect the channel before explaining.");
       }
 
-      if (moonstampText.includes("lower-load") || moonstampText.includes("simplify" ) || moonstampText.includes("reduce")) {
+      if (moonstampText.includes("lower-load") || moonstampText.includes("simplify") || moonstampText.includes("reduce")) {
         items.push("Moonstamp modifier: remove one unnecessary demand.");
       }
 
