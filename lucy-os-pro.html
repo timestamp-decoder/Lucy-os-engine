@@ -4154,6 +4154,90 @@
       }
     };
 
+    const REGULATION_SUPPORT_LIBRARY = {
+      Structured: {
+        supportQuality: "clarity, order, clean focus, simple structure",
+        lightEnvironment: "Bright clean light, clear desk, visible next step.",
+        scent: "Rosemary, mint, eucalyptus, or a clean mild scent.",
+        plantNature: "Upright plant, rosemary, or a small structured green plant.",
+        musicSound: "Focused instrumental, light classical, or clean low-distraction music.",
+        behavior: "Write the next step, organize one surface, or make one small plan.",
+        why: "Structured fields regulate through clarity and usable form. The support should reduce clutter and make the next step visible."
+      },
+      Contained: {
+        supportQuality: "privacy, warmth, protected space, slower release",
+        lightEnvironment: "Dim warm light, closed door, soft blanket, or private corner.",
+        scent: "Sandalwood, vanilla, amber, or a soft wood scent.",
+        plantNature: "Fern, peace lily, pothos, or a protected indoor plant.",
+        musicSound: "Quiet ambient, soft piano, or low-volume sound.",
+        behavior: "Take space before explaining, journal privately, and reduce outside input.",
+        why: "Contained fields regulate through protection and inward processing. The support should make the system feel less exposed."
+      },
+      Chaotic: {
+        supportQuality: "discharge, channeling, rhythm, safe movement",
+        lightEnvironment: "Open space, less clutter, and enough room to move.",
+        scent: "Citrus, peppermint, ginger, or a bright fresh scent.",
+        plantNature: "Snake plant, hardy upright plant, or outdoor air if available.",
+        musicSound: "Steady rhythmic music, one song on repeat, beat-based but not explosive.",
+        behavior: "Take a short walk, shake out tension, do one physical task, or give the charge one channel.",
+        why: "Chaotic fields regulate by giving fast signal a safe direction. The support should move energy without escalating it."
+      },
+      Relational: {
+        supportQuality: "warmth, softness, centered contact, proportional response",
+        lightEnvironment: "Warm lamp light, soft texture, comfortable shared or calming space.",
+        scent: "Rose, lavender, vanilla, jasmine, or a soft floral scent if tolerated.",
+        plantNature: "Rose, jasmine, pothos, peace lily, or a plant that softens the room.",
+        musicSound: "Warm steady music, soft vocals, or gentle familiar songs.",
+        behavior: "Name mine / not mine, use plain language, do not over-read tone, and keep responsibility proportional.",
+        why: "Relational fields regulate through clean contact and emotional proportion. The support should soften the field without fusing with it."
+      },
+      Threshold: {
+        supportQuality: "edge pacing, pause, timing, clean crossing",
+        lightEnvironment: "Amber light, low-stim space, and a clear exit or entry point.",
+        scent: "Cedar, frankincense, pine, or a grounding resin or wood scent.",
+        plantNature: "Bamboo, snake plant, small tree-like plant, or stepping outside briefly.",
+        musicSound: "Steady beat, slow build, or music that supports motion without urgency.",
+        behavior: "Pause before replying, name the decision, delay non-urgent choices, and cross one threshold only.",
+        why: "Threshold fields regulate through timing. The support should slow urgency enough to make the crossing clean."
+      },
+      Reconstructive: {
+        supportQuality: "grounding, repair focus, steadiness, one weak point at a time",
+        lightEnvironment: "Neutral light, grounded workspace, tools visible but not overwhelming.",
+        scent: "Cedar, vetiver, sandalwood, patchouli, or an earthy scent.",
+        plantNature: "Aloe, jade, rubber plant, or a sturdy grounded plant.",
+        musicSound: "Slow repetitive music, deep steady instrumental, or low-intensity rhythm.",
+        behavior: "Fix one weak point only, stop after one repair, and do not rebuild the whole system.",
+        why: "Reconstructive fields regulate through specific repair. The support should make the repair concrete without turning it into collapse."
+      },
+      Integrative: {
+        supportQuality: "spaciousness, synthesis, pattern connection, meaning with limits",
+        lightEnvironment: "Natural light, open notebook, and clean visual field.",
+        scent: "Lavender, bergamot, clary sage, or a light herbal/citrus scent.",
+        plantNature: "Monstera, pothos, trailing plant, or a nature view.",
+        musicSound: "Spacious instrumental, ambient with movement, or music that helps pieces connect.",
+        behavior: "Write the pattern, connect only what helps, and choose one meaningful next step.",
+        why: "Integrative fields regulate by connecting pieces into usable meaning. The support should widen perspective without adding too many layers."
+      },
+      Diffused: {
+        supportQuality: "grounding, low noise, gentle anchor, reduced input",
+        lightEnvironment: "Soft grounding light, quiet room, fewer tabs/screens/noise sources.",
+        scent: "Lavender, chamomile, clean linen, or a very mild scent.",
+        plantNature: "Peace lily, fern, soft green plant, feet on ground, or outside air.",
+        musicSound: "Minimal ambient, low-volume drone, or silence if music blurs the field.",
+        behavior: "Write one true sentence, reduce sensory input, and choose one anchor before interpreting.",
+        why: "Diffused fields regulate through simplification and grounding. The support should help the field become less foggy without forcing clarity too fast."
+      },
+      Regulated: {
+        supportQuality: "rhythm, balance, routine, manageable pacing",
+        lightEnvironment: "Balanced light, normal routine space, and stable temperature.",
+        scent: "Clean mild scent, tea, light mint, or subtle herbal scent.",
+        plantNature: "Simple green plant, small desk plant, or familiar natural object.",
+        musicSound: "Steady low-tempo music, simple rhythm, or background music that does not pull focus.",
+        behavior: "Keep the routine simple, do one task at a time, use a timer, and stop before over-controlling.",
+        why: "Regulated fields regulate through pacing. The support should preserve rhythm without tightening into control."
+      }
+    };
+
     const STABLE_PROFILE_LABELS = {
       Structured: {
         Structured: "Core System Builder",
@@ -4716,6 +4800,57 @@
         .includes(target);
     }
 
+    function fieldSupportBank(field){
+      const key = getHarmonicBaseName(field || "Regulated");
+      return REGULATION_SUPPORT_LIBRARY[key] || REGULATION_SUPPORT_LIBRARY.Regulated;
+    }
+
+    function buildTryListFromSupportBank(bank, intensityLabel, field, motionStyle, moonstampModifierRead){
+      const items = [
+        `Light/environment: ${bank.lightEnvironment}`,
+        `Scent: ${bank.scent}`,
+        `Plant/nature: ${bank.plantNature}`,
+        `Music/sound: ${bank.musicSound}`,
+        `Behavior: ${bank.behavior}`
+      ];
+
+      const moonstampText = String(moonstampModifierRead?.text || "").toLowerCase();
+
+      if (intensityLabel === "Overloaded") {
+        items.push("Intensity modifier: reduce phone/social input and choose the smallest workable version.");
+      } else if (intensityLabel === "Threshold") {
+        items.push("Intensity modifier: pause before replying and delay non-urgent choices.");
+      } else if (intensityLabel === "Mobilized") {
+        items.push("Intensity modifier: use movement, but keep it to one channel.");
+      }
+
+      if (field === "Relational") {
+        items.push("Contact modifier: keep the field soft without taking on what is not yours.");
+      }
+
+      if (field === "Reconstructive") {
+        items.push("Repair modifier: stop after one repair so the support does not become a teardown.");
+      }
+
+      if (field === "Diffused") {
+        items.push("Clarity modifier: choose one anchor before interpreting the whole field.");
+      }
+
+      if (motionHas(motionStyle, "Chaotic")) {
+        items.push("Motion modifier: discharge the charge safely before deciding.");
+      }
+
+      if (motionHas(motionStyle, "Contained")) {
+        items.push("Motion modifier: protect the channel before explaining.");
+      }
+
+      if (moonstampText.includes("lower-load") || moonstampText.includes("simplify") || moonstampText.includes("reduce")) {
+        items.push("Moonstamp modifier: remove one unnecessary demand.");
+      }
+
+      return [...new Set(items)].slice(0, 8);
+    }
+
     function buildRegulationSupports(harmonics, data, moonstampModifierRead){
       const state = data?.state || {};
       const currentState = stateLabelFromMode(state.mode || "");
@@ -4724,100 +4859,74 @@
       const load = safeNum(state.amplifiedLoad);
       const strain = safeNum(state.strain);
       const regulation = safeNum(state.regulation);
-      const moonstampText = String(moonstampModifierRead?.text || "").toLowerCase();
+      const bank = fieldSupportBank(field);
 
-      const supportQualities = [];
-      const tryItems = [];
-      let why = "The goal is not to solve everything. The goal is to reduce input and give the system one usable channel.";
-      let music = "Choose steady, lower-intensity music. Best use: one song on repeat while doing one small task.";
+      let intensityLabel = currentState;
+      let stateLine = `${currentState} state + ${field} field`;
 
       if (currentState === "Overloaded" || load >= 0.95 || strain >= 0.95) {
-        supportQualities.push("grounding", "narrowing", "cooling", "steadying");
-        tryItems.push("dim light", "one simple task", "reduced phone/social input", "warm shower or water reset", "no major relationship decisions while activated");
-        why = "The system is carrying too much input. The first move is to lower load before interpreting the whole field.";
-        music = "Use slow, repetitive, low-intensity music. Avoid emotionally explosive songs if the field is already charged.";
+        intensityLabel = "Overloaded";
       } else if (currentState === "Threshold") {
-        supportQualities.push("pausing", "sequencing", "containment", "clean timing");
-        tryItems.push("pause before replying", "write the actual decision in one sentence", "one grounding object", "slow walk", "delay non-urgent choices");
-        why = "The system is near an edge. The point is to keep the crossing clean, not to force the opening.";
-        music = "Use steady-tempo music with a clear beat. Avoid songs that push urgency or escalation.";
+        intensityLabel = "Threshold";
       } else if (currentState === "Mobilized") {
-        supportQualities.push("channeling", "pacing", "containment", "rhythm");
-        tryItems.push("one repetitive song", "one small repair task", "short walk", "hands-on work", "finish one open loop");
-        why = "The system has usable movement. Regulation means giving the charge one practical channel.";
-        music = "Choose rhythmic, steady music that gives momentum without emotional overload.";
+        intensityLabel = "Mobilized";
       } else {
-        supportQualities.push("steady rhythm", "simple focus", "clear pacing");
-        tryItems.push("one task at a time", "normal light", "hydration", "simple movement", "finish one clean step");
-        why = "The system is regulated enough for simple action. Keep the support light so the field does not become over-managed.";
-        music = "Choose music that keeps the pace steady without pulling attention away from the task.";
+        intensityLabel = "Regulated";
       }
 
-      if (field === "Relational") {
-        supportQualities.push("centered contact", "proportional response");
-        tryItems.push("name mine / not mine", "use plain language", "keep responsibility proportional");
+      if (intensityLabel === "Overloaded" && field === "Relational") {
+        stateLine = "High relational load";
+      } else if (intensityLabel === "Mobilized" && field === "Reconstructive") {
+        stateLine = "High activation + repair pressure";
+      } else if (intensityLabel === "Mobilized" && field === "Relational") {
+        stateLine = "Activated contact field";
+      } else if (intensityLabel === "Threshold") {
+        stateLine = `Threshold state + ${field} field`;
+      } else {
+        stateLine = `${intensityLabel} state + ${field} field`;
       }
 
-      if (field === "Reconstructive") {
-        supportQualities.push("repair focus");
-        tryItems.push("fix one weak point only", "stop after one repair");
-      }
+      const intensityQuality = [];
 
-      if (field === "Diffused") {
-        supportQualities.push("anchoring", "reduced input");
-        tryItems.push("reduce background noise", "write one true sentence");
-      }
-
-      if (field === "Chaotic" || motionHas(motionStyle, "Chaotic")) {
-        supportQualities.push("discharge");
-        tryItems.push("short movement discharge", "give the charge one safe channel");
-      }
-
-      if (field === "Threshold" || motionHas(motionStyle, "Threshold")) {
-        supportQualities.push("edge pacing");
-        tryItems.push("do not cross while flooded", "choose the next step, not the whole path");
-      }
-
-      if (motionHas(motionStyle, "Contained")) {
-        supportQualities.push("privacy");
-        tryItems.push("protect the channel", "take space before explaining");
-      }
-
-      if (motionHas(motionStyle, "Diffused")) {
-        supportQualities.push("field clearing");
-        tryItems.push("lower sensory input", "ground through the body before interpreting");
-      }
-
-      if (moonstampText.includes("lower-load") || moonstampText.includes("simplify") || moonstampText.includes("reduce")) {
-        supportQualities.push("simplification");
-        tryItems.push("remove one unnecessary demand");
-        why += " Moonstamp is also supporting simplification, so less input is part of the timing support.";
+      if (intensityLabel === "Overloaded") {
+        intensityQuality.push("lower input", "smaller scope");
+      } else if (intensityLabel === "Threshold") {
+        intensityQuality.push("pause", "clean timing");
+      } else if (intensityLabel === "Mobilized") {
+        intensityQuality.push("channeling", "paced movement");
       }
 
       if (regulation < 0.40) {
-        supportQualities.push("external structure");
-        tryItems.push("use a timer", "make the task visibly small");
+        intensityQuality.push("external structure");
       }
 
-      const uniqueQualities = [...new Set(supportQualities)].slice(0, 5);
-      const uniqueTryItems = [...new Set(tryItems)].slice(0, 7);
+      const quality = [...new Set([
+        bank.supportQuality,
+        ...intensityQuality
+      ])].filter(Boolean).join(", ");
 
-      let stateLine = `${currentState} state + ${field} field`;
+      const tryItems = buildTryListFromSupportBank(bank, intensityLabel, field, motionStyle, moonstampModifierRead);
 
-      if (currentState === "Overloaded" && field === "Relational") {
-        stateLine = "High relational load";
-      } else if (currentState === "Mobilized" && field === "Reconstructive") {
-        stateLine = "High activation + repair pressure";
-      } else if (currentState === "Mobilized" && field === "Relational") {
-        stateLine = "Activated contact field";
-      } else if (currentState === "Threshold") {
-        stateLine = `Threshold state + ${field} field`;
+      let why = bank.why;
+
+      if (intensityLabel === "Overloaded") {
+        why += " Because the system is carrying high load, the support should reduce input before adding more interpretation.";
+      } else if (intensityLabel === "Threshold") {
+        why += " Because the system is near an edge, the support should slow urgency and protect the timing of the next move.";
+      } else if (intensityLabel === "Mobilized") {
+        why += " Because the system has usable movement, the support should channel energy without escalating it.";
       }
+
+      if (regulation < 0.40) {
+        why += " Regulation is lower, so visible structure, timers, or a smaller task can help keep the support practical.";
+      }
+
+      const music = bank.musicSound;
 
       return {
         state: stateLine,
-        quality: uniqueQualities.join(", "),
-        tryItems: uniqueTryItems,
+        quality,
+        tryItems,
         why,
         music
       };
@@ -4853,7 +4962,7 @@
       setText(
         "shareCardRegulationTry",
         Array.isArray(supports.tryItems) && supports.tryItems.length
-          ? supports.tryItems.slice(0, 4).join(" · ")
+          ? supports.tryItems.slice(0, 5).join(" · ")
           : "Choose one small support."
       );
       setText("shareCardRegulationMusic", supports.music || "—");
@@ -6406,7 +6515,7 @@
       }
 
       if (regulationSupports) {
-        explanation += ` Regulation Supports V1 selected: ${regulationSupports.state}. Support quality: ${regulationSupports.quality}. This is a practical regulation layer only; it does not change identity routing, Today’s Field selection, or engine scoring.`;
+        explanation += ` Regulation Supports V2 selected: ${regulationSupports.state}. Support quality: ${regulationSupports.quality}. This is a practical sensory/environment layer only; it does not change identity routing, Today’s Field selection, Field Undertone, repairGate, or engine scoring.`;
       }
 
       if (hasMoonstamp) {
@@ -7805,6 +7914,8 @@
           wideFieldSignature: result.dailyFieldDebug?.wideFieldSignature,
           relationalSignature: result.dailyFieldDebug?.relationalSignature,
           regulationSupportState: regulationSupports.state,
+          regulationSupportQuality: regulationSupports.quality,
+          regulationSupportTry: regulationSupports.tryItems,
           profileAwareTodayRead: profileAwareRead.todayRead,
           dailyFieldDebug: result.dailyFieldDebug,
           passFail: fieldPassed && undertonePassed ? "PASS" : "FAIL"
@@ -7823,6 +7934,7 @@
     window.getFieldUndertone = getFieldUndertone;
     window.buildFieldUndertoneText = buildFieldUndertoneText;
     window.buildRegulationSupports = buildRegulationSupports;
+    window.REGULATION_SUPPORT_LIBRARY = REGULATION_SUPPORT_LIBRARY;
 
     document.getElementById("calcBtn").addEventListener("click", calculate);
     document.getElementById("saveShareCardBtn").addEventListener("click", saveShareCard);
