@@ -4106,20 +4106,22 @@
       }
 
       .liveFieldDashboardCard{
-        padding:18px;
+        padding:16px;
       }
 
       .liveFieldDashboardHeader{
         display:grid;
         gap:10px;
+        margin-bottom:12px;
       }
 
       .liveFieldDashboardHeader h2{
-        font-size:24px;
+        font-size:23px;
       }
 
       .liveFieldDashboardHeader p{
-        font-size:12.5px;
+        font-size:12.2px;
+        line-height:1.45;
       }
 
       .liveDashboardDayType{
@@ -4144,6 +4146,7 @@
 
       .liveDashboardDayTypeText{
         font-size:12px;
+        line-height:1.48;
       }
 
       .liveDashboardGrid{
@@ -4152,45 +4155,63 @@
       }
 
       .liveDashboardMetric{
-        min-height:134px;
+        display:grid;
+        align-content:start;
+        min-height:116px;
         border-radius:14px;
-        padding:11px;
+        padding:10px;
+      }
+
+      .liveDashboardMetricTop{
+        align-items:center;
+        gap:8px;
       }
 
       .liveDashboardIcon{
-        width:30px;
-        height:30px;
+        width:29px;
+        height:29px;
         border-radius:11px;
-        font-size:18px;
+        font-size:17px;
       }
 
       .liveDashboardScore{
-        font-size:20px;
+        font-size:19px;
+        line-height:1;
       }
 
       .liveDashboardScore span{
-        font-size:10.5px;
+        font-size:10px;
       }
 
       .liveDashboardLabel{
-        margin-top:10px;
-        font-size:12.2px;
+        margin-top:9px;
+        font-size:11.8px;
+        line-height:1.18;
       }
 
       .liveDashboardText{
-        font-size:10.8px;
-        line-height:1.36;
+        display:none;
+      }
+
+      .liveDashboardMeter{
+        height:7px;
+        margin-top:8px;
       }
 
       .liveDashboardBand{
-        min-height:20px;
-        font-size:8.8px;
+        align-self:start;
+        min-height:19px;
+        margin-top:8px;
         padding:3px 7px;
+        font-size:8.5px;
+        line-height:1.12;
       }
 
       .liveDashboardNote{
-        font-size:10.5px;
-        line-height:1.42;
+        margin-top:11px;
+        padding-top:10px;
+        font-size:10.2px;
+        line-height:1.4;
       }
 
       .profileHeader,
@@ -4347,12 +4368,56 @@
     }
 
     @media (max-width: 430px){
+      .liveFieldDashboardCard{
+        padding:14px;
+      }
+
       .liveDashboardGrid{
-        grid-template-columns:minmax(0,1fr);
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:8px;
       }
 
       .liveDashboardMetric{
-        min-height:118px;
+        min-height:110px;
+        padding:9px;
+        border-radius:13px;
+      }
+
+      .liveDashboardIcon{
+        width:27px;
+        height:27px;
+        border-radius:10px;
+        font-size:16px;
+      }
+
+      .liveDashboardScore{
+        font-size:18px;
+      }
+
+      .liveDashboardScore span{
+        font-size:9.5px;
+      }
+
+      .liveDashboardLabel{
+        margin-top:8px;
+        font-size:11.2px;
+      }
+
+      .liveDashboardMeter{
+        height:7px;
+        margin-top:7px;
+      }
+
+      .liveDashboardBand{
+        min-height:18px;
+        margin-top:7px;
+        padding:3px 6px;
+        font-size:8px;
+        letter-spacing:.045em;
+      }
+
+      .liveDashboardNote{
+        font-size:10px;
       }
     }
   </style>
