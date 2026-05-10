@@ -7,44 +7,55 @@
 
   <style>
     :root{
-      --field-base:#F7F6F4;
-      --field-depth:#ECEBE8;
-      --field-highlight:#FFFFFF;
-      --text-primary:#2A2A2A;
-      --text-secondary:#4A4A4A;
-      --border-neutral:rgba(0,0,0,0.08);
-      --border-soft:rgba(0,0,0,0.05);
-      --spectral-edge:rgba(180,170,255,0.15);
-      --spectral-blue:rgba(150,160,255,0.045);
-      --spectral-violet:rgba(180,170,255,0.04);
+      --field-base:#08142B;
+      --field-depth:#0D1B36;
+      --field-highlight:#122544;
+      --field-card:#F3F5F7;
+      --field-card-soft:#E9EEF2;
+      --field-card-deep:#DDE5EA;
+
+      --text-primary:#F6F8FC;
+      --text-secondary:#AEBBD0;
+      --card-text:#1F252C;
+      --card-muted:#4E5964;
+
+      --border-neutral:rgba(150,205,220,0.18);
+      --border-soft:rgba(255,255,255,0.07);
+      --card-border:rgba(12,24,42,0.12);
+
+      --spectral-edge:rgba(120,210,230,0.18);
+      --spectral-blue:rgba(103,193,255,0.08);
+      --spectral-violet:rgba(150,160,255,0.06);
 
       --bg:var(--field-base);
-      --panel:var(--field-base);
-      --panel2:var(--field-highlight);
-      --panel3:var(--field-depth);
-      --line:var(--border-neutral);
-      --lineSoft:var(--border-soft);
-      --text:var(--text-primary);
-      --muted:var(--text-secondary);
-      --muted2:#6E7377;
-      --blue:#4F6F7A;
-      --red:#8F5F5F;
-      --green:#4F817A;
-      --violet:#766CA8;
-      --gold:#6E6A5C;
-      --teal:#4F817A;
-      --shadow:none;
+      --panel:var(--field-card);
+      --panel2:#FFFFFF;
+      --panel3:var(--field-card-soft);
+      --line:var(--card-border);
+      --lineSoft:rgba(0,0,0,0.055);
+      --text:var(--card-text);
+      --muted:var(--card-muted);
+      --muted2:#71808D;
 
-      --h-structured:#8A7A43;
-      --h-contained:#6F7780;
-      --h-chaotic:#426F86;
-      --h-relational:#9A6A7A;
-      --h-threshold:#A07145;
-      --h-reconstructive:#766CA8;
-      --h-integrative:#5B7892;
-      --h-diffused:#8178AE;
-      --h-regulated:#4F817A;
-      --h-steady:#66727E;
+      --blue:#6EC8E6;
+      --blueDeep:#4F8EA4;
+      --red:#B96B72;
+      --green:#5EA89A;
+      --violet:#8D84C7;
+      --gold:#9B8550;
+      --teal:#5EA89A;
+      --shadow:0 18px 48px rgba(0,0,0,.18);
+
+      --h-structured:#9B8550;
+      --h-contained:#75828E;
+      --h-chaotic:#4E9CBE;
+      --h-relational:#B87990;
+      --h-threshold:#B98553;
+      --h-reconstructive:#8D84C7;
+      --h-integrative:#72A7CB;
+      --h-diffused:#9690D3;
+      --h-regulated:#5EA89A;
+      --h-steady:#748392;
     }
 
     *,
@@ -58,7 +69,10 @@
       width:100%;
       max-width:100%;
       overflow-x:hidden;
-      background:var(--field-base);
+      background:
+        radial-gradient(circle at 50% -10%, rgba(103,193,255,.18), transparent 38%),
+        radial-gradient(circle at 90% 8%, rgba(141,132,199,.10), transparent 32%),
+        linear-gradient(180deg, #08142B 0%, #0B1731 48%, #071024 100%);
     }
 
     body{
@@ -67,8 +81,11 @@
       max-width:100%;
       overflow-x:hidden;
       font-family:Arial, sans-serif;
-      background:var(--field-base);
-      color:var(--text);
+      background:
+        radial-gradient(circle at 50% -10%, rgba(103,193,255,.18), transparent 38%),
+        radial-gradient(circle at 90% 8%, rgba(141,132,199,.10), transparent 32%),
+        linear-gradient(180deg, #08142B 0%, #0B1731 48%, #071024 100%);
+      color:var(--text-primary);
     }
 
     @supports (overflow-x: clip){
@@ -98,12 +115,12 @@
       gap:6px;
       width:auto;
       max-width:100%;
-      min-height:32px;
-      margin:0 0 10px;
-      padding:0 12px;
+      min-height:34px;
+      margin:0 0 12px;
+      padding:0 13px;
       border-radius:999px;
-      border:1px solid var(--border-neutral);
-      background:var(--field-highlight);
+      border:1px solid rgba(120,210,230,.18);
+      background:rgba(255,255,255,.06);
       color:var(--text-secondary);
       font-size:12px;
       font-weight:800;
@@ -111,14 +128,15 @@
       letter-spacing:.02em;
       overflow-wrap:anywhere;
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.82),
-        inset 0 0 0 1px rgba(180,170,255,.05);
+        inset 0 1px 0 rgba(255,255,255,.10),
+        0 10px 30px rgba(0,0,0,.12);
+      backdrop-filter:blur(10px);
     }
 
     .backLink:hover{
-      color:var(--blue);
-      border-color:rgba(0,0,0,.14);
-      background:var(--field-depth);
+      color:#DDF7FF;
+      border-color:rgba(120,210,230,.30);
+      background:rgba(255,255,255,.09);
     }
 
     .hero{
@@ -126,27 +144,20 @@
       text-align:center;
       width:100%;
       max-width:100%;
-      margin-bottom:16px;
-      padding:15px 18px 13px;
+      margin-bottom:14px;
+      padding:18px 18px 16px;
       overflow:hidden;
-      border:1px solid var(--border-neutral);
+      border:1px solid rgba(120,210,230,.18);
       border-radius:20px;
       background:
-        radial-gradient(circle at 50% 18%, rgba(103,193,255,.16), transparent 34%),
-        radial-gradient(circle at 68% 22%, rgba(176,108,255,.10), transparent 32%),
-        radial-gradient(circle at 38% 10%, rgba(216,184,76,.08), transparent 30%),
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 48%,
-          var(--field-depth) 100%
-        );
+        radial-gradient(circle at 50% 0%, rgba(103,193,255,.18), transparent 38%),
+        radial-gradient(circle at 68% 20%, rgba(141,132,199,.16), transparent 34%),
+        radial-gradient(circle at 35% 18%, rgba(155,133,80,.10), transparent 30%),
+        linear-gradient(180deg, rgba(18,37,68,.96) 0%, rgba(11,25,52,.96) 100%);
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.88),
-        inset 0 -1px 0 rgba(0,0,0,.035),
-        inset 1px 0 0 var(--spectral-blue),
-        inset -1px 0 0 var(--spectral-violet),
-        0 1px 2px rgba(0,0,0,.035);
+        inset 0 1px 0 rgba(255,255,255,.13),
+        inset 0 -1px 0 rgba(0,0,0,.22),
+        0 18px 44px rgba(0,0,0,.18);
       isolation:isolate;
       contain:paint;
     }
@@ -154,21 +165,16 @@
     .hero::before{
       content:"";
       position:absolute;
-      width:260px;
-      height:260px;
+      width:310px;
+      height:310px;
       left:50%;
-      top:-90px;
+      top:-120px;
       transform:translateX(-50%);
       border-radius:999px;
       background:
-        radial-gradient(
-          circle,
-          rgba(103,193,255,.18) 0%,
-          rgba(176,108,255,.08) 42%,
-          transparent 70%
-        );
-      filter:blur(10px);
-      opacity:.85;
+        radial-gradient(circle, rgba(103,193,255,.22) 0%, rgba(141,132,199,.12) 42%, transparent 72%);
+      filter:blur(12px);
+      opacity:.86;
       pointer-events:none;
       z-index:0;
     }
@@ -176,17 +182,17 @@
     .hero::after{
       content:"";
       position:absolute;
-      width:310px;
-      height:310px;
+      width:360px;
+      height:360px;
       left:50%;
-      top:-115px;
+      top:-145px;
       transform:translateX(-50%);
       border-radius:999px;
-      border:1px solid rgba(103,193,255,.11);
+      border:1px solid rgba(120,210,230,.13);
       box-shadow:
-        0 0 38px rgba(103,193,255,.08),
-        inset 0 0 28px rgba(176,108,255,.035);
-      opacity:.72;
+        0 0 42px rgba(103,193,255,.10),
+        inset 0 0 32px rgba(141,132,199,.08);
+      opacity:.76;
       pointer-events:none;
       z-index:0;
     }
@@ -202,15 +208,72 @@
 
     .hero h1{
       margin:0;
-      font-size:34px;
-      letter-spacing:.2px;
-      color:var(--text-primary);
+      font-size:38px;
+      letter-spacing:.1px;
+      color:#F7FAFF;
     }
 
     .hero p{
-      margin:6px 0 0;
-      color:var(--muted);
-      font-size:13px;
+      margin:7px 0 0;
+      color:var(--text-secondary);
+      font-size:14px;
+    }
+
+    .lucy-lite-banner{
+      position:relative;
+      width:100%;
+      max-width:100%;
+      height:clamp(120px, 22vw, 190px);
+      margin:0 0 16px;
+      overflow:hidden;
+      border-radius:18px;
+      border:1px solid rgba(120,210,230,.18);
+      background:
+        radial-gradient(circle at 30% 45%, rgba(103,193,255,.22), transparent 34%),
+        radial-gradient(circle at 72% 42%, rgba(155,133,80,.12), transparent 34%),
+        linear-gradient(135deg, #071024 0%, #102342 54%, #071024 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.10),
+        inset 0 -1px 0 rgba(0,0,0,.28),
+        0 18px 44px rgba(0,0,0,.20);
+      isolation:isolate;
+    }
+
+    .lucy-lite-banner::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size:38px 38px;
+      opacity:.28;
+      pointer-events:none;
+      z-index:1;
+    }
+
+    .lucy-lite-banner::after{
+      content:"";
+      position:absolute;
+      inset:16px 24px;
+      border-radius:999px;
+      border:1px solid rgba(120,210,230,.15);
+      box-shadow:
+        0 0 34px rgba(103,193,255,.11),
+        inset 0 0 24px rgba(120,210,230,.08);
+      opacity:.75;
+      pointer-events:none;
+      z-index:2;
+    }
+
+    .lucy-lite-banner img{
+      display:block;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      object-position:center;
+      opacity:.84;
+      filter:saturate(.88) contrast(1.04) brightness(.88);
     }
 
     .grid{
@@ -229,19 +292,15 @@
       max-width:100%;
       min-width:0;
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 46%,
-          var(--field-depth) 100%
-        );
-      border:1px solid var(--border-neutral);
+        linear-gradient(180deg, #FFFFFF 0%, var(--field-card) 48%, var(--field-card-soft) 100%);
+      border:1px solid var(--card-border);
       border-radius:18px;
       padding:18px;
+      color:var(--card-text);
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.82),
-        inset 0 -1px 0 rgba(0,0,0,.03),
-        0 1px 2px rgba(0,0,0,.03);
+        inset 0 1px 0 rgba(255,255,255,.88),
+        inset 0 -1px 0 rgba(0,0,0,.035),
+        0 14px 34px rgba(0,0,0,.14);
       isolation:isolate;
       contain:paint;
     }
@@ -251,10 +310,10 @@
       position:absolute;
       inset:1px;
       border-radius:17px;
-      border:1px solid var(--spectral-edge);
+      border:1px solid rgba(120,210,230,.16);
       box-shadow:
-        inset 1px 0 0 var(--spectral-blue),
-        inset -1px 0 0 var(--spectral-violet);
+        inset 1px 0 0 rgba(103,193,255,.05),
+        inset -1px 0 0 rgba(141,132,199,.05);
       pointer-events:none;
       z-index:0;
     }
@@ -266,8 +325,8 @@
 
     .panel h2{
       margin:0 0 12px;
-      font-size:18px;
-      color:var(--text-primary);
+      font-size:20px;
+      color:var(--card-text);
     }
 
     .inputPanel{
@@ -279,7 +338,7 @@
     label{
       display:block;
       font-size:12px;
-      color:var(--muted);
+      color:var(--card-muted);
       margin:10px 0 6px;
       font-weight:750;
     }
@@ -290,15 +349,15 @@
       width:100%;
       max-width:100%;
       min-width:0;
-      border-radius:10px;
-      border:1px solid var(--border-neutral);
-      background:var(--field-highlight);
-      color:var(--text);
+      border-radius:12px;
+      border:1px solid rgba(12,24,42,.12);
+      background:#FFFFFF;
+      color:var(--card-text);
       padding:12px;
       font-size:14px;
       box-shadow:
         inset 0 1px 0 rgba(255,255,255,.86),
-        inset 0 0 0 1px rgba(180,170,255,.04);
+        inset 0 0 0 1px rgba(120,210,230,.03);
     }
 
     input::placeholder{
@@ -314,23 +373,18 @@
 
     button{
       margin-top:14px;
-      background:
-        linear-gradient(
-          180deg,
-          #5A7C88 0%,
-          #426F7C 100%
-        );
-      border:1px solid rgba(0,0,0,.08);
+      background:linear-gradient(180deg, #5C94A8 0%, #3D7388 100%);
+      border:1px solid rgba(12,24,42,.14);
       cursor:pointer;
-      font-weight:700;
+      font-weight:800;
       color:#FFFFFF;
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.16),
-        0 1px 2px rgba(0,0,0,.05);
+        inset 0 1px 0 rgba(255,255,255,.18),
+        0 10px 24px rgba(12,24,42,.12);
     }
 
     button:hover{
-      filter:brightness(1.02);
+      filter:brightness(1.03);
     }
 
     button:disabled{
@@ -340,7 +394,7 @@
 
     .tiny{
       font-size:11px;
-      color:var(--muted);
+      color:var(--card-muted);
       margin-top:10px;
       line-height:1.45;
       overflow-wrap:break-word;
@@ -373,6 +427,7 @@
     }
 
     .premiumCard,
+    .howUseCard,
     .plainMeaningCard,
     .liteWhyCard,
     .liteSummaryCard,
@@ -385,25 +440,28 @@
       max-width:100%;
       min-width:0;
       overflow:hidden;
-      border:1px solid var(--border-neutral);
+      border:1px solid var(--card-border);
       border-radius:22px;
       padding:20px;
+      color:var(--card-text);
       background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 46%,
-          var(--field-depth) 100%
-        );
+        linear-gradient(180deg, #FFFFFF 0%, var(--field-card) 48%, var(--field-card-soft) 100%);
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.84),
-        inset 0 -1px 0 rgba(0,0,0,.03),
-        0 1px 2px rgba(0,0,0,.03);
+        inset 0 1px 0 rgba(255,255,255,.88),
+        inset 0 -1px 0 rgba(0,0,0,.035),
+        0 14px 34px rgba(0,0,0,.14);
       isolation:isolate;
       contain:paint;
     }
 
+    .premiumCard{
+      background:
+        radial-gradient(circle at 88% 8%, rgba(103,193,255,.14), transparent 28%),
+        linear-gradient(180deg, #FFFFFF 0%, #F1F5F8 48%, #E4EBF0 100%);
+    }
+
     .premiumCard::before,
+    .howUseCard::before,
     .plainMeaningCard::before,
     .liteWhyCard::before,
     .liteSummaryCard::before,
@@ -416,15 +474,16 @@
       inset:1px;
       pointer-events:none;
       border-radius:21px;
-      border:1px solid var(--spectral-edge);
+      border:1px solid rgba(120,210,230,.16);
       box-shadow:
-        inset 1px 0 0 var(--spectral-blue),
-        inset -1px 0 0 var(--spectral-violet);
+        inset 1px 0 0 rgba(103,193,255,.05),
+        inset -1px 0 0 rgba(141,132,199,.05);
       background:none;
       z-index:0;
     }
 
     .premiumCard > *,
+    .howUseCard > *,
     .plainMeaningCard > *,
     .liteWhyCard > *,
     .liteSummaryCard > *,
@@ -449,7 +508,7 @@
       font-weight:900;
       letter-spacing:.13em;
       text-transform:uppercase;
-      color:var(--blue);
+      color:var(--blueDeep);
     }
 
     .weatherLine{
@@ -459,7 +518,7 @@
       line-height:1.02;
       font-weight:950;
       letter-spacing:-.045em;
-      color:var(--text-primary);
+      color:var(--card-text);
       text-wrap:balance;
       overflow-wrap:anywhere;
     }
@@ -471,7 +530,7 @@
     .todayRead{
       margin:14px 0 0;
       max-width:850px;
-      color:var(--text-primary);
+      color:var(--card-text);
       font-size:16px;
       line-height:1.68;
       overflow-wrap:break-word;
@@ -490,10 +549,10 @@
     .liteSummaryBlock,
     .proPreviewItem,
     .shareCardMini{
-      border:1px solid var(--border-neutral);
+      border:1px solid var(--card-border);
       border-radius:16px;
       padding:14px;
-      background:var(--field-highlight);
+      background:#FFFFFF;
       min-width:0;
       max-width:100%;
       box-shadow:
@@ -505,19 +564,14 @@
     .plainMeaningBlock.full,
     .liteSummaryBlock.full{
       grid-column:1 / -1;
-      background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          #F1F2F2 100%
-        );
-      border-color:var(--border-neutral);
+      background:linear-gradient(180deg, #FFFFFF 0%, #EEF3F6 100%);
+      border-color:var(--card-border);
     }
 
     .guidanceLabel,
     .plainMeaningLabel,
     .liteSummaryLabel{
-      color:var(--muted);
+      color:var(--card-muted);
       font-size:11px;
       font-weight:900;
       letter-spacing:.09em;
@@ -526,7 +580,7 @@
     }
 
     .guidanceText{
-      color:var(--text-primary);
+      color:var(--card-text);
       font-size:14px;
       line-height:1.58;
       overflow-wrap:break-word;
@@ -534,9 +588,9 @@
 
     .todayOutlookLine{
       margin-top:14px;
-      border:1px solid var(--border-neutral);
-      background:var(--field-highlight);
-      color:var(--text-primary);
+      border:1px solid var(--card-border);
+      background:#FFFFFF;
+      color:var(--card-text);
       border-radius:999px;
       padding:10px 13px;
       font-size:12px;
@@ -545,13 +599,19 @@
       overflow-wrap:break-word;
       box-shadow:
         inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 0 0 1px rgba(180,170,255,.04);
+        inset 0 0 0 1px rgba(120,210,230,.04);
     }
 
     .todayOutlookLine span{
       color:var(--gold);
     }
 
+    .howUseCard{
+      padding:18px 20px;
+      background:linear-gradient(180deg, rgba(255,255,255,.98) 0%, #EFF5F7 100%);
+    }
+
+    .howUseCard h2,
     .plainMeaningCard h2,
     .liteWhyCard h2,
     .liteSummaryHeader h2,
@@ -561,9 +621,10 @@
     .shareIntro h2{
       margin:0;
       font-size:20px;
-      color:var(--text-primary);
+      color:var(--card-text);
     }
 
+    .howUseCard p,
     .plainMeaningIntro,
     .liteWhyCard p,
     .liteSummaryHeader p,
@@ -572,7 +633,7 @@
     .upgradeCard p,
     .shareIntro p{
       margin:6px 0 0;
-      color:var(--muted);
+      color:var(--card-muted);
       font-size:13px;
       line-height:1.55;
       max-width:900px;
@@ -599,7 +660,7 @@
     }
 
     .plainMeaningText{
-      color:var(--text-primary);
+      color:var(--card-text);
       font-size:14px;
       line-height:1.62;
       overflow-wrap:break-word;
@@ -607,11 +668,11 @@
 
     .plainMeaningNote{
       margin-top:14px;
-      border:1px solid var(--border-neutral);
+      border:1px solid var(--card-border);
       border-radius:14px;
       padding:12px;
-      background:var(--field-highlight);
-      color:var(--muted);
+      background:#FFFFFF;
+      color:var(--card-muted);
       font-size:12px;
       line-height:1.58;
       overflow-wrap:break-word;
@@ -621,12 +682,12 @@
     }
 
     .plainMeaningNote strong{
-      color:var(--blue);
+      color:var(--blueDeep);
     }
 
     .liteWhyText{
       margin-top:12px;
-      color:var(--text-primary);
+      color:var(--card-text);
       font-size:14px;
       line-height:1.65;
       overflow-wrap:break-word;
@@ -642,7 +703,7 @@
     }
 
     .liteSummaryValue{
-      color:var(--text-primary);
+      color:var(--card-text);
       font-size:18px;
       line-height:1.25;
       font-weight:900;
@@ -650,7 +711,7 @@
     }
 
     .liteSummaryDesc{
-      color:var(--muted);
+      color:var(--card-muted);
       margin-top:8px;
       font-size:12px;
       line-height:1.48;
@@ -671,9 +732,9 @@
       min-height:30px;
       padding:0 10px;
       border-radius:999px;
-      border:1px solid var(--border-neutral);
-      background:var(--field-highlight);
-      color:var(--blue);
+      border:1px solid var(--card-border);
+      background:#FFFFFF;
+      color:var(--blueDeep);
       font-size:11px;
       font-weight:800;
       letter-spacing:.04em;
@@ -683,21 +744,21 @@
       overflow-wrap:anywhere;
       box-shadow:
         inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 0 0 1px rgba(180,170,255,.04);
+        inset 0 0 0 1px rgba(120,210,230,.04);
     }
 
     .chip.gold{
-      border-color:rgba(138,122,67,.24);
+      border-color:rgba(155,133,80,.25);
       color:var(--gold);
     }
 
     .chip.field{
-      border-color:rgba(79,111,122,.20);
-      color:var(--blue);
+      border-color:rgba(79,142,164,.22);
+      color:var(--blueDeep);
     }
 
     .chip.violet{
-      border-color:rgba(118,108,168,.22);
+      border-color:rgba(141,132,199,.24);
       color:var(--violet);
     }
 
@@ -717,8 +778,8 @@
       max-width:100%;
       padding:0 11px;
       border-radius:999px;
-      border:1px solid var(--border-neutral);
-      background:var(--field-highlight);
+      border:1px solid var(--card-border);
+      background:#FFFFFF;
       color:var(--gold);
       font-size:11px;
       font-weight:900;
@@ -729,18 +790,18 @@
       overflow-wrap:anywhere;
       box-shadow:
         inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 0 0 1px rgba(180,170,255,.04);
+        inset 0 0 0 1px rgba(120,210,230,.04);
     }
 
-    .nodeChip.structured{color:var(--h-structured); border-color:rgba(138,122,67,.24)}
-    .nodeChip.contained{color:var(--h-contained); border-color:rgba(111,119,128,.22)}
-    .nodeChip.chaotic{color:var(--h-chaotic); border-color:rgba(66,111,134,.24)}
-    .nodeChip.relational{color:var(--h-relational); border-color:rgba(154,106,122,.22)}
-    .nodeChip.threshold{color:var(--h-threshold); border-color:rgba(160,113,69,.24)}
-    .nodeChip.reconstructive{color:var(--h-reconstructive); border-color:rgba(118,108,168,.24)}
-    .nodeChip.integrative{color:var(--h-integrative); border-color:rgba(91,120,146,.22)}
-    .nodeChip.diffused{color:var(--h-diffused); border-color:rgba(129,120,174,.22)}
-    .nodeChip.regulated{color:var(--h-regulated); border-color:rgba(79,129,122,.22)}
+    .nodeChip.structured{color:var(--h-structured); border-color:rgba(155,133,80,.25)}
+    .nodeChip.contained{color:var(--h-contained); border-color:rgba(117,130,142,.22)}
+    .nodeChip.chaotic{color:var(--h-chaotic); border-color:rgba(78,156,190,.24)}
+    .nodeChip.relational{color:var(--h-relational); border-color:rgba(184,121,144,.22)}
+    .nodeChip.threshold{color:var(--h-threshold); border-color:rgba(185,133,83,.24)}
+    .nodeChip.reconstructive{color:var(--h-reconstructive); border-color:rgba(141,132,199,.24)}
+    .nodeChip.integrative{color:var(--h-integrative); border-color:rgba(114,167,203,.22)}
+    .nodeChip.diffused{color:var(--h-diffused); border-color:rgba(150,144,211,.22)}
+    .nodeChip.regulated{color:var(--h-regulated); border-color:rgba(94,168,154,.22)}
 
     .proPreviewItem h3{
       margin:0;
@@ -752,7 +813,7 @@
 
     .proPreviewItem p{
       margin:7px 0 0;
-      color:var(--muted);
+      color:var(--card-muted);
       font-size:12px;
       line-height:1.5;
       overflow-wrap:break-word;
@@ -760,7 +821,7 @@
 
     .proPreviewFooter{
       margin-top:14px;
-      color:var(--blue);
+      color:var(--blueDeep);
       font-size:12px;
       font-weight:900;
       letter-spacing:.08em;
@@ -778,24 +839,19 @@
       margin-top:16px;
       padding:0 16px;
       border-radius:999px;
-      background:
-        linear-gradient(
-          180deg,
-          #5A7C88 0%,
-          #426F7C 100%
-        );
+      background:linear-gradient(180deg, #5C94A8 0%, #3D7388 100%);
       color:#FFFFFF;
       font-size:13px;
       font-weight:900;
       text-decoration:none;
-      border:1px solid rgba(0,0,0,.08);
+      border:1px solid rgba(12,24,42,.14);
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.16),
-        0 1px 2px rgba(0,0,0,.05);
+        inset 0 1px 0 rgba(255,255,255,.18),
+        0 10px 24px rgba(12,24,42,.12);
     }
 
     .upgradeButton:hover{
-      filter:brightness(1.02);
+      filter:brightness(1.03);
     }
 
     .shareIntro{
@@ -823,9 +879,9 @@
       min-height:30px;
       padding:0 10px;
       border-radius:999px;
-      border:1px solid rgba(79,111,122,.18);
-      background:var(--field-highlight);
-      color:var(--blue);
+      border:1px solid rgba(79,142,164,.20);
+      background:#FFFFFF;
+      color:var(--blueDeep);
       font-size:10px;
       font-weight:900;
       letter-spacing:.08em;
@@ -836,21 +892,21 @@
       overflow-wrap:anywhere;
       box-shadow:
         inset 0 1px 0 rgba(255,255,255,.76),
-        inset 0 0 0 1px rgba(180,170,255,.04);
+        inset 0 0 0 1px rgba(120,210,230,.04);
     }
 
     .shareChip.gold{
-      border-color:rgba(138,122,67,.22);
+      border-color:rgba(155,133,80,.24);
       color:var(--gold);
     }
 
     .shareChip.field{
-      border-color:rgba(79,111,122,.22);
-      color:var(--blue);
+      border-color:rgba(79,142,164,.24);
+      color:var(--blueDeep);
     }
 
     .shareChip.violet{
-      border-color:rgba(118,108,168,.20);
+      border-color:rgba(141,132,199,.22);
       color:var(--violet);
     }
 
@@ -866,20 +922,16 @@
       width:100%;
       max-width:100%;
       min-width:0;
-      border:1px solid var(--border-neutral);
+      border:1px solid var(--card-border);
       border-radius:20px;
       overflow:hidden;
       background:
-        linear-gradient(
-          145deg,
-          var(--field-highlight) 0%,
-          var(--field-base) 58%,
-          var(--field-depth) 100%
-        );
+        radial-gradient(circle at 88% 8%, rgba(103,193,255,.12), transparent 26%),
+        linear-gradient(145deg, #FFFFFF 0%, #EFF5F7 58%, #E1EAEE 100%);
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.84),
-        inset 0 -1px 0 rgba(0,0,0,.03),
-        0 1px 2px rgba(0,0,0,.035);
+        inset 0 1px 0 rgba(255,255,255,.86),
+        inset 0 -1px 0 rgba(0,0,0,.035),
+        0 12px 28px rgba(0,0,0,.12);
     }
 
     .shareCardInner{
@@ -896,8 +948,8 @@
       gap:16px;
       align-items:center;
       padding-bottom:14px;
-      border-bottom:1px solid var(--lineSoft);
-      color:var(--muted);
+      border-bottom:1px solid rgba(22,42,62,.09);
+      color:var(--card-muted);
       font-size:11px;
       font-weight:900;
       letter-spacing:.14em;
@@ -906,7 +958,7 @@
     }
 
     .shareCardTop span:first-child{
-      color:var(--blue);
+      color:var(--blueDeep);
     }
 
     .shareCardChips{
@@ -923,9 +975,9 @@
       min-height:26px;
       padding:0 9px;
       border-radius:999px;
-      border:1px solid rgba(79,111,122,.16);
-      background:var(--field-highlight);
-      color:var(--blue);
+      border:1px solid rgba(79,142,164,.18);
+      background:#FFFFFF;
+      color:var(--blueDeep);
       font-size:9px;
       font-weight:900;
       letter-spacing:.08em;
@@ -938,17 +990,17 @@
 
     .shareCardChip.gold{
       color:var(--gold);
-      border-color:rgba(138,122,67,.20);
+      border-color:rgba(155,133,80,.22);
     }
 
     .shareCardChip.field{
-      color:var(--blue);
-      border-color:rgba(79,111,122,.18);
+      color:var(--blueDeep);
+      border-color:rgba(79,142,164,.20);
     }
 
     .shareCardChip.violet{
       color:var(--violet);
-      border-color:rgba(118,108,168,.18);
+      border-color:rgba(141,132,199,.20);
     }
 
     .shareCardSection{
@@ -960,7 +1012,7 @@
     }
 
     .shareCardLabel{
-      color:var(--blue);
+      color:var(--blueDeep);
       font-size:11px;
       font-weight:900;
       letter-spacing:.14em;
@@ -974,13 +1026,13 @@
       font-weight:950;
       letter-spacing:-.05em;
       padding-bottom:8px;
-      border-bottom:1px solid var(--lineSoft);
+      border-bottom:1px solid rgba(22,42,62,.09);
       overflow-wrap:anywhere;
       min-width:0;
     }
 
     .shareCardRead{
-      color:var(--text-primary);
+      color:var(--card-text);
       font-size:17px;
       line-height:1.62;
       overflow-wrap:break-word;
@@ -988,15 +1040,10 @@
     }
 
     .shareCardPlainBox{
-      border:1px solid var(--border-neutral);
+      border:1px solid var(--card-border);
       border-radius:16px;
       padding:14px;
-      background:
-        linear-gradient(
-          180deg,
-          var(--field-highlight) 0%,
-          #F3F2EF 100%
-        );
+      background:linear-gradient(180deg, #FFFFFF 0%, #EEF4F6 100%);
       display:grid;
       gap:8px;
       min-width:0;
@@ -1029,7 +1076,7 @@
 
     .shareFooter{
       padding-top:2px;
-      color:var(--muted);
+      color:var(--card-muted);
       font-size:11px;
       font-weight:900;
       letter-spacing:.14em;
@@ -1083,7 +1130,7 @@
 
     @media (max-width: 720px){
       .wrap{
-        padding:12px 14px 14px;
+        padding:12px 14px 18px;
       }
 
       .backLink{
@@ -1092,7 +1139,7 @@
 
       .hero{
         margin-bottom:12px;
-        padding:12px 14px 10px;
+        padding:15px 14px 13px;
         border-radius:16px;
       }
 
@@ -1116,8 +1163,15 @@
         font-size:12px;
       }
 
+      .lucy-lite-banner{
+        height:132px;
+        border-radius:16px;
+        margin-bottom:12px;
+      }
+
       .panel,
       .premiumCard,
+      .howUseCard,
       .plainMeaningCard,
       .liteWhyCard,
       .liteSummaryCard,
@@ -1131,6 +1185,7 @@
 
       .panel::before,
       .premiumCard::before,
+      .howUseCard::before,
       .plainMeaningCard::before,
       .liteWhyCard::before,
       .liteSummaryCard::before,
@@ -1201,6 +1256,14 @@
       <p>Personal field guidance inside the live timing field</p>
     </div>
 
+    <div class="lucy-lite-banner" aria-hidden="true">
+      <img
+        src="lucy-lite-field-banner.png"
+        alt="Lucy.OS field interface visual"
+        onerror="this.style.display='none';"
+      />
+    </div>
+
     <div class="grid">
       <div class="panel inputPanel">
         <h2>Inputs</h2>
@@ -1230,6 +1293,10 @@
         <div class="tiny">
           Birth location resolves timezone, angles, and houses for accurate chart input.
         </div>
+
+        <div class="routeTiny">
+          Lite shows the simplified daily field read. Pro opens the deeper diagnostic layer.
+        </div>
       </div>
 
       <div class="mainStack">
@@ -1237,7 +1304,7 @@
           <div class="cardContent">
             <p class="kicker">Today’s System Weather</p>
             <h2 class="weatherLine" id="systemWeatherLine">
-              Root pattern <span>×</span> field loading
+              Root pattern meeting today’s field
             </h2>
 
             <p class="todayRead" id="dailyTodayRead">
@@ -1272,6 +1339,13 @@
           </div>
         </section>
 
+        <section class="howUseCard">
+          <h2>How to use this read</h2>
+          <p>
+            Start with Today’s System Weather. Use the main line to understand the interaction between your root pattern and today’s field. Then use the practical guidance as the one thing to not overdo today.
+          </p>
+        </section>
+
         <section class="plainMeaningCard">
           <h2>What This Means Today</h2>
           <p class="plainMeaningIntro">
@@ -1298,7 +1372,7 @@
           </div>
 
           <div class="plainMeaningNote">
-            <strong>Simple rule:</strong> root pattern shows how your system tends to stabilize. Today’s field shows what kind of pressure is active now.
+            <strong>Simple rule:</strong> the field is shared, the landing is personal, and the return path is individual.
           </div>
         </section>
 
@@ -1360,10 +1434,9 @@
         </section>
 
         <section class="proPreviewCard">
-          <h2>What Pro Unlocks</h2>
+          <h2>Lite shows the first layer</h2>
           <p class="proPreviewIntro">
-            Lite gives you today’s root pattern, field, and one practical move.
-            Pro opens the full operating layer behind the read.
+            Lucy.OS Lite gives the simplified daily field read. Lucy.OS Pro adds deeper chart translation, load pattern, drivers, regulation supports, and return path.
           </p>
 
           <div class="proPreviewGrid">
@@ -1392,9 +1465,9 @@
         </section>
 
         <section class="upgradeCard">
-          <h2>Unlock Lucy.OS Pro</h2>
+          <h2>Go deeper with Lucy.OS Pro</h2>
           <p>
-            Go deeper with your support harmonic, distortion pathway, full why-this-read explanation,
+            Open the deeper diagnostic layer: support harmonic, distortion pathway, full why-this-read explanation,
             driver library, engine details, and expanded timing layers.
           </p>
           <a class="upgradeButton" href="lucy-os-pro.html">Open Lucy.OS Pro</a>
@@ -1431,7 +1504,7 @@
 
                 <div class="shareCardSection">
                   <div class="shareCardLabel">Today’s System Weather</div>
-                  <div class="shareCardWeather" id="shareCardWeather">Root pattern × field loading</div>
+                  <div class="shareCardWeather" id="shareCardWeather">Root pattern meeting today’s field</div>
                 </div>
 
                 <div class="shareCardSection">
@@ -1550,7 +1623,7 @@
     };
 
     let latestSharePayload = {
-      systemWeather: "Root pattern × field loading",
+      systemWeather: "Root pattern meeting today’s field",
       todayRead: "Waiting for daily read.",
       plainEnglishLine: "Waiting for plain-English translation.",
       plainRealLifeText: "Waiting for today’s read.",
@@ -1801,7 +1874,7 @@
       if (!el) return;
 
       el.style.background =
-        "linear-gradient(135deg, rgba(79,111,122,.045), transparent 42%), linear-gradient(180deg, rgba(255,255,255,.55), transparent 64%)";
+        "linear-gradient(135deg, rgba(103,193,255,.20), transparent 42%), linear-gradient(180deg, rgba(36,63,88,.44), transparent 64%)";
     }
 
     function calculateHarmonics(data){
@@ -2027,438 +2100,36 @@
         watch = "Over-structuring a relational moment before the other person can meet you in it.";
         move = "Say one clear thing and leave room for response.";
         ret = "Return to the bond or exchange, not just the model of it.";
-      } else if (primary === "Contained" && field === "Contained") {
-        read = "Your contained root pattern is meeting a contained field today. This can support privacy, quiet sorting, and protected formation, but too much inwardness may slow release.";
-        lean = "Low input, private processing, and one gentle form of expression.";
-        watch = "Holding everything inside until the pressure becomes harder to name.";
-        move = "Let one small piece of the inner field become visible or workable.";
-        ret = "Return to privacy as a container, not a hiding place.";
-      } else if (primary === "Contained" && field === "Structured") {
-        read = "Your root pattern processes inwardly, and today may offer more structure. This can help you shape what has been private without forcing it into full visibility.";
-        lean = "Gentle organization, protected planning, and quiet structure.";
-        watch = "Turning structure into pressure to expose more than is ready.";
-        move = "Put one private thought into a clear form for yourself first.";
-        ret = "Let structure protect the inner field instead of pushing it open.";
-      } else if (primary === "Contained" && field === "Diffused") {
-        read = "Your root pattern pulls inward, and today may feel even more subtle, foggy, or hard to define. Do not demand sharp language from a field that needs quiet sorting.";
-        lean = "Low input, privacy, gentle rhythm, and letting impressions settle.";
-        watch = "Withdrawing so far that nothing can move or resolve.";
-        move = "Choose one small grounding action before interpreting the whole feeling.";
-        ret = "Come back to your body, your breath, and your own pace.";
-      } else if (primary === "Contained" && field === "Chaotic") {
-        read = "Your root pattern processes inwardly, but today may feel louder or more disruptive than usual. Protect your inner field without disappearing completely.";
-        lean = "Lower stimulation, private processing, and slow response.";
-        watch = "Shutting down completely because the field feels too loud.";
-        move = "Create one quiet pocket before responding.";
-        ret = "Come back to your own rhythm before taking in more signal.";
-      } else if (primary === "Contained" && field === "Threshold") {
-        read = "Your root pattern needs safety before expression, but today may bring an edge or decision. You do not have to reveal everything to make one clean move.";
-        lean = "Small crossings, honest pacing, and protected expression.";
-        watch = "Waiting forever because the whole field does not feel safe yet.";
-        move = "Take one small step that does not overexpose you.";
-        ret = "Return to privacy without using it as a hiding place.";
-      } else if (primary === "Contained" && field === "Relational") {
-        read = "Your root pattern processes inwardly, while today may bring more attention to contact, tone, or relational feedback. Let connection inform you without pulling more out of you than you are ready to share.";
-        lean = "Gentle contact, protected honesty, and slow relational pacing.";
-        watch = "Letting someone else’s need for closeness override your own timing.";
-        move = "Offer one honest signal without overexposing the whole inner field.";
-        ret = "Return to your private center before deciding what else to share.";
-      } else if (primary === "Contained" && field === "Reconstructive") {
-        read = "Your root pattern holds signal inside, while today may bring repair pressure. Something may need adjustment, but it does not have to be processed all at once or exposed before it is ready.";
-        lean = "Private repair, careful honesty, and one manageable adjustment.";
-        watch = "Letting pressure build silently until it feels heavier than it is.";
-        move = "Name one thing that needs repair, even if you keep the work private for now.";
-        ret = "Let repair happen in a protected container, not through emotional flooding.";
-      } else if (primary === "Contained" && field === "Integrative") {
-        read = "Your root pattern works inwardly, while today may widen the pattern and connect more layers. Let meaning gather slowly instead of forcing every private piece into one big conclusion.";
-        lean = "Quiet synthesis, private reflection, and gentle pattern-linking.";
-        watch = "Over-interpreting inner signals before they have settled.";
-        move = "Write down one connection that feels useful and leave the rest open.";
-        ret = "Come back to the part of the pattern that actually brings relief.";
-      } else if (primary === "Contained" && field === "Regulated") {
-        read = "Your root pattern already prefers protected processing, and today may support pacing, containment, and quieter regulation. This is useful for sorting pressure without forcing action too soon.";
-        lean = "Privacy, pacing, simple routines, and emotional containment.";
-        watch = "Using containment to delay a small step that is actually ready.";
-        move = "Choose one small regulated action that does not violate your privacy.";
-        ret = "Let pacing protect you without letting it freeze the whole field.";
-      } else if (primary === "Chaotic" && field === "Chaotic") {
-        read = "Your chaotic root pattern is meeting a chaotic field today. There may be extra movement, charge, or nonlinear signal, so the goal is not to stop the energy but to give it one safe channel.";
-        lean = "Movement with a container, quick release, and one useful direction for the charge.";
-        watch = "Following every spark until the whole day loses continuity.";
-        move = "Pick one channel for the energy and let the rest pass through.";
-        ret = "Return to rhythm before chasing another signal.";
-      } else if (primary === "Chaotic" && field === "Threshold") {
-        read = "Your root pattern carries movement and charge, and today may add an edge or crossing point. Use the activation, but do not let urgency decide for you.";
-        lean = "Focused motion, clean timing, and one decisive channel for the charge.";
-        watch = "Mistaking intensity for the right moment.";
-        move = "Aim the energy at one clear crossing instead of opening every door.";
-        ret = "Slow down just enough to choose the real threshold.";
       } else if (primary === "Chaotic" && field === "Reconstructive") {
         read = "Your root pattern moves through disruption, while today may bring repair or rebuilding pressure. Not every burst of energy needs to become a teardown.";
         lean = "Directed repair, controlled release, and useful disruption.";
         watch = "Creating a bigger break than the situation actually needs.";
         move = "Use the charge to fix one weak point, not to rebuild the whole field.";
         ret = "Let movement serve repair instead of becoming the pressure.";
-      } else if (primary === "Chaotic" && field === "Regulated") {
-        read = "Your root pattern carries movement and charge, while today may slow the field down. Do not fight the container. Use it to channel the voltage.";
-        lean = "Rhythm, pacing, and turning movement into something usable.";
-        watch = "Rebelling against structure just because the day asks for containment.";
-        move = "Put your energy into one durable action.";
-        ret = "Let the container hold the charge instead of killing it.";
-      } else if (primary === "Chaotic" && field === "Structured") {
-        read = "Your root pattern moves through charge, speed, and disruption, while today may offer more structure. The structure does not have to trap the voltage; it can give the energy somewhere useful to go.";
-        lean = "Practical containers, visible steps, and channeling movement into form.";
-        watch = "Rejecting structure because it feels like it will kill momentum.";
-        move = "Put one moving piece into a simple plan or container.";
-        ret = "Let structure carry the charge instead of fighting it.";
-      } else if (primary === "Chaotic" && field === "Contained") {
-        read = "Your root pattern wants movement, while today may pull the field inward. This can feel frustrating, but it may also help the charge settle before it turns reactive.";
-        lean = "Quiet movement, lower stimulation, and contained release.";
-        watch = "Pushing against the slowdown until the pressure spikes.";
-        move = "Find one safe way to discharge energy without escalating the field.";
-        ret = "Let inwardness settle the voltage before you act.";
-      } else if (primary === "Chaotic" && field === "Relational") {
-        read = "Your root pattern carries quick movement and disruption, while today may bring the relational field into focus. Let contact ground the energy without using other people as the release point.";
-        lean = "Clean contact, honest tone, and energy that stays accountable.";
-        watch = "Letting charge spill into the relationship before you know what it is.";
-        move = "Name the energy before you aim it at a person or conversation.";
-        ret = "Return to your own charge first, then re-enter contact more cleanly.";
-      } else if (primary === "Chaotic" && field === "Integrative") {
-        read = "Your root pattern moves through charge and disruption, while today may widen the field and connect more meaning. Not every spark needs to become a full pattern.";
-        lean = "Useful connections, creative movement, and letting one insight organize the rest.";
-        watch = "Trying to make meaning from every burst of signal.";
-        move = "Choose the one connection that turns the energy into something usable.";
-        ret = "Let extra sparks pass without needing to integrate them all.";
-      } else if (primary === "Chaotic" && field === "Diffused") {
-        read = "Your root pattern carries movement, while today may feel more porous, foggy, or uncontained. This can scatter energy if you do not give it a gentle boundary.";
-        lean = "Low-friction structure, soft grounding, and fewer inputs.";
-        watch = "Letting scattered atmosphere pull your energy in too many directions.";
-        move = "Pick one grounding action before following another signal.";
-        ret = "Come back to the body and the nearest practical step.";
-      } else if (primary === "Relational" && field === "Relational") {
-        read = "Your relational root pattern is meeting a relational field today. Contact, tone, and shared atmosphere may matter more, but your center still needs to stay separate from the room.";
-        lean = "Clean contact, steady tone, and honest repair without over-reading.";
-        watch = "Absorbing the whole shared field because you can feel it.";
-        move = "Name one relational signal plainly and keep responsibility proportional.";
-        ret = "Return to your own center before trying to repair the connection.";
-      } else if (primary === "Relational" && field === "Threshold") {
-        read = "Your root pattern reads connection, and today may bring a decision edge in the relational field. Do not chase closeness; name the real crossing.";
-        lean = "Clear contact, honest timing, and letting the bond show what is ready.";
-        watch = "Trying to secure the relationship instead of reading the threshold clearly.";
-        move = "Say the simple truth about what point the connection has reached.";
-        ret = "Return to your center before responding to the other person’s signal.";
-      } else if (primary === "Relational" && field === "Regulated") {
-        read = "Your root pattern stabilizes through contact, while today may support steadier pacing. This is a good field for calmer repair, clearer agreements, or less reactive connection.";
-        lean = "Steady contact, simple repair, and paced communication.";
-        watch = "Over-managing the emotional field when a simple rhythm would work better.";
-        move = "Make one small relational agreement clearer.";
-        ret = "Let steadiness be enough without needing constant reassurance.";
-      } else if (primary === "Relational" && field === "Diffused") {
-        read = "Your root pattern reads the field between people, and today may make the atmosphere more porous. Check what is actually yours before responding.";
-        lean = "Gentle contact, boundary checks, and slower interpretation.";
-        watch = "Absorbing other people’s tone as if it belongs to you.";
-        move = "Ask: is this mine, theirs, or the shared field?";
-        ret = "Return to your own center before repairing the room.";
-      } else if (primary === "Relational" && field === "Structured") {
-        read = "Your root pattern reads tone, contact, and the space between people, while today may offer clearer structure. Let structure clarify the relationship without making it cold or over-defined.";
-        lean = "Clear agreements, simple language, and practical relational structure.";
-        watch = "Turning a living connection into a rigid set of rules.";
-        move = "Name one boundary, agreement, or expectation plainly.";
-        ret = "Come back to the personal contact underneath the structure.";
-      } else if (primary === "Relational" && field === "Contained") {
-        read = "Your root pattern stabilizes through connection, while today may pull the field inward. Someone may need space, privacy, or slower contact without it meaning the bond is failing.";
-        lean = "Respectful distance, gentle check-ins, and slower interpretation.";
-        watch = "Reading withdrawal as rejection before the field has spoken clearly.";
-        move = "Give the connection room without abandoning it.";
-        ret = "Return to your own center instead of chasing the signal.";
-      } else if (primary === "Relational" && field === "Chaotic") {
-        read = "Your root pattern reads the relational field, while today may add movement, charge, or disruption. The room may feel louder than usual, so respond to what is real, not every ripple.";
-        lean = "Calm contact, clean tone, and slowing the relational signal down.";
-        watch = "Reacting to charge before you know whether it belongs to you, them, or the shared field.";
-        move = "Pause before answering the loudest signal.";
-        ret = "Come back to steady contact rather than emotional weather.";
       } else if (primary === "Relational" && field === "Reconstructive") {
         read = "Your root pattern stabilizes through connection, while today may bring repair pressure into the relational field. Something may need honesty, but not every tension needs a full relationship rebuild.";
         lean = "Clean repair, truthful contact, and one specific adjustment.";
         watch = "Treating one relational weak point like the whole bond is broken.";
         move = "Name the one repair that would make the connection more workable.";
         ret = "Return to trust-building actions, not total relational analysis.";
-      } else if (primary === "Relational" && field === "Integrative") {
-        read = "Your root pattern reads connection, while today may widen the meaning around the bond or shared field. This can help you understand the pattern, as long as you do not absorb everyone’s layer as your own.";
-        lean = "Meaningful contact, pattern recognition, and shared understanding.";
-        watch = "Carrying the whole emotional system because you can see how the pieces connect.";
-        move = "Clarify one shared pattern without taking full responsibility for it.";
-        ret = "Return to your part of the field, not the whole field.";
-      } else if (primary === "Threshold" && field === "Threshold") {
-        read = "Your threshold root pattern is meeting a threshold field today. The sense of edge, opening, or decision may be stronger, so timing matters more than speed.";
-        lean = "Clean timing, small crossings, and naming the actual decision point.";
-        watch = "Treating every feeling of pressure like it means act now.";
-        move = "Choose the one threshold that is real enough to cross today.";
-        ret = "Return to the edge slowly and do not force the opening.";
-      } else if (primary === "Threshold" && field === "Contained") {
-        read = "Your root pattern senses edges and openings, while today may pull the field inward. The crossing may still be real, but it may need privacy, preparation, or a quieter first move.";
-        lean = "Protected timing, small crossings, and letting the next step form before announcing it.";
-        watch = "Pushing for outward movement before the inner field has caught up.";
-        move = "Choose one private preparation step that makes the threshold cleaner.";
-        ret = "Return to the edge without forcing it open.";
-      } else if (primary === "Threshold" && field === "Chaotic") {
-        read = "Your root pattern is already sensitive to turning points, and today may add extra charge or disruption. The edge may feel louder than it is. Slow the reaction before you cross.";
-        lean = "Focused activation, clean timing, and movement that has a target.";
-        watch = "Letting intensity make every opening feel urgent.";
-        move = "Discharge enough energy to choose the right door, not every door.";
-        ret = "Come back to the real threshold underneath the noise.";
-      } else if (primary === "Threshold" && field === "Relational") {
-        read = "Your root pattern reads crossings, while today may bring those crossings through contact, tone, or a relationship field. A conversation may show what is ready, but it does not have to become a dramatic pivot.";
-        lean = "Honest timing, clean contact, and naming what point the connection has reached.";
-        watch = "Using the relationship as proof that you must act immediately.";
-        move = "Say the simple truth, then give the field room to answer.";
-        ret = "Return to your own timing before reacting to someone else’s signal.";
-      } else if (primary === "Threshold" && field === "Integrative") {
-        read = "Your root pattern senses the edge, while today may widen the meaning around it. The larger pattern can help, but too much meaning may blur the clean next move.";
-        lean = "Meaning that clarifies timing, not meaning that delays action.";
-        watch = "Trying to understand every layer before making one clean crossing.";
-        move = "Name the pattern, then choose the next step that is actually ready.";
-        ret = "Come back to the one crossing that matters today.";
-      } else if (primary === "Threshold" && field === "Diffused") {
-        read = "Your root pattern wants a clear edge, but today may feel foggy, soft, or undefined. You may not get a perfect signal before you need to choose one small direction.";
-        lean = "Gentle boundaries, small decisions, and reducing the spread.";
-        watch = "Waiting for total clarity or pushing through fog too fast.";
-        move = "Choose one low-risk direction that makes the field less vague.";
-        ret = "Return to the smallest clear edge you can actually feel.";
-      } else if (primary === "Threshold" && field === "Reconstructive") {
-        read = "Your root pattern senses crossings, and today may add repair pressure. The edge may be real, but the move does not have to become a full rebuild.";
-        lean = "Precise change, honest repair, and crossing only what is ready.";
-        watch = "Forcing a transformation before the next step has a container.";
-        move = "Make one repair that opens the next clean path.";
-        ret = "Return to timing: not every repair has to happen today.";
-      } else if (primary === "Threshold" && field === "Regulated") {
-        read = "Your root pattern wants movement at the edge, while today may ask for pacing. This can help you cross more cleanly if you do not rush the moment.";
-        lean = "Measured timing, preparation, and clean sequence.";
-        watch = "Feeling blocked just because the field is asking you to slow down.";
-        move = "Prepare the crossing instead of forcing it.";
-        ret = "Let pacing make the threshold safer.";
-      } else if (primary === "Threshold" && field === "Structured") {
-        read = "Your root pattern senses openings and crossings, while today asks for more structure. Build the next step before forcing the movement.";
-        lean = "Planning the crossing, pacing activation, and naming the next move.";
-        watch = "Jumping before the container exists.";
-        move = "Make the path visible before you cross it.";
-        ret = "Come back to the structure that makes movement safer.";
-      } else if (primary === "Reconstructive" && field === "Reconstructive") {
-        read = "Your reconstructive root pattern is meeting a reconstructive field today. Repair pressure may be easier to feel, but the goal is one workable adjustment, not a full rebuild.";
-        lean = "Honest repair, durable simplification, and strengthening one weak point.";
-        watch = "Turning every strain into proof that the whole system needs reconstruction.";
-        move = "Choose the one repair that would reduce the most pressure.";
-        ret = "Return to what can actually be repaired today.";
-      } else if (primary === "Reconstructive" && field === "Contained") {
-        read = "Your root pattern knows how to rebuild under pressure, while today may pull the repair process inward. The work may be real, but it may need privacy before action.";
-        lean = "Private repair, protected honesty, and one careful adjustment.";
-        watch = "Holding repair pressure inside until it becomes heavier than necessary.";
-        move = "Name one weak point quietly and decide the smallest safe repair.";
-        ret = "Let the repair have a container before it becomes a crisis.";
-      } else if (primary === "Reconstructive" && field === "Relational") {
-        read = "Your root pattern rebuilds through pressure, while today may bring repair through contact or relationship. Something may need honesty, but the whole bond does not need to be rebuilt at once.";
-        lean = "Specific repair, truthful tone, and trust rebuilt through small actions.";
-        watch = "Reading one relational strain as proof that everything is broken.";
-        move = "Ask what one adjustment would make the connection more workable.";
-        ret = "Return to the repairable piece, not the whole history.";
-      } else if (primary === "Reconstructive" && field === "Threshold") {
-        read = "Your root pattern transforms pressure, and today may bring a crossing point. This can be useful, but the threshold needs a clean container before you rebuild around it.";
-        lean = "Timed repair, clear decisions, and changing only what is actually ready.";
-        watch = "Turning an opening into a full overhaul before the field can support it.";
-        move = "Cross one practical threshold that strengthens the structure.";
-        ret = "Come back to timing before you deepen the repair.";
-      } else if (primary === "Reconstructive" && field === "Integrative") {
-        read = "Your root pattern rebuilds what pressure exposes, while today may connect more meaning around the repair. Let the pattern teach you without making every old piece part of today’s rebuild.";
-        lean = "Meaningful repair, clean synthesis, and learning from the pressure.";
-        watch = "Pulling too many layers into one repair until the work feels endless.";
-        move = "Extract one lesson and turn it into one concrete adjustment.";
-        ret = "Return to the piece that can actually be rebuilt now.";
-      } else if (primary === "Reconstructive" && field === "Diffused") {
-        read = "Your root pattern works through deep repair, while today may make the field softer, foggier, or harder to define. Do not rebuild from unclear pressure.";
-        lean = "Gentle sorting, rest, and waiting for the real weak point to show itself.";
-        watch = "Treating vague discomfort like a full structural failure.";
-        move = "Separate unclear atmosphere from the one repair you can name.";
-        ret = "Come back to what is concrete, repairable, and present.";
-      } else if (primary === "Reconstructive" && field === "Chaotic") {
-        read = "Your root pattern knows how to rebuild, while today may add movement, disruption, or scattered pressure. Let the energy reveal what needs repair without turning it into a crisis.";
-        lean = "Controlled movement, practical repair, and releasing pressure safely.";
-        watch = "Letting disruption convince you that everything is breaking.";
-        move = "Separate the real repair from the noise around it.";
-        ret = "Come back to the part that can actually be strengthened today.";
-      } else if (primary === "Reconstructive" && field === "Structured") {
-        read = "Your root pattern rebuilds through pressure, and today may offer the structure to make repair more practical. This is a good field for stabilizing what has already changed.";
-        lean = "Practical rebuilding, clear sequence, and durable repair.";
-        watch = "Overbuilding around a wound instead of fixing the actual weak point.";
-        move = "Turn one repair into a simple structure you can keep using.";
-        ret = "Let form hold the repair so you do not have to keep carrying it.";
-      } else if (primary === "Reconstructive" && field === "Regulated") {
-        read = "Your root pattern knows how to rebuild under pressure, but today may not require a full reconstruction. Let regulation reduce the load first.";
-        lean = "Maintenance, simplification, and one practical repair.";
-        watch = "Turning ordinary strain into a crisis rebuild.";
-        move = "Fix the one part that actually needs attention.";
-        ret = "Let steadiness prove that not everything is breaking.";
-      } else if (primary === "Integrative" && field === "Integrative") {
-        read = "Your integrative root pattern is meeting an integrative field today. Meaning may gather quickly, but the goal is coherence, not carrying every layer at once.";
-        lean = "Useful synthesis, closure where possible, and one pattern that helps.";
-        watch = "Trying to integrate every loose end before the day can move.";
-        move = "Choose the one connection that brings the most clarity.";
-        ret = "Return to the whole by releasing the pieces that are not yours today.";
-      } else if (primary === "Integrative" && field === "Structured") {
-        read = "Your root pattern wants the larger pattern, while today may offer form and sequence. Let structure make the meaning useful instead of shrinking it.";
-        lean = "Clear frameworks, practical synthesis, and one organized next step.";
-        watch = "Trying to fit every layer into the structure before anything can move.";
-        move = "Turn one big pattern into one usable outline.";
-        ret = "Come back to the form that helps the meaning land.";
-      } else if (primary === "Integrative" && field === "Contained") {
-        read = "Your root pattern gathers many pieces, while today may pull the field inward. The meaning may need quiet before it becomes clear.";
-        lean = "Private synthesis, slower reflection, and protecting unfinished meaning.";
-        watch = "Filling the quiet with too many interpretations.";
-        move = "Let one connection settle privately before sharing or expanding it.";
-        ret = "Return to the meaning that brings steadiness, not more pressure.";
-      } else if (primary === "Integrative" && field === "Relational") {
-        read = "Your root pattern connects patterns, while today may bring those patterns through people, tone, or shared field. Let contact clarify meaning without making you responsible for everyone’s layer.";
-        lean = "Shared understanding, clean contact, and naming the pattern simply.";
-        watch = "Absorbing the whole relational field because you can see how it connects.";
-        move = "Name one shared pattern and keep responsibility proportional.";
-        ret = "Come back to your part of the meaning.";
-      } else if (primary === "Integrative" && field === "Threshold") {
-        read = "Your root pattern wants to integrate the whole picture, while today may ask for a crossing before every piece is resolved. The move can still be wise if it is small and clean.";
-        lean = "Decisions that simplify the pattern and make the next step clearer.";
-        watch = "Delaying the crossing because you want total integration first.";
-        move = "Choose the one step that resolves the most pressure without forcing everything.";
-        ret = "Return to the pattern that is ready, not the pattern that is still forming.";
       } else if (primary === "Integrative" && field === "Reconstructive") {
         read = "Your root pattern gathers meaning, while today may bring repair pressure. Let the repair teach you, but do not turn every piece of history into today’s work.";
         lean = "Meaningful repair, honest synthesis, and one concrete change.";
         watch = "Making the rebuild too large because every layer connects.";
         move = "Extract one lesson and apply it to one real pressure point.";
         ret = "Come back to the present repair, not the entire story.";
-      } else if (primary === "Integrative" && field === "Diffused") {
-        read = "Your root pattern wants to gather the pieces, while today may make the field wider, softer, or less defined. Do not try to make meaning from everything at once.";
-        lean = "Soft sorting, fewer inputs, and letting unclear pieces remain loose.";
-        watch = "Absorbing too much atmosphere and calling it the whole pattern.";
-        move = "Choose one piece of meaning that actually helps today.";
-        ret = "Let the rest stay unintegrated for now.";
-      } else if (primary === "Integrative" && field === "Regulated") {
-        read = "Your root pattern sees the larger arc, while today may support pacing and containment. This is a good day to make meaning usable, not endless.";
-        lean = "Practical synthesis, steady pacing, and finishing one loop.";
-        watch = "Keeping the pattern open after it is clear enough to use.";
-        move = "Turn one insight into one grounded action.";
-        ret = "Come back to the simplest resolution available.";
-      } else if (primary === "Integrative" && field === "Chaotic") {
-        read = "Your root pattern wants the larger pattern, while today may scatter the field. Everything may feel meaningful, but not every signal deserves your energy.";
-        lean = "Choosing the pattern that helps today.";
-        watch = "Trying to integrate every fragment at once.";
-        move = "Pick the one connection that clarifies the rest.";
-        ret = "Let the extra fragments stay outside the center for now.";
-      } else if (primary === "Diffused" && field === "Diffused") {
-        read = "Your diffused root pattern is meeting a diffused field today. The atmosphere may feel wide, subtle, or hard to define, so simple grounding matters more than total clarity.";
-        lean = "Soft boundaries, fewer inputs, and one gentle point of focus.";
-        watch = "Letting the whole atmosphere become your responsibility.";
-        move = "Choose one clear anchor and let the rest stay loose.";
-        ret = "Return to the body, the room, and the nearest simple truth.";
-      } else if (primary === "Diffused" && field === "Contained") {
-        read = "Your root pattern receives widely, while today may pull the field inward. This can help reduce noise, but too much retreat may make the signal harder to define.";
-        lean = "Quiet boundaries, low input, and letting impressions settle.";
-        watch = "Drifting into isolation or holding the whole atmosphere inside.";
-        move = "Choose one private grounding action that gives the field a soft edge.";
-        ret = "Return to the body before trying to interpret the whole atmosphere.";
-      } else if (primary === "Diffused" && field === "Chaotic") {
-        read = "Your root pattern is porous, and today may add charge, movement, or disruption. The field can scatter quickly, so give your attention one gentle anchor.";
-        lean = "Simple grounding, fewer inputs, and movement that stays contained.";
-        watch = "Following every ripple until the day loses shape.";
-        move = "Pick one physical or practical anchor before responding to more signal.";
-        ret = "Come back to one place, one task, or one breath.";
-      } else if (primary === "Diffused" && field === "Relational") {
-        read = "Your root pattern receives widely, while today may bring contact and tone into focus. You may pick up more than people are saying, so check what is actually yours.";
-        lean = "Gentle connection, clear boundaries, and slow interpretation.";
-        watch = "Absorbing someone else’s mood as if it is your instruction.";
-        move = "Name what you feel, then separate yours from theirs.";
-        ret = "Return to your own center before repairing the shared field.";
       } else if (primary === "Diffused" && field === "Reconstructive") {
         read = "Your root pattern is subtle and wide, while today may bring repair pressure. Do not rebuild from fog. Wait for the repair point to become clear enough to name.";
         lean = "Soft sorting, rest, and one concrete repair if it becomes visible.";
         watch = "Treating vague pressure like proof that everything needs fixing.";
         move = "Ask what is actually broken, what is only unclear, and what can wait.";
         ret = "Come back to the repair you can name, not the pressure you can only feel.";
-      } else if (primary === "Diffused" && field === "Integrative") {
-        read = "Your root pattern receives widely, while today may connect meaning across the field. This can be rich, but it may also become too much if every impression turns into a pattern.";
-        lean = "Gentle synthesis, fewer layers, and one useful meaning.";
-        watch = "Making meaning from every atmosphere, symbol, or emotional signal.";
-        move = "Choose one insight that helps you move more calmly today.";
-        ret = "Let the rest stay open without needing to resolve it.";
-      } else if (primary === "Diffused" && field === "Threshold") {
-        read = "Your root pattern receives widely, while today may ask for a choice, boundary, or crossing. You do not need total clarity to choose one direction.";
-        lean = "Small decisions, simple boundaries, and gentle commitment.";
-        watch = "Waiting for the fog to fully clear before making any move.";
-        move = "Pick one boundary or direction that reduces the spread.";
-        ret = "Let one clear choice be enough for today.";
-      } else if (primary === "Diffused" && field === "Regulated") {
-        read = "Your root pattern receives the field broadly, while today may offer pacing and containment. Let the rhythm help you define what is usually hard to hold.";
-        lean = "Gentle structure, timed breaks, and simple regulation.";
-        watch = "Feeling restricted by the very container that could help.";
-        move = "Put one soft impression into one practical rhythm.";
-        ret = "Come back to pacing before trying to understand everything.";
-      } else if (primary === "Diffused" && field === "Structured") {
-        read = "Your root pattern receives widely, and today offers more form. Do not force the whole atmosphere into a system. Start with one clear line.";
-        lean = "Simple wording, gentle structure, and grounded direction.";
-        watch = "Feeling trapped by structure or avoiding definition entirely.";
-        move = "Give the field one sentence or one boundary.";
-        ret = "Let clarity be small, not total.";
-      } else if (primary === "Regulated" && field === "Regulated") {
-        read = "Your regulated root pattern is meeting a regulated field today. This can support pacing, calm execution, and manageable follow-through, as long as regulation does not turn into over-control.";
-        lean = "Steady rhythm, clear limits, and one manageable action.";
-        watch = "Tightening the system after the pressure is already manageable.";
-        move = "Choose one useful rhythm and let it carry the next step.";
-        ret = "Return to enough regulation, not total control.";
-      } else if (primary === "Regulated" && field === "Contained") {
-        read = "Your root pattern manages pressure through pacing, while today may pull the field inward. This can support calm sorting, but it can also become too much holding.";
-        lean = "Quiet regulation, simple routines, and protected emotional pacing.";
-        watch = "Managing everything privately until the pressure has nowhere to go.";
-        move = "Release one small piece of pressure safely before it bottlenecks.";
-        ret = "Let containment support regulation without turning into restriction.";
-      } else if (primary === "Regulated" && field === "Relational") {
-        read = "Your root pattern stabilizes through pacing, while today may bring contact, tone, or repair into focus. Let connection be steady rather than overly managed.";
-        lean = "Paced communication, calm repair, and clear agreements.";
-        watch = "Trying to control the relational field so nothing gets messy.";
-        move = "Make one simple contact point clearer without managing the whole exchange.";
-        ret = "Return to steady presence, not emotional control.";
-      } else if (primary === "Regulated" && field === "Threshold") {
-        read = "Your root pattern prefers pacing and control, while today may bring an edge or decision point. The threshold may be real, but it does not need to be rushed or over-managed.";
-        lean = "Measured decisions, clean timing, and preparing before crossing.";
-        watch = "Delaying too long because movement feels less safe than management.";
-        move = "Choose one small crossing that your system can actually hold.";
-        ret = "Let pacing support movement instead of preventing it.";
-      } else if (primary === "Regulated" && field === "Integrative") {
-        read = "Your root pattern regulates load, while today may widen the meaning or connect more layers. Let the pattern inform you, but keep the amount manageable.";
-        lean = "Practical synthesis, paced reflection, and one usable insight.";
-        watch = "Trying to manage every layer of meaning until the day becomes heavy.";
-        move = "Choose one insight and turn it into one regulated action.";
-        ret = "Return to the amount of meaning your system can hold today.";
-      } else if (primary === "Regulated" && field === "Diffused") {
-        read = "Your root pattern likes pacing and control, while today may feel softer, foggier, or harder to define. Do not over-control the fog. Give it a gentle boundary.";
-        lean = "Soft structure, fewer inputs, and simple nervous-system pacing.";
-        watch = "Tightening too much because the field feels unclear.";
-        move = "Set one light boundary and let the rest remain undefined for now.";
-        ret = "Come back to gentle rhythm instead of hard control.";
       } else if (primary === "Regulated" && field === "Reconstructive") {
         read = "Your root pattern manages pressure through pacing, while today may bring repair or rebuilding pressure. Do not only manage symptoms; allow one honest adjustment.";
         lean = "Measured repair, controlled honesty, and practical change.";
         watch = "Trying to regulate away a problem that actually needs repair.";
         move = "Make one clean adjustment without opening the whole system.";
         ret = "Let regulation support repair instead of avoiding it.";
-      } else if (primary === "Regulated" && field === "Structured") {
-        read = "Your root pattern stabilizes through pacing, and today may support structure. This is a strong field for organizing pressure into something realistic and manageable.";
-        lean = "Clear routines, simple structure, and steady execution.";
-        watch = "Over-tightening the plan because order feels safer than movement.";
-        move = "Build one manageable container for the pressure.";
-        ret = "Let the structure be useful, not perfect.";
-      } else if (primary === "Regulated" && field === "Chaotic") {
-        read = "Your root pattern manages load through pacing, but today may feel disorderly. Slow the signal without freezing it.";
-        lean = "Flexible containment and calm response.";
-        watch = "Trying to control every moving part.";
-        move = "Choose what actually needs regulation and let the rest move.";
-        ret = "Release the pressure to manage the whole field.";
       }
 
       if (stateLabel === "Overloaded") {
@@ -2502,6 +2173,10 @@
       }
 
       return `${publicDriver} is shaping how today’s field lands. With a ${field.toLowerCase()} field and ${articleTrend} ${trend.toLowerCase()} trend, ${direction}`;
+    }
+
+    function formatSystemWeather(primaryLabel, fieldLabel){
+      return `${primaryLabel} root pattern meeting a ${fieldLabel} field`;
     }
 
     function updateShareUI({ systemWeather, todayRead, plainEnglishLine, plainRealLifeText, driverNote, goodMove, returnText, primary, field, state }){
@@ -2591,7 +2266,7 @@
         if (status) status.textContent = "Creating image...";
 
         const canvas = await html2canvas(card, {
-          backgroundColor: "#F4F2EF",
+          backgroundColor: "#F3F5F7",
           scale: 2,
           useCORS: true,
           logging: false
@@ -2633,7 +2308,7 @@
 
       const primaryLabel = primaryMeta.label;
       const fieldLabel = fieldMeta.label;
-      const systemWeather = `${primaryLabel} root pattern × ${fieldLabel} field`;
+      const systemWeather = formatSystemWeather(primaryLabel, fieldLabel);
       const guidance = buildDailyGuidance(harmonics, data);
       const plainLayer = buildPlainEnglishLayer(harmonics, guidance);
       const rawDriver = primaryDriverName(data);
