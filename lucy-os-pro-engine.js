@@ -1533,8 +1533,8 @@ function getFieldUndertone(dailyFieldDebug){
   const active =
     second.field !== top.field &&
     secondaryScore > 0 &&
-    ratio >= 0.88 &&
-    gap <= 0.06;
+    ratio >= 0.86 &&
+    gap <= 0.075;
 
   if (!active) {
     return {
@@ -3125,6 +3125,19 @@ function calculateHarmonics(data){
     todayField = getTopHarmonic(nonRepairCandidates, "Regulated");
   }
 
+  const structuredCloseCall =
+    todayField === "Contained" &&
+    normalizedFieldScores.Structured > 0 &&
+    normalizedFieldScores.Contained > 0 &&
+    normalizedFieldScores.Structured >= normalizedFieldScores.Contained * 0.90 &&
+    tSaturn >= 0.72 &&
+    tMercury >= 0.68 &&
+    currentRegulation >= 0.55;
+
+  if (structuredCloseCall) {
+    todayField = "Structured";
+  }
+
   const topFieldScore = safeNum(normalizedFieldScores[todayField]);
   const reconstructiveScore = safeNum(normalizedFieldScores.Reconstructive);
   const reconstructiveCloseCall =
@@ -3161,6 +3174,7 @@ function calculateHarmonics(data){
     normalizedFieldScores,
     repairGate,
     repairSignature,
+    structuredCloseCall,
     wideFieldSignature,
     activationSignature,
     containmentSignature,
@@ -3599,6 +3613,7 @@ function updateUI(data){
   const undertoneDebug = fieldUndertone?.active
     ? `${fieldUndertone.field} active | gap ${fmtMaybe(fieldUndertone.gap)} | ratio ${fmtMaybe(fieldUndertone.ratio)}`
     : "No strong undertone";
+  const structuredCloseCallDebug = dailyFieldDebug.structuredCloseCall ? "yes" : "no";
 
   setText(
     "chartDebug",
@@ -3606,6 +3621,7 @@ function updateUI(data){
     `Field Undertone: ${undertoneDebug}\n` +
     `Top 3: ${topCandidatesText}\n` +
     `Repair Gate: ${dailyFieldDebug.repairGate ? "open" : "closed"} | Repair Signature: ${fmtMaybe(dailyFieldDebug.repairSignature)}\n` +
+    `Structured Close Call: ${structuredCloseCallDebug}\n` +
     `Wide Field: ${fmtMaybe(dailyFieldDebug.wideFieldSignature)} | Activation: ${fmtMaybe(dailyFieldDebug.activationSignature)} | Diffusion: ${fmtMaybe(dailyFieldDebug.diffusionSignature)}\n` +
     `Transit UTC: ${transitUtcDebug}\n` +
     `Moonstamp: ${moonstampDebug}\n` +
@@ -4071,6 +4087,8 @@ function runAstrologyCalibrationTest() {
       undertoneRatio: fieldUndertone.ratio,
       repairGate: result.dailyFieldDebug?.repairGate,
       repairSignature: result.dailyFieldDebug?.repairSignature,
+      structuredCloseCall: result.dailyFieldDebug?.structuredCloseCall,
+      structuredSignature: result.dailyFieldDebug?.structuredSignature,
       wideFieldSignature: result.dailyFieldDebug?.wideFieldSignature,
       relationalSignature: result.dailyFieldDebug?.relationalSignature,
       regulationSupportState: regulationSupports.state,
