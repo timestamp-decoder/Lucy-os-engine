@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lucy.OS</title>
+  <title>Lucy.OS Lite</title>
 
   <style>
     :root{
@@ -426,6 +426,7 @@
       min-width:0;
     }
 
+    .liteIntroCard,
     .premiumCard,
     .howUseCard,
     .plainMeaningCard,
@@ -460,6 +461,7 @@
         linear-gradient(180deg, #FFFFFF 0%, #F1F5F8 48%, #E4EBF0 100%);
     }
 
+    .liteIntroCard::before,
     .premiumCard::before,
     .howUseCard::before,
     .plainMeaningCard::before,
@@ -482,6 +484,7 @@
       z-index:0;
     }
 
+    .liteIntroCard > *,
     .premiumCard > *,
     .howUseCard > *,
     .plainMeaningCard > *,
@@ -493,6 +496,60 @@
     .shareSection > *{
       position:relative;
       z-index:1;
+    }
+
+    .liteIntroCard{
+      background:
+        radial-gradient(circle at 90% 0%, rgba(103,193,255,.12), transparent 30%),
+        linear-gradient(180deg, #FFFFFF 0%, #EFF5F7 100%);
+    }
+
+    .liteIntroKicker{
+      margin:0 0 8px;
+      color:var(--blueDeep);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.13em;
+      text-transform:uppercase;
+    }
+
+    .liteIntroTitle{
+      margin:0;
+      color:var(--card-text);
+      font-size:26px;
+      line-height:1.08;
+      letter-spacing:-.035em;
+      font-weight:950;
+      overflow-wrap:break-word;
+    }
+
+    .liteIntroText{
+      margin:10px 0 0;
+      color:var(--card-muted);
+      max-width:900px;
+      font-size:14px;
+      line-height:1.58;
+      overflow-wrap:break-word;
+    }
+
+    .liteIntroRule{
+      margin-top:13px;
+      border:1px solid var(--card-border);
+      border-radius:14px;
+      padding:12px;
+      background:#FFFFFF;
+      color:var(--card-text);
+      font-size:13px;
+      line-height:1.52;
+      font-weight:800;
+      overflow-wrap:break-word;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.76),
+        inset 0 -1px 0 rgba(0,0,0,.025);
+    }
+
+    .liteIntroRule strong{
+      color:var(--blueDeep);
     }
 
     .cardContent{
@@ -1169,6 +1226,7 @@
         margin-bottom:12px;
       }
 
+      .liteIntroCard,
       .panel,
       .premiumCard,
       .howUseCard,
@@ -1183,6 +1241,7 @@
         padding:16px;
       }
 
+      .liteIntroCard::before,
       .panel::before,
       .premiumCard::before,
       .howUseCard::before,
@@ -1194,6 +1253,10 @@
       .upgradeCard::before,
       .shareSection::before{
         border-radius:15px;
+      }
+
+      .liteIntroTitle{
+        font-size:23px;
       }
 
       .weatherLine{
@@ -1252,14 +1315,14 @@
 
     <div class="hero">
       <div class="heroGlow" id="heroGlow"></div>
-      <h1>Lucy.OS</h1>
-      <p>Personal field guidance inside the live timing field</p>
+      <h1>Lucy.OS Lite</h1>
+      <p>A simple daily field read inside the live timing field.</p>
     </div>
 
     <div class="lucy-lite-banner" aria-hidden="true">
       <img
         src="lucy-lite-field-banner.png"
-        alt="Lucy.OS field interface visual"
+        alt="Lucy.OS Lite field interface visual"
         onerror="this.style.display='none';"
       />
     </div>
@@ -1291,24 +1354,35 @@
         <button id="calcBtn">Calculate</button>
 
         <div class="tiny">
-          Birth location resolves timezone, angles, and houses for accurate chart input.
+          Birth details help Lucy.OS personalize the simple daily read.
         </div>
 
         <div class="routeTiny">
-          Lite shows the simplified daily field read. Pro opens the deeper diagnostic layer.
+          Lite gives the simple daily read. Pro opens the deeper personal operating manual.
         </div>
       </div>
 
       <div class="mainStack">
+        <section class="liteIntroCard">
+          <p class="liteIntroKicker">Public daily read</p>
+          <h2 class="liteIntroTitle">Today’s field, made practical.</h2>
+          <p class="liteIntroText">
+            Lucy.OS Lite gives you today’s field in plain language: what is active, what to watch, and one grounded move.
+          </p>
+          <div class="liteIntroRule">
+            <strong>Simple split:</strong> Lite gives the simple daily read. Pro gives the deeper personal operating manual.
+          </div>
+        </section>
+
         <section class="premiumCard">
           <div class="cardContent">
             <p class="kicker">Today’s System Weather</p>
             <h2 class="weatherLine" id="systemWeatherLine">
-              Root pattern meeting today’s field
+              Your pattern meeting today’s field
             </h2>
 
             <p class="todayRead" id="dailyTodayRead">
-              Waiting for chart calculation. Lucy.OS will read your root pattern inside the current field.
+              Waiting for chart calculation. Lucy.OS Lite will translate today’s field into one practical read.
             </p>
 
             <div class="guidanceGrid">
@@ -1342,14 +1416,14 @@
         <section class="howUseCard">
           <h2>How to use this read</h2>
           <p>
-            Start with Today’s System Weather. Use the main line to understand the interaction between your root pattern and today’s field. Then use the practical guidance as the one thing to not overdo today.
+            Start with Today’s System Weather. Then use One Good Move as the practical focus for the day. The goal is not to explain everything — it is to keep today’s field workable.
           </p>
         </section>
 
         <section class="plainMeaningCard">
           <h2>What This Means Today</h2>
           <p class="plainMeaningIntro">
-            A plain-language translation of your root pattern meeting today’s field.
+            A plain-language translation of your pattern meeting today’s field.
           </p>
 
           <div class="plainMeaningGrid">
@@ -1364,9 +1438,9 @@
             </div>
 
             <div class="plainMeaningBlock full">
-              <div class="plainMeaningLabel">Identity vs. field</div>
+              <div class="plainMeaningLabel">You vs. the day</div>
               <div class="plainMeaningText" id="plainIdentityFieldNote">
-                Your root signal architecture is your stable pattern. Today’s field is the active pressure today. The field is not your whole identity.
+                Your pattern is how your system tends to move. Today’s field is the active pressure around the day. The field is not your whole identity.
               </div>
             </div>
           </div>
@@ -1378,7 +1452,7 @@
 
         <section class="liteWhyCard">
           <h2>Why Today Feels This Way</h2>
-          <p>Lite keeps the explanation simple: the current driver, today’s field, and the active trend behind the read.</p>
+          <p>Lite keeps the explanation simple: the strongest daily driver, today’s field, and the practical direction behind the read.</p>
           <div class="liteWhyText" id="liteWhyTodayText">
             Waiting for today’s driver note.
           </div>
@@ -1387,38 +1461,38 @@
         <section class="liteSummaryCard">
           <div class="liteSummaryHeader">
             <div>
-              <h2>Today’s Harmonic Summary</h2>
-              <p>Your root pattern and today’s active field, kept simple for the public/free version.</p>
+              <h2>Today’s Simple Summary</h2>
+              <p>Your pattern and today’s active field, kept simple for the public/free version.</p>
             </div>
             <div class="chipRow" style="margin-top:0;">
-              <span class="chip gold" id="liteSummaryStateChip">Root: —</span>
+              <span class="chip gold" id="liteSummaryStateChip">Pattern: —</span>
               <span class="chip field" id="liteSummaryFieldChip">Field: —</span>
             </div>
           </div>
 
           <div class="liteSummaryGrid">
             <div class="liteSummaryBlock">
-              <div class="liteSummaryLabel">Primary Harmonic</div>
+              <div class="liteSummaryLabel">Your Pattern</div>
               <div class="liteSummaryValue" id="primaryHarmonic">—</div>
-              <div class="liteSummaryDesc">Stable root pattern.</div>
+              <div class="liteSummaryDesc">The main way your system tends to organize pressure.</div>
             </div>
 
             <div class="liteSummaryBlock">
-              <div class="liteSummaryLabel">Today’s Field Harmonic</div>
+              <div class="liteSummaryLabel">Today’s Field</div>
               <div class="liteSummaryValue" id="todayFieldHarmonic">—</div>
-              <div class="liteSummaryDesc">Current live field pattern.</div>
+              <div class="liteSummaryDesc">The main pressure or support active in today’s read.</div>
             </div>
 
             <div class="liteSummaryBlock full">
               <div class="liteSummaryLabel">Plain Read</div>
-              <div class="guidanceText" id="harmonicPlainRead">Waiting for harmonic profile.</div>
+              <div class="guidanceText" id="harmonicPlainRead">Waiting for profile summary.</div>
             </div>
           </div>
         </section>
 
         <section class="nodeCard">
-          <h2>The 9 Harmonic Nodes</h2>
-          <p>Lucy.OS reads your root pattern through 9 harmonic identity patterns.</p>
+          <h2>The 9 Pattern Languages</h2>
+          <p>Lucy.OS uses nine simple pattern languages under the hood to describe how pressure organizes.</p>
 
           <div class="nodeGrid">
             <span class="nodeChip structured">Structured</span>
@@ -1434,30 +1508,40 @@
         </section>
 
         <section class="proPreviewCard">
-          <h2>Lite shows the first layer</h2>
+          <h2>Lite shows the daily layer</h2>
           <p class="proPreviewIntro">
-            Lucy.OS Lite gives the simplified daily field read. Lucy.OS Pro adds deeper chart translation, load pattern, drivers, regulation supports, and return path.
+            Lucy.OS Lite gives the simple daily read. Lucy.OS Pro expands it into a deeper personal operating manual.
           </p>
 
           <div class="proPreviewGrid">
             <div class="proPreviewItem">
-              <h3>Harmonic Profile</h3>
-              <p>Primary, support, and distortion harmonics — how your system stabilizes, assists itself, and overloads.</p>
+              <h3>Your Pattern</h3>
+              <p>How your system tends to move, stabilize, and organize pressure.</p>
             </div>
 
             <div class="proPreviewItem">
-              <h3>Driver Library</h3>
-              <p>Readable explanations for the live timing drivers shaping the day’s field.</p>
+              <h3>Today’s Field</h3>
+              <p>What the day is activating and how it lands against your personal pattern.</p>
+            </div>
+
+            <div class="proPreviewItem">
+              <h3>System Load State</h3>
+              <p>Whether the day is calm, active, strained, or carrying too much pressure.</p>
+            </div>
+
+            <div class="proPreviewItem">
+              <h3>Regulation Supports</h3>
+              <p>Practical supports for lowering load and keeping the day workable.</p>
             </div>
 
             <div class="proPreviewItem">
               <h3>Why This Read</h3>
-              <p>A clearer breakdown of why the system gave this guidance today.</p>
+              <p>The deeper explanation behind the guidance, without losing the plain-language read.</p>
             </div>
 
             <div class="proPreviewItem">
-              <h3>Engine Details</h3>
-              <p>Technical state, capacity, strain, forecast, and chart debug for users who want the deeper instrument panel.</p>
+              <h3>Share Card + Details</h3>
+              <p>A stronger share card, deeper timing layers, and optional technical details for Pro users.</p>
             </div>
           </div>
 
@@ -1467,8 +1551,8 @@
         <section class="upgradeCard">
           <h2>Go deeper with Lucy.OS Pro</h2>
           <p>
-            Open the deeper diagnostic layer: support harmonic, distortion pathway, full why-this-read explanation,
-            driver library, engine details, and expanded timing layers.
+            Pro expands the simple daily read into your deeper personal pattern, support system, load state,
+            regulation supports, why-this-read layer, share card, and optional technical details.
           </p>
           <a class="upgradeButton" href="lucy-os-pro.html">Open Lucy.OS Pro</a>
           <div class="routeTiny">Pro access route will be finalized after checkout is wired.</div>
@@ -1478,11 +1562,11 @@
           <div class="shareIntro">
             <div>
               <h2>Share Card</h2>
-              <p>Save or copy the daily guidance layer. This card shows the field read, not the full engine.</p>
+              <p>Save or copy the daily guidance layer. This card shows the simple field read, not the full Pro system.</p>
             </div>
 
             <div class="shareIntroChips">
-              <span class="shareChip gold" id="shareBaselineChip">Root: —</span>
+              <span class="shareChip gold" id="shareBaselineChip">Pattern: —</span>
               <span class="shareChip field" id="shareFieldChip">Field: —</span>
               <span class="shareChip violet" id="shareStateChip">State: —</span>
             </div>
@@ -1492,19 +1576,19 @@
             <div id="lucyShareCard" class="shareCard">
               <div class="shareCardInner">
                 <div class="shareCardTop">
-                  <span>Lucy.OS</span>
-                  <span>Personal Field Guidance</span>
+                  <span>Lucy.OS Lite</span>
+                  <span>Simple Daily Field Read</span>
                 </div>
 
                 <div class="shareCardChips">
-                  <span class="shareCardChip gold" id="shareCardBaselineChip">Root: —</span>
+                  <span class="shareCardChip gold" id="shareCardBaselineChip">Pattern: —</span>
                   <span class="shareCardChip field" id="shareCardFieldChip">Field: —</span>
                   <span class="shareCardChip violet" id="shareCardStateChip">State: —</span>
                 </div>
 
                 <div class="shareCardSection">
                   <div class="shareCardLabel">Today’s System Weather</div>
-                  <div class="shareCardWeather" id="shareCardWeather">Root pattern meeting today’s field</div>
+                  <div class="shareCardWeather" id="shareCardWeather">Your pattern meeting today’s field</div>
                 </div>
 
                 <div class="shareCardSection">
@@ -1537,7 +1621,7 @@
                   </div>
                 </div>
 
-                <div class="shareFooter">Personal field guidance · Lucy.OS</div>
+                <div class="shareFooter">Simple daily field read · Lucy.OS Lite</div>
               </div>
             </div>
 
@@ -1562,68 +1646,68 @@
         signalQuality: "High, coherent, pattern-seeking, structure-oriented",
         stabilityMethod: "Regulation, sequencing, naming, meaning-making",
         overloadRisk: "Too much signal before the container is finished; pressure outrunning structure",
-        plainRead: "This system stabilizes by turning pressure into order. Overload happens when clarity arrives faster than the structure can hold it."
+        plainRead: "This pattern stabilizes by turning pressure into order. Overload happens when clarity arrives faster than the structure can hold it."
       },
       Contained: {
         label: "Contained",
         signalQuality: "Deep, internal, cyclical, protected",
         stabilityMethod: "Withdrawal, privacy, inward processing, controlled release",
         overloadRisk: "Emotional compression; signal trapped inside; delayed expression turning into pressure buildup",
-        plainRead: "This system stabilizes by pulling signal inward until it feels safe. Overload happens when too much stays unexpressed for too long."
+        plainRead: "This pattern stabilizes by pulling signal inward until it feels safe. Overload happens when too much stays unexpressed for too long."
       },
       Chaotic: {
         label: "Chaotic",
         signalQuality: "High-voltage, mobile, catalytic, nonlinear",
         stabilityMethod: "Movement, disruption, voltage release, rapid shifts",
         overloadRisk: "Scattering, instability, shock cycles, losing continuity",
-        plainRead: "This system stabilizes through motion and charge release. Overload happens when the voltage has nowhere to go."
+        plainRead: "This pattern stabilizes through motion and charge release. Overload happens when the voltage has nowhere to go."
       },
       Relational: {
         label: "Relational",
         signalQuality: "Attuned, responsive, field-sensitive, relational",
         stabilityMethod: "Contact, mirroring, tone-tracking, repairing the field",
         overloadRisk: "Over-attunement, losing center, attachment loops, emotional fusion",
-        plainRead: "This system stabilizes by reading and repairing the space between people. Overload happens when the field becomes too loud or too fused."
+        plainRead: "This pattern stabilizes by reading the space between people. Overload happens when the field becomes too loud or too fused."
       },
       Threshold: {
         label: "Threshold",
         signalQuality: "Sharp, decisive, activation-based, timing-sensitive",
         stabilityMethod: "Timing, crossings, clean openings, decisive action",
         overloadRisk: "Urgency, rupture, impatience, acting before the field is ready",
-        plainRead: "This system stabilizes at turning points. Overload happens when everything feels like a turning point."
+        plainRead: "This pattern stabilizes at turning points. Overload happens when everything feels like a turning point."
       },
       Reconstructive: {
         label: "Reconstructive",
         signalQuality: "Compressed, transformative, deep-field, pressure-bearing",
         stabilityMethod: "Breakdown → rebuild cycles, pressure integration, reforming structure",
         overloadRisk: "Crisis identity, heaviness, repeated collapse loops",
-        plainRead: "This system stabilizes by transforming pressure into a stronger form. Overload happens when the system is forced to rebuild too often without rest."
+        plainRead: "This pattern stabilizes by transforming pressure into a stronger form. Overload happens when the system is forced to rebuild too often without rest."
       },
       Integrative: {
         label: "Integrative",
         signalQuality: "Wide, connective, meaning-oriented, integrative",
         stabilityMethod: "Synthesis, pattern-linking, big-picture coherence",
         overloadRisk: "Over-meaning, abstraction, taking in too many layers at once",
-        plainRead: "This system stabilizes by making the scattered field coherent. Overload happens when there are too many pieces to integrate."
+        plainRead: "This pattern stabilizes by making the scattered field coherent. Overload happens when there are too many pieces to integrate."
       },
       Diffused: {
         label: "Diffused",
         signalQuality: "Porous, atmospheric, impressionistic, subtle",
         stabilityMethod: "Soft focus, spaciousness, gentle pacing, wide reception",
         overloadRisk: "Fog, overwhelm, boundary loss, unclear direction",
-        plainRead: "This system stabilizes by receiving widely before defining. Overload happens when the field is too dense or too demanding."
+        plainRead: "This pattern stabilizes by receiving widely before defining. Overload happens when the field is too dense or too demanding."
       },
       Regulated: {
         label: "Regulated",
         signalQuality: "Measured, paced, controlled, load-aware",
         stabilityMethod: "Timing, containment, emotional management, load control",
         overloadRisk: "Over-control, bottlenecking, emotional restriction, fear of disorder",
-        plainRead: "This system stabilizes by pacing the signal until it becomes manageable. Overload happens when the system tries to control too much for too long."
+        plainRead: "This pattern stabilizes by pacing the signal until it becomes manageable. Overload happens when the system tries to control too much for too long."
       }
     };
 
     let latestSharePayload = {
-      systemWeather: "Root pattern meeting today’s field",
+      systemWeather: "Your pattern meeting today’s field",
       todayRead: "Waiting for daily read.",
       plainEnglishLine: "Waiting for plain-English translation.",
       plainRealLifeText: "Waiting for today’s read.",
@@ -1729,7 +1813,7 @@
         Regulated: "paced regulation"
       };
 
-      return phrases[primary] || "root pattern";
+      return phrases[primary] || "your pattern";
     }
 
     function plainFieldPhrase(field){
@@ -1745,7 +1829,7 @@
         Regulated: "pacing support"
       };
 
-      return phrases[field] || "field pressure";
+      return phrases[field] || "today’s field";
     }
 
     function primaryRealLifeSignal(primary){
@@ -2040,92 +2124,92 @@
       const primaryLower = primary.toLowerCase();
       const fieldLower = field.toLowerCase();
 
-      let read = `Your ${primaryLower} root pattern is meeting a ${fieldLower} field today. Let the field inform your pace, but do not let today’s weather rewrite your root signal architecture.`;
+      let read = `Your ${primaryLower} pattern is meeting a ${fieldLower} field today. Let the field inform your pace, but do not let today’s weather define your whole identity.`;
       let lean = "Choose the clearest useful move and keep the day simple.";
       let watch = "Watch for turning the whole field into something you have to solve at once.";
       let move = "Pick one pressure point and give it a clean next step.";
       let ret = "Name what is actually active, then stop before you expand the task.";
 
       if (primary === "Structured" && field === "Structured") {
-        read = "Your structured root pattern is meeting a structured field today. This can support clarity, planning, and clean follow-through, as long as structure stays useful instead of becoming pressure.";
+        read = "Your structured pattern is meeting a structured field today. This can support clarity, planning, and clean follow-through, as long as structure stays useful instead of becoming pressure.";
         lean = "Simple systems, clear order, and one practical piece made more workable.";
         watch = "Over-refining the structure after it is already strong enough.";
         move = "Improve one useful container and stop before polish becomes strain.";
         ret = "Return to the structure that helps, not the structure that controls.";
       } else if (primary === "Structured" && field === "Contained") {
-        read = "Your root pattern wants clarity and form, but today may pull your signal inward. This is better for shaping one private piece than trying to explain the whole system outwardly.";
+        read = "Your pattern wants clarity and form, but today may pull your signal inward. This is better for shaping one private piece than trying to explain the whole field outwardly.";
         lean = "Private refinement, simple language, and protecting unfinished work.";
         watch = "Forcing clarity too soon or getting frustrated because the words are not ready yet.";
         move = "Finish one small piece instead of organizing the whole field.";
         ret = "Name the real pressure point, then step away for a bit.";
       } else if (primary === "Structured" && field === "Chaotic") {
-        read = "Your root pattern wants structure, but today may bring extra movement, voltage, or scattered signal. Do not chase every thread. Catch the one that can actually become useful.";
+        read = "Your pattern wants structure, but today may bring extra movement, voltage, or scattered signal. Do not chase every thread. Catch the one that can actually become useful.";
         lean = "Containment, prioritizing, and turning one signal into one clean form.";
         watch = "Trying to structure every incoming signal at once.";
         move = "Choose one useful thread and give it a simple container.";
         ret = "Reduce inputs and return to the piece that is actually yours to build.";
       } else if (primary === "Structured" && field === "Threshold") {
-        read = "Your root pattern wants form, and today may bring an edge, opening, or decision point. Build the next step before forcing the crossing.";
+        read = "Your pattern wants form, and today may bring an edge, opening, or decision point. Build the next step before forcing the crossing.";
         lean = "Clean timing, clear steps, and paced movement.";
         watch = "Mistaking urgency for the real opening.";
         move = "Write the next step plainly, then move only as far as the field can hold.";
         ret = "Come back to sequence: first this, then that.";
       } else if (primary === "Structured" && field === "Reconstructive") {
-        read = "Your root pattern wants clarity and form, but today may push repair, pressure, or rebuilding. Do not turn normal strain into a full reconstruction project.";
+        read = "Your pattern wants clarity and form, but today may push repair, pressure, or rebuilding. Do not turn normal strain into a full reconstruction project.";
         lean = "Honest repair, one clean adjustment, and practical containment.";
         watch = "Treating every weak point like it means the whole structure has failed.";
         move = "Choose one honest adjustment and give it a clean container.";
         ret = "Remind yourself that one repair is not the same as rebuilding the whole system.";
       } else if (primary === "Structured" && field === "Diffused") {
-        read = "Your root pattern wants clarity, but today’s field may feel atmospheric, subtle, or harder to define. Do not panic if the signal is not crisp yet.";
+        read = "Your pattern wants clarity, but today’s field may feel atmospheric, subtle, or harder to define. Do not panic if the signal is not crisp yet.";
         lean = "Soft focus, fewer inputs, and one clear sentence.";
         watch = "Over-explaining fog or forcing definition before the signal forms.";
         move = "Give the atmosphere one sentence and let that be enough.";
         ret = "Come back to the simplest true line.";
       } else if (primary === "Structured" && field === "Regulated") {
-        read = "Your root pattern and the field both support structure, pacing, and clear movement. This is a good day for making one practical piece more workable.";
+        read = "Your pattern and the field both support structure, pacing, and clear movement. This is a good day for making one practical piece more workable.";
         lean = "Clean systems, steady progress, and realistic scope.";
         watch = "Over-controlling details after the structure is already good enough.";
         move = "Improve one useful piece and stop before refinement becomes pressure.";
         ret = "Let good enough be a stabilizing choice.";
       } else if (primary === "Structured" && field === "Integrative") {
-        read = "Your root pattern wants clarity and form, while today may widen the pattern and connect more pieces. Let the larger meaning inform the structure without making the structure carry everything.";
+        read = "Your pattern wants clarity and form, while today may widen the pattern and connect more pieces. Let the larger meaning inform the structure without making the structure carry everything.";
         lean = "Synthesis, simple frameworks, and choosing the pattern that actually helps.";
         watch = "Trying to integrate every layer before building the next usable piece.";
         move = "Name the larger pattern, then reduce it to one workable step.";
         ret = "Come back to the structure that makes the meaning usable.";
       } else if (primary === "Structured" && field === "Relational") {
-        read = "Your root pattern wants order, but today may clarify through contact, tone, or feedback. Let the conversation simplify the structure instead of turning the person into a problem to solve.";
+        read = "Your pattern wants order, but today may clarify through contact, tone, or feedback. Let the conversation simplify the structure instead of turning the person into a problem to solve.";
         lean = "Plain language, clean contact, and saying the simple version first.";
         watch = "Over-structuring a relational moment before the other person can meet you in it.";
         move = "Say one clear thing and leave room for response.";
         ret = "Return to the bond or exchange, not just the model of it.";
       } else if (primary === "Chaotic" && field === "Reconstructive") {
-        read = "Your root pattern moves through disruption, while today may bring repair or rebuilding pressure. Not every burst of energy needs to become a teardown.";
+        read = "Your pattern moves through disruption, while today may bring repair or rebuilding pressure. Not every burst of energy needs to become a teardown.";
         lean = "Directed repair, controlled release, and useful disruption.";
         watch = "Creating a bigger break than the situation actually needs.";
         move = "Use the charge to fix one weak point, not to rebuild the whole field.";
         ret = "Let movement serve repair instead of becoming the pressure.";
       } else if (primary === "Relational" && field === "Reconstructive") {
-        read = "Your root pattern stabilizes through connection, while today may bring repair pressure into the relational field. Something may need honesty, but not every tension needs a full relationship rebuild.";
+        read = "Your pattern stabilizes through connection, while today may bring repair pressure into the relational field. Something may need honesty, but not every tension needs a full relationship rebuild.";
         lean = "Clean repair, truthful contact, and one specific adjustment.";
         watch = "Treating one relational weak point like the whole bond is broken.";
         move = "Name the one repair that would make the connection more workable.";
         ret = "Return to trust-building actions, not total relational analysis.";
       } else if (primary === "Integrative" && field === "Reconstructive") {
-        read = "Your root pattern gathers meaning, while today may bring repair pressure. Let the repair teach you, but do not turn every piece of history into today’s work.";
+        read = "Your pattern gathers meaning, while today may bring repair pressure. Let the repair teach you, but do not turn every piece of history into today’s work.";
         lean = "Meaningful repair, honest synthesis, and one concrete change.";
         watch = "Making the rebuild too large because every layer connects.";
         move = "Extract one lesson and apply it to one real pressure point.";
         ret = "Come back to the present repair, not the entire story.";
       } else if (primary === "Diffused" && field === "Reconstructive") {
-        read = "Your root pattern is subtle and wide, while today may bring repair pressure. Do not rebuild from fog. Wait for the repair point to become clear enough to name.";
+        read = "Your pattern is subtle and wide, while today may bring repair pressure. Do not rebuild from fog. Wait for the repair point to become clear enough to name.";
         lean = "Soft sorting, rest, and one concrete repair if it becomes visible.";
         watch = "Treating vague pressure like proof that everything needs fixing.";
         move = "Ask what is actually broken, what is only unclear, and what can wait.";
         ret = "Come back to the repair you can name, not the pressure you can only feel.";
       } else if (primary === "Regulated" && field === "Reconstructive") {
-        read = "Your root pattern manages pressure through pacing, while today may bring repair or rebuilding pressure. Do not only manage symptoms; allow one honest adjustment.";
+        read = "Your pattern manages pressure through pacing, while today may bring repair or rebuilding pressure. Do not only manage symptoms; allow one honest adjustment.";
         lean = "Measured repair, controlled honesty, and practical change.";
         watch = "Trying to regulate away a problem that actually needs repair.";
         move = "Make one clean adjustment without opening the whole system.";
@@ -2176,7 +2260,7 @@
     }
 
     function formatSystemWeather(primaryLabel, fieldLabel){
-      return `${primaryLabel} root pattern meeting a ${fieldLabel} field`;
+      return `${primaryLabel} pattern meeting a ${fieldLabel} field`;
     }
 
     function updateShareUI({ systemWeather, todayRead, plainEnglishLine, plainRealLifeText, driverNote, goodMove, returnText, primary, field, state }){
@@ -2193,11 +2277,11 @@
         state
       };
 
-      setText("shareBaselineChip", `Root: ${primary}`);
+      setText("shareBaselineChip", `Pattern: ${primary}`);
       setText("shareFieldChip", `Field: ${field}`);
       setText("shareStateChip", `State: ${state}`);
 
-      setText("shareCardBaselineChip", `Root: ${primary}`);
+      setText("shareCardBaselineChip", `Pattern: ${primary}`);
       setText("shareCardFieldChip", `Field: ${field}`);
       setText("shareCardStateChip", `State: ${state}`);
 
@@ -2212,7 +2296,7 @@
 
     function getShareText(){
       return [
-        "Lucy.OS",
+        "Lucy.OS Lite",
         "",
         "Today’s System Weather:",
         latestSharePayload.systemWeather,
@@ -2233,7 +2317,7 @@
         "Return to yourself by:",
         latestSharePayload.returnText,
         "",
-        "Personal field guidance · Lucy.OS"
+        "Simple daily field read · Lucy.OS Lite"
       ].join("\n");
     }
 
@@ -2278,8 +2362,8 @@
             return;
           }
 
-          const weatherSlug = slugify(latestSharePayload.systemWeather || "lucy-os");
-          const filename = weatherSlug ? `lucy-os-${weatherSlug}.png` : "lucy-os-share-card.png";
+          const weatherSlug = slugify(latestSharePayload.systemWeather || "lucy-os-lite");
+          const filename = weatherSlug ? `lucy-os-lite-${weatherSlug}.png` : "lucy-os-lite-share-card.png";
 
           const url = URL.createObjectURL(blob);
           const link = document.createElement("a");
@@ -2294,7 +2378,7 @@
           if (status) status.textContent = "Saved share card.";
         }, "image/png");
       } catch (error) {
-        console.error("Could not save Lucy.OS share card.", error);
+        console.error("Could not save Lucy.OS Lite share card.", error);
         if (status) status.textContent = "Image save failed. You can still screenshot the card.";
       }
     }
@@ -2334,7 +2418,7 @@
       setText("harmonicPlainRead", primaryMeta.plainRead);
       setText("liteWhyTodayText", driverNote);
 
-      setText("liteSummaryStateChip", `Root: ${primaryLabel}`);
+      setText("liteSummaryStateChip", `Pattern: ${primaryLabel}`);
       setText("liteSummaryFieldChip", `Field: ${fieldLabel}`);
 
       updateShareUI({
