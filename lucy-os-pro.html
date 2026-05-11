@@ -7,6 +7,7 @@
 <!-- Pass 5 update: added Electrical Mapping E1 hidden observation helper only. No visible UI, API, scoring, Moonstamp, dashboard, saved profiles, share export, or calibration-test behavior changed. -->
 <!-- Pass 6 update: added Electrical Mapping E2 language helper only. Existing human-facing wording can be sharpened by the hidden electrical profile, but no visible Electrical Mapping section, raw scores, API, scoring, routing, Moonstamp, dashboard, saved profiles, share export, or calibration-test behavior changed. -->
 <!-- Pass 7 update: Electrical Mapping E2.1 wording calibration only. Today’s Field wording remains primary; Moonstamp/electrical language acts only as a modifier. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, dashboard logic, saved profiles, selected field/root/support/undertone/motion style/system load state, or calibration tests changed. -->
+<!-- Pass 8 update: Electrical Mapping E3 share/public text polish only. Share card and copied share text inherit calibrated E2.1 public language where available. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, dashboard logic, saved profiles, selected field/root/support/undertone/motion style/system load state, calibration tests, or share export behavior changed. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -9819,6 +9820,46 @@
 					: `- ${fallback}`;
 			}
 
+			function normalizeShareText(value) {
+				return String(value || "")
+					.toLowerCase()
+					.replace(/[’']/g, "'")
+					.replace(/[^a-z0-9]+/g, " ")
+					.trim();
+			}
+
+			function cleanShareSentence(value, fallback = "") {
+				const clean = String(value || "")
+					.replace(/\s+/g, " ")
+					.trim();
+				return clean || fallback;
+			}
+
+			function isShareDuplicate(a, b) {
+				const left = normalizeShareText(a);
+				const right = normalizeShareText(b);
+				if (!left || !right) return false;
+				return left === right || left.includes(right) || right.includes(left);
+			}
+
+			function getUniqueShareItems(items, maxItems = 3) {
+				const unique = [];
+				(Array.isArray(items) ? items : []).forEach((item) => {
+					const clean = cleanShareSentence(item);
+					if (!clean) return;
+					if (unique.some((existing) => isShareDuplicate(existing, clean))) return;
+					unique.push(clean);
+				});
+				return unique.slice(0, maxItems);
+			}
+
+			function getShareSafeMove(primaryMove, fallbackMove) {
+				return cleanShareSentence(
+					primaryMove || fallbackMove,
+					"Choose one clear next move."
+				);
+			}
+
 			function getConciseSoundSupport(supports) {
 				const music = String(supports?.music || "").trim();
 				if (!music || music === "—" || music.length > 120) return "";
@@ -9871,8 +9912,14 @@
 					`${supports.state || "—"} · ${supports.quality || "—"}`
 				);
 
-				const shareTryItems = getShortTryFirstItems(supports, 3);
-				const shareAvoidItems = getShortAvoidItems(supports, 3);
+				const shareTryItems = getUniqueShareItems(
+					getShortTryFirstItems(supports, 3),
+					3
+				);
+				const shareAvoidItems = getUniqueShareItems(
+					getShortAvoidItems(supports, 3),
+					3
+				);
 
 				setText("shareCardRegulationState", supports.state || "—");
 				setText(
@@ -12487,25 +12534,37 @@
 					coreRule?.watchDistortion ||
 						"Watch the distortion before responding."
 				);
-				setText(
-					"shareCardCoreMove",
-					coreRule?.makeMove ||
-						goodMove ||
-						"Choose one clear next move."
+				const shareGoodMove = getShareSafeMove(
+					goodMove,
+					coreRule?.makeMove
 				);
-
-				setText("shareCardTodayRead", todayRead);
-				setText(
-					"shareCardRealLife",
-					realLifeText ||
+				const rawCoreMove = cleanShareSentence(
+					coreRule?.makeMove,
+					"Choose the cleanest next action."
+				);
+				const shareCoreMove = isShareDuplicate(rawCoreMove, shareGoodMove)
+					? "Keep the move small, clean, and proportional."
+					: rawCoreMove;
+				const shareRealLifeText = isShareDuplicate(
+					realLifeText,
+					shareGoodMove
+				)
+					? "Use the read as one practical action, not a full-field project."
+					: cleanShareSentence(
+						realLifeText,
 						"Translate the read into one practical action."
-				);
+					  );
+
+				setText("shareCardCoreMove", shareCoreMove);
+
+				setText("shareCardTodayRead", cleanShareSentence(todayRead));
+				setText("shareCardRealLife", shareRealLifeText);
 				setText(
 					"shareCardMotionStyle",
 					harmonicText(motionStyle || "—")
 				);
 				setText("shareCardDriverNote", driverNote);
-				setText("shareCardGoodMove", goodMove);
+				setText("shareCardGoodMove", shareGoodMove);
 				setText("shareCardReturn", returnText);
 
 				updateRegulationSupportsUI(regulationSupports);
@@ -12532,56 +12591,80 @@
 
 			function getShareText() {
 				const supports = latestSharePayload.regulationSupports || {};
-				const tryFirstItems = getShortTryFirstItems(supports, 3);
-				const avoidItems = getShortAvoidItems(supports, 3);
+				const tryFirstItems = getUniqueShareItems(
+					getShortTryFirstItems(supports, 3),
+					3
+				);
+				const avoidItems = getUniqueShareItems(
+					getShortAvoidItems(supports, 3),
+					3
+				);
+				const shareGoodMove = getShareSafeMove(
+					latestSharePayload.goodMove,
+					latestSharePayload.coreRule?.makeMove
+				);
+				const rawCoreMove = cleanShareSentence(
+					latestSharePayload.coreRule?.makeMove,
+					"Choose the cleanest next action."
+				);
+				const shareCoreMove = isShareDuplicate(rawCoreMove, shareGoodMove)
+					? "Keep the move small, clean, and proportional."
+					: rawCoreMove;
+				const includeOneGoodMove = !isShareDuplicate(
+					shareCoreMove,
+					shareGoodMove
+				);
 
 				const lines = [
 					"Lucy.OS Pro",
 					"",
 					"Today’s System Weather:",
-					latestSharePayload.systemWeather ||
-						"Structured signal architecture meeting a live field",
+					cleanShareSentence(
+						latestSharePayload.systemWeather,
+						"Structured signal architecture meeting a live field"
+					),
 					"",
 					"Current Field Direction:",
-					latestSharePayload.fieldDirectionTitle || "—",
-					latestSharePayload.fieldDirectionText ||
-						"Waiting for field direction.",
+					cleanShareSentence(latestSharePayload.fieldDirectionTitle, "—"),
+					cleanShareSentence(
+						latestSharePayload.fieldDirectionText,
+						"Waiting for field direction."
+					),
 					"",
 					"Core Rule:",
-					`Use your gift: ${
-						latestSharePayload.coreRule?.useGift ||
+					`Use your gift: ${cleanShareSentence(
+						latestSharePayload.coreRule?.useGift,
 						"Use your gift cleanly."
-					}`,
-					`Watch the distortion: ${
-						latestSharePayload.coreRule?.watchDistortion ||
+					)}`,
+					`Watch the distortion: ${cleanShareSentence(
+						latestSharePayload.coreRule?.watchDistortion,
 						"Watch the distortion before responding."
-					}`,
-					`Make the move: ${
-						latestSharePayload.coreRule?.makeMove ||
-						latestSharePayload.goodMove ||
-						"Choose one clear next move."
-					}`,
+					)}`,
+					`Make the move: ${shareCoreMove}`,
 				];
 
 				if (latestSharePayload.moonstampModifier?.hasMoonstamp) {
 					lines.push(
 						"",
 						"Moonstamp Modifier:",
-						latestSharePayload.moonstampModifier.title ||
+						cleanShareSentence(
+							latestSharePayload.moonstampModifier.title,
 							"Lunar timing modifier"
+						)
 					);
 
-					const moonText =
+					const moonText = cleanShareSentence(
 						latestSharePayload.moonstampModifier.shareLine ||
-						latestSharePayload.moonstampModifier.text ||
-						"The lunar field adds timing texture to today’s read.";
+							latestSharePayload.moonstampModifier.text,
+						"The lunar field adds timing texture to today’s read."
+					);
 					if (moonText) lines.push(moonText);
 				}
 
 				lines.push(
 					"",
 					"Regulation Supports:",
-					`State: ${supports.state || "—"}`,
+					`State: ${cleanShareSentence(supports.state, "—")}`,
 					`Best Support Today: ${buildShortSupportQuality(supports) || "—"}`,
 					"",
 					"Try First:",
@@ -12597,16 +12680,25 @@
 					)
 				);
 
+				const todayRead = cleanShareSentence(
+					latestSharePayload.todayRead,
+					"Waiting for daily read."
+				);
+				if (!isShareDuplicate(todayRead, shareGoodMove)) {
+					lines.push("", "Today’s Read:", todayRead);
+				}
+
+				if (includeOneGoodMove) {
+					lines.push("", "One Good Move:", shareGoodMove);
+				}
+
 				lines.push(
 					"",
-					"Today’s Read:",
-					latestSharePayload.todayRead || "Waiting for daily read.",
-					"",
-					"One Good Move:",
-					latestSharePayload.goodMove || "Choose one clear next move.",
-					"",
 					"Return Path:",
-					latestSharePayload.returnText || "Return to your own center first.",
+					cleanShareSentence(
+						latestSharePayload.returnText,
+						"Return to your own center first."
+					),
 					"",
 					"Personal field guidance · Lucy.OS Pro"
 				);
