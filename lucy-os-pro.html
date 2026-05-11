@@ -8,6 +8,7 @@
 <!-- Pass 6 update: added Electrical Mapping E2 language helper only. Existing human-facing wording can be sharpened by the hidden electrical profile, but no visible Electrical Mapping section, raw scores, API, scoring, routing, Moonstamp, dashboard, saved profiles, share export, or calibration-test behavior changed. -->
 <!-- Pass 7 update: Electrical Mapping E2.1 wording calibration only. Today’s Field wording remains primary; Moonstamp/electrical language acts only as a modifier. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, dashboard logic, saved profiles, selected field/root/support/undertone/motion style/system load state, or calibration tests changed. -->
 <!-- Pass 8 update: Electrical Mapping E3 share/public text polish only. Share card and copied share text inherit calibrated E2.1 public language where available. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, dashboard logic, saved profiles, selected field/root/support/undertone/motion style/system load state, calibration tests, or share export behavior changed. -->
+<!-- Pass 9 update: Electrical Mapping E3.1 micro-format cleanup only. Fixed Moonstamp punctuation in public/share text, prevented top snapshot Regulation Support from duplicating One Good Move, and compressed share-card Regulation Supports display. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, dashboard logic, saved profiles, selected field/root/support/undertone/motion style/system load state, calibration tests, layout structure, or share export behavior changed. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -8541,6 +8542,18 @@
 				return `${phase} · ${moonAge} days · ${illumination}% illuminated`;
 			}
 
+			function joinMoonstampPublicText(modifier, forecastModifier) {
+				const first = String(modifier || "").trim();
+				const second = String(forecastModifier || "").trim();
+
+				if (first && second) {
+					const firstWithStop = /[.!?]$/.test(first) ? first : `${first}.`;
+					return `${firstWithStop} ${second}`;
+				}
+
+				return first || second;
+			}
+
 			function buildMoonstampModifier(data) {
 				const moonstamp = getMoonstamp(data);
 
@@ -8553,10 +8566,11 @@
 					moonstamp.forecastModifier || ""
 				).trim();
 
-				if (modifier && forecastModifier)
-					return `${modifier} ${forecastModifier}`;
-				if (modifier) return modifier;
-				if (forecastModifier) return forecastModifier;
+				const joinedModifier = joinMoonstampPublicText(
+					modifier,
+					forecastModifier
+				);
+				if (joinedModifier) return joinedModifier;
 
 				const state = String(moonstamp.state || "").trim();
 				const phase = String(moonstamp.phase || "").trim();
@@ -9831,6 +9845,7 @@
 			function cleanShareSentence(value, fallback = "") {
 				const clean = String(value || "")
 					.replace(/\s+/g, " ")
+					.replace(/Lower-load lunar field\s+Use this lunar field/g, "Lower-load lunar field. Use this lunar field")
 					.trim();
 				return clean || fallback;
 			}
@@ -9913,12 +9928,12 @@
 				);
 
 				const shareTryItems = getUniqueShareItems(
-					getShortTryFirstItems(supports, 3),
-					3
+					getShortTryFirstItems(supports, 2),
+					2
 				);
 				const shareAvoidItems = getUniqueShareItems(
-					getShortAvoidItems(supports, 3),
-					3
+					getShortAvoidItems(supports, 2),
+					2
 				);
 
 				setText("shareCardRegulationState", supports.state || "—");
@@ -14081,12 +14096,7 @@
 					quality: quality || supports.quality,
 					tryFirstItems,
 					avoidItems,
-					snapshotSupport:
-						getFieldCalibratedElectricalMove(
-							supports.snapshotSupport,
-							helper,
-							profile
-						) || supports.snapshotSupport,
+					snapshotSupport: quality || supports.snapshotSupport,
 					why: appendElectricalSentence(supports.why, helper.why),
 				};
 			}
