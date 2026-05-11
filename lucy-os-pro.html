@@ -3,6 +3,7 @@
 <!-- Pass 1 update: added top clarity, plain read, system read, and personal landing display layer. Engine, API, scoring, Moonstamp, saved profiles, share export, and calibration tests unchanged. -->
 <!-- Pass 2 update: polished top read snapshot and Regulation Supports language/display density only. Engine, API, scoring, Moonstamp, saved profiles, share export, dashboard logic, and calibration tests unchanged. -->
 <!-- Pass 3 update: compressed copied share text and visual share-card Regulation Supports only. Full in-app supports, engine, API, scoring, Moonstamp, saved profiles, backend behavior, dashboard logic, and calibration tests unchanged. -->
+<!-- Pass 4 update: final stabilization / stop point polish for top read, Regulation Supports, share text, and mobile density only. Engine, API, scoring, Moonstamp, saved profiles, backend behavior, dashboard logic, and calibration tests unchanged. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -4971,6 +4972,17 @@
 
 				.mobileReadSnapshot {
 					display: block;
+					padding: 14px;
+					margin-bottom: 12px;
+				}
+
+				.mobileSnapshotWeather {
+					font-size: 20px;
+				}
+
+				.mobileSnapshotText {
+					font-size: 12.5px;
+					line-height: 1.48;
 				}
 
 				.panel,
@@ -5701,17 +5713,17 @@
 							Same field. Personal landing.
 						</h2>
 						<div class="personalLandingText" id="personalLandingText">
-							Today’s field is shared, but it does not land the same way in every chart. Lucy.OS reads your stable pattern against the current field, then translates how that pressure may show up for you — and what helps you return to coherence.
+							The field is shared. The landing is personal. Lucy.OS reads your stable pattern against today’s field, then translates what helps you return to coherence.
 						</div>
 						<div class="personalLandingLine" id="personalLandingLine">
-							Lucy.OS reads the landing, not just the weather.
+							Lucy.OS reads how the weather lands in you.
 						</div>
 					</section>
 
 					<section class="plainReadCard" id="plainReadCard">
 						<div class="plainReadKicker">Plain Read</div>
 						<div class="plainReadText" id="plainReadText">
-							Calculate to see the clean human-language read first.
+							Calculate to see today’s read in plain language.
 						</div>
 
 						<div class="plainReadGrid">
@@ -5736,7 +5748,7 @@
 							Waiting for official Lucy.OS labels.
 						</div>
 						<div class="systemReadClarifier" id="systemReadClarifier">
-							Official system language stays intact. Plain language translates it first.
+							Official labels stay intact. Plain language comes first.
 						</div>
 					</section>
 
@@ -6602,9 +6614,8 @@
 							<div>
 								<h2>Regulation Supports</h2>
 								<p>
-									Practical supports for reducing input,
-									keeping the field proportional, and choosing
-									the next clean move.
+									Practical supports for lowering input, staying
+									proportional, and making the next clean move.
 								</p>
 							</div>
 
@@ -6650,8 +6661,8 @@
 									—
 								</div>
 								<div class="regulationSupportText">
-									Use these as the main qualities to build
-									the room, response, and pace around.
+									Use these qualities to shape the room,
+									response, and pace.
 								</div>
 							</div>
 
@@ -6699,10 +6710,8 @@
 						</div>
 
 						<div class="regulationSupportNote">
-							Regulation Supports are practical, non-medical
-							support suggestions. They are meant to reduce input,
-							clarify the next move, and make the read usable in
-							real life.
+							Practical, non-medical support suggestions for reducing
+							input, clarifying the next move, and making the read usable.
 						</div>
 					</section>
 
@@ -7062,9 +7071,7 @@
 							<div>
 								<h2>Share Card</h2>
 								<p>
-									Save or copy the daily guidance layer. This
-									card shows the practical read, not the full
-									engine.
+									Save or copy a compact version of today’s practical read.
 								</p>
 							</div>
 
@@ -9476,23 +9483,23 @@
 				const base = getHarmonicBaseName(field || "");
 				const fields = {
 					Structured:
-						"Today may favor structure, sequence, clear boundaries, and one practical step.",
+						"Today favors structure, sequence, and one practical step.",
 					Contained:
-						"Today may feel more inward or protected. Let the signal shape before forcing it outward.",
+						"Today may ask for more privacy, boundary, or quiet containment.",
 					Chaotic:
-						"Today may carry more movement, charge, or sudden signal. Give the energy one safe channel.",
+						"Today carries more movement or charge. Give it one safe channel.",
 					Relational:
-						"Today may feel relationally louder than usual. Tone, distance, contact, or emotional feedback may stand out.",
+						"Today may speak through tone, contact, distance, or emotional feedback.",
 					Threshold:
-						"Today may bring a decision edge, timing point, or crossing. Pause before moving through it.",
+						"Today may bring a decision edge or timing point. Pause before crossing.",
 					Reconstructive:
-						"Today may bring repair pressure. Choose one real adjustment instead of treating everything like a rebuild.",
+						"Today may bring repair pressure. Choose one real adjustment, not a full rebuild.",
 					Integrative:
-						"Today may widen the pattern. Gather the main thread without trying to process everything.",
+						"Today may widen the pattern. Find the main thread and leave the rest for later.",
 					Diffused:
-						"Today may feel foggier, more porous, or harder to define. Reduce input and find one simple true line.",
+						"Today may feel porous or hard to define. Lower input and find one true line.",
 					Regulated:
-						"Today may support steadier pacing, rhythm, and manageable movement. Let one clean action carry the day.",
+						"Today supports steadier rhythm. Let one clean action be enough.",
 				};
 				return fields[base] || "Today’s field is active. Keep the next move simple and readable.";
 			}
@@ -9547,19 +9554,19 @@
 				let read = getFieldPlainLanding(field);
 
 				if (primary === "Chaotic") {
-					read += " You may notice shifts quickly, so keep things simple before interpreting the whole field.";
+					read += " Notice the shift, then keep the response simple.";
 				} else if (primary === "Relational") {
-					read += " Keep your own center before reading the room.";
+					read += " Stay centered before reading the room.";
 				} else if (primary === "Structured") {
-					read += " Let structure help, but do not make the whole day a correction project.";
+					read += " Use structure for the next step, not the whole day.";
 				} else if (primary === "Integrative") {
 					read += " Let the wider pattern clarify one useful thread.";
 				}
 
 				if (currentState === "Overloaded") {
-					read += " Because load is high, reduce scope before adding more.";
+					read += " Load is high, so reduce scope.";
 				} else if (currentState === "Threshold") {
-					read += " Because the system is near an edge, timing matters more than intensity.";
+					read += " Timing matters more than intensity.";
 				}
 
 				return {
@@ -9589,20 +9596,20 @@
 
 				if (getHarmonicBaseName(primary) === "Chaotic") {
 					supportLines.push(
-						"Fast signal recognition may notice the shift early, so keep things simple before interpreting the whole situation."
+						"Notice the shift early, then keep the response simple."
 					);
 				} else if (getHarmonicBaseName(primary) === "Relational") {
 					supportLines.push(
-						"Keep your own center before reading tone, closeness, distance, or response."
+						"Stay centered before reading tone, distance, or response."
 					);
 				} else if (getHarmonicBaseName(primary) === "Structured") {
 					supportLines.push(
-						"Use structure for one next step, not as a reason to correct the whole field."
+						"Use structure for one next step, not the whole field."
 					);
 				}
 
 				if (currentState === "Overloaded") {
-					supportLines.push("Load is high, so reduce scope before adding more interpretation.");
+					supportLines.push("Load is high, so reduce scope.");
 				} else if (currentState === "Threshold") {
 					supportLines.push("Timing matters more than intensity right now.");
 				}
@@ -9636,7 +9643,7 @@
 					return "Chaotic Root = fast disruption detection. This does not mean the person is chaos. It means the system detects disruption quickly.";
 				}
 
-				return "Official system language stays intact. Plain language translates it first.";
+				return "Official labels stay intact. Plain language comes first.";
 			}
 
 			function updateTopClarityUI({
@@ -9820,7 +9827,7 @@
 				setText("regulationSupportState", supports.state || "—");
 				setText(
 					"regulationSupportStateText",
-					"Use this as the practical state read for what today asks your system to regulate first."
+					"What today asks your system to regulate first."
 				);
 				setText("regulationSupportQuality", supports.quality || "—");
 
@@ -12510,10 +12517,8 @@
 
 			function getShareText() {
 				const supports = latestSharePayload.regulationSupports || {};
-				const tryFirstItems = getShortTryFirstItems(supports, 5);
-				const avoidItems = getShortAvoidItems(supports, 4);
-				const shortWhy = buildShortSupportWhy(supports);
-				const soundSupport = getConciseSoundSupport(supports);
+				const tryFirstItems = getShortTryFirstItems(supports, 3);
+				const avoidItems = getShortAvoidItems(supports, 3);
 
 				const lines = [
 					"Lucy.OS Pro",
@@ -12576,14 +12581,6 @@
 						"Do not add more input when a smaller move would work."
 					)
 				);
-
-				if (shortWhy && shortWhy !== "—") {
-					lines.push("", "Why This Helps:", shortWhy);
-				}
-
-				if (soundSupport) {
-					lines.push("", "Sound Support:", soundSupport);
-				}
 
 				lines.push(
 					"",
