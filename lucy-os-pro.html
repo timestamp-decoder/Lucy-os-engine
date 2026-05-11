@@ -2,6 +2,7 @@
 <!-- Practice edit: upload/edit/download workflow verified. -->
 <!-- Pass 1 update: added top clarity, plain read, system read, and personal landing display layer. Engine, API, scoring, Moonstamp, saved profiles, share export, and calibration tests unchanged. -->
 <!-- Pass 2 update: polished top read snapshot and Regulation Supports language/display density only. Engine, API, scoring, Moonstamp, saved profiles, share export, dashboard logic, and calibration tests unchanged. -->
+<!-- Pass 3 update: compressed copied share text and visual share-card Regulation Supports only. Full in-app supports, engine, API, scoring, Moonstamp, saved profiles, backend behavior, dashboard logic, and calibration tests unchanged. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -7302,7 +7303,7 @@
 													<div
 														class="shareCardCoreTitle"
 													>
-														Support quality:
+														Best Support:
 													</div>
 													<div
 														class="shareCardCoreText"
@@ -7316,7 +7317,7 @@
 													<div
 														class="shareCardCoreTitle"
 													>
-														Try:
+														Try First:
 													</div>
 													<div
 														class="shareCardCoreText"
@@ -7330,7 +7331,7 @@
 													<div
 														class="shareCardCoreTitle"
 													>
-														Music support:
+														Avoid:
 													</div>
 													<div
 														class="shareCardCoreText"
@@ -8363,6 +8364,8 @@
 					state: "—",
 					quality: "—",
 					tryItems: [],
+					tryFirstItems: [],
+					avoidItems: [],
 					why: "—",
 					music: "—",
 				},
@@ -9715,6 +9718,94 @@
 				);
 			}
 
+			function buildShortSupportQuality(supports) {
+				const raw = String(supports?.quality || "").trim();
+				if (!raw || raw === "—") return "—";
+
+				const replacements = {
+					softness: "softer input",
+					"lower input": "softer input",
+				};
+
+				const parts = raw
+					.split(",")
+					.map((part) => part.trim())
+					.filter(Boolean)
+					.map((part) => replacements[part.toLowerCase()] || part);
+
+				const preferredOrder = [
+					"warmth",
+					"softer input",
+					"centered contact",
+					"proportional response",
+					"smaller scope",
+					"clear structure",
+					"grounding",
+					"steady rhythm",
+					"one-task focus",
+					"external structure",
+				];
+
+				const unique = [];
+				[...preferredOrder, ...parts].forEach((item) => {
+					if (
+						parts.some(
+							(part) => part.toLowerCase() === item.toLowerCase()
+						) &&
+						!unique.some(
+							(existing) => existing.toLowerCase() === item.toLowerCase()
+						)
+					) {
+						unique.push(item);
+					}
+				});
+
+				return unique.slice(0, 5).join(", ") || raw;
+			}
+
+			function buildShortSupportWhy(supports) {
+				const raw = String(supports?.why || "").trim();
+				if (!raw || raw === "—") return "—";
+
+				const sentences = raw
+					.match(/[^.!?]+[.!?]+|[^.!?]+$/g)
+					?.map((sentence) => sentence.trim())
+					.filter(Boolean);
+
+				return (sentences && sentences.length ? sentences.slice(0, 2).join(" ") : raw).trim();
+			}
+
+			function getShortTryFirstItems(supports, maxItems = 5) {
+				const tryFirstItems = Array.isArray(supports?.tryFirstItems)
+					? supports.tryFirstItems
+					: [];
+				const fallbackItems = Array.isArray(supports?.tryItems)
+					? supports.tryItems
+					: [];
+				return (tryFirstItems.length ? tryFirstItems : fallbackItems)
+					.filter(Boolean)
+					.slice(0, maxItems);
+			}
+
+			function getShortAvoidItems(supports, maxItems = 4) {
+				return (Array.isArray(supports?.avoidItems) ? supports.avoidItems : [])
+					.filter(Boolean)
+					.slice(0, maxItems);
+			}
+
+			function formatShareBulletList(items, fallback) {
+				const cleanItems = Array.isArray(items) ? items.filter(Boolean) : [];
+				return cleanItems.length
+					? cleanItems.map((item) => `- ${item}`).join("\n")
+					: `- ${fallback}`;
+			}
+
+			function getConciseSoundSupport(supports) {
+				const music = String(supports?.music || "").trim();
+				if (!music || music === "—" || music.length > 120) return "";
+				return music;
+			}
+
 			function updateRegulationSupportsUI(regulationSupports) {
 				const supports = regulationSupports || {
 					state: "—",
@@ -9761,15 +9852,26 @@
 					`${supports.state || "—"} · ${supports.quality || "—"}`
 				);
 
+				const shareTryItems = getShortTryFirstItems(supports, 3);
+				const shareAvoidItems = getShortAvoidItems(supports, 3);
+
 				setText("shareCardRegulationState", supports.state || "—");
-				setText("shareCardRegulationQuality", supports.quality || "—");
+				setText(
+					"shareCardRegulationQuality",
+					buildShortSupportQuality(supports) || "—"
+				);
 				setText(
 					"shareCardRegulationTry",
-					Array.isArray(supports.tryItems) && supports.tryItems.length
-						? supports.tryItems.slice(0, 5).join(" · ")
+					shareTryItems.length
+						? shareTryItems.join(" · ")
 						: "Choose one small support."
 				);
-				setText("shareCardRegulationMusic", supports.music || "—");
+				setText(
+					"shareCardRegulationMusic",
+					shareAvoidItems.length
+						? shareAvoidItems.join(" · ")
+						: "Do not add more input when a smaller move would work."
+				);
 			}
 
 			function getSavedProfiles() {
@@ -12292,6 +12394,8 @@
 						state: "—",
 						quality: "—",
 						tryItems: [],
+						tryFirstItems: [],
+						avoidItems: [],
 						why: "—",
 						music: "—",
 					},
@@ -12405,97 +12509,92 @@
 			}
 
 			function getShareText() {
+				const supports = latestSharePayload.regulationSupports || {};
+				const tryFirstItems = getShortTryFirstItems(supports, 5);
+				const avoidItems = getShortAvoidItems(supports, 4);
+				const shortWhy = buildShortSupportWhy(supports);
+				const soundSupport = getConciseSoundSupport(supports);
+
 				const lines = [
 					"Lucy.OS Pro",
 					"",
 					"Today’s System Weather:",
-					latestSharePayload.systemWeather,
+					latestSharePayload.systemWeather ||
+						"Structured signal architecture meeting a live field",
 					"",
 					"Current Field Direction:",
 					latestSharePayload.fieldDirectionTitle || "—",
 					latestSharePayload.fieldDirectionText ||
 						"Waiting for field direction.",
-				];
-
-				if (latestSharePayload.fieldUndertone?.active) {
-					lines.push(
-						"",
-						"Field Undertone:",
-						latestSharePayload.fieldUndertone.title ||
-							"Secondary pressure is close underneath",
-						latestSharePayload.fieldUndertone.text ||
-							"The secondary field modifies the read without replacing the selected field."
-					);
-				}
-
-				lines.push(
 					"",
 					"Core Rule:",
-					"Use your gift:",
-					latestSharePayload.coreRule?.useGift ||
-						"Use your gift cleanly.",
-					"Watch the distortion:",
-					latestSharePayload.coreRule?.watchDistortion ||
-						"Watch the distortion before responding.",
-					"Make the move:",
-					latestSharePayload.coreRule?.makeMove ||
+					`Use your gift: ${
+						latestSharePayload.coreRule?.useGift ||
+						"Use your gift cleanly."
+					}`,
+					`Watch the distortion: ${
+						latestSharePayload.coreRule?.watchDistortion ||
+						"Watch the distortion before responding."
+					}`,
+					`Make the move: ${
+						latestSharePayload.coreRule?.makeMove ||
 						latestSharePayload.goodMove ||
 						"Choose one clear next move."
-				);
+					}`,
+				];
 
 				if (latestSharePayload.moonstampModifier?.hasMoonstamp) {
 					lines.push(
 						"",
 						"Moonstamp Modifier:",
 						latestSharePayload.moonstampModifier.title ||
-							"Lunar timing modifier",
-						latestSharePayload.moonstampModifier.text ||
-							"The lunar field adds timing texture to today’s read."
+							"Lunar timing modifier"
 					);
-				}
 
-				const supports = latestSharePayload.regulationSupports || {};
+					const moonText =
+						latestSharePayload.moonstampModifier.shareLine ||
+						latestSharePayload.moonstampModifier.text ||
+						"The lunar field adds timing texture to today’s read.";
+					if (moonText) lines.push(moonText);
+				}
 
 				lines.push(
 					"",
 					"Regulation Supports:",
-					"State:",
-					supports.state || "—",
-					"Support quality needed:",
-					supports.quality || "—",
-					"Try:",
-					Array.isArray(supports.tryItems) && supports.tryItems.length
-						? supports.tryItems
-								.map((item) => `- ${item}`)
-								.join("\n")
-						: "- Choose one small support and keep the field simple.",
-					"Why:",
-					supports.why || "—",
-					"Music Support:",
-					supports.music || "—"
+					`State: ${supports.state || "—"}`,
+					`Best Support Today: ${buildShortSupportQuality(supports) || "—"}`,
+					"",
+					"Try First:",
+					formatShareBulletList(
+						tryFirstItems,
+						"Choose one small support and keep the field simple."
+					),
+					"",
+					"Avoid:",
+					formatShareBulletList(
+						avoidItems,
+						"Do not add more input when a smaller move would work."
+					)
 				);
+
+				if (shortWhy && shortWhy !== "—") {
+					lines.push("", "Why This Helps:", shortWhy);
+				}
+
+				if (soundSupport) {
+					lines.push("", "Sound Support:", soundSupport);
+				}
 
 				lines.push(
 					"",
 					"Today’s Read:",
-					latestSharePayload.todayRead,
-					"",
-					"In Real Life, This Means:",
-					latestSharePayload.realLifeText ||
-						"Translate the read into one practical action.",
-					"",
-					"Motion Style:",
-					latestSharePayload.motionStyle || "—",
-					latestSharePayload.motionStyleRead || "",
-					"",
-					"Today’s Driver:",
-					latestSharePayload.driverNote,
+					latestSharePayload.todayRead || "Waiting for daily read.",
 					"",
 					"One Good Move:",
-					latestSharePayload.goodMove,
+					latestSharePayload.goodMove || "Choose one clear next move.",
 					"",
-					"Return to yourself by:",
-					latestSharePayload.returnText,
+					"Return Path:",
+					latestSharePayload.returnText || "Return to your own center first.",
 					"",
 					"Personal field guidance · Lucy.OS Pro"
 				);
