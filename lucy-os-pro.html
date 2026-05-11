@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <!-- Practice edit: upload/edit/download workflow verified. -->
 <!-- Pass 1 update: added top clarity, plain read, system read, and personal landing display layer. Engine, API, scoring, Moonstamp, saved profiles, share export, and calibration tests unchanged. -->
+<!-- Pass 2 update: polished top read snapshot and Regulation Supports language/display density only. Engine, API, scoring, Moonstamp, saved profiles, share export, dashboard logic, and calibration tests unchanged. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -5569,6 +5570,10 @@
 						<strong id="mobileSnapshotMove">—</strong>
 					</div>
 					<div>
+						<span>Do Not Overdo</span>
+						<strong id="mobileSnapshotAvoid">—</strong>
+					</div>
+					<div>
 						<span>Regulation Support</span>
 						<strong id="mobileSnapshotSupport">—</strong>
 					</div>
@@ -6596,9 +6601,9 @@
 							<div>
 								<h2>Regulation Supports</h2>
 								<p>
-									Practical support based on current state,
-									today’s field, motion style, load,
-									regulation, and Moonstamp timing.
+									Practical supports for reducing input,
+									keeping the field proportional, and choosing
+									the next clean move.
 								</p>
 							</div>
 
@@ -6635,7 +6640,7 @@
 
 							<div class="regulationSupportBlock">
 								<div class="regulationSupportLabel">
-									Support Quality Needed
+									Best Support Today
 								</div>
 								<div
 									class="regulationSupportValue"
@@ -6644,14 +6649,13 @@
 									—
 								</div>
 								<div class="regulationSupportText">
-									The support quality tells you what kind of
-									environment or behavior helps the field
-									settle.
+									Use these as the main qualities to build
+									the room, response, and pace around.
 								</div>
 							</div>
 
 							<div class="regulationSupportBlock full">
-								<div class="regulationSupportLabel">Try</div>
+								<div class="regulationSupportLabel">Try First</div>
 								<ul
 									class="regulationSupportList"
 									id="regulationSupportTry"
@@ -6660,8 +6664,18 @@
 								</ul>
 							</div>
 
+							<div class="regulationSupportBlock full">
+								<div class="regulationSupportLabel">Avoid</div>
+								<ul
+									class="regulationSupportList"
+									id="regulationSupportAvoid"
+								>
+									<li>Waiting for avoid notes.</li>
+								</ul>
+							</div>
+
 							<div class="regulationSupportBlock">
-								<div class="regulationSupportLabel">Why</div>
+								<div class="regulationSupportLabel">Why This Helps</div>
 								<div
 									class="regulationSupportText"
 									id="regulationSupportWhy"
@@ -6672,7 +6686,7 @@
 
 							<div class="regulationSupportBlock">
 								<div class="regulationSupportLabel">
-									Music Support
+									Optional Sound Support
 								</div>
 								<div
 									class="regulationSupportText"
@@ -9059,6 +9073,209 @@
 				return [...new Set(items)].slice(0, 8);
 			}
 
+			function stripSupportPrefix(item) {
+				return String(item || "")
+					.replace(/^Light\/environment:\s*/i, "")
+					.replace(/^Scent:\s*/i, "")
+					.replace(/^Plant\/nature:\s*/i, "")
+					.replace(/^Music\/sound:\s*/i, "")
+					.replace(/^Behavior:\s*/i, "")
+					.replace(/^Intensity modifier:\s*/i, "")
+					.replace(/^Contact modifier:\s*/i, "")
+					.replace(/^Repair modifier:\s*/i, "")
+					.replace(/^Clarity modifier:\s*/i, "")
+					.replace(/^Motion modifier:\s*/i, "")
+					.replace(/^Moonstamp modifier:\s*/i, "")
+					.trim();
+			}
+
+			function buildTryFirstItemsFromSupportBank(
+				bank,
+				intensityLabel,
+				field,
+				motionStyle,
+				moonstampModifierRead
+			) {
+				const items = [];
+				const baseField = getHarmonicBaseName(field || "Regulated");
+
+				if (baseField === "Relational") {
+					items.push(
+						"Warm light or a softer room.",
+						"One gentle song or steady familiar music.",
+						"One plain sentence instead of a long explanation.",
+						"Keep responsibility proportional."
+					);
+				} else if (baseField === "Chaotic") {
+					items.push(
+						"Clear a little space around you.",
+						"Use one steady rhythm or one song on repeat.",
+						"Move the charge through one safe channel.",
+						"Decide after the spike has a little form."
+					);
+				} else if (baseField === "Diffused") {
+					items.push(
+						"Lower noise, tabs, and screen input.",
+						"Choose one grounding light or quiet room.",
+						"Write one true sentence.",
+						"Pick one anchor before interpreting."
+					);
+				} else if (baseField === "Reconstructive") {
+					items.push(
+						"Make the repair visible and specific.",
+						"Fix one weak point only.",
+						"Stop before the repair becomes a teardown.",
+						"Use grounded light, tools, or a simple workspace."
+					);
+				} else if (baseField === "Threshold") {
+					items.push(
+						"Pause before replying.",
+						"Name the real decision or crossing.",
+						"Delay what does not need to move now.",
+						"Cross one threshold only."
+					);
+				} else if (baseField === "Structured") {
+					items.push(
+						"Clear one surface or visible next step.",
+						"Write the next action down.",
+						"Use clean light and low-distraction focus.",
+						"Stop at one usable structure."
+					);
+				} else if (baseField === "Contained") {
+					items.push(
+						"Make the space feel protected.",
+						"Take privacy before explaining.",
+						"Use warm light, a soft room, or a closed door.",
+						"Release one small piece only."
+					);
+				} else if (baseField === "Integrative") {
+					items.push(
+						"Open a clean note or simple map.",
+						"Connect only the pieces that help.",
+						"Choose one meaningful next step.",
+						"Leave extra threads for later."
+					);
+				} else {
+					items.push(
+						"Keep the routine simple.",
+						"Do one task at a time.",
+						"Use a timer or normal rhythm.",
+						"Stop before pacing turns into over-control."
+					);
+				}
+
+				if (intensityLabel === "Overloaded") {
+					items.push(
+						"Reduce phone/social input.",
+						"Choose the smallest workable version."
+					);
+				} else if (intensityLabel === "Mobilized") {
+					items.push("Use movement, but keep it to one channel.");
+				} else if (intensityLabel === "Threshold") {
+					items.push("Let timing matter more than intensity.");
+				}
+
+				if (motionHas(motionStyle, "Chaotic")) {
+					items.push("Discharge the charge safely before deciding.");
+				}
+
+				if (motionHas(motionStyle, "Contained")) {
+					items.push("Protect the channel before explaining.");
+				}
+
+				const moonstampText = String(
+					moonstampModifierRead?.text || ""
+				).toLowerCase();
+				if (
+					moonstampText.includes("lower-load") ||
+					moonstampText.includes("simplify") ||
+					moonstampText.includes("reduce")
+				) {
+					items.push("Remove one unnecessary demand.");
+				}
+
+				return [...new Set(items.filter(Boolean))].slice(0, 6);
+			}
+
+			function buildAvoidItemsForSupport(field, intensityLabel, motionStyle) {
+				const baseField = getHarmonicBaseName(field || "Regulated");
+				const avoidMap = {
+					Structured: [
+						"Over-correcting what only needs one clear step.",
+						"Turning clarity into pressure.",
+					],
+					Contained: [
+						"Holding everything inside longer than needed.",
+						"Explaining before the channel feels protected.",
+					],
+					Chaotic: [
+						"Reacting to the first spike.",
+						"Adding speed when the signal needs a channel.",
+					],
+					Relational: [
+						"Over-reading tone.",
+						"Taking responsibility for another person’s signal.",
+					],
+					Threshold: [
+						"Forcing the crossing before the timing is clean.",
+						"Making every edge urgent.",
+					],
+					Reconstructive: [
+						"Turning one pressure point into a full rebuild.",
+						"Repairing past the actual weak point.",
+					],
+					Integrative: [
+						"Trying to connect every loose piece at once.",
+						"Adding meaning when the field needs one thread.",
+					],
+					Diffused: [
+						"Adding more input when the field is already hard to define.",
+						"Forcing clarity before an anchor is present.",
+					],
+					Regulated: [
+						"Over-managing a day that only needs rhythm.",
+						"Tightening when pacing would be enough.",
+					],
+				};
+
+				const items = [...(avoidMap[baseField] || avoidMap.Regulated)];
+
+				if (intensityLabel === "Overloaded") {
+					items.push(
+						"Big emotional processing while activated.",
+						"Adding more input when load is already high."
+					);
+				}
+
+				if (motionHas(motionStyle, "Chaotic")) {
+					items.push("Making the first signal the final answer.");
+				}
+
+				return [...new Set(items.filter(Boolean))].slice(0, 5);
+			}
+
+			function buildSnapshotSupportLine(field, intensityLabel, regulationSupports) {
+				const baseField = getHarmonicBaseName(field || "Regulated");
+				if (baseField === "Relational") {
+					return intensityLabel === "Overloaded"
+						? "Lower input, use plain language, and return to your own center before responding."
+						: "Use warmth, plain language, and proportional contact before interpreting.";
+				}
+				if (baseField === "Chaotic") {
+					return "Give the charge one safe channel before responding.";
+				}
+				if (baseField === "Diffused") {
+					return "Reduce input, choose one anchor, and let the real signal stand out.";
+				}
+				if (baseField === "Reconstructive") {
+					return "Repair one weak point, then stop before the whole field becomes a rebuild.";
+				}
+				if (baseField === "Threshold") {
+					return "Pause, name the crossing, and let timing slow the urgency.";
+				}
+				return regulationSupports?.tryFirstItems?.[0] || "Choose one small support and keep the field simple.";
+			}
+
 			function buildRegulationSupports(
 				harmonics,
 				data,
@@ -9135,6 +9352,18 @@
 					motionStyle,
 					moonstampModifierRead
 				);
+				const tryFirstItems = buildTryFirstItemsFromSupportBank(
+					bank,
+					intensityLabel,
+					field,
+					motionStyle,
+					moonstampModifierRead
+				);
+				const avoidItems = buildAvoidItemsForSupport(
+					field,
+					intensityLabel,
+					motionStyle
+				);
 
 				let why = bank.why;
 
@@ -9160,6 +9389,13 @@
 					state: stateLine,
 					quality,
 					tryItems,
+					tryFirstItems,
+					avoidItems,
+					snapshotSupport: buildSnapshotSupportLine(
+						field,
+						intensityLabel,
+						{ tryFirstItems }
+					),
 					why,
 					music,
 				};
@@ -9169,30 +9405,25 @@
 				if (!regulationSupports)
 					return "Choose one small support and keep the field simple.";
 
+				if (regulationSupports.snapshotSupport) {
+					return regulationSupports.snapshotSupport;
+				}
+
+				const tryFirstItems = Array.isArray(regulationSupports.tryFirstItems)
+					? regulationSupports.tryFirstItems
+					: [];
+				if (tryFirstItems.length) {
+					return tryFirstItems.slice(0, 3).join(" ");
+				}
+
 				const tryItems = Array.isArray(regulationSupports.tryItems)
 					? regulationSupports.tryItems
 					: [];
-
-				const light = tryItems.find((item) =>
-					String(item).toLowerCase().startsWith("light/environment")
-				);
 				const behavior = tryItems.find((item) =>
 					String(item).toLowerCase().startsWith("behavior")
 				);
-				const scent = tryItems.find((item) =>
-					String(item).toLowerCase().startsWith("scent")
-				);
-
-				const parts = [];
-
-				if (light)
-					parts.push(light.replace(/^Light\/environment:\s*/i, ""));
-				if (scent) parts.push(scent.replace(/^Scent:\s*/i, ""));
-				if (behavior)
-					parts.push(behavior.replace(/^Behavior:\s*/i, ""));
-
-				return parts.length
-					? parts.slice(0, 3).join(" ")
+				return behavior
+					? stripSupportPrefix(behavior)
 					: regulationSupports.quality || "Choose one small support.";
 			}
 
@@ -9336,6 +9567,51 @@
 				};
 			}
 
+			function splitFirstSentence(text) {
+				const source = String(text || "").trim();
+				if (!source) return { first: "", rest: "" };
+				const match = source.match(/^(.+?[.!?])\s+(.*)$/);
+				if (!match) return { first: source, rest: "" };
+				return { first: match[1].trim(), rest: match[2].trim() };
+			}
+
+			function buildSnapshotPlainRead(harmonics, data, guidance, distortionState) {
+				const primary = harmonics?.primary || "Structured";
+				const field = harmonics?.todayField || "Regulated";
+				const currentState = stateLabelFromMode(data?.state?.mode || "");
+				const fieldLanding = splitFirstSentence(getFieldPlainLanding(field));
+				const supportLines = [];
+
+				if (fieldLanding.rest) supportLines.push(fieldLanding.rest);
+
+				if (getHarmonicBaseName(primary) === "Chaotic") {
+					supportLines.push(
+						"Fast signal recognition may notice the shift early, so keep things simple before interpreting the whole situation."
+					);
+				} else if (getHarmonicBaseName(primary) === "Relational") {
+					supportLines.push(
+						"Keep your own center before reading tone, closeness, distance, or response."
+					);
+				} else if (getHarmonicBaseName(primary) === "Structured") {
+					supportLines.push(
+						"Use structure for one next step, not as a reason to correct the whole field."
+					);
+				}
+
+				if (currentState === "Overloaded") {
+					supportLines.push("Load is high, so reduce scope before adding more interpretation.");
+				} else if (currentState === "Threshold") {
+					supportLines.push("Timing matters more than intensity right now.");
+				}
+
+				return {
+					headline: fieldLanding.first || "Today’s field is active.",
+					support: supportLines.join(" ") || "Keep the next move simple and readable.",
+					move: guidance?.move || "Make one clear move before trying to solve everything.",
+					avoid: getPlainAvoid(field, distortionState),
+				};
+			}
+
 			function buildPersonalChartTranslation(harmonics, data, guidance) {
 				const primary = harmonics?.primary || "Structured";
 				const support = getHarmonicBaseName(harmonics?.support || "Regulated");
@@ -9402,8 +9678,7 @@
 			}
 
 			function updateMobileReadSnapshot({
-				systemWeather,
-				profileAwareRead,
+				snapshotRead,
 				guidance,
 				regulationSupports,
 				state,
@@ -9412,18 +9687,21 @@
 			}) {
 				setText(
 					"mobileSnapshotWeather",
-					systemWeather || "Waiting for field read."
+					snapshotRead?.headline || "Waiting for field read."
 				);
 
-				const shortRead =
-					profileAwareRead?.shareRead ||
-					profileAwareRead?.todayRead ||
-					"Calculate to see today’s practical read.";
-				setText("mobileSnapshotText", shortRead);
+				setText(
+					"mobileSnapshotText",
+					snapshotRead?.support || "Calculate to see today’s practical read."
+				);
 
 				setText(
 					"mobileSnapshotMove",
-					guidance?.move || "Choose one clear next move."
+					snapshotRead?.move || guidance?.move || "Choose one clear next move."
+				);
+				setText(
+					"mobileSnapshotAvoid",
+					snapshotRead?.avoid || "Do not make the whole field bigger than the next clean move."
 				);
 				setText(
 					"mobileSnapshotSupport",
@@ -9442,6 +9720,8 @@
 					state: "—",
 					quality: "—",
 					tryItems: [],
+					tryFirstItems: [],
+					avoidItems: [],
 					why: "—",
 					music: "—",
 				};
@@ -9449,19 +9729,28 @@
 				setText("regulationSupportState", supports.state || "—");
 				setText(
 					"regulationSupportStateText",
-					"Use this as the practical regulation read for the current field. It does not change your root pattern."
+					"Use this as the practical state read for what today asks your system to regulate first."
 				);
 				setText("regulationSupportQuality", supports.quality || "—");
 
-				const list = document.getElementById("regulationSupportTry");
-				if (list) {
-					list.innerHTML =
-						Array.isArray(supports.tryItems) &&
-						supports.tryItems.length
-							? supports.tryItems
-									.map((item) => `<li>${item}</li>`)
-									.join("")
-							: "<li>Choose one small support and keep the field simple.</li>";
+				const tryList = document.getElementById("regulationSupportTry");
+				const tryFirstItems = Array.isArray(supports.tryFirstItems)
+					? supports.tryFirstItems
+					: [];
+				if (tryList) {
+					tryList.innerHTML = tryFirstItems.length
+						? tryFirstItems.map((item) => `<li>${item}</li>`).join("")
+						: "<li>Choose one small support and keep the field simple.</li>";
+				}
+
+				const avoidList = document.getElementById("regulationSupportAvoid");
+				const avoidItems = Array.isArray(supports.avoidItems)
+					? supports.avoidItems
+					: [];
+				if (avoidList) {
+					avoidList.innerHTML = avoidItems.length
+						? avoidItems.map((item) => `<li>${item}</li>`).join("")
+						: "<li>Do not add more input when a smaller move would work.</li>";
 				}
 
 				setText("regulationSupportWhy", supports.why || "—");
@@ -12980,8 +13269,12 @@
 				});
 
 				updateMobileReadSnapshot({
-					systemWeather,
-					profileAwareRead,
+					snapshotRead: buildSnapshotPlainRead(
+						harmonics,
+						data,
+						guidance,
+						distortionState
+					),
 					guidance,
 					regulationSupports,
 					state: currentState,
