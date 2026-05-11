@@ -4,6 +4,7 @@
 <!-- Pass 2 update: polished top read snapshot and Regulation Supports language/display density only. Engine, API, scoring, Moonstamp, saved profiles, share export, dashboard logic, and calibration tests unchanged. -->
 <!-- Pass 3 update: compressed copied share text and visual share-card Regulation Supports only. Full in-app supports, engine, API, scoring, Moonstamp, saved profiles, backend behavior, dashboard logic, and calibration tests unchanged. -->
 <!-- Pass 4 update: final stabilization / stop point polish for top read, Regulation Supports, share text, and mobile density only. Engine, API, scoring, Moonstamp, saved profiles, backend behavior, dashboard logic, and calibration tests unchanged. -->
+<!-- Pass 5 update: added Electrical Mapping E1 hidden observation helper only. No visible UI, API, scoring, Moonstamp, dashboard, saved profiles, share export, or calibration-test behavior changed. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -13270,8 +13271,352 @@
 				};
 			}
 
+
+			const ELECTRICAL_PRIMITIVES = {
+				voltage: {
+					label: "Voltage",
+					note: "Activation, charge, speed, and signal pressure.",
+				},
+				current: {
+					label: "Current",
+					note: "How usable and routeable the signal feels.",
+				},
+				resistance: {
+					label: "Resistance",
+					note: "Containment, friction, limits, and form-making pressure.",
+				},
+				bandwidth: {
+					label: "Bandwidth",
+					note: "How many channels or layers are open at once.",
+				},
+				static: {
+					label: "Static",
+					note: "Noise, scatter, fog, or signal interference.",
+				},
+				grounding: {
+					label: "Grounding",
+					note: "Return path, containment, and body-level stabilization.",
+				},
+				compression: {
+					label: "Compression",
+					note: "Concentrated structural pressure and repair load.",
+				},
+				coherence: {
+					label: "Coherence",
+					note: "Clean rhythm, proportional signal, and field alignment.",
+				},
+			};
+
+			const ELECTRICAL_PRIMARY_READS = {
+				shortCircuitRisk: {
+					label: "Short circuit risk",
+					humanTranslation:
+						"High charge is meeting low containment, so the signal needs a safer route before more input is added.",
+					supportTone:
+						"Lower the load, narrow the channel, and create one clean return path.",
+					riskNote:
+						"Do not add more stimulation, more decisions, or more relational pressure while the field is overloaded.",
+					routingNote:
+						"Route through grounding first, then choose one small action.",
+				},
+				compressionRepair: {
+					label: "Compression with repair signature",
+					humanTranslation:
+						"Pressure is concentrating around something that may need repair, strengthening, or recalibration.",
+					supportTone:
+						"Use structure gently. Repair one weak point instead of rebuilding the whole system.",
+					riskNote:
+						"Do not mistake concentrated pressure for a command to fix everything at once.",
+					routingNote:
+						"Route through one contained repair move.",
+				},
+				overConductiveRelational: {
+					label: "Over-conductive relational field",
+					humanTranslation:
+						"The system may be taking in too much from the relational field before sorting mine from not-mine.",
+					supportTone:
+						"Create emotional insulation and keep responsibility proportional.",
+					riskNote:
+						"Do not absorb the whole room as if it belongs to you.",
+					routingNote:
+						"Route through clean contact, warmth, and boundaries.",
+				},
+				wideBandwidthStatic: {
+					label: "Wide bandwidth with static",
+					humanTranslation:
+						"Many channels are open at once, but the signal may not be fully sorted yet.",
+					supportTone:
+						"Reduce input, name the strongest channel, and let the rest stay in the background.",
+					riskNote:
+						"Do not treat every open thread as equally urgent.",
+					routingNote:
+						"Route through simplification and one clear priority.",
+				},
+				highVoltageCleanCurrent: {
+					label: "High voltage with clean current",
+					humanTranslation:
+						"The system has strong activation, but the signal is usable when it has a clear channel.",
+					supportTone:
+						"Move the charge into one focused action or clean expression.",
+					riskNote:
+						"Do not let speed scatter the signal across too many channels.",
+					routingNote:
+						"Route through action with form.",
+				},
+				highVoltageLowGrounding: {
+					label: "High voltage with low grounding",
+					humanTranslation:
+						"Activation is high, but the return path is not strong enough yet.",
+					supportTone:
+						"Ground before interpreting, deciding, or escalating.",
+					riskNote:
+						"Do not let the body outrun the field.",
+					routingNote:
+						"Route through body, pace, and reduced input.",
+				},
+				resistanceUsefulForm: {
+					label: "Resistance creating useful form",
+					humanTranslation:
+						"Friction or limits may be helping the signal become more organized.",
+					supportTone:
+						"Let the constraint shape the next clean move.",
+					riskNote:
+						"Do not assume slowness means failure; it may be forming the container.",
+					routingNote:
+						"Route through sequence, boundary, and structure.",
+				},
+				cleanChannelSteadyCurrent: {
+					label: "Clean channel with steady current",
+					humanTranslation:
+						"The signal has enough structure and regulation to move cleanly.",
+					supportTone:
+						"Keep the channel simple and let steady movement do the work.",
+					riskNote:
+						"Do not overcomplicate a field that is already routeable.",
+					routingNote:
+						"Route through steady rhythm and clean completion.",
+				},
+				lowSignalStableField: {
+					label: "Low signal / stable field",
+					humanTranslation:
+						"The field is quieter or lower-load, which can support recovery, maintenance, or simple continuation.",
+					supportTone:
+						"Use the quiet to reset baseline instead of forcing intensity.",
+					riskNote:
+						"Do not create pressure just because the field is not loud.",
+					routingNote:
+						"Route through maintenance, rest, and small stable actions.",
+				},
+			};
+
+			function normalizeElectricalValue(value, fallback = 0) {
+				return clamp(safeNum(value, fallback), 0, 1);
+			}
+
+			function getElectricalLevel(value) {
+				const n = normalizeElectricalValue(value);
+				if (n >= 0.78) return "high";
+				if (n >= 0.55) return "elevated";
+				if (n >= 0.34) return "moderate";
+				return "low";
+			}
+
+			function averageElectricalValues(values) {
+				const nums = values
+					.map((value) => normalizeElectricalValue(value, NaN))
+					.filter((value) => Number.isFinite(value));
+				if (!nums.length) return 0;
+				return normalizeElectricalValue(
+					nums.reduce((sum, value) => sum + value, 0) / nums.length
+				);
+			}
+
+			function electricalPrimitive(value) {
+				const score = normalizeElectricalValue(value);
+				return {
+					score,
+					level: getElectricalLevel(score),
+				};
+			}
+
+			function buildElectricalProfile(data, harmonics) {
+				const state = data?.state || {};
+				const planetary = data?.planetary || {};
+				const fieldScores = harmonics?.normalizedFieldScores || {};
+				const natalScores = harmonics?.normalizedNatalScores || {};
+				const debug = harmonics?.dailyFieldDebug || {};
+
+				const strain = normalizeElectricalValue(state.strain);
+				const load = normalizeElectricalValue(
+					state.amplifiedLoad,
+					strain
+				);
+				const regulation = normalizeElectricalValue(
+					state.regulation,
+					0.5
+				);
+				const mercury = normalizeElectricalValue(
+					planetary.transitMercury
+				);
+				const venus = normalizeElectricalValue(planetary.transitVenus);
+				const moon = normalizeElectricalValue(planetary.transitMoon);
+				const mars = normalizeElectricalValue(planetary.transitMars);
+				const jupiter = normalizeElectricalValue(
+					planetary.transitJupiter
+				);
+				const saturn = normalizeElectricalValue(
+					planetary.transitSaturn
+				);
+				const uranus = normalizeElectricalValue(
+					planetary.transitUranus
+				);
+				const neptune = normalizeElectricalValue(
+					planetary.transitNeptune
+				);
+				const pluto = normalizeElectricalValue(planetary.transitPluto);
+
+				const repairSignature = normalizeElectricalValue(
+					debug.repairSignature
+				);
+				const wideFieldSignature = normalizeElectricalValue(
+					debug.wideFieldSignature
+				);
+				const relationalSignature = normalizeElectricalValue(
+					debug.relationalSignature
+				);
+				const repairGate = Boolean(debug.repairGate);
+
+				const voltage = averageElectricalValues([
+					mars,
+					uranus,
+					fieldScores.Chaotic,
+					fieldScores.Threshold,
+					load,
+				]);
+				const resistance = averageElectricalValues([
+					saturn,
+					fieldScores.Contained,
+					fieldScores.Structured,
+					natalScores.Structured,
+					1 - regulation,
+				]);
+				const bandwidth = averageElectricalValues([
+					jupiter,
+					wideFieldSignature,
+					fieldScores.Integrative,
+					fieldScores.Diffused,
+					fieldScores.Chaotic,
+				]);
+				const staticScore = averageElectricalValues([
+					neptune,
+					uranus,
+					fieldScores.Diffused,
+					Math.max(0, load - regulation),
+					Math.max(0, bandwidth - resistance),
+				]);
+				const grounding = averageElectricalValues([
+					regulation,
+					saturn,
+					fieldScores.Regulated,
+					fieldScores.Contained,
+					1 - staticScore,
+				]);
+				const compression = averageElectricalValues([
+					pluto,
+					saturn,
+					repairSignature,
+					fieldScores.Reconstructive,
+					strain,
+				]);
+				const coherence = averageElectricalValues([
+					regulation,
+					mercury,
+					venus,
+					fieldScores.Relational,
+					fieldScores.Structured,
+					1 - staticScore,
+				]);
+				const current = averageElectricalValues([
+					coherence,
+					grounding,
+					mercury,
+					Math.max(0, 1 - staticScore * 0.75),
+				]);
+
+				const primitiveScores = {
+					voltage: electricalPrimitive(voltage),
+					current: electricalPrimitive(current),
+					resistance: electricalPrimitive(resistance),
+					bandwidth: electricalPrimitive(bandwidth),
+					static: electricalPrimitive(staticScore),
+					grounding: electricalPrimitive(grounding),
+					compression: electricalPrimitive(compression),
+					coherence: electricalPrimitive(coherence),
+				};
+
+				let readKey = "lowSignalStableField";
+				if (voltage >= 0.72 && grounding <= 0.42 && load >= 0.62) {
+					readKey = "shortCircuitRisk";
+				} else if (
+					compression >= 0.62 &&
+					(repairSignature >= 0.52 || repairGate)
+				) {
+					readKey = "compressionRepair";
+				} else if (
+					relationalSignature >= 0.55 &&
+					bandwidth >= 0.5 &&
+					grounding <= 0.58
+				) {
+					readKey = "overConductiveRelational";
+				} else if (bandwidth >= 0.62 && staticScore >= 0.48) {
+					readKey = "wideBandwidthStatic";
+				} else if (voltage >= 0.62 && current >= 0.58) {
+					readKey = "highVoltageCleanCurrent";
+				} else if (voltage >= 0.58 && grounding < 0.5) {
+					readKey = "highVoltageLowGrounding";
+				} else if (resistance >= 0.58 && current >= 0.44) {
+					readKey = "resistanceUsefulForm";
+				} else if (current >= 0.58 && coherence >= 0.55) {
+					readKey = "cleanChannelSteadyCurrent";
+				}
+
+				const primaryRead =
+					ELECTRICAL_PRIMARY_READS[readKey] ||
+					ELECTRICAL_PRIMARY_READS.lowSignalStableField;
+
+				return {
+					version: "E1-hidden-observation-only",
+					observationOnly: true,
+					primaryElectricalRead: primaryRead.label,
+					primaryElectricalReadKey: readKey,
+					humanTranslation: primaryRead.humanTranslation,
+					supportTone: primaryRead.supportTone,
+					riskNote: primaryRead.riskNote,
+					routingNote: primaryRead.routingNote,
+					primitiveScores,
+					primitiveLegend: ELECTRICAL_PRIMITIVES,
+					inputsObserved: {
+						primary: harmonics?.primary || "—",
+						support: harmonics?.support || "—",
+						motionStyle: harmonics?.motionStyle || "—",
+						distortion: harmonics?.distortion || "—",
+						todayField: harmonics?.todayField || "—",
+						fieldUndertone:
+							harmonics?.fieldUndertone?.field || "—",
+						repairGate,
+					},
+				};
+			}
+
 			function updateHarmonicUI(data) {
 				const harmonics = calculateHarmonics(data);
+				try {
+					const electricalProfile = buildElectricalProfile(data, harmonics);
+					window.lastElectricalProfile = electricalProfile;
+					console.log("Lucy.OS Electrical Profile:", electricalProfile);
+				} catch (error) {
+					console.warn("Lucy.OS Electrical Profile unavailable:", error);
+				}
 				const primaryMeta =
 					HARMONICS[harmonics.primary] || HARMONICS.Structured;
 				const supportBase = getHarmonicBaseName(harmonics.support);
@@ -14207,6 +14552,8 @@
 			window.runSyntheticHarmonicBalanceTest =
 				runSyntheticHarmonicBalanceTest;
 			window.runAstrologyCalibrationTest = runAstrologyCalibrationTest;
+			window.buildElectricalProfile = buildElectricalProfile;
+			window.lastElectricalProfile = null;
 			window.getMotionStyleRead = getMotionStyleRead;
 			window.getStableProfileLabel = getStableProfileLabel;
 			window.buildProfileAwareEnglishRead = buildProfileAwareEnglishRead;
