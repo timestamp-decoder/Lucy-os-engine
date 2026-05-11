@@ -6193,6 +6193,32 @@
       return STABLE_PROFILE_LABELS?.[primaryKey]?.[supportKey] || `${supportKey} ${primaryKey} Profile`;
     }
 
+    function getPublicRootLabel(harmonic){
+      const base = getHarmonicBaseName(harmonic);
+
+      if (base === "Chaotic") return "Fast Signal";
+      if (base === "Structured") return "Structured";
+      if (base === "Contained") return "Contained";
+      if (base === "Relational") return "Relational";
+      if (base === "Threshold") return "Threshold";
+      if (base === "Reconstructive") return "Reconstructive";
+      if (base === "Integrative") return "Integrative";
+      if (base === "Diffused") return "Diffused";
+      if (base === "Regulated") return "Regulated";
+
+      return base || "—";
+    }
+
+    function getPublicFieldLabel(harmonic){
+      const base = getHarmonicBaseName(harmonic);
+      return base || "—";
+    }
+
+    function getTechnicalHarmonicLabel(harmonic){
+      const base = getHarmonicBaseName(harmonic);
+      return base || "—";
+    }
+
     function harmonicClass(name){
       const base = getHarmonicBaseName(name);
       return String(base || "")
@@ -6207,17 +6233,49 @@
       return parts.length ? parts.join(" / ") : "—";
     }
 
-    function harmonicLabel(name){
+    function publicRootText(name){
       if (!name) return "—";
       const parts = String(name).split("/").map(part => part.trim()).filter(Boolean);
+      return parts.length ? parts.map(part => getPublicRootLabel(part)).join(" / ") : "—";
+    }
+
+    function publicFieldText(name){
+      if (!name) return "—";
+      const parts = String(name).split("/").map(part => part.trim()).filter(Boolean);
+      return parts.length ? parts.map(part => getPublicFieldLabel(part)).join(" / ") : "—";
+    }
+
+    function harmonicLabel(name, options = {}){
+      if (!name) return "—";
+
+      const mode = options.mode || "technical";
+      const parts = String(name).split("/").map(part => part.trim()).filter(Boolean);
+
+      const labelForPart = (part) => {
+        if (mode === "root") return getPublicRootLabel(part);
+        if (mode === "field") return getPublicFieldLabel(part);
+        return getTechnicalHarmonicLabel(part);
+      };
 
       if (parts.length > 1) {
         return parts
-          .map(part => `<span class="harmonicName h-${harmonicClass(part)}">${part}</span>`)
+          .map(part => `<span class="harmonicName h-${harmonicClass(part)}">${labelForPart(part)}</span>`)
           .join(" / ");
       }
 
-      return `<span class="harmonicName h-${harmonicClass(name)}">${name}</span>`;
+      return `<span class="harmonicName h-${harmonicClass(name)}">${labelForPart(name)}</span>`;
+    }
+
+    function rootLabel(name){
+      return harmonicLabel(name, { mode: "root" });
+    }
+
+    function fieldLabel(name){
+      return harmonicLabel(name, { mode: "field" });
+    }
+
+    function technicalLabel(name){
+      return harmonicLabel(name, { mode: "technical" });
     }
 
     function chipClass(name, fallback = ""){
@@ -6946,9 +7004,9 @@
     }
 
     function updateInteractionMap(primary, field){
-      setHTML("interactionSystemName", `${harmonicLabel(primary)}&nbsp;signal`);
+      setHTML("interactionSystemName", `${rootLabel(primary)}&nbsp;signal`);
       setText("interactionSystemText", primaryPlainPhrase(primary));
-      setHTML("interactionFieldName", `${harmonicLabel(field)}&nbsp;field`);
+      setHTML("interactionFieldName", `${fieldLabel(field)}&nbsp;field`);
       setText("interactionFieldText", fieldPlainPhrase(field));
       setText("interactionMoveName", buildPairingAction(primary, field));
       setText("interactionMoveText", pairingMovePlainText(primary, field));
@@ -7212,7 +7270,7 @@
       setText("liveDashboardStateChip", `State: ${stateLabel}`);
       applyChipClass("liveDashboardStateChip", "chip violet", "");
 
-      setHTML("liveDashboardFieldChip", `Field:&nbsp;${harmonicLabel(field)}`);
+      setHTML("liveDashboardFieldChip", `Field:&nbsp;${fieldLabel(field)}`);
       applyChipClass("liveDashboardFieldChip", "chip field", field);
 
       setText("liveDashboardDayTypeTitle", dayType.title);
@@ -7347,8 +7405,8 @@
       const active =
         second.field !== top.field &&
         secondaryScore > 0 &&
-        ratio >= 0.88 &&
-        gap <= 0.06;
+        ratio >= 0.86 &&
+        gap <= 0.075;
 
       if (!active) {
         return {
@@ -7568,7 +7626,7 @@
       setText("outlookStateChip", `${stateLabel} State`);
       applyChipClass("outlookStateChip", "chip violet", "");
 
-      setHTML("outlookFieldChip", `Field:&nbsp;${harmonicLabel(field)}`);
+      setHTML("outlookFieldChip", `Field:&nbsp;${fieldLabel(field)}`);
       applyChipClass("outlookFieldChip", "chip field", field);
 
       setText("outlookNowState", nowState);
@@ -7589,10 +7647,10 @@
     function updateFieldTranslationUI(field){
       const translation = getFieldTranslation(field || "Regulated");
 
-      setHTML("fieldTranslationChip", `Field:&nbsp;${harmonicLabel(field || "Regulated")}`);
+      setHTML("fieldTranslationChip", `Field:&nbsp;${fieldLabel(field || "Regulated")}`);
       applyChipClass("fieldTranslationChip", "chip field", field || "Regulated");
 
-      setHTML("fieldTranslationTitle", harmonicLabel(field || "Regulated"));
+      setHTML("fieldTranslationTitle", fieldLabel(field || "Regulated"));
       setText("fieldTranslationShort", translation.short);
       setText("fieldTranslationMeaning", translation.meaning);
       setText("fieldTranslationBest", translation.best);
@@ -8283,9 +8341,11 @@
             ? "Current field"
             : "";
 
+        const labelHTML = key === activePrimary ? rootLabel(item.label) : technicalLabel(item.label);
+
         return `
           <article class="libraryCard ${activeClass}">
-            <h3>${harmonicLabel(item.label)}${activeLabel ? `&nbsp;· ${activeLabel}` : ""}</h3>
+            <h3>${labelHTML}${activeLabel ? `&nbsp;· ${activeLabel}` : ""}</h3>
             <p><strong>Signal Quality:</strong> ${item.signalQuality}</p>
             <p><strong>Stability Method:</strong> ${item.stabilityMethod}</p>
             <p><strong>Overload Risk:</strong> ${item.overloadRisk}</p>
@@ -8388,10 +8448,10 @@
         ? `${formatMoonstampTiming(moonstamp)} · ${buildMoonstampModifier(data)}`
         : "Moonstamp modifier pending";
 
-      setHTML("whyBaseline", harmonicLabel(primary));
-      setHTML("whyField", harmonicLabel(field));
+      setHTML("whyBaseline", rootLabel(primary));
+      setHTML("whyField", fieldLabel(field));
       setText("whyFieldUndertone", fieldUndertone?.active ? `${fieldUndertone.title} (${fmtMaybe(fieldUndertone.score)})` : "No strong undertone");
-      setHTML("whyMotionStyle", harmonicLabel(motionStyle));
+      setHTML("whyMotionStyle", technicalLabel(motionStyle));
       setText("whyState", currentState);
       setText("whyDriver", driver);
       setText("whyLoad", loadBand);
@@ -8403,9 +8463,9 @@
       setText("whyPeakTiming", formatMoonstampTiming(moonstamp));
       setText("whyMoonstampModifier", moonstampLine);
 
-      const stableProfileText = `${profileAwareRead?.whySentence || ""} Lucy.OS is reading a ${harmonicText(primary)} root pattern inside a ${harmonicText(field)} current field. Stable profile translation: ${stableProfileLabel}. This means the guidance is not only “who you are” and not only “what today is doing.” It is the interaction between your stable profile and the current field.`;
+      const stableProfileText = `${profileAwareRead?.whySentence || ""} Lucy.OS is reading a ${publicRootText(primary)} root pattern inside a ${publicFieldText(field)} current field. Stable profile translation: ${stableProfileLabel}. This means the guidance is not only “who you are” and not only “what today is doing.” It is the interaction between your stable profile and the current field.`;
 
-      const currentFieldText = `${harmonicText(field)} is the selected Current Field. ${fieldTrend.rationale} The field shows what pressure is active right now; it does not rewrite your root pattern.`;
+      const currentFieldText = `${publicFieldText(field)} is the selected Current Field. ${fieldTrend.rationale} The field shows what pressure is active right now; it does not rewrite your root pattern.`;
 
       const fieldUndertoneText = fieldUndertone?.active
         ? `Field Undertone is ${fieldUndertone.title}. ${fieldUndertone.text} Undertone stays secondary: it adds background texture without replacing the selected field.`
@@ -8501,12 +8561,12 @@
         motionStyleRead
       };
 
-      setHTML("shareBaselineChip", `Root:&nbsp;${harmonicLabel(primary)}`);
-      setHTML("shareFieldChip", `Field:&nbsp;${harmonicLabel(field)}`);
+      setHTML("shareBaselineChip", `Root:&nbsp;${rootLabel(primary)}`);
+      setHTML("shareFieldChip", `Field:&nbsp;${fieldLabel(field)}`);
       setText("shareStateChip", `State: ${state}`);
 
-      setHTML("shareCardBaselineChip", `Root:&nbsp;${harmonicLabel(primary)}`);
-      setHTML("shareCardFieldChip", `Field:&nbsp;${harmonicLabel(field)}`);
+      setHTML("shareCardBaselineChip", `Root:&nbsp;${rootLabel(primary)}`);
+      setHTML("shareCardFieldChip", `Field:&nbsp;${fieldLabel(field)}`);
       setText("shareCardStateChip", `State: ${state}`);
 
       applyChipClass("shareBaselineChip", "shareChip", primary);
@@ -9155,23 +9215,23 @@
       const moonstampModifier = updateMoonstampModifierBlock(data);
       const regulationSupports = buildRegulationSupports(harmonics, data, moonstampModifier);
 
-      const primaryLabel = harmonicLabel(primaryMeta.label);
+      const primaryLabel = rootLabel(primaryMeta.label);
       const supportLabel = harmonics.support && String(harmonics.support).includes("/")
         ? String(harmonics.support)
             .split("/")
-            .map(part => harmonicLabel(part.trim()))
+            .map(part => technicalLabel(part.trim()))
             .join(" / ")
-        : harmonicLabel(supportMeta.label);
-      const motionStyleLabel = harmonicLabel(harmonics.motionStyle || "Steady");
+        : technicalLabel(supportMeta.label);
+      const motionStyleLabel = technicalLabel(harmonics.motionStyle || "Steady");
       const motionStyleRead = getMotionStyleRead(harmonics.motionStyle || "Steady");
-      const distortionLabel = harmonicLabel(distortionMeta.label);
-      const fieldLabel = harmonicLabel(fieldMeta.label);
+      const distortionLabel = technicalLabel(distortionMeta.label);
+      const fieldLabelHTML = fieldLabel(fieldMeta.label);
 
       const primaryPhrase = primaryPhraseFromHarmonic(primaryMeta.label);
       const fieldPhrase = fieldPhraseFromHarmonic(fieldMeta.label);
       const pairingMeaning = `${primaryPhrase} + ${fieldPhrase} = ${buildPairingAction(primaryMeta.label, fieldMeta.label)}`;
-      const systemWeather = `${harmonicText(primaryMeta.label)} root pattern meeting a ${harmonicText(fieldMeta.label)} field`;
-      const systemWeatherHTML = `${primaryLabel}&nbsp;root pattern<br><span>meeting a</span> ${fieldLabel}&nbsp;field`;
+      const systemWeather = `${publicRootText(primaryMeta.label)} root pattern meeting a ${publicFieldText(fieldMeta.label)} field`;
+      const systemWeatherHTML = `${primaryLabel}&nbsp;root pattern<br><span>meeting a</span> ${fieldLabelHTML}&nbsp;field`;
       const guidance = buildDailyGuidance(harmonics, data);
       const profileAwareRead = buildProfileAwareEnglishRead(harmonics, data, stableProfileLabel, distortionState);
       const coreRule = buildCoreRule(harmonics, data, stableProfileLabel, distortionState, guidance);
@@ -9184,7 +9244,7 @@
         guidance,
         regulationSupports,
         state: currentState,
-        field: fieldMeta.label,
+        field: getPublicFieldLabel(fieldMeta.label),
         loadBand: loadBandFromValue(data?.state?.amplifiedLoad)
       });
 
@@ -9192,7 +9252,7 @@
       setHTML(
         "pairingExplain",
         `<span><strong>Root pattern:</strong>&nbsp;${primaryLabel}</span>` +
-        `<span><strong>Current field:</strong>&nbsp;${fieldLabel}</span>` +
+        `<span><strong>Current field:</strong>&nbsp;${fieldLabelHTML}</span>` +
         `<span><strong>Recommended move:</strong>&nbsp;${pairingMeaning}</span>`
       );
 
@@ -9220,19 +9280,19 @@
       setHTML("motionStyle", motionStyleLabel);
       setText("motionStyleRead", motionStyleRead);
       setHTML("distortionHarmonic", `${distortionLabel} · ${distortionState.label}`);
-      setHTML("todayFieldHarmonic", fieldLabel);
+      setHTML("todayFieldHarmonic", fieldLabelHTML);
       setText("signalQuality", primaryMeta.signalQuality);
       setText("stabilityMethod", primaryMeta.stabilityMethod);
       setText("overloadRisk", `${distortionState.short}. ${distortionState.plain}`);
       setText("harmonicPlainRead", primaryMeta.plainRead);
 
       setHTML("profileStateChip", `${primaryLabel}&nbsp;root pattern`);
-      setHTML("profileFieldChip", `${fieldLabel}&nbsp;field`);
+      setHTML("profileFieldChip", `${fieldLabelHTML}&nbsp;field`);
       applyChipClass("profileStateChip", "chip", primaryMeta.label);
       applyChipClass("profileFieldChip", "chip", fieldMeta.label);
 
       setText("regulationStateChip", `State: ${currentState}`);
-      setHTML("regulationFieldChip", `Field:&nbsp;${fieldLabel}`);
+      setHTML("regulationFieldChip", `Field:&nbsp;${fieldLabelHTML}`);
       applyChipClass("regulationStateChip", "chip violet", "");
       applyChipClass("regulationFieldChip", "chip field", fieldMeta.label);
 
@@ -9888,6 +9948,9 @@
     window.applyFieldClasses = applyFieldClasses;
     window.applyFieldUndertoneClass = applyFieldUndertoneClass;
     window.applyFieldUndertoneClasses = applyFieldUndertoneClasses;
+    window.getPublicRootLabel = getPublicRootLabel;
+    window.getPublicFieldLabel = getPublicFieldLabel;
+    window.getTechnicalHarmonicLabel = getTechnicalHarmonicLabel;
     window.FIELD_CLASS_NAMES = FIELD_CLASS_NAMES;
     window.UNDERTONE_CLASS_NAMES = UNDERTONE_CLASS_NAMES;
     window.REGULATION_SUPPORT_LIBRARY = REGULATION_SUPPORT_LIBRARY;
