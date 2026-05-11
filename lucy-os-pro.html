@@ -5,6 +5,7 @@
 <!-- Pass 3 update: compressed copied share text and visual share-card Regulation Supports only. Full in-app supports, engine, API, scoring, Moonstamp, saved profiles, backend behavior, dashboard logic, and calibration tests unchanged. -->
 <!-- Pass 4 update: final stabilization / stop point polish for top read, Regulation Supports, share text, and mobile density only. Engine, API, scoring, Moonstamp, saved profiles, backend behavior, dashboard logic, and calibration tests unchanged. -->
 <!-- Pass 5 update: added Electrical Mapping E1 hidden observation helper only. No visible UI, API, scoring, Moonstamp, dashboard, saved profiles, share export, or calibration-test behavior changed. -->
+<!-- Pass 6 update: added Electrical Mapping E2 language helper only. Existing human-facing wording can be sharpened by the hidden electrical profile, but no visible Electrical Mapping section, raw scores, API, scoring, routing, Moonstamp, dashboard, saved profiles, share export, or calibration-test behavior changed. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -9396,20 +9397,23 @@
 
 				const music = bank.musicSound;
 
-				return {
-					state: stateLine,
-					quality,
-					tryItems,
-					tryFirstItems,
-					avoidItems,
-					snapshotSupport: buildSnapshotSupportLine(
-						field,
-						intensityLabel,
-						{ tryFirstItems }
-					),
-					why,
-					music,
-				};
+				return applyElectricalLanguageToRegulationSupports(
+					{
+						state: stateLine,
+						quality,
+						tryItems,
+						tryFirstItems,
+						avoidItems,
+						snapshotSupport: buildSnapshotSupportLine(
+							field,
+							intensityLabel,
+							{ tryFirstItems }
+						),
+						why,
+						music,
+					},
+					getCurrentElectricalProfile()
+				);
 			}
 
 			function buildMobileSnapshotSupport(regulationSupports) {
@@ -9570,12 +9574,15 @@
 					read += " Timing matters more than intensity.";
 				}
 
-				return {
-					read,
-					move: guidance?.move || "Make one clear move before trying to solve everything.",
-					avoid: getPlainAvoid(field, distortionState),
-					returnPath: guidance?.ret || getPlainReturn(field, primary),
-				};
+				return applyElectricalLanguageToPlainReadTop(
+					{
+						read,
+						move: guidance?.move || "Make one clear move before trying to solve everything.",
+						avoid: getPlainAvoid(field, distortionState),
+						returnPath: guidance?.ret || getPlainReturn(field, primary),
+					},
+					getCurrentElectricalProfile()
+				);
 			}
 
 			function splitFirstSentence(text) {
@@ -9615,12 +9622,15 @@
 					supportLines.push("Timing matters more than intensity right now.");
 				}
 
-				return {
-					headline: fieldLanding.first || "Today’s field is active.",
-					support: supportLines.join(" ") || "Keep the next move simple and readable.",
-					move: guidance?.move || "Make one clear move before trying to solve everything.",
-					avoid: getPlainAvoid(field, distortionState),
-				};
+				return applyElectricalLanguageToSnapshotRead(
+					{
+						headline: fieldLanding.first || "Today’s field is active.",
+						support: supportLines.join(" ") || "Keep the next move simple and readable.",
+						move: guidance?.move || "Make one clear move before trying to solve everything.",
+						avoid: getPlainAvoid(field, distortionState),
+					},
+					getCurrentElectricalProfile()
+				);
 			}
 
 			function buildPersonalChartTranslation(harmonics, data, guidance) {
@@ -11771,7 +11781,10 @@
 					lean = `${lean} Use the available movement, but keep it paced.`;
 				}
 
-				return { read, lean, watch, move, ret };
+				return applyElectricalLanguageToGuidance(
+					{ read, lean, watch, move, ret },
+					getCurrentElectricalProfile()
+				);
 			}
 
 			function buildProfileAwareEnglishRead(
@@ -13608,6 +13621,339 @@
 				};
 			}
 
+
+			function getCurrentElectricalProfile() {
+				if (typeof window === "undefined") return null;
+				return window.lastElectricalProfile || null;
+			}
+
+			function uniqueElectricalLanguageItems(items) {
+				const seen = new Set();
+				return (Array.isArray(items) ? items : [])
+					.map((item) => String(item || "").trim())
+					.filter(Boolean)
+					.filter((item) => {
+						const key = item.toLowerCase();
+						if (seen.has(key)) return false;
+						seen.add(key);
+						return true;
+					});
+			}
+
+			function appendElectricalSentence(base, sentence) {
+				const cleanBase = String(base || "").trim();
+				const cleanSentence = String(sentence || "").trim();
+				if (!cleanSentence) return cleanBase;
+				if (!cleanBase) return cleanSentence;
+				if (cleanBase.toLowerCase().includes(cleanSentence.toLowerCase())) {
+					return cleanBase;
+				}
+				return `${cleanBase} ${cleanSentence}`.trim();
+			}
+
+			function getElectricalPublicLanguage(profile) {
+				const key = profile?.primaryElectricalReadKey;
+				const bank = {
+					shortCircuitRisk: {
+						plain:
+							"Too much input can make the next step harder to route, so narrow the signal before adding anything else.",
+						move:
+							"Lower input first, then route one small clean action.",
+						avoid:
+							"Do not add more stimulation, more decisions, or more relational pressure while the field is already carrying enough.",
+						returnPath:
+							"Let the body settle, reduce competing signals, and come back to one channel.",
+						supportQuality: [
+							"lower input",
+							"smaller scope",
+							"one-channel focus",
+							"body settling",
+						],
+						tryFirstItems: [
+							"Reduce competing input for a few minutes before responding.",
+							"Choose one action small enough to finish.",
+						],
+						avoidItems: [
+							"Do not open more channels before the first one settles.",
+						],
+						why:
+							"The support language prioritizes fewer inputs, smaller scope, and one routeable action.",
+					},
+					compressionRepair: {
+						plain:
+							"Pressure is concentrating around one weak point; treat it as one repair, not a whole-system rebuild.",
+						move:
+							"Choose one repair that is real enough to act on and leave the rest out of scope.",
+						avoid:
+							"Do not let concentrated pressure convince you everything has to be fixed at once.",
+						returnPath:
+							"Name the pressure point, contain the repair, and stop when the first usable structure appears.",
+						supportQuality: [
+							"one repair only",
+							"clear boundary",
+							"smaller scope",
+							"practical containment",
+						],
+						tryFirstItems: [
+							"Write down the one repair that is actually present.",
+							"Set a clear stopping point before you begin adjusting the structure.",
+						],
+						avoidItems: [
+							"Do not turn one weak point into a full rebuild.",
+						],
+						why:
+							"The support language keeps repair pressure bounded so the whole field does not become a project.",
+					},
+					overConductiveRelational: {
+						plain:
+							"The field may be coming through contact, tone, or shared atmosphere; sort mine from not-mine before responding.",
+						move:
+							"Name one relational signal plainly and keep responsibility proportional.",
+						avoid:
+							"Do not absorb the whole room or answer pressure that does not belong to you.",
+						returnPath:
+							"Return to your own center, then choose clean contact instead of full-room repair.",
+						supportQuality: [
+							"centered contact",
+							"proportional response",
+							"warmth",
+							"lower input",
+						],
+						tryFirstItems: [
+							"Pause long enough to separate mine from not-mine.",
+							"Use one plain sentence instead of reading the whole room.",
+						],
+						avoidItems: [
+							"Do not treat every tone shift as your responsibility.",
+						],
+						why:
+							"The support language emphasizes warm contact, boundaries, and proportional response.",
+					},
+					wideBandwidthStatic: {
+						plain:
+							"Too many channels may be open at once; reduce static by choosing the strongest thread.",
+						move:
+							"Narrow the signal to one priority and let the rest stay in the background.",
+						avoid:
+							"Do not treat every open thread as equally urgent.",
+						returnPath:
+							"Lower input, choose one anchor, and let the real signal stand out.",
+						supportQuality: [
+							"lower input",
+							"one-task focus",
+							"simplification",
+							"clear priority",
+						],
+						tryFirstItems: [
+							"Close or ignore extra inputs before choosing the next step.",
+							"Pick the strongest thread and leave the rest for later.",
+						],
+						avoidItems: [
+							"Do not keep scanning once one true signal is enough.",
+						],
+						why:
+							"The support language reduces competing signals so one usable thread can become clear.",
+					},
+					highVoltageCleanCurrent: {
+						plain:
+							"There is charge available, and it can move cleanly when it has one clear form.",
+						move:
+							"Route the charge into one focused action or clean expression.",
+						avoid:
+							"Do not let speed scatter the signal across too many channels.",
+						returnPath:
+							"Keep the action simple, give the movement form, and stop before it fragments.",
+						supportQuality: [
+							"focused action",
+							"clear container",
+							"paced movement",
+							"one-channel focus",
+						],
+						tryFirstItems: [
+							"Use movement or action with one defined endpoint.",
+							"Put the energy into one task before opening another.",
+						],
+						avoidItems: [
+							"Do not split good energy across too many directions.",
+						],
+						why:
+							"The support language keeps available charge focused enough to become useful.",
+					},
+					highVoltageLowGrounding: {
+						plain:
+							"Activation is high, but the body needs to settle before interpretation or escalation.",
+						move:
+							"Ground first, then choose one action small enough to complete.",
+						avoid:
+							"Do not let the body outrun the field.",
+						returnPath:
+							"Come back through body, pace, breath, and reduced input before responding.",
+						supportQuality: [
+							"body settling",
+							"lower input",
+							"paced movement",
+							"external structure",
+						],
+						tryFirstItems: [
+							"Let the body settle before interpreting the signal.",
+							"Use a timer, walk, shower, or small task to slow the charge.",
+						],
+						avoidItems: [
+							"Do not act from the spike before the body has landed.",
+						],
+						why:
+							"The support language gives activation a body-level return path before action.",
+					},
+					resistanceUsefulForm: {
+						plain:
+							"A limit or delay may be helping the signal become more organized.",
+						move:
+							"Let the constraint shape the next clean move instead of fighting the slowdown.",
+						avoid:
+							"Do not assume slowness means failure; it may be forming the container.",
+						returnPath:
+							"Return to sequence, boundary, and one practical step.",
+						supportQuality: [
+							"clear boundary",
+							"sequence",
+							"practical structure",
+							"steady rhythm",
+						],
+						tryFirstItems: [
+							"Use the limit as a container for the next step.",
+							"Make the sequence visible before pushing harder.",
+						],
+						avoidItems: [
+							"Do not push past the limit before it has shown you the structure.",
+						],
+						why:
+							"The support language treats friction as useful form, not automatic blockage.",
+					},
+					cleanChannelSteadyCurrent: {
+						plain:
+							"The signal is routeable enough; keep the channel simple and let steady movement do the work.",
+						move:
+							"Complete one clean action without overcomplicating the field.",
+						avoid:
+							"Do not over-manage a field that is already clear enough to move.",
+						returnPath:
+							"Return to steady rhythm, clean completion, and enough structure.",
+						supportQuality: [
+							"steady rhythm",
+							"simple completion",
+							"clean channel",
+							"enough structure",
+						],
+						tryFirstItems: [
+							"Keep the next action simple and finishable.",
+							"Do not add a new system when the current one works.",
+						],
+						avoidItems: [
+							"Do not complicate a signal that is already routeable.",
+						],
+						why:
+							"The support language protects a clear-enough channel from unnecessary complexity.",
+					},
+					lowSignalStableField: {
+						plain:
+							"The field is quieter, which can support recovery, maintenance, or simple continuation.",
+						move:
+							"Use the quiet to reset baseline or complete one small stable action.",
+						avoid:
+							"Do not create pressure just because the field is not loud.",
+						returnPath:
+							"Return through rest, maintenance, and a small action that preserves stability.",
+						supportQuality: [
+							"baseline reset",
+							"maintenance",
+							"low input",
+							"steady rhythm",
+						],
+						tryFirstItems: [
+							"Let the quieter field stay quiet enough to restore baseline.",
+							"Choose maintenance over forced intensity.",
+						],
+						avoidItems: [
+							"Do not manufacture urgency to feel movement.",
+						],
+						why:
+							"The support language uses the quieter field for recovery, maintenance, and simple continuation.",
+					},
+				};
+				return bank[key] || null;
+			}
+
+			function applyElectricalLanguageToGuidance(guidance, profile) {
+				const helper = getElectricalPublicLanguage(profile);
+				if (!helper) return guidance;
+				return {
+					...guidance,
+					move: helper.move || guidance.move,
+					watch: appendElectricalSentence(guidance.watch, helper.avoid),
+					ret: helper.returnPath || guidance.ret,
+				};
+			}
+
+			function applyElectricalLanguageToPlainReadTop(plain, profile) {
+				const helper = getElectricalPublicLanguage(profile);
+				if (!helper) return plain;
+				return {
+					...plain,
+					read: appendElectricalSentence(plain.read, helper.plain),
+					move: helper.move || plain.move,
+					avoid: helper.avoid || plain.avoid,
+					returnPath: helper.returnPath || plain.returnPath,
+				};
+			}
+
+			function applyElectricalLanguageToSnapshotRead(snapshot, profile) {
+				const helper = getElectricalPublicLanguage(profile);
+				if (!helper) return snapshot;
+				return {
+					...snapshot,
+					support: appendElectricalSentence(snapshot.support, helper.plain),
+					move: helper.move || snapshot.move,
+					avoid: helper.avoid || snapshot.avoid,
+				};
+			}
+
+			function applyElectricalLanguageToRegulationSupports(supports, profile) {
+				const helper = getElectricalPublicLanguage(profile);
+				if (!helper) return supports;
+
+				const qualityParts = String(supports?.quality || "")
+					.split(",")
+					.map((item) => item.trim())
+					.filter(Boolean);
+				const quality = uniqueElectricalLanguageItems([
+					...qualityParts,
+					...(helper.supportQuality || []),
+				]).join(", ");
+
+				const tryFirstItems = uniqueElectricalLanguageItems([
+					...(helper.tryFirstItems || []),
+					...(Array.isArray(supports?.tryFirstItems)
+						? supports.tryFirstItems
+						: []),
+				]);
+				const avoidItems = uniqueElectricalLanguageItems([
+					...(helper.avoidItems || []),
+					...(Array.isArray(supports?.avoidItems)
+						? supports.avoidItems
+						: []),
+				]);
+
+				return {
+					...supports,
+					quality: quality || supports.quality,
+					tryFirstItems,
+					avoidItems,
+					snapshotSupport:
+						helper.move || supports.snapshotSupport,
+					why: appendElectricalSentence(supports.why, helper.why),
+				};
+			}
+
 			function updateHarmonicUI(data) {
 				const harmonics = calculateHarmonics(data);
 				try {
@@ -14553,6 +14899,7 @@
 				runSyntheticHarmonicBalanceTest;
 			window.runAstrologyCalibrationTest = runAstrologyCalibrationTest;
 			window.buildElectricalProfile = buildElectricalProfile;
+			window.getElectricalPublicLanguage = getElectricalPublicLanguage;
 			window.lastElectricalProfile = null;
 			window.getMotionStyleRead = getMotionStyleRead;
 			window.getStableProfileLabel = getStableProfileLabel;
