@@ -20,6 +20,7 @@
 <!-- Pass 16 update: added mobile Field destination breathing room only. Field anchor now lands on a grouped shared-atmosphere zone with a small helper line and extra spacing before Landing. Engine, API, scoring, Moonstamp, Electrical Mapping, saved profiles, share export, calibration tests, and mobile nav behavior unchanged. -->
 <!-- Pass 17 update: added fuller Your Root Pattern explainer inside the You destination only. Display-only personal architecture copy uses existing selected root and current field values; no API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, or calibration-test behavior changed. -->
 <!-- Pass 18 update: expanded You destination personal architecture cards with compact plain-English meaning lines only. Display-only helper copy uses existing selected values; no API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, mobile nav behavior, or calibration-test behavior changed. -->
+<!-- Pass 19 update: added Suggested Sound Support card inside Support destination only. Display-only sensory support language uses existing selected values; no API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, mobile nav behavior, or calibration-test behavior changed. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -2440,6 +2441,94 @@
 
 			.regulationSupportList li {
 				margin: 3px 0;
+				overflow-wrap: break-word;
+			}
+
+
+			.soundSupportCard {
+				grid-column: 1 / -1;
+				margin-top: 0;
+				padding: 13px 14px;
+				border-radius: 16px;
+				border: 1px solid rgba(111, 224, 211, 0.18);
+				background: radial-gradient(
+						circle at 10% 0%,
+						rgba(111, 224, 211, 0.09),
+						transparent 34%
+					),
+					rgba(255, 255, 255, 0.03);
+				min-width: 0;
+				max-width: 100%;
+				overflow: hidden;
+			}
+
+			.soundSupportLabel {
+				color: var(--teal);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				margin-bottom: 7px;
+			}
+
+			.soundSupportTitle {
+				color: var(--text);
+				font-size: 15px;
+				line-height: 1.3;
+				font-weight: 950;
+				overflow-wrap: break-word;
+			}
+
+			.soundSupportText {
+				margin-top: 7px;
+				color: #d9e0f4;
+				font-size: 12.5px;
+				line-height: 1.5;
+				font-weight: 730;
+				overflow-wrap: break-word;
+			}
+
+			.soundSupportGrid {
+				display: grid;
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				gap: 8px;
+				margin-top: 10px;
+				min-width: 0;
+			}
+
+			.soundSupportMini {
+				padding: 9px 10px;
+				border-radius: 12px;
+				border: 1px solid rgba(255, 255, 255, 0.075);
+				background: rgba(255, 255, 255, 0.028);
+				min-width: 0;
+			}
+
+			.soundSupportMini span {
+				display: block;
+				color: var(--muted);
+				font-size: 9px;
+				font-weight: 950;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				margin-bottom: 4px;
+			}
+
+			.soundSupportMini strong {
+				display: block;
+				color: var(--text);
+				font-size: 12px;
+				line-height: 1.4;
+				font-weight: 850;
+				overflow-wrap: break-word;
+			}
+
+			.soundSupportNote {
+				margin-top: 9px;
+				color: var(--muted2);
+				font-size: 11px;
+				line-height: 1.45;
+				font-weight: 750;
 				overflow-wrap: break-word;
 			}
 
@@ -5804,6 +5893,10 @@
 					font-size: 12.5px;
 				}
 
+				.soundSupportGrid {
+					grid-template-columns: minmax(0, 1fr);
+				}
+
 				.moonstampModifierBlock {
 					border-radius: 14px;
 					padding: 12px;
@@ -7218,6 +7311,34 @@
 								>
 									<li>Waiting for support suggestions.</li>
 								</ul>
+							</div>
+
+							<div class="soundSupportCard">
+								<div class="soundSupportLabel">Suggested Sound Support</div>
+								<div class="soundSupportTitle">
+									Tone, texture, and listening environment for today’s regulation need.
+								</div>
+								<div class="soundSupportGrid">
+									<div class="soundSupportMini">
+										<span>Suggested Tone</span>
+										<strong id="soundSupportTone">—</strong>
+									</div>
+									<div class="soundSupportMini">
+										<span>Suggested Texture</span>
+										<strong id="soundSupportTexture">—</strong>
+									</div>
+									<div class="soundSupportMini">
+										<span>How to Use</span>
+										<strong id="soundSupportUse">—</strong>
+									</div>
+									<div class="soundSupportMini">
+										<span>If It Feels Like Too Much</span>
+										<strong id="soundSupportFallback">—</strong>
+									</div>
+								</div>
+								<div class="soundSupportNote" id="soundSupportNote">
+									Use sound as a sensory cue, not something to force.
+								</div>
 							</div>
 
 							<div class="regulationSupportBlock full">
@@ -9874,6 +9995,113 @@
 				return [...new Set(items.filter(Boolean))].slice(0, 5);
 			}
 
+
+			function buildSuggestedSoundSupport(
+				root,
+				support,
+				todayField,
+				systemLoadState,
+				motionStyle,
+				moonstampModifierRead
+			) {
+				const rootBase = getHarmonicBaseName(root || "");
+				const supportBase = getHarmonicBaseName(support || "");
+				const fieldBase = getHarmonicBaseName(todayField || "Regulated");
+				const stateBase = String(systemLoadState || "");
+				const motionText = String(motionStyle || "");
+				const moonText = String(moonstampModifierRead?.text || "").toLowerCase();
+				const combined = `${rootBase} ${supportBase} ${fieldBase} ${stateBase} ${motionText}`.toLowerCase();
+
+				const makeSupport = (tone, texture, use, note = "Sound is optional. If sound feels like more input, use silence or a quieter room instead.") => ({
+					tone,
+					texture,
+					use,
+					fallback: "Choose silence, brown noise, or a quieter room instead.",
+					note,
+				});
+
+				let sound;
+
+				if (
+					stateBase === "Overloaded" ||
+					combined.includes("overload") ||
+					combined.includes("high load")
+				) {
+					sound = makeSupport(
+						"432–528 Hz or silence",
+						"brown noise, rain, low steady drone, or very soft bowl",
+						"Lower input and make the listening environment simpler. Keep volume low enough that it supports the room instead of becoming the focus."
+					);
+				} else if (fieldBase === "Chaotic" || combined.includes("chaotic") || combined.includes("fast")) {
+					sound = makeSupport(
+						"432 Hz or low steady drone",
+						"low steady drone, soft bowl, brown noise, or slow ambient pad",
+						"Use a steady background to reduce signal spikes and give the body one simple sensory cue."
+					);
+				} else if (fieldBase === "Relational") {
+					sound = makeSupport(
+						"528–639 Hz",
+						"harp, soft bowl, warm hum, gentle vocal pad, or soft ambient tone",
+						"Soften the room without forcing emotional processing. Harp or soft strings may help the space feel warmer and less pressurized."
+					);
+				} else if (fieldBase === "Diffused") {
+					sound = makeSupport(
+						"396–432 Hz",
+						"brown noise, low drum pulse, soft repetitive rhythm, or grounded ambient tone",
+						"Give the field a simple center without adding more atmosphere."
+					);
+				} else if (fieldBase === "Threshold" || combined.includes("threshold")) {
+					sound = makeSupport(
+						"417–432 Hz",
+						"slow drum, low gong used gently, steady pulse, or grounding drone",
+						"Organize activation before crossing or deciding. Keep the sound slow, low, and steady.",
+						"Use gong gently. If it feels sharp or activating, switch to a softer texture or silence."
+					);
+				} else if (fieldBase === "Reconstructive") {
+					sound = makeSupport(
+						"528 Hz",
+						"soft bowl, cello drone, warm ambient pad, or low gong used gently",
+						"Support one repair without pushing a full rebuild. Keep the texture warm and non-intrusive.",
+						"Use gong gently. If it feels sharp or activating, switch to soft bowl, warm drone, or silence."
+					);
+				} else if (fieldBase === "Structured") {
+					sound = makeSupport(
+						"432 Hz",
+						"metronomic pulse, soft strings, clean repetitive pattern, or low drone",
+						"Help pressure move into sequence and next steps without adding intensity."
+					);
+				} else if (fieldBase === "Integrative") {
+					sound = makeSupport(
+						"528–741 Hz",
+						"layered ambient, harp, soft chimes, or gentle melodic drone",
+						"Support reflection and integration without overstimulation. Keep layers soft and spacious."
+					);
+				} else if (fieldBase === "Contained") {
+					sound = makeSupport(
+						"432 Hz",
+						"low steady drone, soft drum, grounding hum, soft bowl, or brown noise",
+						"Help the system hold pressure without tightening too much. Keep the sound warm and low."
+					);
+				} else {
+					sound = makeSupport(
+						"528 Hz, soft ambient, or silence",
+						"gentle harp, soft bowl, light rain, quiet room, or warm ambient tone",
+						"Maintain coherence without adding unnecessary input."
+					);
+				}
+
+				if (
+					moonText.includes("lower-load") ||
+					moonText.includes("simplify") ||
+					moonText.includes("reduce")
+				) {
+					sound.fallback = "Use silence, brown noise, or a quieter room if sound starts to feel like extra input.";
+					sound.note = `${sound.note} Today’s lunar modifier may support a quieter, lower-load listening environment.`;
+				}
+
+				return sound;
+			}
+
 			function buildSnapshotSupportLine(field, intensityLabel, regulationSupports) {
 				const baseField = getHarmonicBaseName(field || "Regulated");
 				if (baseField === "Relational") {
@@ -10004,6 +10232,14 @@
 				}
 
 				const music = bank.musicSound;
+				const soundSupport = buildSuggestedSoundSupport(
+					harmonics?.primary,
+					harmonics?.support,
+					field,
+					intensityLabel,
+					motionStyle,
+					moonstampModifierRead
+				);
 
 				return applyElectricalLanguageToRegulationSupports(
 					{
@@ -10019,6 +10255,7 @@
 						),
 						why,
 						music,
+						soundSupport,
 					},
 					getCurrentElectricalProfile()
 				);
@@ -10783,6 +11020,13 @@
 					avoidItems: [],
 					why: "—",
 					music: "—",
+					soundSupport: {
+						tone: "—",
+						texture: "—",
+						use: "Keep it low, steady, and soft enough to support the room instead of becoming the focus.",
+						fallback: "Choose silence, brown noise, or a quieter room instead.",
+						note: "Sound is optional. If sound feels like more input, use silence or a quieter room instead.",
+					},
 				};
 
 				setText("regulationSupportState", supports.state || "—");
@@ -10814,6 +11058,25 @@
 
 				setText("regulationSupportWhy", supports.why || "—");
 				setText("regulationSupportMusic", supports.music || "—");
+
+				const soundSupport = supports.soundSupport || {};
+				setText("soundSupportTone", soundSupport.tone || "—");
+				setText("soundSupportTexture", soundSupport.texture || "—");
+				setText(
+					"soundSupportUse",
+					soundSupport.use ||
+						"Keep it low, steady, and soft enough to support the room instead of becoming the focus."
+				);
+				setText(
+					"soundSupportFallback",
+					soundSupport.fallback ||
+						"Choose silence, brown noise, or a quieter room instead."
+				);
+				setText(
+					"soundSupportNote",
+					soundSupport.note ||
+						"Sound is optional. If sound feels like more input, use silence or a quieter room instead."
+				);
 
 				setText(
 					"whyRegulationSupports",
@@ -16175,6 +16438,7 @@
 			window.buildProfileAwareEnglishRead = buildProfileAwareEnglishRead;
 			window.getFieldUndertone = getFieldUndertone;
 			window.buildFieldUndertoneText = buildFieldUndertoneText;
+			window.buildSuggestedSoundSupport = buildSuggestedSoundSupport;
 			window.buildRegulationSupports = buildRegulationSupports;
 			window.buildLiveFieldDashboardMetrics =
 				buildLiveFieldDashboardMetrics;
