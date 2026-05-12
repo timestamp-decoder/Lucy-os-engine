@@ -9,6 +9,7 @@
 <!-- Pass 7 update: Electrical Mapping E2.1 wording calibration only. Today’s Field wording remains primary; Moonstamp/electrical language acts only as a modifier. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, dashboard logic, saved profiles, selected field/root/support/undertone/motion style/system load state, or calibration tests changed. -->
 <!-- Pass 8 update: Electrical Mapping E3 share/public text polish only. Share card and copied share text inherit calibrated E2.1 public language where available. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, dashboard logic, saved profiles, selected field/root/support/undertone/motion style/system load state, calibration tests, or share export behavior changed. -->
 <!-- Pass 9 update: Electrical Mapping E3.1 micro-format cleanup only. Fixed Moonstamp punctuation in public/share text, prevented top snapshot Regulation Support from duplicating One Good Move, and compressed share-card Regulation Supports display. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, dashboard logic, saved profiles, selected field/root/support/undertone/motion style/system load state, calibration tests, layout structure, or share export behavior changed. -->
+<!-- Pass 10.1 update: Live Field Dashboard influence sentence detection tweak only. Venus support line now appears for relational/social field rises as a non-deterministic public explanation. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, dashboard scores, saved profiles, selected field/root/support/undertone/motion style/system load state, calibration tests, private engine math, or share export behavior changed. -->
 <!-- Pass 10 update: Live Field Dashboard user explanation strip only. Added compact how-to-read and strongest-influences display language. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, dashboard scores, saved profiles, selected field/root/support/undertone/motion style/system load state, calibration tests, private engine math, or share export behavior changed. -->
 <html lang="en">
 	<head>
@@ -10870,9 +10871,9 @@
 				const relationalScore = safeNum(scores.Relational);
 				const socialRiseActive =
 					field === "Relational" || relationalScore >= 0.58;
-				const venusIsActive = driver === "Venus" || tVenus >= 0.62;
+				const venusIsActive = driver === "Venus" || tVenus >= 0.48;
 
-				if (venusIsActive || (socialRiseActive && tVenus >= 0.48)) {
+				if (venusIsActive || socialRiseActive) {
 					parts.push(
 						"Venus may be supporting the relational rise, increasing sensitivity to tone, contact, warmth, and shared atmosphere."
 					);
