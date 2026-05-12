@@ -24,6 +24,7 @@
 <!-- Pass 21 update: mobile snapshot/support visual polish only. CSS-only mobile readability and card spacing pass; no API, engine, scoring, Moonstamp, Electrical Mapping, saved profiles, share export, calibration tests, IDs, button listeners, or result meanings changed. -->
 <!-- Pass 22 update: added first-screen user orientation and how-to-use guidance only. Static copy/markup/CSS; no API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, mobile nav, IDs, button listeners, updateUI, or calibration-test behavior changed. -->
 <!-- Pass 20 diagnostic update: safe mobile nav/padding spacing and clearer calculation error alert only. No API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, result meaning, or calibration-test behavior changed. -->
+<!-- Pass 23 update: post-orientation flow cleanup only. Refined repeated explanatory copy below the First Read Guide so Field, Landing, Support, and You each have a clearer job. No API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, IDs, button listeners, mobile nav behavior, updateUI, or calibration tests changed. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -6943,22 +6944,22 @@
 					<span class="sectionAnchor" id="landingSection" aria-hidden="true"></span>
 					<div class="sectionDestinationLabel">
 						<span>Landing</span>
-						<strong>How this field lands in you</strong>
+						<strong>How today’s field lands in this system</strong>
 					</div>
 					<section class="personalLandingCard" id="personalLandingCard">
 						<div class="personalLandingKicker">Lucy.OS read layer</div>
 						<h2 class="personalLandingTitle" id="personalLandingTitle">
-							Same field. Personal landing.
+							Personal Landing
 						</h2>
 						<div class="personalLandingText" id="personalLandingText">
-							The field is shared. The landing is personal. Lucy.OS reads your stable pattern against today’s field, then translates what helps you return to coherence.
+							This section shows how today’s field is received through this specific profile, then turns that landing into usable guidance.
 						</div>
 						<div class="personalLandingLine" id="personalLandingLine">
-							Lucy.OS reads how the weather lands in you.
+							The atmosphere is shared; the landing shown here is specific to this system.
 						</div>
 						<div class="landingClarifier">
 							<span>Landing note</span>
-							<p>Relational field means contact is the channel. Your landing may be connection, caution, distance, or withdrawal.</p>
+							<p>Relational pressure may show up as contact, tone, feedback, caution, distance, or withdrawal.</p>
 						</div>
 					</section>
 
@@ -7033,8 +7034,8 @@
 
 							<p class="weatherExplain">
 								Your root pattern meets today’s active field.
-								Lucy.OS reads that interaction and turns it into
-								one practical next move.
+								This section shows the interaction in system language,
+								then points toward one practical next move.
 							</p>
 
 							<div class="pairingExplain" id="pairingExplain">
@@ -7358,13 +7359,11 @@
 							<div>
 								<h2>Live Field Dashboard</h2>
 								<p>
-									A quick scan of today’s pressure, movement,
+									A quick scan of the shared atmosphere: pressure, movement,
 									clarity, contact, and regulation capacity.
 								</p>
 								<p class="liveFieldDashboardClarityLine">
-									This dashboard shows shared field conditions — the
-									atmosphere of the day, not your personal mood or
-									behavior.
+									Use this section to read what is active in the field before interpreting your personal landing.
 								</p>
 							</div>
 
@@ -7391,11 +7390,8 @@
 									class="liveDashboardExplanationText"
 									id="liveDashboardHowToRead"
 								>
-									This dashboard shows shared field conditions — the
-									atmosphere of the day, not your personal mood or
-									behavior.<br /><br />
-									It reflects what is loud in the environment and how the
-									current field may interact with your pattern.
+									This section reads the atmosphere first: what is loud, active, or moving in the day.<br /><br />
+									Use Landing to see how that field translates through this profile.
 								</div>
 							</div>
 
@@ -7942,8 +7938,7 @@
 									—
 								</div>
 								<div class="regulationSupportText">
-									Use these qualities to shape the room,
-									response, and pace.
+									Use these qualities to shape the room, response, and pace.
 								</div>
 							</div>
 
@@ -8019,8 +8014,7 @@
 						</div>
 
 						<div class="regulationSupportNote">
-							Practical, non-medical support suggestions for reducing
-							input, clarifying the next move, and making the read usable.
+							Practical, non-medical supports for reducing input, clarifying the next move, and returning to regulation.
 						</div>
 					</section>
 
@@ -8037,7 +8031,7 @@
 							<div class="rootPatternKicker">Your Root Pattern</div>
 							<h2 id="rootPatternExplainerTitle">Root Pattern</h2>
 							<p id="rootPatternExplainerIntro">
-								This is the stable pattern Lucy.OS reads before today’s field is applied.
+								This is the stable pattern Lucy.OS uses to translate the daily field.
 							</p>
 							<div class="rootPatternGrid">
 								<div>
@@ -8054,7 +8048,7 @@
 								</div>
 							</div>
 							<div class="rootPatternTodayLine" id="rootPatternTodayLine">
-								The live field changes; your root pattern explains how your system may receive, filter, and respond.
+								The live field changes. Your root pattern shows the stable way this system tends to receive, filter, and respond.
 							</div>
 						</div>
 						<div class="profileHeader">
@@ -8063,8 +8057,8 @@
 								<p>
 									Your root pattern, stabilizing support,
 									movement style, and overload pathway.
-									Today’s field shows what is active right now
-									— not who you are permanently.
+									This is the translation layer beneath the daily read,
+									not the whole person.
 								</p>
 							</div>
 
@@ -8085,7 +8079,7 @@
 									—
 								</div>
 								<div class="profileDesc">
-									Your baseline signal pattern.
+									The baseline pattern Lucy.OS translates through.
 								</div>
 								<div class="youArchitectureMeaning" id="youRootMeaning">
 									Waiting for root pattern meaning.
@@ -11076,7 +11070,7 @@
 
 				return (
 					specific[key] ||
-					`When today’s field is ${fieldName}, your ${rootName} root may receive it through its own pattern. The field is shared, but the landing is personal.`
+					`When today’s field is ${fieldName}, your ${rootName} root may receive it through its own pattern. Use this as a profile-specific translation of the day’s pressure.`
 				);
 			}
 
@@ -11086,7 +11080,7 @@
 				setHTML("rootPatternExplainerTitle", `${rootLabel(rootBase)}&nbsp;Root`);
 				setText(
 					"rootPatternExplainerIntro",
-					`${explainer.plain} This pattern can detect ${explainer.detects} The live field changes; your root pattern explains how your system tends to receive, filter, and respond.`
+					`${explainer.plain} This pattern can detect ${explainer.detects} Use this section as stable architecture beneath the daily read, not as the whole person.`
 				);
 				setText("rootPatternGift", explainer.gift);
 				setText("rootPatternPressure", explainer.pressure);
@@ -11435,7 +11429,7 @@
 					activation: `${getFieldPlainLanding(field)} Your ${harmonicText(support)} support is part of how this chart returns to coherence today.`,
 					where: "This may show up through relationships, decisions, body tension, work pressure, communication, creativity, or daily logistics.",
 					bestMove: guidance?.move || `Meet the ${fieldLower} field with one clean, manageable action.`,
-					notYou: `This is a live timing read, not a fixed identity label. ${currentState ? `Current state reads ${currentState.toLowerCase()}, so treat today as a temporary field condition.` : "The field is shared; the landing is personal."}`,
+					notYou: `This is a live timing read, not a fixed identity label. ${currentState ? `Current state reads ${currentState.toLowerCase()}, so treat today as a temporary condition.` : "Use it as today’s pressure map, not a permanent identity label."}`,
 				};
 			}
 
