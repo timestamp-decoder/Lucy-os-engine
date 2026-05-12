@@ -25,6 +25,8 @@
 <!-- Pass 22 update: added first-screen user orientation and how-to-use guidance only. Static copy/markup/CSS; no API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, mobile nav, IDs, button listeners, updateUI, or calibration-test behavior changed. -->
 <!-- Pass 20 diagnostic update: safe mobile nav/padding spacing and clearer calculation error alert only. No API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, result meaning, or calibration-test behavior changed. -->
 <!-- Pass 23 update: mobile bottom nav safe spacing only. CSS-only mobile padding/scroll clearance so fixed tabs do not cover destination content. No API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, IDs, button listeners, updateUI, result meanings, or calibration-test behavior changed. -->
+<!-- Pass 24 update: removed redundant inner “You are viewing” label inside the You destination only. Display hierarchy cleanup only; no API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, IDs, button listeners, mobile nav behavior, updateUI, result meanings, or calibration-test behavior changed. -->
+<!-- Pass 25 update: added Andrea high-load guidance inside Regulation Supports only. Static display/copy guidance; no API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, IDs, button listeners, mobile nav behavior, updateUI, result meanings, or calibration-test behavior changed. -->
 <!-- Pass 24 update: removed duplicated “You are viewing” label inside the You destination and tightened the root pattern card entry only. No API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, IDs, button listeners, updateUI, result meanings, mobile nav behavior, or calibration-test behavior changed. -->
 <html lang="en">
 	<head>
@@ -2447,6 +2449,34 @@
 			.regulationSupportList li {
 				margin: 3px 0;
 				overflow-wrap: break-word;
+			}
+
+			.highLoadGuidanceCard {
+				grid-column: 1 / -1;
+				border-color: rgba(216, 184, 76, 0.24);
+				background: radial-gradient(
+						circle at 12% 0%,
+						rgba(216, 184, 76, 0.12),
+						transparent 34%
+					),
+					rgba(255, 255, 255, 0.03);
+			}
+
+			.highLoadGuidanceText {
+				margin: 8px 0 0;
+				color: var(--text);
+				font-size: 13px;
+				line-height: 1.62;
+				font-weight: 750;
+				overflow-wrap: break-word;
+			}
+
+			.highLoadGuidanceText p {
+				margin: 0 0 6px;
+			}
+
+			.highLoadGuidanceText p:last-child {
+				margin-bottom: 0;
 			}
 
 
@@ -7976,6 +8006,16 @@
 									id="regulationSupportStateText"
 								>
 									Waiting for regulation state.
+								</div>
+							</div>
+
+							<div class="regulationSupportBlock highLoadGuidanceCard">
+								<div class="regulationSupportLabel">High Load Guidance</div>
+								<div class="highLoadGuidanceText">
+									<p>High load means the field is exceeding comfortable capacity.</p>
+									<p>Reduce scope before adding more interpretation.</p>
+									<p>Do not create pressure just because the field is loud.</p>
+									<p>Return to your own center before trying to repair the field.</p>
 								</div>
 							</div>
 
