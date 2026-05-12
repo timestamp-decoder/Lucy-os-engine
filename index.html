@@ -2054,24 +2054,52 @@
         Regulated: 0
       };
 
-      addScore(fieldScores, "Structured", tSaturn * 0.90 + tMercury * 0.70);
-      addScore(fieldScores, "Contained", tMoon * 0.65 + tSaturn * 0.55);
-      addScore(fieldScores, "Chaotic", tUranus * 1.30 + tMars * 0.85 + currentStrain * 0.50);
-      addScore(fieldScores, "Relational", tVenus * 1.00 + tMoon * 0.55);
-      addScore(fieldScores, "Threshold", tMars * 1.00 + tUranus * 0.75 + timingPressure * 0.85);
-      addScore(fieldScores, "Reconstructive", tPluto * 1.20 + currentLoad * 0.45 + currentStrain * 0.65);
-      addScore(fieldScores, "Integrative", tJupiter * 0.95 + tNeptune * 0.65);
-      addScore(fieldScores, "Diffused", tNeptune * 1.30 + tMoon * 0.45);
-      addScore(fieldScores, "Regulated", tSaturn * 1.05 + tMercury * 0.75 + currentRegulation * 0.60);
+      const repairGate =
+        tPluto * 0.78 +
+        tSaturn * 0.38 +
+        Math.min(currentStrain, 1.25) * 0.18 +
+        Math.min(currentLoad, 1.25) * 0.12;
 
-      if (envMode.includes("diffuse") || envMode.includes("volatile")) {
+      addScore(fieldScores, "Structured", tSaturn * 0.98 + tMercury * 0.78 + currentRegulation * 0.12);
+      addScore(fieldScores, "Contained", tMoon * 0.68 + tSaturn * 0.62 + currentRegulation * 0.10);
+      addScore(fieldScores, "Chaotic", tUranus * 1.30 + tMars * 0.92 + currentStrain * 0.22);
+      addScore(fieldScores, "Relational", tVenus * 1.18 + tMoon * 0.82 + currentLoad * 0.08);
+      addScore(fieldScores, "Threshold", tMars * 1.05 + tUranus * 0.78 + timingPressure * 0.88 + currentStrain * 0.14);
+      addScore(fieldScores, "Reconstructive", tPluto * 1.05 + tSaturn * 0.42 + repairGate * 0.42);
+      addScore(fieldScores, "Integrative", tJupiter * 1.00 + tNeptune * 0.60 + tMercury * 0.16);
+      addScore(fieldScores, "Diffused", tNeptune * 1.30 + tMoon * 0.45 + currentStrain * 0.10);
+      addScore(fieldScores, "Regulated", tSaturn * 1.08 + tMercury * 0.78 + currentRegulation * 0.72);
+
+      if (envMode.includes("diffuse")) {
         addScore(fieldScores, "Diffused", 0.45);
-        addScore(fieldScores, "Chaotic", 0.35);
       }
 
-      if (forecastState.includes("threshold")) addScore(fieldScores, "Threshold", 0.65);
-      if (forecastState.includes("mobilized")) addScore(fieldScores, "Chaotic", 0.35);
-      if (forecastState.includes("overload")) addScore(fieldScores, "Reconstructive", 0.55);
+      if (envMode.includes("volatile")) {
+        addScore(fieldScores, "Chaotic", 0.35);
+        addScore(fieldScores, "Threshold", 0.18);
+      }
+
+      if (forecastState.includes("threshold")) addScore(fieldScores, "Threshold", 0.60);
+      if (forecastState.includes("mobilized")) addScore(fieldScores, "Chaotic", 0.30);
+
+      if (forecastState.includes("overload")) {
+        addScore(fieldScores, "Threshold", 0.20);
+        addScore(fieldScores, "Diffused", 0.16);
+      }
+
+      if (repairGate < 0.95 && fieldScores.Reconstructive > fieldScores.Relational * 0.92) {
+        fieldScores.Reconstructive = fieldScores.Relational * 0.92;
+      }
+
+      if (repairGate < 1.08 && fieldScores.Reconstructive > fieldScores.Structured * 1.05) {
+        fieldScores.Reconstructive = fieldScores.Structured * 1.05;
+      }
+
+      const relationalGate = tVenus * 1.05 + tMoon * 0.88;
+
+      if (relationalGate >= 0.95 && fieldScores.Relational >= fieldScores.Reconstructive * 0.88) {
+        fieldScores.Relational += 0.18;
+      }
 
       const todayField = getTopHarmonic(fieldScores, "Regulated");
 
