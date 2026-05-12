@@ -16,6 +16,7 @@
 <!-- Pass 13 update: added mobile app navigation tabs and section anchors only. One global nav links to Input, Field, Landing, Support, and You. No API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, calibration tests, or share export behavior changed. -->
 <!-- Pass 14 update: added active mobile nav glow and small section destination labels only. UI navigation polish only; locked systems unchanged. -->
 <!-- Pass 15 update: added subtle Personal Landing clarification for Relational Field as an active channel, not a required feeling. Display/copy clarity only; engine, API, scoring, Moonstamp, Electrical Mapping, saved profiles, share export, calibration tests, and mobile nav behavior unchanged. -->
+<!-- Pass 16 update: added mobile Field destination breathing room only. Field anchor now lands on a grouped shared-atmosphere zone with a small helper line and extra spacing before Landing. Engine, API, scoring, Moonstamp, Electrical Mapping, saved profiles, share export, calibration tests, and mobile nav behavior unchanged. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -216,6 +217,20 @@
 				font-size: 12px;
 				line-height: 1.25;
 				font-weight: 850;
+			}
+
+			.fieldDestinationZone {
+				scroll-margin-top: 18px;
+				margin-bottom: 18px;
+			}
+
+			.fieldDestinationHelper {
+				margin: 8px 0 12px;
+				color: var(--muted);
+				font-size: 12px;
+				line-height: 1.45;
+				font-weight: 750;
+				overflow-wrap: break-word;
 			}
 
 			.sectionAnchor {
@@ -5838,6 +5853,15 @@
 					padding-bottom: calc(86px + env(safe-area-inset-bottom));
 				}
 
+				.fieldDestinationZone {
+					scroll-margin-top: 12px;
+					margin-bottom: 28px;
+				}
+
+				.fieldDestinationHelper {
+					margin-bottom: 16px;
+				}
+
 				.sectionAnchor,
 				#inputSection,
 				#supportSection,
@@ -6006,18 +6030,22 @@
 
 				<div class="mainStack">
 
-					<span class="sectionAnchor" id="fieldSection" aria-hidden="true"></span>
-					<div class="sectionDestinationLabel">
-						<span>Field</span>
-						<strong>Today’s shared atmosphere</strong>
+					<div class="fieldDestinationZone" id="fieldSection">
+						<div class="sectionDestinationLabel">
+							<span>You are viewing</span>
+							<strong>Field · Today’s shared atmosphere</strong>
+						</div>
+						<div class="fieldDestinationHelper">
+							Field shows the shared atmosphere. It does not decide your personal response.
+						</div>
+						<section class="topLiveFieldCard" id="topLiveFieldCard">
+							<div class="topLiveFieldKicker">TODAY’S LIVE FIELD</div>
+							<h2 class="topLiveFieldTitle" id="topLiveFieldTitle">Live Field Pending</h2>
+							<div class="topLiveFieldMeta" id="topLiveFieldMeta">State: — · Load: —</div>
+							<div class="topLiveFieldDriver" id="topLiveFieldDriver">Calculate to see today’s strongest visible influence.</div>
+							<div class="topLiveFieldMove" id="topLiveFieldMove"><span>Best move:</span> Calculate to see today’s cleanest move.</div>
+						</section>
 					</div>
-					<section class="topLiveFieldCard" id="topLiveFieldCard">
-						<div class="topLiveFieldKicker">TODAY’S LIVE FIELD</div>
-						<h2 class="topLiveFieldTitle" id="topLiveFieldTitle">Live Field Pending</h2>
-						<div class="topLiveFieldMeta" id="topLiveFieldMeta">State: — · Load: —</div>
-						<div class="topLiveFieldDriver" id="topLiveFieldDriver">Calculate to see today’s strongest visible influence.</div>
-						<div class="topLiveFieldMove" id="topLiveFieldMove"><span>Best move:</span> Calculate to see today’s cleanest move.</div>
-					</section>
 
 					<span class="sectionAnchor" id="landingSection" aria-hidden="true"></span>
 					<div class="sectionDestinationLabel">
