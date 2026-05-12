@@ -28,6 +28,7 @@
 <!-- Pass 24 update: removed redundant inner “You are viewing” label inside the You destination only. Display hierarchy cleanup only; no API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, IDs, button listeners, mobile nav behavior, updateUI, result meanings, or calibration-test behavior changed. -->
 <!-- Pass 25 update: added Andrea high-load guidance inside Regulation Supports only. Static display/copy guidance; no API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, IDs, button listeners, mobile nav behavior, updateUI, result meanings, or calibration-test behavior changed. -->
 <!-- Pass 26 update: added compact Root Pattern Avatar card inside the You destination only. Display-only visual profile instrument uses existing root, field, and load/strain values; no API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, IDs, button listeners, mobile nav behavior, updateUI, result meanings, or calibration-test behavior changed. -->
+<!-- Pass 27 update: refined Root Avatar landing-line helper with root + field specific copy only. No visual/card sizing, API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, IDs, button listeners, mobile nav behavior, updateUI, result meanings, or calibration-test behavior changed. -->
 <!-- Pass 24 update: removed duplicated “You are viewing” label inside the You destination and tightened the root pattern card entry only. No API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, IDs, button listeners, updateUI, result meanings, mobile nav behavior, or calibration-test behavior changed. -->
 <html lang="en">
 	<head>
@@ -11470,32 +11471,72 @@
 			}
 
 			function buildRootAvatarLandingLine(root, field) {
-				const rootBase = getHarmonicBaseName(root || "Steady") || "Steady";
-				const fieldBase = getHarmonicBaseName(field || "") || "today’s field";
-				const key = `${rootBase}|${fieldBase}`;
-				const specific = {
-					"Chaotic|Relational":
-						"Fast signal meeting contact pressure. Reduce scope before reacting.",
-					"Relational|Reconstructive":
-						"Contact sensitivity meeting repair pressure. Repair only what is asking for attention.",
-					"Structured|Diffused":
-						"Structure meeting fog. Name one clean step before adding more form.",
-					"Contained|Threshold":
-						"Held pressure meeting transition. Move only when the opening is clear.",
-				};
+				const safeFallback =
+					"Your root pattern shows how today’s field lands in your system. Use the read to choose the cleanest next move.";
 
-				if (specific[key]) return specific[key];
-				if (rootBase === "Regulated") {
-					return "A regulation-first system meeting today’s field. Keep the pace workable.";
+				try {
+					const rootBase = getHarmonicBaseName(root || "Steady") || "Steady";
+					const fieldBase = getHarmonicBaseName(field || "") || "";
+					const key = `${rootBase}|${fieldBase}`;
+					const pairLines = {
+						"Chaotic|Relational":
+							"Fast signal meeting contact pressure. Reduce scope before reacting.",
+						"Relational|Relational":
+							"Contact sensitivity meeting contact pressure. Stay connected without absorbing the whole field.",
+						"Structured|Relational":
+							"Structure meeting contact pressure. Name the expectation before trying to hold everyone together.",
+						"Contained|Relational":
+							"Boundary sensitivity meeting contact pressure. Keep the door clear without closing it too hard.",
+						"Threshold|Relational":
+							"Timing sensitivity meeting contact pressure. Wait for the real opening before crossing.",
+						"Reconstructive|Relational":
+							"Repair instinct meeting contact pressure. Repair only what is actually asking for attention.",
+						"Integrative|Relational":
+							"Pattern weaving meeting contact pressure. Separate the signal from the noise before making meaning.",
+						"Diffused|Relational":
+							"Soft field meeting contact pressure. Reduce input before deciding what the contact means.",
+						"Regulated|Relational":
+							"Regulation-first system meeting contact pressure. Keep the pace workable before responding.",
+						"Steady|Relational":
+							"Steady signal meeting contact pressure. Stay centered and respond only to what is clear.",
+					};
+
+					const fieldLines = {
+						Relational:
+							"Steady signal meeting contact pressure. Stay centered and respond only to what is clear.",
+						Reconstructive:
+							"Today’s field is asking for repair. Fix the clear weak point without turning everything into a rebuild.",
+						Diffused:
+							"Today’s field may feel unclear. Name one clean signal before adding more interpretation.",
+						Threshold:
+							"Today’s field is near a crossing point. Wait for the real opening before forcing movement.",
+						Structured:
+							"Today’s field wants structure. Choose one clean frame instead of over-building the whole system.",
+						Contained:
+							"Today’s field wants containment. Hold the boundary without locking the whole system down.",
+						Chaotic:
+							"Today’s field may spike quickly. Let the signal take form before reacting.",
+						Integrative:
+							"Today’s field wants coherence. Gather the pieces before deciding what they mean.",
+						Regulated:
+							"Today’s field supports pacing. Keep the next move small enough to stay workable.",
+						Steady:
+							"Today’s field is asking for steadiness. Stay with the simple next move.",
+					};
+
+					if (pairLines[key]) return pairLines[key];
+					if (fieldLines[fieldBase]) return fieldLines[fieldBase];
+
+					const rootMeta = getRootAvatarMeta(rootBase);
+					const fieldText = publicFieldText(fieldBase) || "today’s field";
+					if (rootMeta?.label && fieldText && fieldText !== "—") {
+						return `${rootMeta.label} meeting ${fieldText.toLowerCase()} pressure. Use the read to choose one clean next move.`;
+					}
+				} catch (error) {
+					console.warn("Root Avatar landing line unavailable:", error);
 				}
 
-				const rootMeta = getRootAvatarMeta(rootBase);
-				const fieldText = publicFieldText(fieldBase) || "today’s field";
-				if (rootMeta?.label && fieldText && fieldText !== "—") {
-					return `${rootMeta.label} meeting ${fieldText.toLowerCase()} pressure. Use the read to choose one clean next move.`;
-				}
-
-				return "Your root pattern shows how today’s field lands in your system. Use the read to choose the cleanest next move.";
+				return safeFallback;
 			}
 
 			function updateRootAvatarCard(root, field, data) {
