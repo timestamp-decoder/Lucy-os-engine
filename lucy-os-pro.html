@@ -12,6 +12,7 @@
 <!-- Pass 10.1 update: Live Field Dashboard influence sentence detection tweak only. Venus support line now appears for relational/social field rises as a non-deterministic public explanation. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, dashboard scores, saved profiles, selected field/root/support/undertone/motion style/system load state, calibration tests, private engine math, or share export behavior changed. -->
 <!-- Pass 10 update: Live Field Dashboard user explanation strip only. Added compact how-to-read and strongest-influences display language. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, dashboard scores, saved profiles, selected field/root/support/undertone/motion style/system load state, calibration tests, private engine math, or share export behavior changed. -->
 <!-- Pass 11 update: Live Field Dashboard explanation copy refined to clarify shared field atmosphere versus personal mood/behavior, and shortened influence language. Display-only copy/helper update; no API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, dashboard scores, selected fields, saved profiles, calibration tests, or share export behavior changed. -->
+<!-- Pass 12 update: added compact top Today’s Live Field strip only. Uses existing public field/state/load/driver/helper data and display wording. No API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, calibration tests, existing Live Field Dashboard behavior, or share export behavior changed. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -4753,6 +4754,7 @@
 
 			/* Pass 1: Top clarity + personal landing layer */
 			.topClarityCard,
+			.topLiveFieldCard,
 			.personalLandingCard,
 			.plainReadCard,
 			.systemReadCard,
@@ -4776,6 +4778,75 @@
 						transparent 34%
 					),
 					rgba(255, 255, 255, 0.026);
+			}
+
+			.topLiveFieldCard {
+				padding: 16px 18px;
+				border: 1px solid rgba(255, 155, 183, 0.22);
+				background: radial-gradient(
+						circle at 10% 0%,
+						rgba(255, 155, 183, 0.12),
+						transparent 34%
+					),
+					radial-gradient(
+						circle at 92% 8%,
+						rgba(103, 193, 255, 0.085),
+						transparent 34%
+					),
+					rgba(255, 255, 255, 0.03);
+			}
+
+			.topLiveFieldKicker {
+				color: var(--rose);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.13em;
+				text-transform: uppercase;
+				margin-bottom: 7px;
+			}
+
+			.topLiveFieldTitle {
+				color: var(--text);
+				font-size: 24px;
+				font-weight: 950;
+				line-height: 1.12;
+				letter-spacing: -0.03em;
+				margin: 0;
+				overflow-wrap: anywhere;
+			}
+
+			.topLiveFieldMeta {
+				margin-top: 6px;
+				color: var(--muted);
+				font-size: 12px;
+				font-weight: 900;
+				letter-spacing: 0.02em;
+				overflow-wrap: break-word;
+			}
+
+			.topLiveFieldDriver {
+				margin-top: 10px;
+				color: #d9e0f4;
+				font-size: 13px;
+				line-height: 1.48;
+				font-weight: 760;
+				overflow-wrap: break-word;
+			}
+
+			.topLiveFieldMove {
+				margin-top: 10px;
+				padding-top: 10px;
+				border-top: 1px solid rgba(255, 255, 255, 0.075);
+				color: var(--text);
+				font-size: 13px;
+				line-height: 1.48;
+				font-weight: 760;
+				overflow-wrap: break-word;
+			}
+
+			.topLiveFieldMove span {
+				color: var(--gold);
+				font-weight: 950;
 			}
 
 			.personalLandingKicker,
@@ -5772,6 +5843,14 @@
 				</div>
 
 				<div class="mainStack">
+
+					<section class="topLiveFieldCard" id="topLiveFieldCard">
+						<div class="topLiveFieldKicker">TODAY’S LIVE FIELD</div>
+						<h2 class="topLiveFieldTitle" id="topLiveFieldTitle">Live Field Pending</h2>
+						<div class="topLiveFieldMeta" id="topLiveFieldMeta">State: — · Load: —</div>
+						<div class="topLiveFieldDriver" id="topLiveFieldDriver">Calculate to see today’s strongest visible influence.</div>
+						<div class="topLiveFieldMove" id="topLiveFieldMove"><span>Best move:</span> Calculate to see today’s cleanest move.</div>
+					</section>
 
 					<section class="personalLandingCard" id="personalLandingCard">
 						<div class="personalLandingKicker">Lucy.OS read layer</div>
@@ -10898,6 +10977,84 @@
 				return parts.join(" ");
 			}
 
+			function buildTopLiveFieldDriverLine(data, harmonics) {
+				const field = harmonics?.todayField || "";
+				const scores = harmonics?.normalizedFieldScores || {};
+				const planetary = data?.planetary || {};
+				const driver = dashboardInfluenceDriverName(
+					primaryDriverName(data)
+				);
+				const parts = [];
+
+				if (driver) {
+					parts.push(`${driver} leads the day.`);
+				}
+
+				const tVenus = safeNum(
+					planetary.transitVenus,
+					safeNum(planetary.venus)
+				);
+				const relationalScore = safeNum(scores.Relational);
+				const socialRiseActive =
+					field === "Relational" || relationalScore >= 0.58;
+				const venusSupportActive =
+					driver !== "Venus" && (socialRiseActive || tVenus >= 0.48);
+
+				if (venusSupportActive) {
+					parts.push("Venus supports the relational lift.");
+				}
+
+				if (!parts.length) {
+					return buildLiveDashboardInfluenceSentence(data, harmonics);
+				}
+
+				return parts.join(" ");
+			}
+
+			function buildTopLiveFieldMove(field, loadBand, guidance) {
+				const currentField = String(field || "").trim();
+				const currentLoad = String(loadBand || "").trim();
+
+				if (
+					currentField === "Relational" &&
+					(currentLoad === "High" || currentLoad === "Very high")
+				) {
+					return "Clarify contact. Reduce scope. Do not absorb the whole room.";
+				}
+
+				return (
+					String(guidance?.move || "").trim() ||
+					"Choose one clear next move and keep the scope small."
+				);
+			}
+
+			function updateTopLiveFieldStrip(data, harmonics, guidance) {
+				const field = harmonics?.todayField || "Regulated";
+				const stateLabel = stateLabelFromMode(data?.state?.mode || "");
+				const loadBand = loadBandFromValue(
+					safeNum(data?.state?.amplifiedLoad, data?.state?.strain)
+				);
+				const fieldText = getPublicFieldLabel(field);
+
+				setHTML(
+					"topLiveFieldTitle",
+					`${fieldLabel(fieldText)}&nbsp;Field Active`
+				);
+				setText("topLiveFieldMeta", `${stateLabel} · ${loadBand} Load`);
+				setText(
+					"topLiveFieldDriver",
+					buildTopLiveFieldDriverLine(data, harmonics)
+				);
+				setHTML(
+					"topLiveFieldMove",
+					`<span>Best move:</span> ${buildTopLiveFieldMove(
+						field,
+						loadBand,
+						guidance
+					)}`
+				);
+			}
+
 			function updateLiveFieldDashboardUI(data, harmonics) {
 				const stateLabel = stateLabelFromMode(data?.state?.mode || "");
 				const field = harmonics?.todayField || "Regulated";
@@ -14385,6 +14542,8 @@
 					loadBand: loadBandFromValue(data?.state?.amplifiedLoad),
 				});
 
+				updateTopLiveFieldStrip(data, harmonics, guidance);
+
 				setHTML("systemWeatherLine", systemWeatherHTML);
 				setHTML(
 					"pairingExplain",
@@ -15226,6 +15385,9 @@
 			window.buildLiveFieldDashboardMetrics =
 				buildLiveFieldDashboardMetrics;
 			window.updateLiveFieldDashboardUI = updateLiveFieldDashboardUI;
+			window.buildTopLiveFieldDriverLine = buildTopLiveFieldDriverLine;
+			window.buildTopLiveFieldMove = buildTopLiveFieldMove;
+			window.updateTopLiveFieldStrip = updateTopLiveFieldStrip;
 			window.buildLiveDashboardDayType = buildLiveDashboardDayType;
 			window.buildMobileSnapshotSupport = buildMobileSnapshotSupport;
 			window.updateMobileReadSnapshot = updateMobileReadSnapshot;
