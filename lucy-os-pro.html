@@ -27,6 +27,7 @@
 <!-- Pass 23 update: mobile bottom nav safe spacing only. CSS-only mobile padding/scroll clearance so fixed tabs do not cover destination content. No API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, IDs, button listeners, updateUI, result meanings, or calibration-test behavior changed. -->
 <!-- Pass 24 update: removed redundant inner “You are viewing” label inside the You destination only. Display hierarchy cleanup only; no API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, IDs, button listeners, mobile nav behavior, updateUI, result meanings, or calibration-test behavior changed. -->
 <!-- Pass 25 update: added Andrea high-load guidance inside Regulation Supports only. Static display/copy guidance; no API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, IDs, button listeners, mobile nav behavior, updateUI, result meanings, or calibration-test behavior changed. -->
+<!-- Pass 26 update: added compact Root Pattern Avatar card inside the You destination only. Display-only visual profile instrument uses existing root, field, and load/strain values; no API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, IDs, button listeners, mobile nav behavior, updateUI, result meanings, or calibration-test behavior changed. -->
 <!-- Pass 24 update: removed duplicated “You are viewing” label inside the You destination and tightened the root pattern card entry only. No API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, IDs, button listeners, updateUI, result meanings, mobile nav behavior, or calibration-test behavior changed. -->
 <html lang="en">
 	<head>
@@ -3053,6 +3054,156 @@
 				);
 				box-shadow: var(--shadow);
 				overflow: hidden;
+			}
+
+
+			.rootAvatarCard {
+				width: 100%;
+				max-width: 100%;
+				min-width: 0;
+				overflow: hidden;
+				border: 1px solid rgba(103, 193, 255, 0.18);
+				border-radius: 20px;
+				padding: 15px;
+				margin: 0 0 14px;
+				background: radial-gradient(
+						circle at 16% 0%,
+						color-mix(in srgb, var(--root-avatar-color, var(--h-steady)) 22%, transparent),
+						transparent 36%
+					),
+					radial-gradient(
+						circle at 92% 10%,
+						rgba(103, 193, 255, 0.08),
+						transparent 34%
+					),
+					linear-gradient(
+						180deg,
+						rgba(255, 255, 255, 0.052),
+						rgba(255, 255, 255, 0.026)
+					);
+				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.018),
+					0 14px 34px rgba(0, 0, 0, 0.16);
+			}
+
+			.rootAvatarInner {
+				display: grid;
+				grid-template-columns: 112px minmax(0, 1fr);
+				gap: 15px;
+				align-items: center;
+				min-width: 0;
+			}
+
+			.rootAvatarRing {
+				width: 108px;
+				height: 108px;
+				border-radius: 50%;
+				padding: 7px;
+				background: conic-gradient(
+					from 210deg,
+					rgba(255, 255, 255, 0.1),
+					var(--root-avatar-color, var(--h-steady)),
+					rgba(255, 255, 255, 0.08),
+					var(--root-avatar-color, var(--h-steady)),
+					rgba(255, 255, 255, 0.1)
+				);
+				box-shadow: 0 0 24px color-mix(in srgb, var(--root-avatar-color, var(--h-steady)) 28%, transparent),
+					inset 0 0 14px rgba(255, 255, 255, 0.06);
+			}
+
+			.rootAvatarOrb {
+				width: 100%;
+				height: 100%;
+				border-radius: 50%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				border: 1px solid rgba(255, 255, 255, 0.12);
+				background: radial-gradient(
+						circle at 38% 24%,
+						rgba(255, 255, 255, 0.22),
+						transparent 22%
+					),
+					radial-gradient(
+						circle at 50% 54%,
+						color-mix(in srgb, var(--root-avatar-color, var(--h-steady)) 34%, transparent),
+						transparent 58%
+					),
+					linear-gradient(180deg, rgba(15, 27, 56, 0.96), rgba(9, 20, 47, 0.98));
+				box-shadow: inset 0 0 28px rgba(0, 0, 0, 0.22),
+					inset 0 0 0 1px rgba(255, 255, 255, 0.035);
+			}
+
+			.rootAvatarSymbol {
+				color: var(--root-avatar-color, var(--h-steady));
+				font-size: 40px;
+				font-weight: 950;
+				line-height: 1;
+				text-shadow: 0 0 18px color-mix(in srgb, var(--root-avatar-color, var(--h-steady)) 55%, transparent);
+			}
+
+			.rootAvatarKicker {
+				color: var(--muted);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.13em;
+				text-transform: uppercase;
+				margin-bottom: 6px;
+			}
+
+			.rootAvatarTitle {
+				color: var(--text);
+				font-size: 24px;
+				line-height: 1.08;
+				font-weight: 950;
+				letter-spacing: -0.035em;
+				overflow-wrap: anywhere;
+			}
+
+			.rootAvatarSubtitle {
+				margin-top: 4px;
+				color: var(--root-avatar-color, var(--h-steady));
+				font-size: 12px;
+				font-weight: 900;
+				line-height: 1.35;
+				overflow-wrap: anywhere;
+			}
+
+			.rootAvatarChips {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 7px;
+				margin-top: 10px;
+				min-width: 0;
+			}
+
+			.rootAvatarChip {
+				display: inline-flex;
+				align-items: center;
+				min-height: 27px;
+				max-width: 100%;
+				padding: 6px 9px;
+				border-radius: 999px;
+				border: 1px solid rgba(255, 255, 255, 0.09);
+				background: rgba(255, 255, 255, 0.04);
+				color: #d9e0f4;
+				font-size: 11px;
+				font-weight: 850;
+				line-height: 1.2;
+				overflow-wrap: anywhere;
+			}
+
+			.rootAvatarChip strong {
+				color: var(--text);
+				font-weight: 950;
+			}
+
+			.rootAvatarLine {
+				margin-top: 10px;
+				color: #eef3ff;
+				font-size: 13px;
+				line-height: 1.48;
+				font-weight: 800;
+				overflow-wrap: break-word;
 			}
 
 			.rootPatternExplainerCard {
@@ -6291,6 +6442,35 @@
 					margin-bottom: 16px;
 				}
 
+
+				.rootAvatarCard {
+					padding: 14px;
+				}
+
+				.rootAvatarInner {
+					grid-template-columns: minmax(0, 1fr);
+					justify-items: center;
+					gap: 11px;
+					text-align: center;
+				}
+
+				.rootAvatarRing {
+					width: 100px;
+					height: 100px;
+				}
+
+				.rootAvatarSymbol {
+					font-size: 37px;
+				}
+
+				.rootAvatarTitle {
+					font-size: 22px;
+				}
+
+				.rootAvatarChips {
+					justify-content: center;
+				}
+
 				.rootPatternExplainerCard {
 					padding: 15px;
 				}
@@ -8116,6 +8296,25 @@
 						<div class="sectionDestinationLabel">
 							<span>You</span>
 							<strong>Your stable profile pattern</strong>
+						</div>
+						<div class="rootAvatarCard" id="rootAvatarCard" style="--root-avatar-color: var(--h-steady);">
+							<div class="rootAvatarInner">
+								<div class="rootAvatarRing" aria-hidden="true">
+									<div class="rootAvatarOrb">
+										<div class="rootAvatarSymbol" id="rootAvatarSymbol">●</div>
+									</div>
+								</div>
+								<div class="rootAvatarCopy">
+									<div class="rootAvatarKicker">Root Avatar</div>
+									<div class="rootAvatarTitle" id="rootAvatarPublicLabel">Steady Signal</div>
+									<div class="rootAvatarSubtitle" id="rootAvatarRootLabel">Steady Root</div>
+									<div class="rootAvatarChips">
+										<span class="rootAvatarChip" id="rootAvatarStrainChip">Strain: Available after calculation</span>
+										<span class="rootAvatarChip" id="rootAvatarFieldChip">Today’s Field: —</span>
+									</div>
+									<div class="rootAvatarLine" id="rootAvatarLandingLine">Your root pattern shows how today’s field lands in your system. Use the read to choose the cleanest next move.</div>
+								</div>
+							</div>
 						</div>
 						<div class="rootPatternExplainerCard">
 							<div class="rootPatternKicker">Your Root Pattern</div>
@@ -11162,6 +11361,171 @@
 					specific[key] ||
 					`When today’s field is ${fieldName}, your ${rootName} root may receive it through its own pattern. The field is shared, but the landing is personal.`
 				);
+			}
+
+
+			const ROOT_AVATAR_META = {
+				Chaotic: {
+					label: "Fast Signal",
+					symbol: "⚡",
+					color: "var(--h-chaotic)",
+				},
+				Relational: {
+					label: "Contact Reader",
+					symbol: "◎",
+					color: "var(--h-relational)",
+				},
+				Structured: {
+					label: "Structure Holder",
+					symbol: "▦",
+					color: "var(--h-structured)",
+				},
+				Contained: {
+					label: "Boundary Keeper",
+					symbol: "◯",
+					color: "var(--h-contained)",
+				},
+				Threshold: {
+					label: "Crossing Point",
+					symbol: "◇",
+					color: "var(--h-threshold)",
+				},
+				Reconstructive: {
+					label: "Repair Forge",
+					symbol: "✦",
+					color: "var(--h-reconstructive)",
+				},
+				Integrative: {
+					label: "Pattern Weaver",
+					symbol: "✺",
+					color: "var(--h-integrative)",
+				},
+				Diffused: {
+					label: "Soft Field",
+					symbol: "◌",
+					color: "var(--h-diffused)",
+				},
+				Regulated: {
+					label: "Flow Governor",
+					symbol: "≋",
+					color: "var(--h-regulated)",
+				},
+				Steady: {
+					label: "Steady Signal",
+					symbol: "●",
+					color: "var(--h-steady)",
+				},
+			};
+
+			function getRootAvatarMeta(root) {
+				const base = getHarmonicBaseName(root || "Steady") || "Steady";
+				return ROOT_AVATAR_META[base] || ROOT_AVATAR_META.Steady;
+			}
+
+			function rootAvatarReadableValue(value) {
+				return String(value || "")
+					.replace(/([a-z])([A-Z])/g, "$1 $2")
+					.replace(/[-_]+/g, " ")
+					.trim();
+			}
+
+			function getRootAvatarNumericStrain(data) {
+				const state = data?.state || {};
+				const candidates = [
+					state.strain,
+					state.effectiveLoad,
+					state.amplifiedLoad,
+					state.load,
+					state.loadScore,
+				];
+
+				for (const candidate of candidates) {
+					const value = Number(candidate);
+					if (Number.isFinite(value)) return value;
+				}
+
+				return NaN;
+			}
+
+			function getRootAvatarStrainLabel(data) {
+				const numeric = getRootAvatarNumericStrain(data);
+				if (Number.isFinite(numeric)) {
+					if (numeric < 0.45) return "Low strain";
+					if (numeric < 0.75) return "Moderate strain";
+					return "High strain";
+				}
+
+				const text = rootAvatarReadableValue(
+					data?.state?.systemLoadState ||
+						data?.state?.loadState ||
+						data?.state?.mode ||
+						""
+				).toLowerCase();
+
+				if (!text) return "Available after calculation";
+				if (text.includes("high") || text.includes("over") || text.includes("strained")) return "High strain";
+				if (text.includes("moderate") || text.includes("active") || text.includes("mobilized")) return "Moderate strain";
+				if (text.includes("low") || text.includes("steady") || text.includes("regulated")) return "Low strain";
+				return rootAvatarReadableValue(text) || "Reading today’s load";
+			}
+
+			function buildRootAvatarLandingLine(root, field) {
+				const rootBase = getHarmonicBaseName(root || "Steady") || "Steady";
+				const fieldBase = getHarmonicBaseName(field || "") || "today’s field";
+				const key = `${rootBase}|${fieldBase}`;
+				const specific = {
+					"Chaotic|Relational":
+						"Fast signal meeting contact pressure. Reduce scope before reacting.",
+					"Relational|Reconstructive":
+						"Contact sensitivity meeting repair pressure. Repair only what is asking for attention.",
+					"Structured|Diffused":
+						"Structure meeting fog. Name one clean step before adding more form.",
+					"Contained|Threshold":
+						"Held pressure meeting transition. Move only when the opening is clear.",
+				};
+
+				if (specific[key]) return specific[key];
+				if (rootBase === "Regulated") {
+					return "A regulation-first system meeting today’s field. Keep the pace workable.";
+				}
+
+				const rootMeta = getRootAvatarMeta(rootBase);
+				const fieldText = publicFieldText(fieldBase) || "today’s field";
+				if (rootMeta?.label && fieldText && fieldText !== "—") {
+					return `${rootMeta.label} meeting ${fieldText.toLowerCase()} pressure. Use the read to choose one clean next move.`;
+				}
+
+				return "Your root pattern shows how today’s field lands in your system. Use the read to choose the cleanest next move.";
+			}
+
+			function updateRootAvatarCard(root, field, data) {
+				try {
+					const rootBase = getHarmonicBaseName(root || "Steady") || "Steady";
+					const fieldBase = getHarmonicBaseName(field || "") || "";
+					const meta = getRootAvatarMeta(rootBase);
+					const card = document.getElementById("rootAvatarCard");
+					if (card) {
+						card.style.setProperty("--root-avatar-color", meta.color || "var(--h-steady)");
+						card.className = `rootAvatarCard root-avatar-${harmonicClass(rootBase || "Steady")}`;
+					}
+
+					setText("rootAvatarSymbol", meta.symbol || "●");
+					setText("rootAvatarPublicLabel", meta.label || "Steady Signal");
+					setText("rootAvatarRootLabel", `${rootBase || "Steady"} Root`);
+					setText("rootAvatarStrainChip", `Strain: ${getRootAvatarStrainLabel(data)}`);
+					setText(
+						"rootAvatarFieldChip",
+						`Today’s Field: ${publicFieldText(fieldBase) || "—"}`
+					);
+					setText("rootAvatarLandingLine", buildRootAvatarLandingLine(rootBase, fieldBase));
+				} catch (error) {
+					console.warn("Root Avatar unavailable:", error);
+					setText("rootAvatarStrainChip", "Strain: Available after calculation");
+					setText(
+						"rootAvatarLandingLine",
+						"Your root pattern shows how today’s field lands in your system. Use the read to choose the cleanest next move."
+					);
+				}
 			}
 
 			function updateRootPatternExplainer(root, field) {
@@ -16264,6 +16628,7 @@
 				updateInteractionMap(primaryMeta.label, fieldMeta.label);
 				updateFieldUndertoneUI(fieldUndertone);
 				updateRootPatternExplainer(primaryMeta.label, fieldMeta.label);
+				updateRootAvatarCard(primaryMeta.label, fieldMeta.label, data);
 
 				setHTML("topMotionStyle", motionStyleLabel);
 				setText("topMotionStyleRead", motionStyleRead);
