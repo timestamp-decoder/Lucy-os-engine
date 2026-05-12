@@ -15,6 +15,7 @@
 <!-- Pass 12 update: added compact top Today’s Live Field strip only. Uses existing public field/state/load/driver/helper data and display wording. No API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, calibration tests, existing Live Field Dashboard behavior, or share export behavior changed. -->
 <!-- Pass 13 update: added mobile app navigation tabs and section anchors only. One global nav links to Input, Field, Landing, Support, and You. No API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, calibration tests, or share export behavior changed. -->
 <!-- Pass 14 update: added active mobile nav glow and small section destination labels only. UI navigation polish only; locked systems unchanged. -->
+<!-- Pass 15 update: added subtle Personal Landing clarification for Relational Field as an active channel, not a required feeling. Display/copy clarity only; engine, API, scoring, Moonstamp, Electrical Mapping, saved profiles, share export, calibration tests, and mobile nav behavior unchanged. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -4995,6 +4996,33 @@
 				overflow-wrap: break-word;
 			}
 
+			.landingClarifier {
+				margin-top: 10px;
+				padding: 10px 11px;
+				border-radius: 13px;
+				border: 1px solid rgba(103, 193, 255, 0.14);
+				background: rgba(103, 193, 255, 0.045);
+			}
+
+			.landingClarifier span {
+				display: block;
+				margin-bottom: 5px;
+				color: var(--blue);
+				font-size: 9px;
+				font-weight: 950;
+				letter-spacing: 0.13em;
+				text-transform: uppercase;
+			}
+
+			.landingClarifier p {
+				margin: 0;
+				color: #d9e0f4;
+				font-size: 12px;
+				line-height: 1.45;
+				font-weight: 750;
+				overflow-wrap: break-word;
+			}
+
 			.plainReadCard {
 				padding: 20px;
 				border: 1px solid rgba(111, 224, 211, 0.22);
@@ -6006,6 +6034,10 @@
 						</div>
 						<div class="personalLandingLine" id="personalLandingLine">
 							Lucy.OS reads how the weather lands in you.
+						</div>
+						<div class="landingClarifier">
+							<span>Landing note</span>
+							<p>Relational field means contact is the channel. Your landing may be connection, caution, distance, or withdrawal.</p>
 						</div>
 					</section>
 
