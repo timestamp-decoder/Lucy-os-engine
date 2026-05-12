@@ -19,6 +19,7 @@
 <!-- Pass 16 update: expanded Today’s Live Field as the mobile Field destination only. Added compact in-card destination label, field clarifier, influence/use rows, and breathing room. No API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, calibration tests, or mobile nav behavior changed. -->
 <!-- Pass 16 update: added mobile Field destination breathing room only. Field anchor now lands on a grouped shared-atmosphere zone with a small helper line and extra spacing before Landing. Engine, API, scoring, Moonstamp, Electrical Mapping, saved profiles, share export, calibration tests, and mobile nav behavior unchanged. -->
 <!-- Pass 17 update: added fuller Your Root Pattern explainer inside the You destination only. Display-only personal architecture copy uses existing selected root and current field values; no API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, or calibration-test behavior changed. -->
+<!-- Pass 18 update: expanded You destination personal architecture cards with compact plain-English meaning lines only. Display-only helper copy uses existing selected values; no API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, mobile nav behavior, or calibration-test behavior changed. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -3096,6 +3097,22 @@
 				font-size: 12px;
 				line-height: 1.48;
 				overflow-wrap: break-word;
+			}
+
+			.youArchitectureMeaning {
+				margin-top: 8px;
+				padding-top: 8px;
+				border-top: 1px solid rgba(255, 255, 255, 0.065);
+				color: #d9e0f4;
+				font-size: 12.5px;
+				line-height: 1.5;
+				font-weight: 730;
+				overflow-wrap: break-word;
+			}
+
+			.youArchitectureMeaning strong {
+				color: var(--text);
+				font-weight: 900;
 			}
 
 			.chipRow {
@@ -7305,6 +7322,9 @@
 								<div class="profileDesc">
 									Your baseline signal pattern.
 								</div>
+								<div class="youArchitectureMeaning" id="youRootMeaning">
+									Waiting for root pattern meaning.
+								</div>
 							</div>
 
 							<div class="profileBlock">
@@ -7316,6 +7336,9 @@
 								</div>
 								<div class="profileDesc">
 									What helps your system stay coherent.
+								</div>
+								<div class="youArchitectureMeaning" id="youSupportMeaning">
+									Waiting for stabilizing support meaning.
 								</div>
 							</div>
 
@@ -7333,6 +7356,9 @@
 									Your root pattern translated through your
 									stabilizing support.
 								</div>
+								<div class="youArchitectureMeaning" id="youProfileTranslationMeaning">
+									Waiting for profile translation meaning.
+								</div>
 							</div>
 
 							<div class="profileBlock">
@@ -7347,6 +7373,9 @@
 								<div class="profileDesc" id="motionStyleRead">
 									Waiting for motion style read.
 								</div>
+								<div class="youArchitectureMeaning" id="youMotionMeaning">
+									Waiting for motion style meaning.
+								</div>
 							</div>
 
 							<div class="profileBlock">
@@ -7360,6 +7389,9 @@
 								<div class="profileDesc">
 									Where strain tends to route under pressure.
 								</div>
+								<div class="youArchitectureMeaning" id="youOverloadMeaning">
+									Waiting for overload pathway meaning.
+								</div>
 							</div>
 
 							<div class="profileBlock wide">
@@ -7370,6 +7402,9 @@
 								<div class="profileDesc">
 									The texture and amount of signal your system
 									tends to carry.
+								</div>
+								<div class="youArchitectureMeaning" id="youSignalMeaning">
+									Waiting for signal quality meaning.
 								</div>
 							</div>
 
@@ -7383,6 +7418,9 @@
 								</div>
 								<div class="profileDesc">
 									What the current timing field is activating.
+								</div>
+								<div class="youArchitectureMeaning" id="youTodayFieldMeaning">
+									Waiting for today’s field meaning.
 								</div>
 							</div>
 
@@ -10173,6 +10211,186 @@
 				setText("rootPatternPressure", explainer.pressure);
 				setText("rootPatternHelps", explainer.helps);
 				setText("rootPatternTodayLine", buildRootPatternTodayLine(rootBase, field));
+			}
+
+
+			function buildYouArchitectureExplanation(type, value, context = {}) {
+				const base = getHarmonicBaseName(value || "");
+				const rootBase = getHarmonicBaseName(context.root || "");
+				const supportBase = getHarmonicBaseName(context.support || "");
+				const fieldBase = getHarmonicBaseName(context.field || "");
+				const distortionBase = getHarmonicBaseName(context.distortion || "");
+				const rootName = publicRootText(rootBase) || "your root pattern";
+				const supportName = publicRootText(supportBase) || "your stabilizing support";
+				const fieldName = publicFieldText(fieldBase) || "today’s field";
+
+				const rootMeanings = {
+					Structured:
+						"Structured means your system may stabilize by turning pressure into order, sequence, and a clear next step.",
+					Contained:
+						"Contained means your system may stabilize by creating a clean boundary, reducing noise, and holding pressure privately before responding.",
+					Chaotic:
+						"Chaotic does not mean you are chaos. It means your system detects disruption, spikes, and shifts quickly.",
+					Relational:
+						"Relational means your system may read tone, contact, distance, and feedback as important signal before the meaning is fully clear.",
+					Threshold:
+						"Threshold means your system may detect openings, endings, timing shifts, and decision edges before they fully arrive.",
+					Reconstructive:
+						"Reconstructive means your system may notice weak points, repair needs, and structures that are ready to be rebuilt or adjusted.",
+					Integrative:
+						"Integrative means your system may gather scattered inputs and look for the thread that brings them into coherence.",
+					Diffused:
+						"Diffused means your system may register atmosphere, subtle signals, and wide background pressure before the field has a clean shape.",
+					Regulated:
+						"Regulated means your system may stabilize by returning pressure to rhythm, proportion, and a usable pace.",
+					Steady:
+						"Steady means your system may stabilize through consistency, patience, and reliable rhythm.",
+				};
+
+				const supportMeanings = {
+					Structured:
+						"Structured support means your system stabilizes when pressure is given order, sequence, and a clear next step.",
+					Contained:
+						"Contained support means your system stabilizes when there is less input, more boundary, and enough privacy to sort the signal.",
+					Chaotic:
+						"Chaotic support means your system may need movement, flexibility, or a safe outlet for charge instead of rigid control.",
+					Relational:
+						"Relational support means your system may stabilize through clean contact, honest tone, and feedback that stays proportional.",
+					Threshold:
+						"Threshold support means your system stabilizes when the crossing point is named and the next move is timed cleanly.",
+					Reconstructive:
+						"Reconstructive support means your system stabilizes by repairing one true weak point instead of rebuilding everything at once.",
+					Integrative:
+						"Integrative support means your system stabilizes by gathering the pieces, reducing loose ends, and finding the main thread.",
+					Diffused:
+						"Diffused support means your system stabilizes through softer input, grounding, and one clear anchor in a wide field.",
+					Regulated:
+						"Regulated support means your system stabilizes through rhythm, pacing, proportion, and a response that fits the actual load.",
+					Steady:
+						"Steady support means your system stabilizes through repetition, simplicity, and gradual adjustment.",
+				};
+
+				const motionMeanings = {
+					"Chaotic / Threshold":
+						"Fast activation can be useful, but it needs a clean crossing point so the body does not move before the signal is clear.",
+					"Chaotic/Threshold":
+						"Fast activation can be useful, but it needs a clean crossing point so the body does not move before the signal is clear.",
+					Chaotic:
+						"Your signal may move quickly when activated. Give the spike one safe channel before responding.",
+					Threshold:
+						"Your signal may move toward a decision edge. Pause long enough to confirm the crossing is actually ready.",
+					Structured:
+						"Your signal may move toward structure. Keep the order useful without over-tightening the whole field.",
+					Contained:
+						"Your signal may move inward first. Use containment to sort the field, not to disappear from it.",
+					Relational:
+						"Your signal may move through contact and tone. Stay centered before reading or answering the room.",
+					Reconstructive:
+						"Your signal may move toward repair. Choose the one weak point that is actually asking for attention.",
+					Integrative:
+						"Your signal may move by gathering pieces. Find the main thread before trying to include everything.",
+					Diffused:
+						"Your signal may spread wide when activated. Lower input and choose one clear anchor.",
+					Regulated:
+						"Your signal may move through pacing and proportion. Let steady rhythm make the response usable.",
+				};
+
+				const fieldMeanings = {
+					Structured:
+						"This part can change day to day. Structured field means today’s atmosphere may ask for order, sequence, and one practical step.",
+					Contained:
+						"This part can change day to day. Contained field means today’s atmosphere may ask for boundary, privacy, or reduced input.",
+					Chaotic:
+						"This part can change day to day. Chaotic field means the shared atmosphere may carry more movement, charge, or disruption than usual.",
+					Relational:
+						"This part can change day to day. It is not your identity; it is the live field your root pattern is receiving today.",
+					Threshold:
+						"This part can change day to day. Threshold field means today’s atmosphere may carry a decision edge, opening, or timing pressure.",
+					Reconstructive:
+						"This part can change day to day. Reconstructive field means today’s atmosphere may highlight repair pressure or one weak point asking for attention.",
+					Integrative:
+						"This part can change day to day. Integrative field means today’s atmosphere may ask you to gather pieces and find the main thread.",
+					Diffused:
+						"This part can change day to day. Diffused field means today’s atmosphere may feel wider, softer, foggier, or less clearly bounded.",
+					Regulated:
+						"This part can change day to day. Regulated field means today’s atmosphere may support rhythm, pacing, and proportionate response.",
+				};
+
+				if (type === "root") {
+					return rootMeanings[base] || "This is your baseline signal pattern. It describes how your system may receive and organize pressure before today’s field is added.";
+				}
+
+				if (type === "support") {
+					return supportMeanings[base] || "This describes what tends to help your system stay coherent when pressure rises.";
+				}
+
+				if (type === "profile") {
+					if (rootBase === "Chaotic" && supportBase === "Structured") {
+						return "This describes how your baseline signal and stabilizing support combine. You may notice movement early, then need to turn it into usable form.";
+					}
+
+					return `This describes how your ${rootName} root and ${supportName} support combine into one usable architecture.`;
+				}
+
+				if (type === "motion") {
+					const exact = String(value || "").trim();
+					return motionMeanings[exact] || motionMeanings[base] || "This describes how your signal may move when activated. Let the movement become clear before you respond.";
+				}
+
+				if (type === "overload") {
+					if (distortionBase === "Structured" && context.distortionState?.label === "Emotional Fusion") {
+						return "When pressure rises, your system may try to organize the emotional field too quickly. The return path is to separate signal from responsibility.";
+					}
+
+					if (context.distortionState?.label === "Emotional Fusion") {
+						return "When pressure rises, your system may absorb contact, tone, or feeling as if it belongs to you. The return path is mine / not mine.";
+					}
+
+					return "When pressure rises, this is where strain may route first. The return path is to name the load and choose one proportionate response.";
+				}
+
+				if (type === "signal") {
+					if (rootBase === "Chaotic") {
+						return "This means your system may notice change before it is fully organized. The gift is speed. The risk is reacting before the pattern has landed.";
+					}
+
+					return "This describes the texture of signal your system tends to carry. The gift is using that texture clearly; the risk is letting it run the whole response.";
+				}
+
+				if (type === "field") {
+					return fieldMeanings[fieldBase] || `This part can change day to day. ${fieldName} is not your identity; it is the live field your root pattern is receiving today.`;
+				}
+
+				return "This card explains one part of your stable architecture using the values already selected by Lucy.OS.";
+			}
+
+			function updateYouArchitectureExplanations({
+				primary,
+				support,
+				profileTranslation,
+				motionStyle,
+				distortion,
+				distortionState,
+				signalQuality,
+				todayField,
+			}) {
+				const context = {
+					root: primary,
+					support,
+					distortion,
+					distortionState,
+					field: todayField,
+					signalQuality,
+					profileTranslation,
+				};
+
+				setText("youRootMeaning", buildYouArchitectureExplanation("root", primary, context));
+				setText("youSupportMeaning", buildYouArchitectureExplanation("support", support, context));
+				setText("youProfileTranslationMeaning", buildYouArchitectureExplanation("profile", profileTranslation, context));
+				setText("youMotionMeaning", buildYouArchitectureExplanation("motion", motionStyle, context));
+				setText("youOverloadMeaning", buildYouArchitectureExplanation("overload", distortion, context));
+				setText("youSignalMeaning", buildYouArchitectureExplanation("signal", signalQuality, context));
+				setText("youTodayFieldMeaning", buildYouArchitectureExplanation("field", todayField, context));
 			}
 
 			function getFieldPlainLanding(field) {
@@ -15094,6 +15312,16 @@
 					`${distortionState.short}. ${distortionState.plain}`
 				);
 				setText("harmonicPlainRead", primaryMeta.plainRead);
+				updateYouArchitectureExplanations({
+					primary: primaryMeta.label,
+					support: harmonics.support || supportMeta.label,
+					profileTranslation: stableProfileLabel,
+					motionStyle: harmonics.motionStyle || "Steady",
+					distortion: distortionMeta.label,
+					distortionState,
+					signalQuality: primaryMeta.signalQuality,
+					todayField: fieldMeta.label,
+				});
 
 				setHTML(
 					"profileStateChip",
