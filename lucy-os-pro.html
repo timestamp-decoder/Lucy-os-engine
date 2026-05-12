@@ -14,6 +14,7 @@
 <!-- Pass 11 update: Live Field Dashboard explanation copy refined to clarify shared field atmosphere versus personal mood/behavior, and shortened influence language. Display-only copy/helper update; no API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, dashboard scores, selected fields, saved profiles, calibration tests, or share export behavior changed. -->
 <!-- Pass 12 update: added compact top Today’s Live Field strip only. Uses existing public field/state/load/driver/helper data and display wording. No API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, calibration tests, existing Live Field Dashboard behavior, or share export behavior changed. -->
 <!-- Pass 13 update: added mobile app navigation tabs and section anchors only. One global nav links to Input, Field, Landing, Support, and You. No API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, calibration tests, or share export behavior changed. -->
+<!-- Pass 14 update: added active mobile nav glow and small section destination labels only. UI navigation polish only; locked systems unchanged. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -170,6 +171,50 @@
 				border-color: rgba(103, 193, 255, 0.28);
 				background: rgba(103, 193, 255, 0.08);
 				outline: none;
+			}
+
+			.lucyAppTabs a.active {
+				color: var(--text);
+				border-color: rgba(103, 193, 255, 0.42);
+				background:
+					radial-gradient(
+						circle at 50% 0%,
+						rgba(103, 193, 255, 0.22),
+						transparent 62%
+					),
+					rgba(103, 193, 255, 0.12);
+				box-shadow: 0 0 16px rgba(103, 193, 255, 0.18),
+					inset 0 0 0 1px rgba(255, 255, 255, 0.045);
+			}
+
+			.lucyAppTabs a:active {
+				transform: translateY(1px);
+			}
+
+			.sectionDestinationLabel {
+				display: inline-flex;
+				flex-direction: column;
+				gap: 3px;
+				margin: 0 0 10px;
+				padding: 8px 11px;
+				border-radius: 13px;
+				border: 1px solid rgba(103, 193, 255, 0.14);
+				background: rgba(103, 193, 255, 0.055);
+			}
+
+			.sectionDestinationLabel span {
+				color: var(--blue);
+				font-size: 9px;
+				font-weight: 950;
+				letter-spacing: 0.14em;
+				text-transform: uppercase;
+			}
+
+			.sectionDestinationLabel strong {
+				color: var(--text);
+				font-size: 12px;
+				line-height: 1.25;
+				font-weight: 850;
 			}
 
 			.sectionAnchor {
@@ -5934,6 +5979,10 @@
 				<div class="mainStack">
 
 					<span class="sectionAnchor" id="fieldSection" aria-hidden="true"></span>
+					<div class="sectionDestinationLabel">
+						<span>Field</span>
+						<strong>Today’s shared atmosphere</strong>
+					</div>
 					<section class="topLiveFieldCard" id="topLiveFieldCard">
 						<div class="topLiveFieldKicker">TODAY’S LIVE FIELD</div>
 						<h2 class="topLiveFieldTitle" id="topLiveFieldTitle">Live Field Pending</h2>
@@ -5943,6 +5992,10 @@
 					</section>
 
 					<span class="sectionAnchor" id="landingSection" aria-hidden="true"></span>
+					<div class="sectionDestinationLabel">
+						<span>Landing</span>
+						<strong>How this field lands in you</strong>
+					</div>
 					<section class="personalLandingCard" id="personalLandingCard">
 						<div class="personalLandingKicker">Lucy.OS read layer</div>
 						<h2 class="personalLandingTitle" id="personalLandingTitle">
@@ -6881,6 +6934,10 @@
 					</section>
 
 					<section class="regulationSupportCard" id="supportSection">
+						<div class="sectionDestinationLabel">
+							<span>Support</span>
+							<strong>What helps the system regulate</strong>
+						</div>
 						<div class="regulationSupportHeader">
 							<div>
 								<h2>Regulation Supports</h2>
@@ -6987,6 +7044,10 @@
 					</section>
 
 					<section class="profileCard" id="youSection">
+						<div class="sectionDestinationLabel">
+							<span>You</span>
+							<strong>Your stable profile pattern</strong>
+						</div>
 						<div class="profileHeader">
 							<div>
 								<h2>Harmonic Profile</h2>
@@ -15461,6 +15522,71 @@
 				return results;
 			}
 
+			function initLucyAppTabs() {
+				const tabs = Array.from(
+					document.querySelectorAll(
+						".lucyAppTabs a[href^='#']"
+					)
+				);
+				if (!tabs.length) return;
+
+				const tabTargets = tabs
+					.map((tab) => {
+						const id = tab.getAttribute("href").replace("#", "");
+						const target = document.getElementById(id);
+						return { tab, target };
+					})
+					.filter((item) => item.target);
+
+				if (!tabTargets.length) return;
+
+				function setActiveTab(activeTab) {
+					tabs.forEach((tab) =>
+						tab.classList.toggle("active", tab === activeTab)
+					);
+				}
+
+				function updateActiveTab() {
+					const offset = window.innerWidth < 821 ? 120 : 90;
+					let current = tabTargets[0];
+
+					tabTargets.forEach((item) => {
+						const rect = item.target.getBoundingClientRect();
+						if (rect.top <= offset) {
+							current = item;
+						}
+					});
+
+					setActiveTab(current.tab);
+				}
+
+				tabs.forEach((tab) => {
+					tab.addEventListener("click", () => {
+						setActiveTab(tab);
+					});
+				});
+
+				let ticking = false;
+				window.addEventListener(
+					"scroll",
+					() => {
+						if (ticking) return;
+						ticking = true;
+						window.requestAnimationFrame(() => {
+							updateActiveTab();
+							ticking = false;
+						});
+					},
+					{ passive: true }
+				);
+
+				window.addEventListener("resize", updateActiveTab, {
+					passive: true,
+				});
+
+				updateActiveTab();
+			}
+
 			window.runSyntheticHarmonicBalanceTest =
 				runSyntheticHarmonicBalanceTest;
 			window.runAstrologyCalibrationTest = runAstrologyCalibrationTest;
@@ -15520,6 +15646,8 @@
 			document.getElementById("tob").value = "6:20";
 			document.getElementById("ampm").value = "AM";
 			document.getElementById("location").value = "Cuero, TX";
+
+			initLucyAppTabs();
 
 			setTechnicalDetailsDefault();
 			renderHarmonicLibrary();
