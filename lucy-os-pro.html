@@ -11,6 +11,7 @@
 <!-- Pass 9 update: Electrical Mapping E3.1 micro-format cleanup only. Fixed Moonstamp punctuation in public/share text, prevented top snapshot Regulation Support from duplicating One Good Move, and compressed share-card Regulation Supports display. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, dashboard logic, saved profiles, selected field/root/support/undertone/motion style/system load state, calibration tests, layout structure, or share export behavior changed. -->
 <!-- Pass 10.1 update: Live Field Dashboard influence sentence detection tweak only. Venus support line now appears for relational/social field rises as a non-deterministic public explanation. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, dashboard scores, saved profiles, selected field/root/support/undertone/motion style/system load state, calibration tests, private engine math, or share export behavior changed. -->
 <!-- Pass 10 update: Live Field Dashboard user explanation strip only. Added compact how-to-read and strongest-influences display language. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, dashboard scores, saved profiles, selected field/root/support/undertone/motion style/system load state, calibration tests, private engine math, or share export behavior changed. -->
+<!-- Pass 11 update: Live Field Dashboard explanation copy refined to clarify shared field atmosphere versus personal mood/behavior, and shortened influence language. Display-only copy/helper update; no API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, dashboard scores, selected fields, saved profiles, calibration tests, or share export behavior changed. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -6185,9 +6186,9 @@
 									clarity, contact, and regulation capacity.
 								</p>
 								<p class="liveFieldDashboardClarityLine">
-									This dashboard shows shared field conditions. Your
-									personal read shows how today’s field lands in your
-									pattern.
+									This dashboard shows shared field conditions — the
+									atmosphere of the day, not your personal mood or
+									behavior.
 								</p>
 							</div>
 
@@ -6214,10 +6215,11 @@
 									class="liveDashboardExplanationText"
 									id="liveDashboardHowToRead"
 								>
-									This dashboard shows shared field conditions — timing,
-									active drivers, field load, regulation, social tone,
-									sensitivity, and available momentum. Your personal read
-									shows how those conditions land in your pattern.
+									This dashboard shows shared field conditions — the
+									atmosphere of the day, not your personal mood or
+									behavior.<br /><br />
+									It reflects what is loud in the environment and how the
+									current field may interact with your pattern.
 								</div>
 							</div>
 
@@ -6230,8 +6232,8 @@
 									id="liveDashboardInfluenceSentence"
 								>
 									The strongest visible influence is the overall field
-									pattern, with load, regulation, and momentum shaping how
-									the day is read.
+									pattern. Load, regulation, and momentum shape how the
+									day is read.
 								</div>
 							</div>
 						</div>
@@ -10858,9 +10860,9 @@
 
 				if (driver) {
 					if (driver === "Moon") {
-						parts.push("Moon is the strongest active driver.");
+						parts.push("Moon is today’s strongest active driver.");
 					} else {
-						parts.push(`${driver} is the strongest active driver.`);
+						parts.push(`${driver} is today’s strongest active driver.`);
 					}
 				}
 
@@ -10875,7 +10877,7 @@
 
 				if (venusIsActive || socialRiseActive) {
 					parts.push(
-						"Venus may be supporting the relational rise, increasing sensitivity to tone, contact, warmth, and shared atmosphere."
+						"Venus may be supporting relational lift."
 					);
 				}
 
@@ -10890,7 +10892,7 @@
 				}
 
 				if (!parts.length) {
-					return "The strongest visible influence is the overall field pattern, with load, regulation, and momentum shaping how the day is read.";
+					return "The strongest visible influence is the overall field pattern. Load, regulation, and momentum shape how the day is read.";
 				}
 
 				return parts.join(" ");
