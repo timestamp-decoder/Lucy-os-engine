@@ -9,6 +9,7 @@
 <!-- Pass 7 update: Electrical Mapping E2.1 wording calibration only. Today’s Field wording remains primary; Moonstamp/electrical language acts only as a modifier. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, dashboard logic, saved profiles, selected field/root/support/undertone/motion style/system load state, or calibration tests changed. -->
 <!-- Pass 8 update: Electrical Mapping E3 share/public text polish only. Share card and copied share text inherit calibrated E2.1 public language where available. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, dashboard logic, saved profiles, selected field/root/support/undertone/motion style/system load state, calibration tests, or share export behavior changed. -->
 <!-- Pass 9 update: Electrical Mapping E3.1 micro-format cleanup only. Fixed Moonstamp punctuation in public/share text, prevented top snapshot Regulation Support from duplicating One Good Move, and compressed share-card Regulation Supports display. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, dashboard logic, saved profiles, selected field/root/support/undertone/motion style/system load state, calibration tests, layout structure, or share export behavior changed. -->
+<!-- Pass 10 update: Live Field Dashboard user explanation strip only. Added compact how-to-read and strongest-influences display language. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, dashboard scores, saved profiles, selected field/root/support/undertone/motion style/system load state, calibration tests, private engine math, or share export behavior changed. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -1722,6 +1723,47 @@
 				line-height: 1.45;
 				font-weight: 750;
 				max-width: 700px;
+				overflow-wrap: break-word;
+			}
+
+			.liveDashboardExplanation {
+				display: grid;
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				gap: 10px;
+				margin: 0 0 14px;
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.liveDashboardExplanationBlock {
+				min-width: 0;
+				max-width: 100%;
+				padding: 11px 12px;
+				border: 1px solid rgba(103, 193, 255, 0.14);
+				border-radius: 14px;
+				background: radial-gradient(
+						circle at 8% 0%,
+						rgba(103, 193, 255, 0.075),
+						transparent 34%
+					),
+					rgba(255, 255, 255, 0.026);
+				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.014);
+			}
+
+			.liveDashboardExplanationLabel {
+				color: var(--blue);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				margin-bottom: 6px;
+			}
+
+			.liveDashboardExplanationText {
+				color: #d9e0f4;
+				font-size: 12px;
+				line-height: 1.48;
+				font-weight: 730;
 				overflow-wrap: break-word;
 			}
 
@@ -5570,6 +5612,13 @@
 					font-size: 10px;
 				}
 			}
+
+			@media (max-width: 760px) {
+				.liveDashboardExplanation {
+					grid-template-columns: minmax(0, 1fr);
+				}
+			}
+
 		</style>
 	</head>
 
@@ -6155,6 +6204,37 @@
 							</div>
 						</div>
 
+						<div class="liveDashboardExplanation">
+							<div class="liveDashboardExplanationBlock">
+								<div class="liveDashboardExplanationLabel">
+									How to read this
+								</div>
+								<div
+									class="liveDashboardExplanationText"
+									id="liveDashboardHowToRead"
+								>
+									This dashboard shows shared field conditions — timing,
+									active drivers, field load, regulation, social tone,
+									sensitivity, and available momentum. Your personal read
+									shows how those conditions land in your pattern.
+								</div>
+							</div>
+
+							<div class="liveDashboardExplanationBlock">
+								<div class="liveDashboardExplanationLabel">
+									Today’s strongest influences
+								</div>
+								<div
+									class="liveDashboardExplanationText"
+									id="liveDashboardInfluenceSentence"
+								>
+									The strongest visible influence is the overall field
+									pattern, with load, regulation, and momentum shaping how
+									the day is read.
+								</div>
+							</div>
+						</div>
+
 						<div class="liveDashboardDayType">
 							<div class="liveDashboardDayTypeTop">
 								<div class="liveDashboardDayTypeLabel">
@@ -6471,11 +6551,9 @@
 						</div>
 
 						<div class="liveDashboardNote">
-							Dashboard scores are simplified 1–10 translations of
-							the current read. They do not change the engine,
-							backend, or field selection. High load does not mean
-							collapse; it means reduce scope before adding
-							pressure.
+							Scores are simplified 1–10 translations of the current
+							field. They explain the read; they do not change the
+							engine or field selection.
 						</div>
 					</section>
 
@@ -10749,6 +10827,74 @@
 				];
 			}
 
+			function dashboardInfluenceDriverName(driver) {
+				const raw = String(driver || "").trim();
+				if (!raw || raw === "—") return "";
+
+				const lower = raw.toLowerCase();
+				if (lower.includes("moon")) return "Moon";
+				if (lower.includes("venus")) return "Venus";
+				if (lower.includes("mars")) return "Mars";
+				if (lower.includes("mercury")) return "Mercury";
+				if (lower.includes("saturn")) return "Saturn";
+				if (lower.includes("jupiter")) return "Jupiter";
+				if (lower.includes("neptune")) return "Neptune";
+				if (lower.includes("uranus")) return "Uranus";
+				if (lower.includes("pluto")) return "Pluto";
+
+				return publicDriverName(raw);
+			}
+
+			function buildLiveDashboardInfluenceSentence(data, harmonics) {
+				const state = data?.state || {};
+				const planetary = data?.planetary || {};
+				const scores = harmonics?.normalizedFieldScores || {};
+				const field = harmonics?.todayField || "";
+				const driver = dashboardInfluenceDriverName(
+					primaryDriverName(data)
+				);
+				const parts = [];
+
+				if (driver) {
+					if (driver === "Moon") {
+						parts.push("Moon is the strongest active driver.");
+					} else {
+						parts.push(`${driver} is the strongest active driver.`);
+					}
+				}
+
+				const tVenus = safeNum(
+					planetary.transitVenus,
+					safeNum(planetary.venus)
+				);
+				const relationalScore = safeNum(scores.Relational);
+				const socialRiseActive =
+					field === "Relational" || relationalScore >= 0.58;
+				const venusIsActive = driver === "Venus" || tVenus >= 0.62;
+
+				if (venusIsActive || (socialRiseActive && tVenus >= 0.48)) {
+					parts.push(
+						"Venus may be supporting the relational rise, increasing sensitivity to tone, contact, warmth, and shared atmosphere."
+					);
+				}
+
+				const load = safeNum(
+					state.amplifiedLoad,
+					safeNum(state.strain)
+				);
+				if (load >= 0.75) {
+					parts.push(
+						"High load means reduce scope before adding pressure."
+					);
+				}
+
+				if (!parts.length) {
+					return "The strongest visible influence is the overall field pattern, with load, regulation, and momentum shaping how the day is read.";
+				}
+
+				return parts.join(" ");
+			}
+
 			function updateLiveFieldDashboardUI(data, harmonics) {
 				const stateLabel = stateLabelFromMode(data?.state?.mode || "");
 				const field = harmonics?.todayField || "Regulated";
@@ -10761,7 +10907,12 @@
 					fieldUndertone
 				);
 				const metrics = buildLiveFieldDashboardMetrics(data, harmonics);
+				const influenceSentence = buildLiveDashboardInfluenceSentence(
+					data,
+					harmonics
+				);
 
+				setText("liveDashboardInfluenceSentence", influenceSentence);
 				setText("liveDashboardStateChip", `State: ${stateLabel}`);
 				applyChipClass("liveDashboardStateChip", "chip violet", "");
 
