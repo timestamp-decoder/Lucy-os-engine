@@ -21,9 +21,6 @@
 <!-- Pass 17 update: added fuller Your Root Pattern explainer inside the You destination only. Display-only personal architecture copy uses existing selected root and current field values; no API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, or calibration-test behavior changed. -->
 <!-- Pass 18 update: expanded You destination personal architecture cards with compact plain-English meaning lines only. Display-only helper copy uses existing selected values; no API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, mobile nav behavior, or calibration-test behavior changed. -->
 <!-- Pass 19 update: added Suggested Sound Support card inside Support destination only. Display-only sensory support language uses existing selected values; no API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, mobile nav behavior, or calibration-test behavior changed. -->
-<!-- Pass 20 update: added Live Field Dashboard meaning bridge only. Dashboard Read, Primary Signal, and Watch/Use interpret existing 1-10 display scores without changing API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, or calibration-test behavior. -->
-<!-- Pass 20.1 update: hardened Live Field Dashboard meaning bridge so helper/display failures cannot break calculation. Added console/status error detail only. API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, and calibration tests unchanged. -->
-<!-- Pass 20.2 update: softened Dashboard Meaning Bridge pending/fallback copy only so safe-mode text does not look like an error before calculation. Display copy only; API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, and calibration tests unchanged. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -1896,94 +1893,6 @@
 				font-size: 12px;
 				line-height: 1.48;
 				font-weight: 730;
-				overflow-wrap: break-word;
-			}
-
-
-			.dashboardMeaningGrid {
-				display: grid;
-				grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-				gap: 10px;
-				margin: 12px 0 14px;
-				min-width: 0;
-				max-width: 100%;
-			}
-
-			.dashboardMeaningCard {
-				min-width: 0;
-				padding: 12px 13px;
-				border-radius: 15px;
-				border: 1px solid rgba(103, 193, 255, 0.15);
-				background: radial-gradient(
-						circle at 8% 0%,
-						rgba(103, 193, 255, 0.08),
-						transparent 34%
-					),
-					rgba(255, 255, 255, 0.026);
-				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.014);
-			}
-
-			.dashboardMeaningLabel {
-				color: var(--blue);
-				font-size: 10px;
-				font-weight: 950;
-				letter-spacing: 0.12em;
-				text-transform: uppercase;
-				margin-bottom: 6px;
-			}
-
-			.dashboardMeaningTitle {
-				color: var(--text);
-				font-size: 15px;
-				line-height: 1.25;
-				font-weight: 950;
-				overflow-wrap: break-word;
-			}
-
-			.dashboardMeaningText {
-				margin-top: 6px;
-				color: #d9e0f4;
-				font-size: 12px;
-				line-height: 1.48;
-				font-weight: 730;
-				overflow-wrap: break-word;
-			}
-
-			.dashboardWatchUse {
-				display: grid;
-				grid-template-columns: repeat(2, minmax(0, 1fr));
-				gap: 9px;
-				margin-top: 12px;
-				padding-top: 12px;
-				border-top: 1px solid rgba(255, 255, 255, 0.075);
-				min-width: 0;
-				max-width: 100%;
-			}
-
-			.dashboardWatchUseItem {
-				min-width: 0;
-				padding: 10px 11px;
-				border-radius: 13px;
-				border: 1px solid rgba(255, 255, 255, 0.075);
-				background: rgba(255, 255, 255, 0.028);
-			}
-
-			.dashboardWatchUseItem span {
-				display: block;
-				color: var(--muted);
-				font-size: 9px;
-				font-weight: 950;
-				letter-spacing: 0.1em;
-				text-transform: uppercase;
-				margin-bottom: 5px;
-			}
-
-			.dashboardWatchUseItem strong {
-				display: block;
-				color: var(--text);
-				font-size: 12px;
-				line-height: 1.45;
-				font-weight: 820;
 				overflow-wrap: break-word;
 			}
 
@@ -5550,15 +5459,7 @@
 				}
 			}
 
-			
 			@media (max-width: 720px) {
-				.dashboardMeaningGrid,
-				.dashboardWatchUse {
-					grid-template-columns: minmax(0, 1fr);
-				}
-			}
-
-@media (max-width: 720px) {
 				.wrap {
 					padding: 12px 14px 14px;
 				}
@@ -6896,28 +6797,6 @@
 							</div>
 						</div>
 
-						<div class="dashboardMeaningGrid" id="liveDashboardMeaningGrid">
-							<div class="dashboardMeaningCard">
-								<div class="dashboardMeaningLabel">Dashboard Read</div>
-								<div class="dashboardMeaningTitle" id="liveDashboardReadTitle">
-									Waiting for dashboard read
-								</div>
-								<div class="dashboardMeaningText" id="liveDashboardReadText">
-									Calculate to see what the score pattern means right now.
-								</div>
-							</div>
-
-							<div class="dashboardMeaningCard">
-								<div class="dashboardMeaningLabel">Primary Signal</div>
-								<div class="dashboardMeaningTitle" id="liveDashboardPrimaryTitle">
-									Waiting for primary signal
-								</div>
-								<div class="dashboardMeaningText" id="liveDashboardPrimaryText">
-									The strongest dashboard story will appear here after calculation.
-								</div>
-							</div>
-						</div>
-
 						<div class="liveDashboardGrid" id="liveDashboardGrid">
 							<div class="liveDashboardMetric metric-signal">
 								<div class="liveDashboardMetricTop">
@@ -7203,21 +7082,6 @@
 								>
 									Waiting
 								</div>
-							</div>
-						</div>
-
-						<div class="dashboardWatchUse" id="liveDashboardWatchUse">
-							<div class="dashboardWatchUseItem">
-								<span>Watch</span>
-								<strong id="liveDashboardWatchText">
-									Calculate to see what needs the most attention.
-								</strong>
-							</div>
-							<div class="dashboardWatchUseItem">
-								<span>Use</span>
-								<strong id="liveDashboardUseText">
-									Calculate to see the practical dashboard move.
-								</strong>
 							</div>
 						</div>
 
@@ -12026,173 +11890,6 @@
 				];
 			}
 
-
-			function buildLiveDashboardMeaning(metrics, field, stateLabel, motionStyle, guidance) {
-				metrics = Array.isArray(metrics) ? metrics : [];
-				guidance = guidance || {};
-				const byKey = {};
-				metrics.forEach((metric) => {
-					if (metric && metric.key) byKey[metric.key] = metric;
-				});
-
-				const score = (key) => {
-					const raw = byKey[key]?.score;
-					const num = Number(raw);
-					return Number.isFinite(num) ? num : 0;
-				};
-				const safeBand = (value) => {
-					try {
-						return bandFromScore(value);
-					} catch (err) {
-						return "Pending";
-					}
-				};
-				const safeFieldLabel = (value) => {
-					try {
-						return getPublicFieldLabel(value || "Regulated");
-					} catch (err) {
-						return value || "Regulated";
-					}
-				};
-				const currentField = String(field || "Regulated").trim();
-				const currentState = String(stateLabel || "Regulated").trim();
-				const load = score("SystemLoad");
-				const clarity = score("ClarityWindow");
-				const decision = score("DecisionFlow");
-				const social = score("SocialField");
-				const sensitivity = score("FieldSensitivity");
-				const regulation = score("Regulation");
-				const fieldSignal = score("FieldSignal");
-				const momentum = score("Momentum");
-				const expansion = score("ExpansionPotential");
-
-				let readTitle = `${safeFieldLabel(currentField)} dashboard pattern`;
-				const readParts = [];
-
-				if (load >= 8 && (clarity <= 3 || decision <= 3)) {
-					readTitle = "Simplify before acting";
-					readParts.push(
-						"Load is carrying more pressure than clarity or decision flow can easily sort."
-					);
-				} else if (load >= 8) {
-					readTitle = "High pressure field";
-					readParts.push(
-						"Pressure is the loudest dashboard signal right now."
-					);
-				} else if (decision <= 3 || clarity <= 3) {
-					readTitle = "Narrow the next move";
-					readParts.push(
-						"The field may need simplification before it becomes easy to interpret or choose from."
-					);
-				} else {
-					readParts.push(
-						"The dashboard is showing the current balance between pressure, movement, clarity, contact, and regulation."
-					);
-				}
-
-				if (social >= 6 && sensitivity >= 4) {
-					readParts.push(
-						"The field may be communicating through tone, contact, feedback, or shared atmosphere."
-					);
-				} else if (social >= 6) {
-					readParts.push(
-						"Social signal is active, so contact or feedback may be part of the read."
-					);
-				}
-
-				if (regulation >= 4) {
-					readParts.push(
-						"Regulation is still available, so the move is to narrow input rather than force a full reset."
-					);
-				} else {
-					readParts.push(
-						"Keep the move small enough that the system does not have to stabilize everything at once."
-					);
-				}
-
-				if (momentum <= 3) {
-					readParts.push("Keep momentum paced instead of trying to push through.");
-				} else if (momentum >= 7) {
-					readParts.push("Movement is available, but it still needs direction.");
-				}
-
-				if (expansion <= 3) {
-					readParts.push("This is not the best moment to open more channels.");
-				} else if (expansion >= 7) {
-					readParts.push(
-						"There may be room to widen the frame after the system is organized."
-					);
-				}
-
-				let primaryTitle = "Field Signal: Active";
-				let primaryText = "There is enough signal to read, but not all signal needs a response.";
-
-				if (load >= 8) {
-					primaryTitle = `System Load: ${safeBand(load)}`;
-					primaryText = "Pressure is the loudest signal. Reduce unnecessary input before making meaning.";
-				} else if (decision <= 3) {
-					primaryTitle = `Decision Flow: ${safeBand(decision)}`;
-					primaryText = "Choose the next small move instead of forcing a major decision.";
-				} else if (clarity <= 3) {
-					primaryTitle = `Clarity Window: ${safeBand(clarity)}`;
-					primaryText = "The signal may need simplification before interpretation.";
-				} else if (social >= 6) {
-					primaryTitle = `Social Field: ${safeBand(social)}`;
-					primaryText = "Contact, tone, or feedback may be the loudest part of the field.";
-				} else if (sensitivity >= 7) {
-					primaryTitle = `Field Sensitivity: ${safeBand(sensitivity)}`;
-					primaryText = "Subtle or atmospheric signal may be amplified. Ground before interpreting.";
-				} else if (regulation >= 7) {
-					primaryTitle = `Regulation: ${safeBand(regulation)}`;
-					primaryText = "Use the existing stabilizer. Keep the move simple and repeatable.";
-				} else if (fieldSignal >= 6) {
-					primaryTitle = `Field Signal: ${safeBand(fieldSignal)}`;
-					primaryText = "There is enough signal to read, but not all signal needs a response.";
-				} else if (momentum >= 7 || momentum <= 3) {
-					primaryTitle = `Momentum: ${safeBand(momentum)}`;
-					primaryText = momentum >= 7
-						? "Movement is available. Give it one useful direction."
-						: "Momentum is narrow. Keep the pace small and workable.";
-				} else if (expansion >= 7 || expansion <= 3) {
-					primaryTitle = `Expansion Potential: ${safeBand(expansion)}`;
-					primaryText = expansion >= 7
-						? "The frame can widen after the core signal is organized."
-						: "Do not open more channels until the current field is simpler.";
-				}
-
-				let watch = "Watch for treating every signal like it needs a response.";
-				let use = String(guidance?.move || "Choose one response and keep the scope small.").trim();
-
-				if (load >= 8 && clarity <= 3) {
-					watch = "Load is higher than clarity, so the field may feel louder than it is legible.";
-					use = "Reduce input, choose one response, and let regulation do its job.";
-				} else if (decision <= 3) {
-					watch = "Decision flow is narrow.";
-					use = "Choose the next small move instead of the whole answer.";
-				} else if (social >= 6 && sensitivity >= 6) {
-					watch = "Contact signals may feel amplified.";
-					use = "Stay centered before reading tone, feedback, or atmosphere.";
-				} else if (regulation >= 7) {
-					watch = "Do not over-correct just because pressure is present.";
-					use = "Use the stabilizer that is already online.";
-				} else if (momentum <= 3) {
-					watch = "Momentum is low, so pushing may add more strain than movement.";
-					use = "Pace the day through one small stable action.";
-				} else if (expansion <= 3) {
-					watch = "Expansion is narrow, so opening more channels may create noise.";
-					use = "Keep the field contained until the next clear signal appears.";
-				}
-
-				return {
-					readTitle,
-					readText: readParts.join(" "),
-					primaryTitle,
-					primaryText,
-					watch,
-					use,
-				};
-			}
-
 			function dashboardInfluenceDriverName(driver) {
 				const raw = String(driver || "").trim();
 				if (!raw || raw === "—") return "";
@@ -12339,7 +12036,7 @@
 				);
 			}
 
-			function updateLiveFieldDashboardUI(data, harmonics, guidance) {
+			function updateLiveFieldDashboardUI(data, harmonics) {
 				const stateLabel = stateLabelFromMode(data?.state?.mode || "");
 				const field = harmonics?.todayField || "Regulated";
 				const fieldUndertone =
@@ -12355,26 +12052,6 @@
 					data,
 					harmonics
 				);
-				let dashboardMeaning = {
-					readTitle: "Waiting for dashboard read",
-					readText: "Calculate to see how the dashboard signals are working together.",
-					primaryTitle: "Waiting for primary signal",
-					primaryText: "The strongest dashboard story will appear here after calculation.",
-					watch: "Calculate to see what needs the most attention.",
-					use: "Calculate to see the practical dashboard move.",
-				};
-
-				try {
-					dashboardMeaning = buildLiveDashboardMeaning(
-						metrics,
-						field,
-						stateLabel,
-						harmonics?.motionStyle || "",
-						guidance
-					) || dashboardMeaning;
-				} catch (err) {
-					console.warn("Dashboard meaning bridge failed safely:", err);
-				}
 
 				setText("liveDashboardInfluenceSentence", influenceSentence);
 				setText("liveDashboardStateChip", `State: ${stateLabel}`);
@@ -12389,12 +12066,6 @@
 				setText("liveDashboardDayTypeTitle", dayType.title);
 				setText("liveDashboardDayTypeText", dayType.text);
 				setText("liveDashboardBestUse", dayType.bestUse);
-				setText("liveDashboardReadTitle", dashboardMeaning.readTitle);
-				setText("liveDashboardReadText", dashboardMeaning.readText);
-				setText("liveDashboardPrimaryTitle", dashboardMeaning.primaryTitle);
-				setText("liveDashboardPrimaryText", dashboardMeaning.primaryText);
-				setText("liveDashboardWatchText", dashboardMeaning.watch);
-				setText("liveDashboardUseText", dashboardMeaning.use);
 
 				metrics.forEach((metric) => {
 					const scoreId = `liveDashboard${metric.key}Score`;
@@ -16026,7 +15697,7 @@
 				const regulatorAverage = (saturn + venus + mercury) / 3;
 
 				const harmonics = updateHarmonicUI(data);
-				updateLiveFieldDashboardUI(data, harmonics, guidance);
+				updateLiveFieldDashboardUI(data, harmonics);
 				updateFieldCompass(data);
 				updateLiveFieldDebugUI(harmonics.dailyFieldDebug);
 
@@ -16283,12 +15954,12 @@
 						scrollToMobileReadSnapshot();
 					}
 				} catch (err) {
-					console.error("Lucy.OS calculation failed:", err);
-					setText("apiStatus", `Error • ${err.message || "Calculation failed"}`);
+					console.error(err);
+					setText("apiStatus", `Error • ${err.message}`);
 					const apiStatusEl = document.getElementById("apiStatus");
 					if (apiStatusEl) apiStatusEl.className = "err";
 					alert(
-						"Calculation failed. Check console/status for the exact error."
+						"Calculation failed. Check API deployment or payload."
 					);
 				} finally {
 					const btn = document.getElementById("calcBtn");
