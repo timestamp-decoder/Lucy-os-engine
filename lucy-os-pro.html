@@ -23,6 +23,7 @@
 <!-- Pass 19 update: added Suggested Sound Support card inside Support destination only. Display-only sensory support language uses existing selected values; no API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, mobile nav behavior, or calibration-test behavior changed. -->
 <!-- Pass 20 update: added Live Field Dashboard meaning bridge only. Dashboard Read, Primary Signal, and Watch/Use interpret existing 1-10 display scores without changing API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, or calibration-test behavior. -->
 <!-- Pass 20.1 update: hardened Live Field Dashboard meaning bridge so helper/display failures cannot break calculation. Added console/status error detail only. API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, and calibration tests unchanged. -->
+<!-- Pass 20.2 update: softened Dashboard Meaning Bridge pending/fallback copy only so safe-mode text does not look like an error before calculation. Display copy only; API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, and calibration tests unchanged. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -7209,7 +7210,7 @@
 							<div class="dashboardWatchUseItem">
 								<span>Watch</span>
 								<strong id="liveDashboardWatchText">
-									Waiting for the main dashboard mismatch.
+									Calculate to see what needs the most attention.
 								</strong>
 							</div>
 							<div class="dashboardWatchUseItem">
@@ -12355,11 +12356,11 @@
 					harmonics
 				);
 				let dashboardMeaning = {
-					readTitle: "Dashboard pattern pending",
+					readTitle: "Waiting for dashboard read",
 					readText: "Calculate to see how the dashboard signals are working together.",
-					primaryTitle: "Primary signal pending",
-					primaryText: "Calculate to see the main dashboard signal.",
-					watch: "Waiting for the main dashboard mismatch.",
+					primaryTitle: "Waiting for primary signal",
+					primaryText: "The strongest dashboard story will appear here after calculation.",
+					watch: "Calculate to see what needs the most attention.",
 					use: "Calculate to see the practical dashboard move.",
 				};
 
