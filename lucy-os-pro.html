@@ -16,6 +16,7 @@
 <!-- Pass 13 update: added mobile app navigation tabs and section anchors only. One global nav links to Input, Field, Landing, Support, and You. No API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, calibration tests, or share export behavior changed. -->
 <!-- Pass 14 update: added active mobile nav glow and small section destination labels only. UI navigation polish only; locked systems unchanged. -->
 <!-- Pass 15 update: added subtle Personal Landing clarification for Relational Field as an active channel, not a required feeling. Display/copy clarity only; engine, API, scoring, Moonstamp, Electrical Mapping, saved profiles, share export, calibration tests, and mobile nav behavior unchanged. -->
+<!-- Pass 16 update: expanded Today’s Live Field as the mobile Field destination only. Added compact in-card destination label, field clarifier, influence/use rows, and breathing room. No API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, calibration tests, or mobile nav behavior changed. -->
 <!-- Pass 16 update: added mobile Field destination breathing room only. Field anchor now lands on a grouped shared-atmosphere zone with a small helper line and extra spacing before Landing. Engine, API, scoring, Moonstamp, Electrical Mapping, saved profiles, share export, calibration tests, and mobile nav behavior unchanged. -->
 <html lang="en">
 	<head>
@@ -221,7 +222,7 @@
 
 			.fieldDestinationZone {
 				scroll-margin-top: 18px;
-				margin-bottom: 18px;
+				margin-bottom: 28px;
 			}
 
 			.fieldDestinationHelper {
@@ -4903,19 +4904,33 @@
 			}
 
 			.topLiveFieldCard {
-				padding: 16px 18px;
-				border: 1px solid rgba(255, 155, 183, 0.22);
+				padding: 18px 20px 20px;
+				border: 1px solid rgba(255, 155, 183, 0.24);
 				background: radial-gradient(
 						circle at 10% 0%,
-						rgba(255, 155, 183, 0.12),
-						transparent 34%
+						rgba(255, 155, 183, 0.14),
+						transparent 36%
 					),
 					radial-gradient(
 						circle at 92% 8%,
-						rgba(103, 193, 255, 0.085),
-						transparent 34%
+						rgba(103, 193, 255, 0.095),
+						transparent 36%
 					),
-					rgba(255, 255, 255, 0.03);
+					linear-gradient(
+						180deg,
+						rgba(15, 27, 56, 0.98),
+						rgba(12, 24, 50, 0.94)
+					);
+			}
+
+			.topLiveFieldDestinationLabel {
+				margin-bottom: 12px;
+				border-color: rgba(255, 155, 183, 0.18);
+				background: rgba(255, 155, 183, 0.06);
+			}
+
+			.topLiveFieldDestinationLabel span {
+				color: var(--rose);
 			}
 
 			.topLiveFieldKicker {
@@ -4946,29 +4961,44 @@
 				overflow-wrap: break-word;
 			}
 
-			.topLiveFieldDriver {
-				margin-top: 10px;
-				color: #d9e0f4;
-				font-size: 13px;
-				line-height: 1.48;
-				font-weight: 760;
+			.topLiveFieldExpandedMeta {
+				display: grid;
+				gap: 8px;
+				margin-top: 12px;
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.topLiveFieldMetaRow {
+				padding: 9px 10px;
+				border-radius: 12px;
+				border: 1px solid rgba(255, 255, 255, 0.075);
+				background: rgba(255, 255, 255, 0.035);
+				color: var(--muted);
+				font-size: 12px;
+				line-height: 1.45;
+				font-weight: 750;
 				overflow-wrap: break-word;
+			}
+
+			.topLiveFieldMetaRow strong,
+			.topLiveFieldMetaRow span {
+				color: var(--gold);
+				font-weight: 950;
+			}
+
+			.topLiveFieldClarifier {
+				color: #d9e0f4;
+				border-color: rgba(103, 193, 255, 0.11);
+				background: rgba(103, 193, 255, 0.045);
+			}
+
+			.topLiveFieldDriver {
+				color: #d9e0f4;
 			}
 
 			.topLiveFieldMove {
-				margin-top: 10px;
-				padding-top: 10px;
-				border-top: 1px solid rgba(255, 255, 255, 0.075);
 				color: var(--text);
-				font-size: 13px;
-				line-height: 1.48;
-				font-weight: 760;
-				overflow-wrap: break-word;
-			}
-
-			.topLiveFieldMove span {
-				color: var(--gold);
-				font-weight: 950;
 			}
 
 			.personalLandingKicker,
@@ -5855,7 +5885,7 @@
 
 				.fieldDestinationZone {
 					scroll-margin-top: 12px;
-					margin-bottom: 28px;
+					margin-bottom: 38px;
 				}
 
 				.fieldDestinationHelper {
@@ -6031,19 +6061,19 @@
 				<div class="mainStack">
 
 					<div class="fieldDestinationZone" id="fieldSection">
-						<div class="sectionDestinationLabel">
-							<span>You are viewing</span>
-							<strong>Field · Today’s shared atmosphere</strong>
-						</div>
-						<div class="fieldDestinationHelper">
-							Field shows the shared atmosphere. It does not decide your personal response.
-						</div>
 						<section class="topLiveFieldCard" id="topLiveFieldCard">
+							<div class="sectionDestinationLabel topLiveFieldDestinationLabel">
+								<span>You are viewing</span>
+								<strong>Field · Today’s shared atmosphere</strong>
+							</div>
 							<div class="topLiveFieldKicker">TODAY’S LIVE FIELD</div>
 							<h2 class="topLiveFieldTitle" id="topLiveFieldTitle">Live Field Pending</h2>
-							<div class="topLiveFieldMeta" id="topLiveFieldMeta">State: — · Load: —</div>
-							<div class="topLiveFieldDriver" id="topLiveFieldDriver">Calculate to see today’s strongest visible influence.</div>
-							<div class="topLiveFieldMove" id="topLiveFieldMove"><span>Best move:</span> Calculate to see today’s cleanest move.</div>
+							<div class="topLiveFieldExpandedMeta">
+								<div class="topLiveFieldMeta topLiveFieldMetaRow" id="topLiveFieldMeta">State: — · Load: —</div>
+								<div class="topLiveFieldDriver topLiveFieldMetaRow" id="topLiveFieldDriver">Calculate to see today’s strongest visible influence.</div>
+								<div class="topLiveFieldClarifier topLiveFieldMetaRow">Field shows the shared atmosphere. It does not decide your personal response.</div>
+								<div class="topLiveFieldMove topLiveFieldMetaRow" id="topLiveFieldMove"><span>Use this field by:</span> Calculate to see today’s cleanest move.</div>
+							</div>
 						</section>
 					</div>
 
@@ -11250,7 +11280,7 @@
 
 				setHTML(
 					"topLiveFieldTitle",
-					`${fieldLabel(fieldText)}&nbsp;Field Active`
+					`${fieldLabel(fieldText)} field is active today.`
 				);
 				setText("topLiveFieldMeta", `${stateLabel} · ${loadBand} Load`);
 				setText(
@@ -11259,7 +11289,7 @@
 				);
 				setHTML(
 					"topLiveFieldMove",
-					`<span>Best move:</span> ${buildTopLiveFieldMove(
+					`<span>Use this field by:</span> ${buildTopLiveFieldMove(
 						field,
 						loadBand,
 						guidance
