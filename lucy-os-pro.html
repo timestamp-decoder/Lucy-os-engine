@@ -22,6 +22,7 @@
 <!-- Pass 18 update: expanded You destination personal architecture cards with compact plain-English meaning lines only. Display-only helper copy uses existing selected values; no API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, mobile nav behavior, or calibration-test behavior changed. -->
 <!-- Pass 19 update: added Suggested Sound Support card inside Support destination only. Display-only sensory support language uses existing selected values; no API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, mobile nav behavior, or calibration-test behavior changed. -->
 <!-- Pass 20 update: added Live Field Dashboard meaning bridge only. Dashboard Read, Primary Signal, and Watch/Use interpret existing 1-10 display scores without changing API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, or calibration-test behavior. -->
+<!-- Pass 20.1 update: hardened Live Field Dashboard meaning bridge so helper/display failures cannot break calculation. Added console/status error detail only. API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, and calibration tests unchanged. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -12026,13 +12027,32 @@
 
 
 			function buildLiveDashboardMeaning(metrics, field, stateLabel, motionStyle, guidance) {
+				metrics = Array.isArray(metrics) ? metrics : [];
+				guidance = guidance || {};
 				const byKey = {};
-				(metrics || []).forEach((metric) => {
-					byKey[metric.key] = metric;
+				metrics.forEach((metric) => {
+					if (metric && metric.key) byKey[metric.key] = metric;
 				});
 
-				const score = (key) => Number(byKey[key]?.score || 0);
-				const band = (key) => bandFromScore(score(key)).toLowerCase();
+				const score = (key) => {
+					const raw = byKey[key]?.score;
+					const num = Number(raw);
+					return Number.isFinite(num) ? num : 0;
+				};
+				const safeBand = (value) => {
+					try {
+						return bandFromScore(value);
+					} catch (err) {
+						return "Pending";
+					}
+				};
+				const safeFieldLabel = (value) => {
+					try {
+						return getPublicFieldLabel(value || "Regulated");
+					} catch (err) {
+						return value || "Regulated";
+					}
+				};
 				const currentField = String(field || "Regulated").trim();
 				const currentState = String(stateLabel || "Regulated").trim();
 				const load = score("SystemLoad");
@@ -12045,7 +12065,7 @@
 				const momentum = score("Momentum");
 				const expansion = score("ExpansionPotential");
 
-				let readTitle = `${getPublicFieldLabel(currentField)} dashboard pattern`;
+				let readTitle = `${safeFieldLabel(currentField)} dashboard pattern`;
 				const readParts = [];
 
 				if (load >= 8 && (clarity <= 3 || decision <= 3)) {
@@ -12107,33 +12127,33 @@
 				let primaryText = "There is enough signal to read, but not all signal needs a response.";
 
 				if (load >= 8) {
-					primaryTitle = `System Load: ${bandFromScore(load)}`;
+					primaryTitle = `System Load: ${safeBand(load)}`;
 					primaryText = "Pressure is the loudest signal. Reduce unnecessary input before making meaning.";
 				} else if (decision <= 3) {
-					primaryTitle = `Decision Flow: ${bandFromScore(decision)}`;
+					primaryTitle = `Decision Flow: ${safeBand(decision)}`;
 					primaryText = "Choose the next small move instead of forcing a major decision.";
 				} else if (clarity <= 3) {
-					primaryTitle = `Clarity Window: ${bandFromScore(clarity)}`;
+					primaryTitle = `Clarity Window: ${safeBand(clarity)}`;
 					primaryText = "The signal may need simplification before interpretation.";
 				} else if (social >= 6) {
-					primaryTitle = `Social Field: ${bandFromScore(social)}`;
+					primaryTitle = `Social Field: ${safeBand(social)}`;
 					primaryText = "Contact, tone, or feedback may be the loudest part of the field.";
 				} else if (sensitivity >= 7) {
-					primaryTitle = `Field Sensitivity: ${bandFromScore(sensitivity)}`;
+					primaryTitle = `Field Sensitivity: ${safeBand(sensitivity)}`;
 					primaryText = "Subtle or atmospheric signal may be amplified. Ground before interpreting.";
 				} else if (regulation >= 7) {
-					primaryTitle = `Regulation: ${bandFromScore(regulation)}`;
+					primaryTitle = `Regulation: ${safeBand(regulation)}`;
 					primaryText = "Use the existing stabilizer. Keep the move simple and repeatable.";
 				} else if (fieldSignal >= 6) {
-					primaryTitle = `Field Signal: ${bandFromScore(fieldSignal)}`;
+					primaryTitle = `Field Signal: ${safeBand(fieldSignal)}`;
 					primaryText = "There is enough signal to read, but not all signal needs a response.";
 				} else if (momentum >= 7 || momentum <= 3) {
-					primaryTitle = `Momentum: ${bandFromScore(momentum)}`;
+					primaryTitle = `Momentum: ${safeBand(momentum)}`;
 					primaryText = momentum >= 7
 						? "Movement is available. Give it one useful direction."
 						: "Momentum is narrow. Keep the pace small and workable.";
 				} else if (expansion >= 7 || expansion <= 3) {
-					primaryTitle = `Expansion Potential: ${bandFromScore(expansion)}`;
+					primaryTitle = `Expansion Potential: ${safeBand(expansion)}`;
 					primaryText = expansion >= 7
 						? "The frame can widen after the core signal is organized."
 						: "Do not open more channels until the current field is simpler.";
@@ -12334,13 +12354,26 @@
 					data,
 					harmonics
 				);
-				const dashboardMeaning = buildLiveDashboardMeaning(
-					metrics,
-					field,
-					stateLabel,
-					harmonics?.motionStyle || "",
-					guidance
-				);
+				let dashboardMeaning = {
+					readTitle: "Dashboard pattern pending",
+					readText: "Calculate to see how the dashboard signals are working together.",
+					primaryTitle: "Primary signal pending",
+					primaryText: "Calculate to see the main dashboard signal.",
+					watch: "Waiting for the main dashboard mismatch.",
+					use: "Calculate to see the practical dashboard move.",
+				};
+
+				try {
+					dashboardMeaning = buildLiveDashboardMeaning(
+						metrics,
+						field,
+						stateLabel,
+						harmonics?.motionStyle || "",
+						guidance
+					) || dashboardMeaning;
+				} catch (err) {
+					console.warn("Dashboard meaning bridge failed safely:", err);
+				}
 
 				setText("liveDashboardInfluenceSentence", influenceSentence);
 				setText("liveDashboardStateChip", `State: ${stateLabel}`);
@@ -16249,12 +16282,12 @@
 						scrollToMobileReadSnapshot();
 					}
 				} catch (err) {
-					console.error(err);
-					setText("apiStatus", `Error • ${err.message}`);
+					console.error("Lucy.OS calculation failed:", err);
+					setText("apiStatus", `Error • ${err.message || "Calculation failed"}`);
 					const apiStatusEl = document.getElementById("apiStatus");
 					if (apiStatusEl) apiStatusEl.className = "err";
 					alert(
-						"Calculation failed. Check API deployment or payload."
+						"Calculation failed. Check console/status for the exact error."
 					);
 				} finally {
 					const btn = document.getElementById("calcBtn");
