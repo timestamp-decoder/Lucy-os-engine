@@ -18,6 +18,7 @@
 <!-- Pass 15 update: added subtle Personal Landing clarification for Relational Field as an active channel, not a required feeling. Display/copy clarity only; engine, API, scoring, Moonstamp, Electrical Mapping, saved profiles, share export, calibration tests, and mobile nav behavior unchanged. -->
 <!-- Pass 16 update: expanded Today’s Live Field as the mobile Field destination only. Added compact in-card destination label, field clarifier, influence/use rows, and breathing room. No API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, calibration tests, or mobile nav behavior changed. -->
 <!-- Pass 16 update: added mobile Field destination breathing room only. Field anchor now lands on a grouped shared-atmosphere zone with a small helper line and extra spacing before Landing. Engine, API, scoring, Moonstamp, Electrical Mapping, saved profiles, share export, calibration tests, and mobile nav behavior unchanged. -->
+<!-- Pass 17 update: added fuller Your Root Pattern explainer inside the You destination only. Display-only personal architecture copy uses existing selected root and current field values; no API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, or calibration-test behavior changed. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -2927,6 +2928,102 @@
 				);
 				box-shadow: var(--shadow);
 				overflow: hidden;
+			}
+
+			.rootPatternExplainerCard {
+				width: 100%;
+				max-width: 100%;
+				min-width: 0;
+				overflow: hidden;
+				border: 1px solid rgba(103, 193, 255, 0.18);
+				border-radius: 20px;
+				padding: 16px;
+				margin: 0 0 14px;
+				background: radial-gradient(
+						circle at 12% 0%,
+						rgba(103, 193, 255, 0.1),
+						transparent 34%
+					),
+					radial-gradient(
+						circle at 92% 8%,
+						rgba(216, 184, 76, 0.07),
+						transparent 34%
+					),
+				rgba(255, 255, 255, 0.028);
+				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.018);
+			}
+
+			.rootPatternKicker {
+				color: var(--blue);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				margin-bottom: 7px;
+			}
+
+			.rootPatternExplainerCard h2 {
+				margin: 0;
+				color: var(--text);
+				font-size: 22px;
+				line-height: 1.15;
+				letter-spacing: -0.03em;
+			}
+
+			.rootPatternExplainerCard p {
+				margin: 8px 0 0;
+				color: #d9e0f4;
+				font-size: 13px;
+				line-height: 1.55;
+				font-weight: 730;
+				overflow-wrap: break-word;
+			}
+
+			.rootPatternGrid {
+				display: grid;
+				grid-template-columns: repeat(3, minmax(0, 1fr));
+				gap: 9px;
+				margin-top: 12px;
+			}
+
+			.rootPatternGrid div {
+				min-width: 0;
+				border: 1px solid rgba(255, 255, 255, 0.075);
+				border-radius: 13px;
+				padding: 10px 11px;
+				background: rgba(255, 255, 255, 0.035);
+			}
+
+			.rootPatternGrid span {
+				display: block;
+				color: var(--muted);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				margin-bottom: 5px;
+			}
+
+			.rootPatternGrid strong {
+				display: block;
+				color: var(--text);
+				font-size: 12px;
+				line-height: 1.45;
+				font-weight: 800;
+				overflow-wrap: break-word;
+			}
+
+			.rootPatternTodayLine {
+				margin-top: 12px;
+				border: 1px solid rgba(216, 184, 76, 0.18);
+				border-radius: 14px;
+				padding: 11px 12px;
+				background: rgba(216, 184, 76, 0.055);
+				color: #f0e6c2;
+				font-size: 12px;
+				line-height: 1.5;
+				font-weight: 800;
+				overflow-wrap: break-word;
 			}
 
 			.profileHeader {
@@ -5892,6 +5989,18 @@
 					margin-bottom: 16px;
 				}
 
+				.rootPatternExplainerCard {
+					padding: 15px;
+				}
+
+				.rootPatternGrid {
+					grid-template-columns: minmax(0, 1fr);
+				}
+
+				.rootPatternExplainerCard h2 {
+					font-size: 21px;
+				}
+
 				.sectionAnchor,
 				#inputSection,
 				#supportSection,
@@ -7137,6 +7246,34 @@
 						<div class="sectionDestinationLabel">
 							<span>You</span>
 							<strong>Your stable profile pattern</strong>
+						</div>
+						<div class="rootPatternExplainerCard">
+							<div class="sectionDestinationLabel">
+								<span>You are viewing</span>
+								<strong>You · Your root pattern</strong>
+							</div>
+							<div class="rootPatternKicker">Your Root Pattern</div>
+							<h2 id="rootPatternExplainerTitle">Root Pattern</h2>
+							<p id="rootPatternExplainerIntro">
+								This is the stable pattern Lucy.OS reads before today’s field is applied.
+							</p>
+							<div class="rootPatternGrid">
+								<div>
+									<span>Gift</span>
+									<strong id="rootPatternGift">Waiting for root pattern.</strong>
+								</div>
+								<div>
+									<span>Under pressure</span>
+									<strong id="rootPatternPressure">Waiting for pressure pattern.</strong>
+								</div>
+								<div>
+									<span>What helps</span>
+									<strong id="rootPatternHelps">Waiting for stabilizing support.</strong>
+								</div>
+							</div>
+							<div class="rootPatternTodayLine" id="rootPatternTodayLine">
+								The live field changes; your root pattern explains how your system may receive, filter, and respond.
+							</div>
 						</div>
 						<div class="profileHeader">
 							<div>
@@ -9915,6 +10052,127 @@
 						"You may stabilize by pacing the load, keeping rhythm, and choosing the speed that keeps you coherent.",
 				};
 				return texts[base] || "This chart has its own way of receiving pressure and returning to coherence.";
+			}
+
+			const ROOT_PATTERN_EXPLAINERS = {
+				Chaotic: {
+					plain: "Chaotic does not mean you are chaos. It means your system detects disruption quickly.",
+					detects: "spikes, shifts, urgency, instability, or the sense that something changed before the structure is clear.",
+					gift: "Fast signal recognition. You notice disruption early.",
+					pressure: "The spike can feel urgent before the signal has enough form.",
+					helps: "Pausing long enough to give the signal shape before acting.",
+				},
+				Contained: {
+					plain: "Contained means your system stabilizes through limits, boundaries, and holding structure.",
+					detects: "where pressure needs a container, where something is too open, or where a boundary would make the field safer.",
+					gift: "Containment. You can hold pressure without letting it spill everywhere.",
+					pressure: "You may over-tighten, withdraw too far, or try to control the whole field.",
+					helps: "Clear limits, smaller scope, and one steady next step.",
+				},
+				Relational: {
+					plain: "Relational means your system reads through contact, tone, feedback, and shared atmosphere.",
+					detects: "subtle shifts in connection, mood, response, closeness, distance, and social temperature.",
+					gift: "Contact intelligence. You can notice what is happening between people.",
+					pressure: "You may absorb too much, over-read tone, or feel responsible for the whole room.",
+					helps: "Separating mine from not mine, naming one signal plainly, and keeping responsibility proportional.",
+				},
+				Structured: {
+					plain: "Structured means your system stabilizes by organizing pressure into sequence, form, and clear next steps.",
+					detects: "what needs order, what is missing a step, or where a process needs better structure.",
+					gift: "Clarity under pressure. You can turn noise into usable form.",
+					pressure: "You may over-plan, over-correct, or need too much certainty before moving.",
+					helps: "One clear sequence, one useful rule, and one next step.",
+				},
+				Threshold: {
+					plain: "Threshold means your system detects crossing points.",
+					detects: "openings, endings, decision edges, timing shifts, and moments where something is close to changing.",
+					gift: "Timing awareness. You can sense when something is approaching a turn.",
+					pressure: "You may cross too soon, force a decision, or live too close to the edge of change.",
+					helps: "Waiting for the real opening, slowing the jump, and choosing the cleanest crossing.",
+				},
+				Reconstructive: {
+					plain: "Reconstructive means your system notices what needs repair.",
+					detects: "weak points, misalignment, decay, damage, or structures that can no longer hold as-is.",
+					gift: "Repair intelligence. You can see what needs to be rebuilt before the break becomes obvious.",
+					pressure: "You may treat every weak point like a full collapse or enter repair mode too quickly.",
+					helps: "Repairing one weak point at a time instead of rebuilding the whole field.",
+				},
+				Integrative: {
+					plain: "Integrative means your system gathers scattered inputs into coherence.",
+					detects: "patterns, meanings, partial signals, unfinished loops, and pieces that need to come together.",
+					gift: "Synthesis. You can help separate pieces become one usable picture.",
+					pressure: "You may take in too much at once or try to make meaning before the system has settled.",
+					helps: "Reducing inputs, completing one loop, and letting meaning organize gradually.",
+				},
+				Diffused: {
+					plain: "Diffused means your system detects wide atmosphere, subtle signals, and porous fields.",
+					detects: "background mood, ambiguity, emotional weather, softness, fog, or unclear boundaries.",
+					gift: "Atmospheric sensitivity. You can sense what is present before it becomes explicit.",
+					pressure: "You may become scattered, porous, foggy, or unsure what belongs to you.",
+					helps: "Grounding, narrowing the field, lowering input, and returning to the body.",
+				},
+				Regulated: {
+					plain: "Regulated means your system stabilizes by returning pressure to rhythm, proportion, and usable pace.",
+					detects: "when the field is too fast, too loud, too intense, or out of proportion.",
+					gift: "Pacing intelligence. You can help pressure become usable again.",
+					pressure: "You may over-manage, flatten feeling, or focus on regulation before expression has had room.",
+					helps: "Steady rhythm, measured response, body pacing, and proportionate action.",
+				},
+				Steady: {
+					plain: "Steady means your system stabilizes through consistency, patience, and reliable rhythm.",
+					detects: "what needs time, repetition, steadiness, or a slower pace.",
+					gift: "Reliability. You can keep the system from overreacting.",
+					pressure: "You may resist change, delay movement, or stay with the familiar too long.",
+					helps: "Simple rhythm, practical grounding, and gradual adjustment.",
+				},
+			};
+
+			function getRootPatternExplainer(root) {
+				const base = getHarmonicBaseName(root || "");
+				return (
+					ROOT_PATTERN_EXPLAINERS[base] || {
+						plain: "This is the stable pattern Lucy.OS reads before today’s field is applied.",
+						detects: "the way your system tends to receive, filter, and respond to pressure.",
+						gift: "A specific way of turning signal into usable information.",
+						pressure: "The same pattern may intensify when the field is loud or unclear.",
+						helps: "Treating the field as information, not identity, and choosing one clean next step.",
+					}
+				);
+			}
+
+			function buildRootPatternTodayLine(root, field) {
+				const rootBase = getHarmonicBaseName(root || "");
+				const fieldBase = getHarmonicBaseName(field || "");
+				const rootName = publicRootText(rootBase);
+				const fieldName = publicFieldText(fieldBase);
+				const key = `${rootBase}|${fieldBase}`;
+				const specific = {
+					"Chaotic|Relational":
+						"When today’s field is Relational, contact, tone, or feedback may register as a signal spike. That does not mean you need to respond immediately. It means your system is noticing movement in the atmosphere.",
+					"Relational|Relational":
+						"When today’s field is Relational, your system may notice contact and tone more directly. The move is not to absorb the whole room; it is to name one signal and keep responsibility proportional.",
+					"Reconstructive|Relational":
+						"When today’s field is Relational, your system may notice what feels strained, misaligned, or ready for repair inside contact. The move is to repair one true weak point, not the whole relationship field.",
+				};
+
+				return (
+					specific[key] ||
+					`When today’s field is ${fieldName}, your ${rootName} root may receive it through its own pattern. The field is shared, but the landing is personal.`
+				);
+			}
+
+			function updateRootPatternExplainer(root, field) {
+				const rootBase = getHarmonicBaseName(root || "");
+				const explainer = getRootPatternExplainer(rootBase);
+				setHTML("rootPatternExplainerTitle", `${rootLabel(rootBase)}&nbsp;Root`);
+				setText(
+					"rootPatternExplainerIntro",
+					`${explainer.plain} This pattern can detect ${explainer.detects} The live field changes; your root pattern explains how your system tends to receive, filter, and respond.`
+				);
+				setText("rootPatternGift", explainer.gift);
+				setText("rootPatternPressure", explainer.pressure);
+				setText("rootPatternHelps", explainer.helps);
+				setText("rootPatternTodayLine", buildRootPatternTodayLine(rootBase, field));
 			}
 
 			function getFieldPlainLanding(field) {
@@ -14796,6 +15054,7 @@
 
 				updateInteractionMap(primaryMeta.label, fieldMeta.label);
 				updateFieldUndertoneUI(fieldUndertone);
+				updateRootPatternExplainer(primaryMeta.label, fieldMeta.label);
 
 				setHTML("topMotionStyle", motionStyleLabel);
 				setText("topMotionStyleRead", motionStyleRead);
