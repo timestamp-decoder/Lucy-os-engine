@@ -25,6 +25,7 @@
 <!-- Field calibration fix update: added narrow Venus / Relational soft-support and final override calibration so live Relational signal can surface when Venus is active but not dominant. UI, CSS, API payload, backend behavior, saved profiles, share export, mobile nav, root avatar UI, support cards, Moonstamp display, and updateUI unchanged. -->
 <!-- Mixed sky alignment bridge update: added defensive Why this field? explanation card only. Uses existing field/debug/Moonstamp/driver values; no API, backend, scoring, selected field logic, Venus override, repairGate, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, or Root Avatar behavior changed. -->
 <!-- Top live field driver sentence binding fix: changed the top public driver line to field-first language so raw pressure drivers no longer appear as the selected field leader. Copy-binding only; no API, backend, scoring, selected-field logic, Venus override, repairGate, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, Root Avatar, or result meanings changed. -->
+<!-- First Read Guide restore update: restored a static first-read orientation guide near the top of the result flow. UI/copy only; no API, backend, engine, scoring, selected-field logic, Venus override, repairGate, Field Undertone thresholds, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, Root Avatar, or result meanings changed. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -5085,6 +5086,7 @@
 			/* Pass 1: Top clarity + personal landing layer */
 			.topClarityCard,
 			.topLiveFieldCard,
+			.firstReadGuideCard,
 			.personalLandingCard,
 			.plainReadCard,
 			.systemReadCard,
@@ -5265,6 +5267,79 @@
 				font-size: 12.6px;
 				line-height: 1.55;
 				font-weight: 750;
+				overflow-wrap: break-word;
+			}
+
+			.firstReadGuideCard {
+				padding: 16px 18px;
+				border: 1px solid rgba(103, 193, 255, 0.2);
+				background: radial-gradient(
+						circle at 10% 0%,
+						rgba(103, 193, 255, 0.1),
+						transparent 34%
+					),
+					rgba(255, 255, 255, 0.026);
+			}
+
+			.firstReadGuideKicker {
+				color: var(--blue);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.13em;
+				text-transform: uppercase;
+				margin-bottom: 7px;
+			}
+
+			.firstReadGuideTitle {
+				color: var(--text);
+				font-size: 18px;
+				font-weight: 950;
+				line-height: 1.22;
+				letter-spacing: -0.02em;
+				margin-bottom: 7px;
+				overflow-wrap: anywhere;
+			}
+
+			.firstReadGuideText {
+				color: #d9e0f4;
+				font-size: 12.8px;
+				line-height: 1.55;
+				font-weight: 740;
+				overflow-wrap: break-word;
+			}
+
+			.firstReadGuideSteps {
+				display: grid;
+				grid-template-columns: repeat(4, minmax(0, 1fr));
+				gap: 8px;
+				margin-top: 12px;
+				min-width: 0;
+			}
+
+			.firstReadGuideStep {
+				border: 1px solid rgba(255, 255, 255, 0.08);
+				border-radius: 13px;
+				padding: 10px 11px;
+				background: rgba(255, 255, 255, 0.035);
+				min-width: 0;
+			}
+
+			.firstReadGuideStep span {
+				display: block;
+				color: var(--muted);
+				font-size: 9px;
+				font-weight: 950;
+				letter-spacing: 0.11em;
+				text-transform: uppercase;
+				margin-bottom: 5px;
+			}
+
+			.firstReadGuideStep strong {
+				display: block;
+				color: var(--text);
+				font-size: 12.3px;
+				line-height: 1.4;
+				font-weight: 820;
 				overflow-wrap: break-word;
 			}
 
@@ -6183,6 +6258,12 @@
 				}
 			}
 
+			@media (max-width: 760px) {
+				.firstReadGuideSteps {
+					grid-template-columns: minmax(0, 1fr);
+				}
+			}
+
 		</style>
 	</head>
 
@@ -6365,6 +6446,32 @@
 						<div class="whyThisFieldKicker">WHY THIS FIELD?</div>
 						<div class="whyThisFieldTitle" id="whyThisFieldTitle">Mixed field read</div>
 						<div class="whyThisFieldText" id="whyThisFieldText">Calculate to see why today’s field is landing this way.</div>
+					</section>
+
+					<section class="firstReadGuideCard" id="firstReadGuide">
+						<div class="firstReadGuideKicker">FIRST READ GUIDE</div>
+						<div class="firstReadGuideTitle">How to read today’s result</div>
+						<div class="firstReadGuideText">
+							Start with the shared field, then read how it lands in your pattern. Use the Plain Read for the cleanest next move, and use Regulation Supports when the field feels loud.
+						</div>
+						<div class="firstReadGuideSteps">
+							<div class="firstReadGuideStep">
+								<span>1 · Field</span>
+								<strong>What is the shared atmosphere today?</strong>
+							</div>
+							<div class="firstReadGuideStep">
+								<span>2 · Landing</span>
+								<strong>How does that field hit this chart or pattern?</strong>
+							</div>
+							<div class="firstReadGuideStep">
+								<span>3 · Move</span>
+								<strong>What is the smallest clean action?</strong>
+							</div>
+							<div class="firstReadGuideStep">
+								<span>4 · Support</span>
+								<strong>What helps the system return to coherence?</strong>
+							</div>
+						</div>
 					</section>
 
 					<span class="sectionAnchor" id="landingSection" aria-hidden="true"></span>
