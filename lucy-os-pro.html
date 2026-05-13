@@ -23,6 +23,7 @@
 <!-- Pass 19 update: added Suggested Sound Support card inside Support destination only. Display-only sensory support language uses existing selected values; no API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, mobile nav behavior, or calibration-test behavior changed. -->
 <!-- Field engine restore update: restored old working Venus / Relational field-selection behavior from lucy-os-pro-venus-relational-field-support-v2.html into this polished file. UI, CSS, API payload, backend behavior, saved profiles, share export, mobile nav, root avatar UI, support cards, Moonstamp display, and updateUI unchanged. -->
 <!-- Field calibration fix update: added narrow Venus / Relational soft-support and final override calibration so live Relational signal can surface when Venus is active but not dominant. UI, CSS, API payload, backend behavior, saved profiles, share export, mobile nav, root avatar UI, support cards, Moonstamp display, and updateUI unchanged. -->
+<!-- Mixed sky alignment bridge update: added defensive Why this field? explanation card only. Uses existing field/debug/Moonstamp/driver values; no API, backend, scoring, selected field logic, Venus override, repairGate, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, or Root Avatar behavior changed. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -5206,6 +5207,66 @@
 				color: var(--text);
 			}
 
+			.whyThisFieldBridge {
+				display: none;
+				position: relative;
+				width: 100%;
+				max-width: 100%;
+				min-width: 0;
+				overflow: hidden;
+				margin: -14px 0 0;
+				padding: 15px 16px;
+				border: 1px solid rgba(255, 155, 183, 0.2);
+				border-radius: 18px;
+				background: radial-gradient(
+						circle at 10% 0%,
+						rgba(255, 155, 183, 0.1),
+						transparent 34%
+					),
+					radial-gradient(
+						circle at 92% 8%,
+						rgba(176, 108, 255, 0.075),
+						transparent 34%
+					),
+					linear-gradient(
+						180deg,
+						rgba(15, 27, 56, 0.9),
+						rgba(12, 24, 50, 0.82)
+					);
+				box-shadow: 0 14px 36px rgba(0, 0, 0, 0.18),
+					inset 0 0 0 1px rgba(255, 255, 255, 0.018);
+			}
+
+			.whyThisFieldBridge.active {
+				display: block;
+			}
+
+			.whyThisFieldKicker {
+				color: var(--rose);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.13em;
+				text-transform: uppercase;
+				margin-bottom: 6px;
+			}
+
+			.whyThisFieldTitle {
+				color: var(--text);
+				font-size: 15px;
+				font-weight: 950;
+				line-height: 1.3;
+				margin-bottom: 6px;
+				overflow-wrap: break-word;
+			}
+
+			.whyThisFieldText {
+				color: #d9e0f4;
+				font-size: 12.6px;
+				line-height: 1.55;
+				font-weight: 750;
+				overflow-wrap: break-word;
+			}
+
 			.personalLandingKicker,
 			.plainReadKicker,
 			.systemReadKicker,
@@ -6298,6 +6359,12 @@
 							</div>
 						</section>
 					</div>
+
+					<section class="whyThisFieldBridge" id="whyThisFieldBridge" aria-live="polite">
+						<div class="whyThisFieldKicker">WHY THIS FIELD?</div>
+						<div class="whyThisFieldTitle" id="whyThisFieldTitle">Mixed field read</div>
+						<div class="whyThisFieldText" id="whyThisFieldText">Calculate to see why today’s field is landing this way.</div>
+					</section>
 
 					<span class="sectionAnchor" id="landingSection" aria-hidden="true"></span>
 					<div class="sectionDestinationLabel">
@@ -12012,6 +12079,130 @@
 				);
 			}
 
+			function buildWhyThisFieldBridge(data, harmonics) {
+				try {
+					const debug = harmonics?.dailyFieldDebug || {};
+					const field =
+						harmonics?.todayField || debug?.selectedField || "";
+					const topCandidates = Array.isArray(debug?.topCandidates)
+						? debug.topCandidates
+						: [];
+					const first = topCandidates[0] || {};
+					const closeCandidates = topCandidates
+						.slice(1, 4)
+						.filter((candidate) => {
+							const topScore = safeNum(first.score);
+							const candidateScore = safeNum(candidate?.score);
+							const gap = topScore - candidateScore;
+							const ratio = topScore > 0 ? candidateScore / topScore : 0;
+							return candidateScore > 0 && (gap <= 0.08 || ratio >= 0.86);
+						});
+					const closePressureNames = closeCandidates
+						.map((candidate) => candidate?.field)
+						.filter((name) =>
+							["Integrative", "Reconstructive"].includes(name)
+						);
+					const isRelational = field === "Relational";
+					const mixedRelational = isRelational && closePressureNames.length > 0;
+					const driver = dashboardInfluenceDriverName(
+						primaryDriverName(data)
+					);
+					const moonstamp = getMoonstamp(data) || {};
+					const moonstampState = String(
+						moonstamp?.state || debug?.moonstampInputs?.state || ""
+					).toLowerCase();
+					const moonstampPhase = String(
+						moonstamp?.phase || debug?.moonstampInputs?.phase || ""
+					).toLowerCase();
+					const reducingMoonstamp =
+						moonstampState.includes("reduce") ||
+						moonstampPhase.includes("waning crescent");
+					const repairSignature = safeNum(debug?.repairSignature);
+					const repairGateOpen = !!debug?.repairGate;
+					const repairPressureHeld = repairSignature >= 0.58 && !repairGateOpen;
+					const plutoUnderneath = isRelational && driver === "Pluto";
+
+					if (!isRelational && !reducingMoonstamp && !repairPressureHeld) {
+						return {
+							active: false,
+							title: "Why this field?",
+							text: "Today’s selected field is reading clean enough that no extra bridge is needed.",
+						};
+					}
+
+					const sentences = [];
+
+					if (mixedRelational) {
+						sentences.push(
+							"Relational leads by a narrow margin. Contact is active, but meaning-pressure or repair-pressure is close behind."
+						);
+					} else if (isRelational) {
+						sentences.push(
+							"Relational leads today, but it is not necessarily a light or simple contact field. Contact, tone, and response are active while deeper pressure may sit underneath."
+						);
+					} else {
+						sentences.push(
+							"Today’s field has more than one pressure layer active. Read the selected field as the main channel, not the whole story."
+						);
+					}
+
+					if (plutoUnderneath) {
+						sentences.push(
+							"Pluto may be loud underneath, but it is acting as pressure behind the field, not replacing the relational channel."
+						);
+					}
+
+					if (reducingMoonstamp) {
+						sentences.push(
+							"Because the Moonstamp is in a reducing phase, the move is smaller scope, not more interpretation."
+						);
+					}
+
+					if (repairPressureHeld) {
+						sentences.push(
+							"Repair pressure may be present, but the repair gate is closed. Do not turn every signal into a repair project."
+						);
+					}
+
+					if (isRelational) {
+						sentences.push(
+							"The clean move is to simplify the signal before responding."
+						);
+					}
+
+					return {
+						active: true,
+						title: mixedRelational
+							? "Mixed relational field"
+							: "Why this field?",
+						text: sentences.join(" "),
+					};
+				} catch (error) {
+					console.warn("Why this field bridge unavailable:", error);
+					return {
+						active: false,
+						title: "Why this field?",
+						text: "The selected field is the main channel for today’s read.",
+					};
+				}
+			}
+
+			function updateWhyThisFieldBridgeUI(data, harmonics) {
+				const bridge = buildWhyThisFieldBridge(data, harmonics);
+				const block = document.getElementById("whyThisFieldBridge");
+
+				if (block) {
+					block.classList.toggle("active", !!bridge?.active);
+				}
+
+				setText("whyThisFieldTitle", bridge?.title || "Why this field?");
+				setText(
+					"whyThisFieldText",
+					bridge?.text ||
+						"The selected field is the main channel for today’s read."
+				);
+			}
+
 			function updateTopLiveFieldStrip(data, harmonics, guidance) {
 				const field = harmonics?.todayField || "Regulated";
 				const stateLabel = stateLabelFromMode(data?.state?.mode || "");
@@ -15616,6 +15807,7 @@
 				});
 
 				updateTopLiveFieldStrip(data, harmonics, guidance);
+				updateWhyThisFieldBridgeUI(data, harmonics);
 
 				setHTML("systemWeatherLine", systemWeatherHTML);
 				setHTML(
