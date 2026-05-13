@@ -24,6 +24,7 @@
 <!-- Field engine restore update: restored old working Venus / Relational field-selection behavior from lucy-os-pro-venus-relational-field-support-v2.html into this polished file. UI, CSS, API payload, backend behavior, saved profiles, share export, mobile nav, root avatar UI, support cards, Moonstamp display, and updateUI unchanged. -->
 <!-- Field calibration fix update: added narrow Venus / Relational soft-support and final override calibration so live Relational signal can surface when Venus is active but not dominant. UI, CSS, API payload, backend behavior, saved profiles, share export, mobile nav, root avatar UI, support cards, Moonstamp display, and updateUI unchanged. -->
 <!-- Mixed sky alignment bridge update: added defensive Why this field? explanation card only. Uses existing field/debug/Moonstamp/driver values; no API, backend, scoring, selected field logic, Venus override, repairGate, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, or Root Avatar behavior changed. -->
+<!-- Top live field driver sentence binding fix: changed the top public driver line to field-first language so raw pressure drivers no longer appear as the selected field leader. Copy-binding only; no API, backend, scoring, selected-field logic, Venus override, repairGate, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, Root Avatar, or result meanings changed. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -12029,30 +12030,39 @@
 			}
 
 			function buildTopLiveFieldDriverLine(data, harmonics) {
-				const field = harmonics?.todayField || "";
-				const scores = harmonics?.normalizedFieldScores || {};
-				const planetary = data?.planetary || {};
-				const driver = dashboardInfluenceDriverName(
+				const debug = harmonics?.dailyFieldDebug || {};
+				const field = harmonics?.todayField || debug?.selectedField || "";
+				const selectedField = String(field || "").trim();
+				const pressureDriver = dashboardInfluenceDriverName(
 					primaryDriverName(data)
 				);
+				const fieldUndertone =
+					harmonics?.fieldUndertone ||
+					debug?.fieldUndertone ||
+					getFieldUndertone(debug);
+				const undertoneField = String(
+					fieldUndertone?.active ? fieldUndertone?.field || "" : ""
+				).trim();
 				const parts = [];
 
-				if (driver) {
-					parts.push(`${driver} leads the day.`);
+				if (selectedField) {
+					parts.push(`${selectedField} leads the field.`);
 				}
 
-				const tVenus = safeNum(
-					planetary.transitVenus,
-					safeNum(planetary.venus)
-				);
-				const relationalScore = safeNum(scores.Relational);
-				const socialRiseActive =
-					field === "Relational" || relationalScore >= 0.58;
-				const venusSupportActive =
-					driver !== "Venus" && (socialRiseActive || tVenus >= 0.48);
+				const shouldShowPressureDriver =
+					!!pressureDriver &&
+					pressureDriver !== "—" &&
+					pressureDriver !== "Venus" &&
+					pressureDriver !== selectedField &&
+					(!!undertoneField ||
+						(selectedField === "Relational" && pressureDriver === "Pluto"));
 
-				if (venusSupportActive) {
-					parts.push("Venus supports the relational lift.");
+				if (shouldShowPressureDriver) {
+					parts.push(
+						undertoneField
+							? `${pressureDriver} adds ${undertoneField.toLowerCase()} pressure underneath.`
+							: `${pressureDriver} adds pressure underneath.`
+					);
 				}
 
 				if (!parts.length) {
