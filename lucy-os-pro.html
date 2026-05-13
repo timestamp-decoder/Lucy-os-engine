@@ -31,6 +31,7 @@
 <!-- Pass 27 update: refined Root Avatar landing-line helper with root + field specific copy only. No visual/card sizing, API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, IDs, button listeners, mobile nav behavior, updateUI, result meanings, or calibration-test behavior changed. -->
 <!-- Pass 24 update: removed duplicated “You are viewing” label inside the You destination and tightened the root pattern card entry only. No API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, IDs, button listeners, updateUI, result meanings, mobile nav behavior, or calibration-test behavior changed. -->
 <!-- Pass 28 update: added Venus relational field support calibration only. When transit Venus is meaningfully active with relational field support, Relational can surface as the selected field instead of being buried by generic mobilization/load. Field Undertone thresholds, repairGate, Reconstructive weighting, API payload, backend behavior, Moonstamp, Electrical Mapping, saved profiles, share export, mobile nav, IDs, button listeners, updateUI, and result display structure unchanged. -->
+<!-- Pass 29 update: tightened Venus relational field surfacing with a post-normalization close-call tie-breaker. This fixes cases where Relational is visibly active but stays just below Integrative/Chaotic because the earlier raw-score boost is diluted by normalization. No API, backend, Moonstamp, Electrical Mapping, saved profiles, share export, mobile nav, IDs, button listeners, updateUI, Field Undertone thresholds, repairGate, or Reconstructive weighting changed. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -15647,6 +15648,26 @@
 					todayField = "Reconstructive";
 				}
 
+				const relationalScore = safeNum(
+					normalizedFieldScores.Relational
+				);
+				const selectedScoreAfterRepair = safeNum(
+					normalizedFieldScores[todayField]
+				);
+				const venusRelationalCloseCall =
+					!repairGate &&
+					todayField !== "Reconstructive" &&
+					tVenus >= 0.32 &&
+					relationalSignature >= 0.42 &&
+					relationalScore > 0 &&
+					selectedScoreAfterRepair > 0 &&
+					selectedScoreAfterRepair - relationalScore <= 0.06 &&
+					relationalScore >= selectedScoreAfterRepair * 0.72;
+
+				if (venusRelationalSupport || venusRelationalCloseCall) {
+					todayField = "Relational";
+				}
+
 				const topCandidates = getTopFieldCandidates(
 					normalizedFieldScores,
 					3
@@ -15661,6 +15682,12 @@
 						const selectedCandidate = topCandidates[selectedIndex];
 						topCandidates.splice(selectedIndex, 1);
 						topCandidates.unshift(selectedCandidate);
+					} else if (selectedIndex === -1) {
+						topCandidates.unshift({
+							field: todayField,
+							score: safeNum(normalizedFieldScores[todayField]),
+						});
+						topCandidates.length = Math.min(topCandidates.length, 3);
 					}
 				}
 
@@ -15672,6 +15699,7 @@
 					normalizedFieldScores,
 					repairGate,
 					venusRelationalSupport,
+					venusRelationalCloseCall,
 					repairSignature,
 					wideFieldSignature,
 					activationSignature,
