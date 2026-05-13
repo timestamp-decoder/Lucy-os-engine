@@ -7,6 +7,21 @@
 <!-- Pass 5 update: added Electrical Mapping E1 hidden observation helper only. No visible UI, API, scoring, Moonstamp, dashboard, saved profiles, share export, or calibration-test behavior changed. -->
 <!-- Pass 6 update: added Electrical Mapping E2 language helper only. Existing human-facing wording can be sharpened by the hidden electrical profile, but no visible Electrical Mapping section, raw scores, API, scoring, routing, Moonstamp, dashboard, saved profiles, share export, or calibration-test behavior changed. -->
 <!-- Pass 7 update: Electrical Mapping E2.1 wording calibration only. Today’s Field wording remains primary; Moonstamp/electrical language acts only as a modifier. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, dashboard logic, saved profiles, selected field/root/support/undertone/motion style/system load state, or calibration tests changed. -->
+<!-- Pass 8 update: Electrical Mapping E3 share/public text polish only. Share card and copied share text inherit calibrated E2.1 public language where available. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, dashboard logic, saved profiles, selected field/root/support/undertone/motion style/system load state, calibration tests, or share export behavior changed. -->
+<!-- Pass 9 update: Electrical Mapping E3.1 micro-format cleanup only. Fixed Moonstamp punctuation in public/share text, prevented top snapshot Regulation Support from duplicating One Good Move, and compressed share-card Regulation Supports display. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, dashboard logic, saved profiles, selected field/root/support/undertone/motion style/system load state, calibration tests, layout structure, or share export behavior changed. -->
+<!-- Pass 10.1 update: Live Field Dashboard influence sentence detection tweak only. Venus support line now appears for relational/social field rises as a non-deterministic public explanation. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, dashboard scores, saved profiles, selected field/root/support/undertone/motion style/system load state, calibration tests, private engine math, or share export behavior changed. -->
+<!-- Pass 10 update: Live Field Dashboard user explanation strip only. Added compact how-to-read and strongest-influences display language. No API, backend, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, dashboard scores, saved profiles, selected field/root/support/undertone/motion style/system load state, calibration tests, private engine math, or share export behavior changed. -->
+<!-- Pass 11 update: Live Field Dashboard explanation copy refined to clarify shared field atmosphere versus personal mood/behavior, and shortened influence language. Display-only copy/helper update; no API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, dashboard scores, selected fields, saved profiles, calibration tests, or share export behavior changed. -->
+<!-- Pass 12 update: added compact top Today’s Live Field strip only. Uses existing public field/state/load/driver/helper data and display wording. No API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, calibration tests, existing Live Field Dashboard behavior, or share export behavior changed. -->
+<!-- Pass 13 update: added mobile app navigation tabs and section anchors only. One global nav links to Input, Field, Landing, Support, and You. No API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, calibration tests, or share export behavior changed. -->
+<!-- Pass 14 update: added active mobile nav glow and small section destination labels only. UI navigation polish only; locked systems unchanged. -->
+<!-- Pass 15 update: added subtle Personal Landing clarification for Relational Field as an active channel, not a required feeling. Display/copy clarity only; engine, API, scoring, Moonstamp, Electrical Mapping, saved profiles, share export, calibration tests, and mobile nav behavior unchanged. -->
+<!-- Pass 16 update: expanded Today’s Live Field as the mobile Field destination only. Added compact in-card destination label, field clarifier, influence/use rows, and breathing room. No API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, calibration tests, or mobile nav behavior changed. -->
+<!-- Pass 16 update: added mobile Field destination breathing room only. Field anchor now lands on a grouped shared-atmosphere zone with a small helper line and extra spacing before Landing. Engine, API, scoring, Moonstamp, Electrical Mapping, saved profiles, share export, calibration tests, and mobile nav behavior unchanged. -->
+<!-- Pass 17 update: added fuller Your Root Pattern explainer inside the You destination only. Display-only personal architecture copy uses existing selected root and current field values; no API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, or calibration-test behavior changed. -->
+<!-- Pass 18 update: expanded You destination personal architecture cards with compact plain-English meaning lines only. Display-only helper copy uses existing selected values; no API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, mobile nav behavior, or calibration-test behavior changed. -->
+<!-- Pass 19 update: added Suggested Sound Support card inside Support destination only. Display-only sensory support language uses existing selected values; no API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, mobile nav behavior, or calibration-test behavior changed. -->
+<!-- Field engine restore update: restored old working Venus / Relational field-selection behavior from lucy-os-pro-venus-relational-field-support-v2.html into this polished file. UI, CSS, API payload, backend behavior, saved profiles, share export, mobile nav, root avatar UI, support cards, Moonstamp display, and updateUI unchanged. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -117,6 +132,124 @@
 				color: var(--blue);
 				border-color: rgba(103, 193, 255, 0.28);
 				background: rgba(103, 193, 255, 0.085);
+			}
+
+
+			.lucyAppTabs {
+				position: fixed;
+				left: 12px;
+				right: 12px;
+				bottom: calc(10px + env(safe-area-inset-bottom));
+				z-index: 1000;
+				display: grid;
+				grid-template-columns: repeat(5, minmax(0, 1fr));
+				gap: 6px;
+				padding: 8px;
+				border: 1px solid rgba(103, 193, 255, 0.18);
+				border-radius: 18px;
+				background: rgba(9, 20, 47, 0.92);
+				backdrop-filter: blur(16px);
+				-webkit-backdrop-filter: blur(16px);
+				box-shadow: 0 14px 38px rgba(0, 0, 0, 0.32),
+					inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+			}
+
+			.lucyAppTabs a {
+				min-width: 0;
+				min-height: 38px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				border-radius: 13px;
+				color: var(--muted);
+				text-decoration: none;
+				font-size: 11px;
+				font-weight: 900;
+				letter-spacing: 0.04em;
+				text-transform: uppercase;
+				background: rgba(255, 255, 255, 0.035);
+				border: 1px solid rgba(255, 255, 255, 0.06);
+				white-space: nowrap;
+			}
+
+			.lucyAppTabs a:hover,
+			.lucyAppTabs a:focus-visible {
+				color: var(--text);
+				border-color: rgba(103, 193, 255, 0.28);
+				background: rgba(103, 193, 255, 0.08);
+				outline: none;
+			}
+
+			.lucyAppTabs a.active {
+				color: var(--text);
+				border-color: rgba(103, 193, 255, 0.42);
+				background:
+					radial-gradient(
+						circle at 50% 0%,
+						rgba(103, 193, 255, 0.22),
+						transparent 62%
+					),
+					rgba(103, 193, 255, 0.12);
+				box-shadow: 0 0 16px rgba(103, 193, 255, 0.18),
+					inset 0 0 0 1px rgba(255, 255, 255, 0.045);
+			}
+
+			.lucyAppTabs a:active {
+				transform: translateY(1px);
+			}
+
+			.sectionDestinationLabel {
+				display: inline-flex;
+				flex-direction: column;
+				gap: 3px;
+				margin: 0 0 10px;
+				padding: 8px 11px;
+				border-radius: 13px;
+				border: 1px solid rgba(103, 193, 255, 0.14);
+				background: rgba(103, 193, 255, 0.055);
+			}
+
+			.sectionDestinationLabel span {
+				color: var(--blue);
+				font-size: 9px;
+				font-weight: 950;
+				letter-spacing: 0.14em;
+				text-transform: uppercase;
+			}
+
+			.sectionDestinationLabel strong {
+				color: var(--text);
+				font-size: 12px;
+				line-height: 1.25;
+				font-weight: 850;
+			}
+
+			.fieldDestinationZone {
+				scroll-margin-top: 18px;
+				margin-bottom: 28px;
+			}
+
+			.fieldDestinationHelper {
+				margin: 8px 0 12px;
+				color: var(--muted);
+				font-size: 12px;
+				line-height: 1.45;
+				font-weight: 750;
+				overflow-wrap: break-word;
+			}
+
+			.sectionAnchor {
+				display: block;
+				width: 100%;
+				height: 0;
+				overflow: hidden;
+				scroll-margin-top: 18px;
+			}
+
+			#inputSection,
+			#supportSection,
+			#youSection {
+				scroll-margin-top: 18px;
 			}
 
 			.hero {
@@ -1713,6 +1846,57 @@
 				overflow-wrap: break-word;
 			}
 
+			.liveFieldDashboardClarityLine {
+				margin: 6px 0 0;
+				color: var(--muted);
+				font-size: 12px;
+				line-height: 1.45;
+				font-weight: 750;
+				max-width: 700px;
+				overflow-wrap: break-word;
+			}
+
+			.liveDashboardExplanation {
+				display: grid;
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				gap: 10px;
+				margin: 0 0 14px;
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.liveDashboardExplanationBlock {
+				min-width: 0;
+				max-width: 100%;
+				padding: 11px 12px;
+				border: 1px solid rgba(103, 193, 255, 0.14);
+				border-radius: 14px;
+				background: radial-gradient(
+						circle at 8% 0%,
+						rgba(103, 193, 255, 0.075),
+						transparent 34%
+					),
+					rgba(255, 255, 255, 0.026);
+				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.014);
+			}
+
+			.liveDashboardExplanationLabel {
+				color: var(--blue);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				margin-bottom: 6px;
+			}
+
+			.liveDashboardExplanationText {
+				color: #d9e0f4;
+				font-size: 12px;
+				line-height: 1.48;
+				font-weight: 730;
+				overflow-wrap: break-word;
+			}
+
 			.liveDashboardDayType {
 				margin: 0 0 14px;
 				padding: 13px 14px;
@@ -2261,6 +2445,94 @@
 				overflow-wrap: break-word;
 			}
 
+
+			.soundSupportCard {
+				grid-column: 1 / -1;
+				margin-top: 0;
+				padding: 13px 14px;
+				border-radius: 16px;
+				border: 1px solid rgba(111, 224, 211, 0.18);
+				background: radial-gradient(
+						circle at 10% 0%,
+						rgba(111, 224, 211, 0.09),
+						transparent 34%
+					),
+					rgba(255, 255, 255, 0.03);
+				min-width: 0;
+				max-width: 100%;
+				overflow: hidden;
+			}
+
+			.soundSupportLabel {
+				color: var(--teal);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				margin-bottom: 7px;
+			}
+
+			.soundSupportTitle {
+				color: var(--text);
+				font-size: 15px;
+				line-height: 1.3;
+				font-weight: 950;
+				overflow-wrap: break-word;
+			}
+
+			.soundSupportText {
+				margin-top: 7px;
+				color: #d9e0f4;
+				font-size: 12.5px;
+				line-height: 1.5;
+				font-weight: 730;
+				overflow-wrap: break-word;
+			}
+
+			.soundSupportGrid {
+				display: grid;
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				gap: 8px;
+				margin-top: 10px;
+				min-width: 0;
+			}
+
+			.soundSupportMini {
+				padding: 9px 10px;
+				border-radius: 12px;
+				border: 1px solid rgba(255, 255, 255, 0.075);
+				background: rgba(255, 255, 255, 0.028);
+				min-width: 0;
+			}
+
+			.soundSupportMini span {
+				display: block;
+				color: var(--muted);
+				font-size: 9px;
+				font-weight: 950;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				margin-bottom: 4px;
+			}
+
+			.soundSupportMini strong {
+				display: block;
+				color: var(--text);
+				font-size: 12px;
+				line-height: 1.4;
+				font-weight: 850;
+				overflow-wrap: break-word;
+			}
+
+			.soundSupportNote {
+				margin-top: 9px;
+				color: var(--muted2);
+				font-size: 11px;
+				line-height: 1.45;
+				font-weight: 750;
+				overflow-wrap: break-word;
+			}
+
 			.regulationSupportNote {
 				margin-top: 12px;
 				color: var(--muted2);
@@ -2749,6 +3021,102 @@
 				overflow: hidden;
 			}
 
+			.rootPatternExplainerCard {
+				width: 100%;
+				max-width: 100%;
+				min-width: 0;
+				overflow: hidden;
+				border: 1px solid rgba(103, 193, 255, 0.18);
+				border-radius: 20px;
+				padding: 16px;
+				margin: 0 0 14px;
+				background: radial-gradient(
+						circle at 12% 0%,
+						rgba(103, 193, 255, 0.1),
+						transparent 34%
+					),
+					radial-gradient(
+						circle at 92% 8%,
+						rgba(216, 184, 76, 0.07),
+						transparent 34%
+					),
+				rgba(255, 255, 255, 0.028);
+				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.018);
+			}
+
+			.rootPatternKicker {
+				color: var(--blue);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				margin-bottom: 7px;
+			}
+
+			.rootPatternExplainerCard h2 {
+				margin: 0;
+				color: var(--text);
+				font-size: 22px;
+				line-height: 1.15;
+				letter-spacing: -0.03em;
+			}
+
+			.rootPatternExplainerCard p {
+				margin: 8px 0 0;
+				color: #d9e0f4;
+				font-size: 13px;
+				line-height: 1.55;
+				font-weight: 730;
+				overflow-wrap: break-word;
+			}
+
+			.rootPatternGrid {
+				display: grid;
+				grid-template-columns: repeat(3, minmax(0, 1fr));
+				gap: 9px;
+				margin-top: 12px;
+			}
+
+			.rootPatternGrid div {
+				min-width: 0;
+				border: 1px solid rgba(255, 255, 255, 0.075);
+				border-radius: 13px;
+				padding: 10px 11px;
+				background: rgba(255, 255, 255, 0.035);
+			}
+
+			.rootPatternGrid span {
+				display: block;
+				color: var(--muted);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				margin-bottom: 5px;
+			}
+
+			.rootPatternGrid strong {
+				display: block;
+				color: var(--text);
+				font-size: 12px;
+				line-height: 1.45;
+				font-weight: 800;
+				overflow-wrap: break-word;
+			}
+
+			.rootPatternTodayLine {
+				margin-top: 12px;
+				border: 1px solid rgba(216, 184, 76, 0.18);
+				border-radius: 14px;
+				padding: 11px 12px;
+				background: rgba(216, 184, 76, 0.055);
+				color: #f0e6c2;
+				font-size: 12px;
+				line-height: 1.5;
+				font-weight: 800;
+				overflow-wrap: break-word;
+			}
+
 			.profileHeader {
 				display: flex;
 				align-items: flex-start;
@@ -2819,6 +3187,22 @@
 				font-size: 12px;
 				line-height: 1.48;
 				overflow-wrap: break-word;
+			}
+
+			.youArchitectureMeaning {
+				margin-top: 8px;
+				padding-top: 8px;
+				border-top: 1px solid rgba(255, 255, 255, 0.065);
+				color: #d9e0f4;
+				font-size: 12.5px;
+				line-height: 1.5;
+				font-weight: 730;
+				overflow-wrap: break-word;
+			}
+
+			.youArchitectureMeaning strong {
+				color: var(--text);
+				font-weight: 900;
 			}
 
 			.chipRow {
@@ -4697,6 +5081,7 @@
 
 			/* Pass 1: Top clarity + personal landing layer */
 			.topClarityCard,
+			.topLiveFieldCard,
 			.personalLandingCard,
 			.plainReadCard,
 			.systemReadCard,
@@ -4720,6 +5105,104 @@
 						transparent 34%
 					),
 					rgba(255, 255, 255, 0.026);
+			}
+
+			.topLiveFieldCard {
+				padding: 18px 20px 20px;
+				border: 1px solid rgba(255, 155, 183, 0.24);
+				background: radial-gradient(
+						circle at 10% 0%,
+						rgba(255, 155, 183, 0.14),
+						transparent 36%
+					),
+					radial-gradient(
+						circle at 92% 8%,
+						rgba(103, 193, 255, 0.095),
+						transparent 36%
+					),
+					linear-gradient(
+						180deg,
+						rgba(15, 27, 56, 0.98),
+						rgba(12, 24, 50, 0.94)
+					);
+			}
+
+			.topLiveFieldDestinationLabel {
+				margin-bottom: 12px;
+				border-color: rgba(255, 155, 183, 0.18);
+				background: rgba(255, 155, 183, 0.06);
+			}
+
+			.topLiveFieldDestinationLabel span {
+				color: var(--rose);
+			}
+
+			.topLiveFieldKicker {
+				color: var(--rose);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.13em;
+				text-transform: uppercase;
+				margin-bottom: 7px;
+			}
+
+			.topLiveFieldTitle {
+				color: var(--text);
+				font-size: 24px;
+				font-weight: 950;
+				line-height: 1.12;
+				letter-spacing: -0.03em;
+				margin: 0;
+				overflow-wrap: anywhere;
+			}
+
+			.topLiveFieldMeta {
+				margin-top: 6px;
+				color: var(--muted);
+				font-size: 12px;
+				font-weight: 900;
+				letter-spacing: 0.02em;
+				overflow-wrap: break-word;
+			}
+
+			.topLiveFieldExpandedMeta {
+				display: grid;
+				gap: 8px;
+				margin-top: 12px;
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.topLiveFieldMetaRow {
+				padding: 9px 10px;
+				border-radius: 12px;
+				border: 1px solid rgba(255, 255, 255, 0.075);
+				background: rgba(255, 255, 255, 0.035);
+				color: var(--muted);
+				font-size: 12px;
+				line-height: 1.45;
+				font-weight: 750;
+				overflow-wrap: break-word;
+			}
+
+			.topLiveFieldMetaRow strong,
+			.topLiveFieldMetaRow span {
+				color: var(--gold);
+				font-weight: 950;
+			}
+
+			.topLiveFieldClarifier {
+				color: #d9e0f4;
+				border-color: rgba(103, 193, 255, 0.11);
+				background: rgba(103, 193, 255, 0.045);
+			}
+
+			.topLiveFieldDriver {
+				color: #d9e0f4;
+			}
+
+			.topLiveFieldMove {
+				color: var(--text);
 			}
 
 			.personalLandingKicker,
@@ -4759,6 +5242,33 @@
 				font-size: 12px;
 				font-weight: 950;
 				line-height: 1.4;
+				overflow-wrap: break-word;
+			}
+
+			.landingClarifier {
+				margin-top: 10px;
+				padding: 10px 11px;
+				border-radius: 13px;
+				border: 1px solid rgba(103, 193, 255, 0.14);
+				background: rgba(103, 193, 255, 0.045);
+			}
+
+			.landingClarifier span {
+				display: block;
+				margin-bottom: 5px;
+				color: var(--blue);
+				font-size: 9px;
+				font-weight: 950;
+				letter-spacing: 0.13em;
+				text-transform: uppercase;
+			}
+
+			.landingClarifier p {
+				margin: 0;
+				color: #d9e0f4;
+				font-size: 12px;
+				line-height: 1.45;
+				font-weight: 750;
 				overflow-wrap: break-word;
 			}
 
@@ -5384,6 +5894,10 @@
 					font-size: 12.5px;
 				}
 
+				.soundSupportGrid {
+					grid-template-columns: minmax(0, 1fr);
+				}
+
 				.moonstampModifierBlock {
 					border-radius: 14px;
 					padding: 12px;
@@ -5558,6 +6072,54 @@
 					font-size: 10px;
 				}
 			}
+
+			@media (max-width: 760px) {
+				.liveDashboardExplanation {
+					grid-template-columns: minmax(0, 1fr);
+				}
+			}
+
+
+			@media (min-width: 821px) {
+				.lucyAppTabs {
+					display: none;
+				}
+			}
+
+			@media (max-width: 820px) {
+				body {
+					padding-bottom: calc(86px + env(safe-area-inset-bottom));
+				}
+
+				.fieldDestinationZone {
+					scroll-margin-top: 12px;
+					margin-bottom: 38px;
+				}
+
+				.fieldDestinationHelper {
+					margin-bottom: 16px;
+				}
+
+				.rootPatternExplainerCard {
+					padding: 15px;
+				}
+
+				.rootPatternGrid {
+					grid-template-columns: minmax(0, 1fr);
+				}
+
+				.rootPatternExplainerCard h2 {
+					font-size: 21px;
+				}
+
+				.sectionAnchor,
+				#inputSection,
+				#supportSection,
+				#youSection {
+					scroll-margin-top: 12px;
+				}
+			}
+
 		</style>
 	</head>
 
@@ -5570,6 +6132,14 @@
 				<h1>Lucy.OS Pro</h1>
 				<p>Full personal field guidance inside the live timing field</p>
 			</div>
+
+			<nav class="lucyAppTabs" aria-label="Lucy.OS app navigation">
+				<a href="#inputSection">Input</a>
+				<a href="#fieldSection">Field</a>
+				<a href="#landingSection">Landing</a>
+				<a href="#supportSection">Support</a>
+				<a href="#youSection">You</a>
+			</nav>
 
 			<section class="mobileReadSnapshot" id="mobileReadSnapshot">
 				<div class="mobileSnapshotKicker">TODAY’S READ SNAPSHOT</div>
@@ -5601,7 +6171,7 @@
 			</section>
 
 			<div class="grid">
-				<div class="panel inputPanel">
+				<div class="panel inputPanel" id="inputSection">
 					<h2>Inputs</h2>
 
 					<label>Date of Birth</label>
@@ -5710,6 +6280,28 @@
 
 				<div class="mainStack">
 
+					<div class="fieldDestinationZone" id="fieldSection">
+						<section class="topLiveFieldCard" id="topLiveFieldCard">
+							<div class="sectionDestinationLabel topLiveFieldDestinationLabel">
+								<span>You are viewing</span>
+								<strong>Field · Today’s shared atmosphere</strong>
+							</div>
+							<div class="topLiveFieldKicker">TODAY’S LIVE FIELD</div>
+							<h2 class="topLiveFieldTitle" id="topLiveFieldTitle">Live Field Pending</h2>
+							<div class="topLiveFieldExpandedMeta">
+								<div class="topLiveFieldMeta topLiveFieldMetaRow" id="topLiveFieldMeta">State: — · Load: —</div>
+								<div class="topLiveFieldDriver topLiveFieldMetaRow" id="topLiveFieldDriver">Calculate to see today’s strongest visible influence.</div>
+								<div class="topLiveFieldClarifier topLiveFieldMetaRow">Field shows the shared atmosphere. It does not decide your personal response.</div>
+								<div class="topLiveFieldMove topLiveFieldMetaRow" id="topLiveFieldMove"><span>Use this field by:</span> Calculate to see today’s cleanest move.</div>
+							</div>
+						</section>
+					</div>
+
+					<span class="sectionAnchor" id="landingSection" aria-hidden="true"></span>
+					<div class="sectionDestinationLabel">
+						<span>Landing</span>
+						<strong>How this field lands in you</strong>
+					</div>
 					<section class="personalLandingCard" id="personalLandingCard">
 						<div class="personalLandingKicker">Lucy.OS read layer</div>
 						<h2 class="personalLandingTitle" id="personalLandingTitle">
@@ -5720,6 +6312,10 @@
 						</div>
 						<div class="personalLandingLine" id="personalLandingLine">
 							Lucy.OS reads how the weather lands in you.
+						</div>
+						<div class="landingClarifier">
+							<span>Landing note</span>
+							<p>Relational field means contact is the channel. Your landing may be connection, caution, distance, or withdrawal.</p>
 						</div>
 					</section>
 
@@ -6122,6 +6718,11 @@
 									A quick scan of today’s pressure, movement,
 									clarity, contact, and regulation capacity.
 								</p>
+								<p class="liveFieldDashboardClarityLine">
+									This dashboard shows shared field conditions — the
+									atmosphere of the day, not your personal mood or
+									behavior.
+								</p>
 							</div>
 
 							<div class="chipRow" style="margin-top: 0">
@@ -6135,6 +6736,38 @@
 									id="liveDashboardFieldChip"
 									>Field: —</span
 								>
+							</div>
+						</div>
+
+						<div class="liveDashboardExplanation">
+							<div class="liveDashboardExplanationBlock">
+								<div class="liveDashboardExplanationLabel">
+									How to read this
+								</div>
+								<div
+									class="liveDashboardExplanationText"
+									id="liveDashboardHowToRead"
+								>
+									This dashboard shows shared field conditions — the
+									atmosphere of the day, not your personal mood or
+									behavior.<br /><br />
+									It reflects what is loud in the environment and how the
+									current field may interact with your pattern.
+								</div>
+							</div>
+
+							<div class="liveDashboardExplanationBlock">
+								<div class="liveDashboardExplanationLabel">
+									Today’s strongest influences
+								</div>
+								<div
+									class="liveDashboardExplanationText"
+									id="liveDashboardInfluenceSentence"
+								>
+									The strongest visible influence is the overall field
+									pattern. Load, regulation, and momentum shape how the
+									day is read.
+								</div>
 							</div>
 						</div>
 
@@ -6454,11 +7087,9 @@
 						</div>
 
 						<div class="liveDashboardNote">
-							Dashboard scores are simplified 1–10 translations of
-							the current read. They do not change the engine,
-							backend, or field selection. High load does not mean
-							collapse; it means reduce scope before adding
-							pressure.
+							Scores are simplified 1–10 translations of the current
+							field. They explain the read; they do not change the
+							engine or field selection.
 						</div>
 					</section>
 
@@ -6612,7 +7243,11 @@
 						</div>
 					</section>
 
-					<section class="regulationSupportCard">
+					<section class="regulationSupportCard" id="supportSection">
+						<div class="sectionDestinationLabel">
+							<span>Support</span>
+							<strong>What helps the system regulate</strong>
+						</div>
 						<div class="regulationSupportHeader">
 							<div>
 								<h2>Regulation Supports</h2>
@@ -6679,6 +7314,34 @@
 								</ul>
 							</div>
 
+							<div class="soundSupportCard">
+								<div class="soundSupportLabel">Suggested Sound Support</div>
+								<div class="soundSupportTitle">
+									Tone, texture, and listening environment for today’s regulation need.
+								</div>
+								<div class="soundSupportGrid">
+									<div class="soundSupportMini">
+										<span>Suggested Tone</span>
+										<strong id="soundSupportTone">—</strong>
+									</div>
+									<div class="soundSupportMini">
+										<span>Suggested Texture</span>
+										<strong id="soundSupportTexture">—</strong>
+									</div>
+									<div class="soundSupportMini">
+										<span>How to Use</span>
+										<strong id="soundSupportUse">—</strong>
+									</div>
+									<div class="soundSupportMini">
+										<span>If It Feels Like Too Much</span>
+										<strong id="soundSupportFallback">—</strong>
+									</div>
+								</div>
+								<div class="soundSupportNote" id="soundSupportNote">
+									Use sound as a sensory cue, not something to force.
+								</div>
+							</div>
+
 							<div class="regulationSupportBlock full">
 								<div class="regulationSupportLabel">Avoid</div>
 								<ul
@@ -6718,7 +7381,39 @@
 						</div>
 					</section>
 
-					<section class="profileCard">
+					<section class="profileCard" id="youSection">
+						<div class="sectionDestinationLabel">
+							<span>You</span>
+							<strong>Your stable profile pattern</strong>
+						</div>
+						<div class="rootPatternExplainerCard">
+							<div class="sectionDestinationLabel">
+								<span>You are viewing</span>
+								<strong>You · Your root pattern</strong>
+							</div>
+							<div class="rootPatternKicker">Your Root Pattern</div>
+							<h2 id="rootPatternExplainerTitle">Root Pattern</h2>
+							<p id="rootPatternExplainerIntro">
+								This is the stable pattern Lucy.OS reads before today’s field is applied.
+							</p>
+							<div class="rootPatternGrid">
+								<div>
+									<span>Gift</span>
+									<strong id="rootPatternGift">Waiting for root pattern.</strong>
+								</div>
+								<div>
+									<span>Under pressure</span>
+									<strong id="rootPatternPressure">Waiting for pressure pattern.</strong>
+								</div>
+								<div>
+									<span>What helps</span>
+									<strong id="rootPatternHelps">Waiting for stabilizing support.</strong>
+								</div>
+							</div>
+							<div class="rootPatternTodayLine" id="rootPatternTodayLine">
+								The live field changes; your root pattern explains how your system may receive, filter, and respond.
+							</div>
+						</div>
 						<div class="profileHeader">
 							<div>
 								<h2>Harmonic Profile</h2>
@@ -6749,6 +7444,9 @@
 								<div class="profileDesc">
 									Your baseline signal pattern.
 								</div>
+								<div class="youArchitectureMeaning" id="youRootMeaning">
+									Waiting for root pattern meaning.
+								</div>
 							</div>
 
 							<div class="profileBlock">
@@ -6760,6 +7458,9 @@
 								</div>
 								<div class="profileDesc">
 									What helps your system stay coherent.
+								</div>
+								<div class="youArchitectureMeaning" id="youSupportMeaning">
+									Waiting for stabilizing support meaning.
 								</div>
 							</div>
 
@@ -6777,6 +7478,9 @@
 									Your root pattern translated through your
 									stabilizing support.
 								</div>
+								<div class="youArchitectureMeaning" id="youProfileTranslationMeaning">
+									Waiting for profile translation meaning.
+								</div>
 							</div>
 
 							<div class="profileBlock">
@@ -6791,6 +7495,9 @@
 								<div class="profileDesc" id="motionStyleRead">
 									Waiting for motion style read.
 								</div>
+								<div class="youArchitectureMeaning" id="youMotionMeaning">
+									Waiting for motion style meaning.
+								</div>
 							</div>
 
 							<div class="profileBlock">
@@ -6804,6 +7511,9 @@
 								<div class="profileDesc">
 									Where strain tends to route under pressure.
 								</div>
+								<div class="youArchitectureMeaning" id="youOverloadMeaning">
+									Waiting for overload pathway meaning.
+								</div>
 							</div>
 
 							<div class="profileBlock wide">
@@ -6814,6 +7524,9 @@
 								<div class="profileDesc">
 									The texture and amount of signal your system
 									tends to carry.
+								</div>
+								<div class="youArchitectureMeaning" id="youSignalMeaning">
+									Waiting for signal quality meaning.
 								</div>
 							</div>
 
@@ -6827,6 +7540,9 @@
 								</div>
 								<div class="profileDesc">
 									What the current timing field is activating.
+								</div>
+								<div class="youArchitectureMeaning" id="youTodayFieldMeaning">
+									Waiting for today’s field meaning.
 								</div>
 							</div>
 
@@ -8540,6 +9256,18 @@
 				return `${phase} · ${moonAge} days · ${illumination}% illuminated`;
 			}
 
+			function joinMoonstampPublicText(modifier, forecastModifier) {
+				const first = String(modifier || "").trim();
+				const second = String(forecastModifier || "").trim();
+
+				if (first && second) {
+					const firstWithStop = /[.!?]$/.test(first) ? first : `${first}.`;
+					return `${firstWithStop} ${second}`;
+				}
+
+				return first || second;
+			}
+
 			function buildMoonstampModifier(data) {
 				const moonstamp = getMoonstamp(data);
 
@@ -8552,10 +9280,11 @@
 					moonstamp.forecastModifier || ""
 				).trim();
 
-				if (modifier && forecastModifier)
-					return `${modifier} ${forecastModifier}`;
-				if (modifier) return modifier;
-				if (forecastModifier) return forecastModifier;
+				const joinedModifier = joinMoonstampPublicText(
+					modifier,
+					forecastModifier
+				);
+				if (joinedModifier) return joinedModifier;
 
 				const state = String(moonstamp.state || "").trim();
 				const phase = String(moonstamp.phase || "").trim();
@@ -9267,6 +9996,113 @@
 				return [...new Set(items.filter(Boolean))].slice(0, 5);
 			}
 
+
+			function buildSuggestedSoundSupport(
+				root,
+				support,
+				todayField,
+				systemLoadState,
+				motionStyle,
+				moonstampModifierRead
+			) {
+				const rootBase = getHarmonicBaseName(root || "");
+				const supportBase = getHarmonicBaseName(support || "");
+				const fieldBase = getHarmonicBaseName(todayField || "Regulated");
+				const stateBase = String(systemLoadState || "");
+				const motionText = String(motionStyle || "");
+				const moonText = String(moonstampModifierRead?.text || "").toLowerCase();
+				const combined = `${rootBase} ${supportBase} ${fieldBase} ${stateBase} ${motionText}`.toLowerCase();
+
+				const makeSupport = (tone, texture, use, note = "Sound is optional. If sound feels like more input, use silence or a quieter room instead.") => ({
+					tone,
+					texture,
+					use,
+					fallback: "Choose silence, brown noise, or a quieter room instead.",
+					note,
+				});
+
+				let sound;
+
+				if (
+					stateBase === "Overloaded" ||
+					combined.includes("overload") ||
+					combined.includes("high load")
+				) {
+					sound = makeSupport(
+						"432–528 Hz or silence",
+						"brown noise, rain, low steady drone, or very soft bowl",
+						"Lower input and make the listening environment simpler. Keep volume low enough that it supports the room instead of becoming the focus."
+					);
+				} else if (fieldBase === "Chaotic" || combined.includes("chaotic") || combined.includes("fast")) {
+					sound = makeSupport(
+						"432 Hz or low steady drone",
+						"low steady drone, soft bowl, brown noise, or slow ambient pad",
+						"Use a steady background to reduce signal spikes and give the body one simple sensory cue."
+					);
+				} else if (fieldBase === "Relational") {
+					sound = makeSupport(
+						"528–639 Hz",
+						"harp, soft bowl, warm hum, gentle vocal pad, or soft ambient tone",
+						"Soften the room without forcing emotional processing. Harp or soft strings may help the space feel warmer and less pressurized."
+					);
+				} else if (fieldBase === "Diffused") {
+					sound = makeSupport(
+						"396–432 Hz",
+						"brown noise, low drum pulse, soft repetitive rhythm, or grounded ambient tone",
+						"Give the field a simple center without adding more atmosphere."
+					);
+				} else if (fieldBase === "Threshold" || combined.includes("threshold")) {
+					sound = makeSupport(
+						"417–432 Hz",
+						"slow drum, low gong used gently, steady pulse, or grounding drone",
+						"Organize activation before crossing or deciding. Keep the sound slow, low, and steady.",
+						"Use gong gently. If it feels sharp or activating, switch to a softer texture or silence."
+					);
+				} else if (fieldBase === "Reconstructive") {
+					sound = makeSupport(
+						"528 Hz",
+						"soft bowl, cello drone, warm ambient pad, or low gong used gently",
+						"Support one repair without pushing a full rebuild. Keep the texture warm and non-intrusive.",
+						"Use gong gently. If it feels sharp or activating, switch to soft bowl, warm drone, or silence."
+					);
+				} else if (fieldBase === "Structured") {
+					sound = makeSupport(
+						"432 Hz",
+						"metronomic pulse, soft strings, clean repetitive pattern, or low drone",
+						"Help pressure move into sequence and next steps without adding intensity."
+					);
+				} else if (fieldBase === "Integrative") {
+					sound = makeSupport(
+						"528–741 Hz",
+						"layered ambient, harp, soft chimes, or gentle melodic drone",
+						"Support reflection and integration without overstimulation. Keep layers soft and spacious."
+					);
+				} else if (fieldBase === "Contained") {
+					sound = makeSupport(
+						"432 Hz",
+						"low steady drone, soft drum, grounding hum, soft bowl, or brown noise",
+						"Help the system hold pressure without tightening too much. Keep the sound warm and low."
+					);
+				} else {
+					sound = makeSupport(
+						"528 Hz, soft ambient, or silence",
+						"gentle harp, soft bowl, light rain, quiet room, or warm ambient tone",
+						"Maintain coherence without adding unnecessary input."
+					);
+				}
+
+				if (
+					moonText.includes("lower-load") ||
+					moonText.includes("simplify") ||
+					moonText.includes("reduce")
+				) {
+					sound.fallback = "Use silence, brown noise, or a quieter room if sound starts to feel like extra input.";
+					sound.note = `${sound.note} Today’s lunar modifier may support a quieter, lower-load listening environment.`;
+				}
+
+				return sound;
+			}
+
 			function buildSnapshotSupportLine(field, intensityLabel, regulationSupports) {
 				const baseField = getHarmonicBaseName(field || "Regulated");
 				if (baseField === "Relational") {
@@ -9397,6 +10233,14 @@
 				}
 
 				const music = bank.musicSound;
+				const soundSupport = buildSuggestedSoundSupport(
+					harmonics?.primary,
+					harmonics?.support,
+					field,
+					intensityLabel,
+					motionStyle,
+					moonstampModifierRead
+				);
 
 				return applyElectricalLanguageToRegulationSupports(
 					{
@@ -9412,6 +10256,7 @@
 						),
 						why,
 						music,
+						soundSupport,
 					},
 					getCurrentElectricalProfile()
 				);
@@ -9483,6 +10328,307 @@
 						"You may stabilize by pacing the load, keeping rhythm, and choosing the speed that keeps you coherent.",
 				};
 				return texts[base] || "This chart has its own way of receiving pressure and returning to coherence.";
+			}
+
+			const ROOT_PATTERN_EXPLAINERS = {
+				Chaotic: {
+					plain: "Chaotic does not mean you are chaos. It means your system detects disruption quickly.",
+					detects: "spikes, shifts, urgency, instability, or the sense that something changed before the structure is clear.",
+					gift: "Fast signal recognition. You notice disruption early.",
+					pressure: "The spike can feel urgent before the signal has enough form.",
+					helps: "Pausing long enough to give the signal shape before acting.",
+				},
+				Contained: {
+					plain: "Contained means your system stabilizes through limits, boundaries, and holding structure.",
+					detects: "where pressure needs a container, where something is too open, or where a boundary would make the field safer.",
+					gift: "Containment. You can hold pressure without letting it spill everywhere.",
+					pressure: "You may over-tighten, withdraw too far, or try to control the whole field.",
+					helps: "Clear limits, smaller scope, and one steady next step.",
+				},
+				Relational: {
+					plain: "Relational means your system reads through contact, tone, feedback, and shared atmosphere.",
+					detects: "subtle shifts in connection, mood, response, closeness, distance, and social temperature.",
+					gift: "Contact intelligence. You can notice what is happening between people.",
+					pressure: "You may absorb too much, over-read tone, or feel responsible for the whole room.",
+					helps: "Separating mine from not mine, naming one signal plainly, and keeping responsibility proportional.",
+				},
+				Structured: {
+					plain: "Structured means your system stabilizes by organizing pressure into sequence, form, and clear next steps.",
+					detects: "what needs order, what is missing a step, or where a process needs better structure.",
+					gift: "Clarity under pressure. You can turn noise into usable form.",
+					pressure: "You may over-plan, over-correct, or need too much certainty before moving.",
+					helps: "One clear sequence, one useful rule, and one next step.",
+				},
+				Threshold: {
+					plain: "Threshold means your system detects crossing points.",
+					detects: "openings, endings, decision edges, timing shifts, and moments where something is close to changing.",
+					gift: "Timing awareness. You can sense when something is approaching a turn.",
+					pressure: "You may cross too soon, force a decision, or live too close to the edge of change.",
+					helps: "Waiting for the real opening, slowing the jump, and choosing the cleanest crossing.",
+				},
+				Reconstructive: {
+					plain: "Reconstructive means your system notices what needs repair.",
+					detects: "weak points, misalignment, decay, damage, or structures that can no longer hold as-is.",
+					gift: "Repair intelligence. You can see what needs to be rebuilt before the break becomes obvious.",
+					pressure: "You may treat every weak point like a full collapse or enter repair mode too quickly.",
+					helps: "Repairing one weak point at a time instead of rebuilding the whole field.",
+				},
+				Integrative: {
+					plain: "Integrative means your system gathers scattered inputs into coherence.",
+					detects: "patterns, meanings, partial signals, unfinished loops, and pieces that need to come together.",
+					gift: "Synthesis. You can help separate pieces become one usable picture.",
+					pressure: "You may take in too much at once or try to make meaning before the system has settled.",
+					helps: "Reducing inputs, completing one loop, and letting meaning organize gradually.",
+				},
+				Diffused: {
+					plain: "Diffused means your system detects wide atmosphere, subtle signals, and porous fields.",
+					detects: "background mood, ambiguity, emotional weather, softness, fog, or unclear boundaries.",
+					gift: "Atmospheric sensitivity. You can sense what is present before it becomes explicit.",
+					pressure: "You may become scattered, porous, foggy, or unsure what belongs to you.",
+					helps: "Grounding, narrowing the field, lowering input, and returning to the body.",
+				},
+				Regulated: {
+					plain: "Regulated means your system stabilizes by returning pressure to rhythm, proportion, and usable pace.",
+					detects: "when the field is too fast, too loud, too intense, or out of proportion.",
+					gift: "Pacing intelligence. You can help pressure become usable again.",
+					pressure: "You may over-manage, flatten feeling, or focus on regulation before expression has had room.",
+					helps: "Steady rhythm, measured response, body pacing, and proportionate action.",
+				},
+				Steady: {
+					plain: "Steady means your system stabilizes through consistency, patience, and reliable rhythm.",
+					detects: "what needs time, repetition, steadiness, or a slower pace.",
+					gift: "Reliability. You can keep the system from overreacting.",
+					pressure: "You may resist change, delay movement, or stay with the familiar too long.",
+					helps: "Simple rhythm, practical grounding, and gradual adjustment.",
+				},
+			};
+
+			function getRootPatternExplainer(root) {
+				const base = getHarmonicBaseName(root || "");
+				return (
+					ROOT_PATTERN_EXPLAINERS[base] || {
+						plain: "This is the stable pattern Lucy.OS reads before today’s field is applied.",
+						detects: "the way your system tends to receive, filter, and respond to pressure.",
+						gift: "A specific way of turning signal into usable information.",
+						pressure: "The same pattern may intensify when the field is loud or unclear.",
+						helps: "Treating the field as information, not identity, and choosing one clean next step.",
+					}
+				);
+			}
+
+			function buildRootPatternTodayLine(root, field) {
+				const rootBase = getHarmonicBaseName(root || "");
+				const fieldBase = getHarmonicBaseName(field || "");
+				const rootName = publicRootText(rootBase);
+				const fieldName = publicFieldText(fieldBase);
+				const key = `${rootBase}|${fieldBase}`;
+				const specific = {
+					"Chaotic|Relational":
+						"When today’s field is Relational, contact, tone, or feedback may register as a signal spike. That does not mean you need to respond immediately. It means your system is noticing movement in the atmosphere.",
+					"Relational|Relational":
+						"When today’s field is Relational, your system may notice contact and tone more directly. The move is not to absorb the whole room; it is to name one signal and keep responsibility proportional.",
+					"Reconstructive|Relational":
+						"When today’s field is Relational, your system may notice what feels strained, misaligned, or ready for repair inside contact. The move is to repair one true weak point, not the whole relationship field.",
+				};
+
+				return (
+					specific[key] ||
+					`When today’s field is ${fieldName}, your ${rootName} root may receive it through its own pattern. The field is shared, but the landing is personal.`
+				);
+			}
+
+			function updateRootPatternExplainer(root, field) {
+				const rootBase = getHarmonicBaseName(root || "");
+				const explainer = getRootPatternExplainer(rootBase);
+				setHTML("rootPatternExplainerTitle", `${rootLabel(rootBase)}&nbsp;Root`);
+				setText(
+					"rootPatternExplainerIntro",
+					`${explainer.plain} This pattern can detect ${explainer.detects} The live field changes; your root pattern explains how your system tends to receive, filter, and respond.`
+				);
+				setText("rootPatternGift", explainer.gift);
+				setText("rootPatternPressure", explainer.pressure);
+				setText("rootPatternHelps", explainer.helps);
+				setText("rootPatternTodayLine", buildRootPatternTodayLine(rootBase, field));
+			}
+
+
+			function buildYouArchitectureExplanation(type, value, context = {}) {
+				const base = getHarmonicBaseName(value || "");
+				const rootBase = getHarmonicBaseName(context.root || "");
+				const supportBase = getHarmonicBaseName(context.support || "");
+				const fieldBase = getHarmonicBaseName(context.field || "");
+				const distortionBase = getHarmonicBaseName(context.distortion || "");
+				const rootName = publicRootText(rootBase) || "your root pattern";
+				const supportName = publicRootText(supportBase) || "your stabilizing support";
+				const fieldName = publicFieldText(fieldBase) || "today’s field";
+
+				const rootMeanings = {
+					Structured:
+						"Structured means your system may stabilize by turning pressure into order, sequence, and a clear next step.",
+					Contained:
+						"Contained means your system may stabilize by creating a clean boundary, reducing noise, and holding pressure privately before responding.",
+					Chaotic:
+						"Chaotic does not mean you are chaos. It means your system detects disruption, spikes, and shifts quickly.",
+					Relational:
+						"Relational means your system may read tone, contact, distance, and feedback as important signal before the meaning is fully clear.",
+					Threshold:
+						"Threshold means your system may detect openings, endings, timing shifts, and decision edges before they fully arrive.",
+					Reconstructive:
+						"Reconstructive means your system may notice weak points, repair needs, and structures that are ready to be rebuilt or adjusted.",
+					Integrative:
+						"Integrative means your system may gather scattered inputs and look for the thread that brings them into coherence.",
+					Diffused:
+						"Diffused means your system may register atmosphere, subtle signals, and wide background pressure before the field has a clean shape.",
+					Regulated:
+						"Regulated means your system may stabilize by returning pressure to rhythm, proportion, and a usable pace.",
+					Steady:
+						"Steady means your system may stabilize through consistency, patience, and reliable rhythm.",
+				};
+
+				const supportMeanings = {
+					Structured:
+						"Structured support means your system stabilizes when pressure is given order, sequence, and a clear next step.",
+					Contained:
+						"Contained support means your system stabilizes when there is less input, more boundary, and enough privacy to sort the signal.",
+					Chaotic:
+						"Chaotic support means your system may need movement, flexibility, or a safe outlet for charge instead of rigid control.",
+					Relational:
+						"Relational support means your system may stabilize through clean contact, honest tone, and feedback that stays proportional.",
+					Threshold:
+						"Threshold support means your system stabilizes when the crossing point is named and the next move is timed cleanly.",
+					Reconstructive:
+						"Reconstructive support means your system stabilizes by repairing one true weak point instead of rebuilding everything at once.",
+					Integrative:
+						"Integrative support means your system stabilizes by gathering the pieces, reducing loose ends, and finding the main thread.",
+					Diffused:
+						"Diffused support means your system stabilizes through softer input, grounding, and one clear anchor in a wide field.",
+					Regulated:
+						"Regulated support means your system stabilizes through rhythm, pacing, proportion, and a response that fits the actual load.",
+					Steady:
+						"Steady support means your system stabilizes through repetition, simplicity, and gradual adjustment.",
+				};
+
+				const motionMeanings = {
+					"Chaotic / Threshold":
+						"Fast activation can be useful, but it needs a clean crossing point so the body does not move before the signal is clear.",
+					"Chaotic/Threshold":
+						"Fast activation can be useful, but it needs a clean crossing point so the body does not move before the signal is clear.",
+					Chaotic:
+						"Your signal may move quickly when activated. Give the spike one safe channel before responding.",
+					Threshold:
+						"Your signal may move toward a decision edge. Pause long enough to confirm the crossing is actually ready.",
+					Structured:
+						"Your signal may move toward structure. Keep the order useful without over-tightening the whole field.",
+					Contained:
+						"Your signal may move inward first. Use containment to sort the field, not to disappear from it.",
+					Relational:
+						"Your signal may move through contact and tone. Stay centered before reading or answering the room.",
+					Reconstructive:
+						"Your signal may move toward repair. Choose the one weak point that is actually asking for attention.",
+					Integrative:
+						"Your signal may move by gathering pieces. Find the main thread before trying to include everything.",
+					Diffused:
+						"Your signal may spread wide when activated. Lower input and choose one clear anchor.",
+					Regulated:
+						"Your signal may move through pacing and proportion. Let steady rhythm make the response usable.",
+				};
+
+				const fieldMeanings = {
+					Structured:
+						"This part can change day to day. Structured field means today’s atmosphere may ask for order, sequence, and one practical step.",
+					Contained:
+						"This part can change day to day. Contained field means today’s atmosphere may ask for boundary, privacy, or reduced input.",
+					Chaotic:
+						"This part can change day to day. Chaotic field means the shared atmosphere may carry more movement, charge, or disruption than usual.",
+					Relational:
+						"This part can change day to day. It is not your identity; it is the live field your root pattern is receiving today.",
+					Threshold:
+						"This part can change day to day. Threshold field means today’s atmosphere may carry a decision edge, opening, or timing pressure.",
+					Reconstructive:
+						"This part can change day to day. Reconstructive field means today’s atmosphere may highlight repair pressure or one weak point asking for attention.",
+					Integrative:
+						"This part can change day to day. Integrative field means today’s atmosphere may ask you to gather pieces and find the main thread.",
+					Diffused:
+						"This part can change day to day. Diffused field means today’s atmosphere may feel wider, softer, foggier, or less clearly bounded.",
+					Regulated:
+						"This part can change day to day. Regulated field means today’s atmosphere may support rhythm, pacing, and proportionate response.",
+				};
+
+				if (type === "root") {
+					return rootMeanings[base] || "This is your baseline signal pattern. It describes how your system may receive and organize pressure before today’s field is added.";
+				}
+
+				if (type === "support") {
+					return supportMeanings[base] || "This describes what tends to help your system stay coherent when pressure rises.";
+				}
+
+				if (type === "profile") {
+					if (rootBase === "Chaotic" && supportBase === "Structured") {
+						return "This describes how your baseline signal and stabilizing support combine. You may notice movement early, then need to turn it into usable form.";
+					}
+
+					return `This describes how your ${rootName} root and ${supportName} support combine into one usable architecture.`;
+				}
+
+				if (type === "motion") {
+					const exact = String(value || "").trim();
+					return motionMeanings[exact] || motionMeanings[base] || "This describes how your signal may move when activated. Let the movement become clear before you respond.";
+				}
+
+				if (type === "overload") {
+					if (distortionBase === "Structured" && context.distortionState?.label === "Emotional Fusion") {
+						return "When pressure rises, your system may try to organize the emotional field too quickly. The return path is to separate signal from responsibility.";
+					}
+
+					if (context.distortionState?.label === "Emotional Fusion") {
+						return "When pressure rises, your system may absorb contact, tone, or feeling as if it belongs to you. The return path is mine / not mine.";
+					}
+
+					return "When pressure rises, this is where strain may route first. The return path is to name the load and choose one proportionate response.";
+				}
+
+				if (type === "signal") {
+					if (rootBase === "Chaotic") {
+						return "This means your system may notice change before it is fully organized. The gift is speed. The risk is reacting before the pattern has landed.";
+					}
+
+					return "This describes the texture of signal your system tends to carry. The gift is using that texture clearly; the risk is letting it run the whole response.";
+				}
+
+				if (type === "field") {
+					return fieldMeanings[fieldBase] || `This part can change day to day. ${fieldName} is not your identity; it is the live field your root pattern is receiving today.`;
+				}
+
+				return "This card explains one part of your stable architecture using the values already selected by Lucy.OS.";
+			}
+
+			function updateYouArchitectureExplanations({
+				primary,
+				support,
+				profileTranslation,
+				motionStyle,
+				distortion,
+				distortionState,
+				signalQuality,
+				todayField,
+			}) {
+				const context = {
+					root: primary,
+					support,
+					distortion,
+					distortionState,
+					field: todayField,
+					signalQuality,
+					profileTranslation,
+				};
+
+				setText("youRootMeaning", buildYouArchitectureExplanation("root", primary, context));
+				setText("youSupportMeaning", buildYouArchitectureExplanation("support", support, context));
+				setText("youProfileTranslationMeaning", buildYouArchitectureExplanation("profile", profileTranslation, context));
+				setText("youMotionMeaning", buildYouArchitectureExplanation("motion", motionStyle, context));
+				setText("youOverloadMeaning", buildYouArchitectureExplanation("overload", distortion, context));
+				setText("youSignalMeaning", buildYouArchitectureExplanation("signal", signalQuality, context));
+				setText("youTodayFieldMeaning", buildYouArchitectureExplanation("field", todayField, context));
 			}
 
 			function getFieldPlainLanding(field) {
@@ -9819,6 +10965,47 @@
 					: `- ${fallback}`;
 			}
 
+			function normalizeShareText(value) {
+				return String(value || "")
+					.toLowerCase()
+					.replace(/[’']/g, "'")
+					.replace(/[^a-z0-9]+/g, " ")
+					.trim();
+			}
+
+			function cleanShareSentence(value, fallback = "") {
+				const clean = String(value || "")
+					.replace(/\s+/g, " ")
+					.replace(/Lower-load lunar field\s+Use this lunar field/g, "Lower-load lunar field. Use this lunar field")
+					.trim();
+				return clean || fallback;
+			}
+
+			function isShareDuplicate(a, b) {
+				const left = normalizeShareText(a);
+				const right = normalizeShareText(b);
+				if (!left || !right) return false;
+				return left === right || left.includes(right) || right.includes(left);
+			}
+
+			function getUniqueShareItems(items, maxItems = 3) {
+				const unique = [];
+				(Array.isArray(items) ? items : []).forEach((item) => {
+					const clean = cleanShareSentence(item);
+					if (!clean) return;
+					if (unique.some((existing) => isShareDuplicate(existing, clean))) return;
+					unique.push(clean);
+				});
+				return unique.slice(0, maxItems);
+			}
+
+			function getShareSafeMove(primaryMove, fallbackMove) {
+				return cleanShareSentence(
+					primaryMove || fallbackMove,
+					"Choose one clear next move."
+				);
+			}
+
 			function getConciseSoundSupport(supports) {
 				const music = String(supports?.music || "").trim();
 				if (!music || music === "—" || music.length > 120) return "";
@@ -9834,6 +11021,13 @@
 					avoidItems: [],
 					why: "—",
 					music: "—",
+					soundSupport: {
+						tone: "—",
+						texture: "—",
+						use: "Keep it low, steady, and soft enough to support the room instead of becoming the focus.",
+						fallback: "Choose silence, brown noise, or a quieter room instead.",
+						note: "Sound is optional. If sound feels like more input, use silence or a quieter room instead.",
+					},
 				};
 
 				setText("regulationSupportState", supports.state || "—");
@@ -9866,13 +11060,38 @@
 				setText("regulationSupportWhy", supports.why || "—");
 				setText("regulationSupportMusic", supports.music || "—");
 
+				const soundSupport = supports.soundSupport || {};
+				setText("soundSupportTone", soundSupport.tone || "—");
+				setText("soundSupportTexture", soundSupport.texture || "—");
+				setText(
+					"soundSupportUse",
+					soundSupport.use ||
+						"Keep it low, steady, and soft enough to support the room instead of becoming the focus."
+				);
+				setText(
+					"soundSupportFallback",
+					soundSupport.fallback ||
+						"Choose silence, brown noise, or a quieter room instead."
+				);
+				setText(
+					"soundSupportNote",
+					soundSupport.note ||
+						"Sound is optional. If sound feels like more input, use silence or a quieter room instead."
+				);
+
 				setText(
 					"whyRegulationSupports",
 					`${supports.state || "—"} · ${supports.quality || "—"}`
 				);
 
-				const shareTryItems = getShortTryFirstItems(supports, 3);
-				const shareAvoidItems = getShortAvoidItems(supports, 3);
+				const shareTryItems = getUniqueShareItems(
+					getShortTryFirstItems(supports, 2),
+					2
+				);
+				const shareAvoidItems = getUniqueShareItems(
+					getShortAvoidItems(supports, 2),
+					2
+				);
 
 				setText("shareCardRegulationState", supports.state || "—");
 				setText(
@@ -10672,6 +11891,152 @@
 				];
 			}
 
+			function dashboardInfluenceDriverName(driver) {
+				const raw = String(driver || "").trim();
+				if (!raw || raw === "—") return "";
+
+				const lower = raw.toLowerCase();
+				if (lower.includes("moon")) return "Moon";
+				if (lower.includes("venus")) return "Venus";
+				if (lower.includes("mars")) return "Mars";
+				if (lower.includes("mercury")) return "Mercury";
+				if (lower.includes("saturn")) return "Saturn";
+				if (lower.includes("jupiter")) return "Jupiter";
+				if (lower.includes("neptune")) return "Neptune";
+				if (lower.includes("uranus")) return "Uranus";
+				if (lower.includes("pluto")) return "Pluto";
+
+				return publicDriverName(raw);
+			}
+
+			function buildLiveDashboardInfluenceSentence(data, harmonics) {
+				const state = data?.state || {};
+				const planetary = data?.planetary || {};
+				const scores = harmonics?.normalizedFieldScores || {};
+				const field = harmonics?.todayField || "";
+				const driver = dashboardInfluenceDriverName(
+					primaryDriverName(data)
+				);
+				const parts = [];
+
+				if (driver) {
+					if (driver === "Moon") {
+						parts.push("Moon is today’s strongest active driver.");
+					} else {
+						parts.push(`${driver} is today’s strongest active driver.`);
+					}
+				}
+
+				const tVenus = safeNum(
+					planetary.transitVenus,
+					safeNum(planetary.venus)
+				);
+				const relationalScore = safeNum(scores.Relational);
+				const socialRiseActive =
+					field === "Relational" || relationalScore >= 0.58;
+				const venusIsActive = driver === "Venus" || tVenus >= 0.48;
+
+				if (venusIsActive || socialRiseActive) {
+					parts.push(
+						"Venus may be supporting relational lift."
+					);
+				}
+
+				const load = safeNum(
+					state.amplifiedLoad,
+					safeNum(state.strain)
+				);
+				if (load >= 0.75) {
+					parts.push(
+						"High load means reduce scope before adding pressure."
+					);
+				}
+
+				if (!parts.length) {
+					return "The strongest visible influence is the overall field pattern. Load, regulation, and momentum shape how the day is read.";
+				}
+
+				return parts.join(" ");
+			}
+
+			function buildTopLiveFieldDriverLine(data, harmonics) {
+				const field = harmonics?.todayField || "";
+				const scores = harmonics?.normalizedFieldScores || {};
+				const planetary = data?.planetary || {};
+				const driver = dashboardInfluenceDriverName(
+					primaryDriverName(data)
+				);
+				const parts = [];
+
+				if (driver) {
+					parts.push(`${driver} leads the day.`);
+				}
+
+				const tVenus = safeNum(
+					planetary.transitVenus,
+					safeNum(planetary.venus)
+				);
+				const relationalScore = safeNum(scores.Relational);
+				const socialRiseActive =
+					field === "Relational" || relationalScore >= 0.58;
+				const venusSupportActive =
+					driver !== "Venus" && (socialRiseActive || tVenus >= 0.48);
+
+				if (venusSupportActive) {
+					parts.push("Venus supports the relational lift.");
+				}
+
+				if (!parts.length) {
+					return buildLiveDashboardInfluenceSentence(data, harmonics);
+				}
+
+				return parts.join(" ");
+			}
+
+			function buildTopLiveFieldMove(field, loadBand, guidance) {
+				const currentField = String(field || "").trim();
+				const currentLoad = String(loadBand || "").trim();
+
+				if (
+					currentField === "Relational" &&
+					(currentLoad === "High" || currentLoad === "Very high")
+				) {
+					return "Clarify contact. Reduce scope. Do not absorb the whole room.";
+				}
+
+				return (
+					String(guidance?.move || "").trim() ||
+					"Choose one clear next move and keep the scope small."
+				);
+			}
+
+			function updateTopLiveFieldStrip(data, harmonics, guidance) {
+				const field = harmonics?.todayField || "Regulated";
+				const stateLabel = stateLabelFromMode(data?.state?.mode || "");
+				const loadBand = loadBandFromValue(
+					safeNum(data?.state?.amplifiedLoad, data?.state?.strain)
+				);
+				const fieldText = getPublicFieldLabel(field);
+
+				setHTML(
+					"topLiveFieldTitle",
+					`${fieldLabel(fieldText)} field is active today.`
+				);
+				setText("topLiveFieldMeta", `${stateLabel} · ${loadBand} Load`);
+				setText(
+					"topLiveFieldDriver",
+					buildTopLiveFieldDriverLine(data, harmonics)
+				);
+				setHTML(
+					"topLiveFieldMove",
+					`<span>Use this field by:</span> ${buildTopLiveFieldMove(
+						field,
+						loadBand,
+						guidance
+					)}`
+				);
+			}
+
 			function updateLiveFieldDashboardUI(data, harmonics) {
 				const stateLabel = stateLabelFromMode(data?.state?.mode || "");
 				const field = harmonics?.todayField || "Regulated";
@@ -10684,7 +12049,12 @@
 					fieldUndertone
 				);
 				const metrics = buildLiveFieldDashboardMetrics(data, harmonics);
+				const influenceSentence = buildLiveDashboardInfluenceSentence(
+					data,
+					harmonics
+				);
 
+				setText("liveDashboardInfluenceSentence", influenceSentence);
 				setText("liveDashboardStateChip", `State: ${stateLabel}`);
 				applyChipClass("liveDashboardStateChip", "chip violet", "");
 
@@ -10836,11 +12206,29 @@
 				const ratio =
 					primaryScore > 0 ? secondaryScore / primaryScore : 0;
 
+				const closeCallPairs = new Set([
+					"Relational|Reconstructive",
+					"Reconstructive|Relational",
+					"Integrative|Diffused",
+					"Diffused|Integrative",
+					"Chaotic|Threshold",
+					"Threshold|Chaotic",
+					"Contained|Structured",
+					"Structured|Contained",
+					"Relational|Contained",
+					"Contained|Relational",
+				]);
+				const isCloseCallPair = closeCallPairs.has(
+					`${top.field}|${second.field}`
+				);
+				const normalUndertoneClose = ratio >= 0.94 && gap <= 0.045;
+				const namedPairClose =
+					isCloseCallPair && ratio >= 0.91 && gap <= 0.06;
+
 				const active =
 					second.field !== top.field &&
 					secondaryScore > 0 &&
-					ratio >= 0.86 &&
-					gap <= 0.075;
+					(normalUndertoneClose || namedPairClose);
 
 				if (!active) {
 					return {
@@ -12487,25 +13875,37 @@
 					coreRule?.watchDistortion ||
 						"Watch the distortion before responding."
 				);
-				setText(
-					"shareCardCoreMove",
-					coreRule?.makeMove ||
-						goodMove ||
-						"Choose one clear next move."
+				const shareGoodMove = getShareSafeMove(
+					goodMove,
+					coreRule?.makeMove
 				);
-
-				setText("shareCardTodayRead", todayRead);
-				setText(
-					"shareCardRealLife",
-					realLifeText ||
+				const rawCoreMove = cleanShareSentence(
+					coreRule?.makeMove,
+					"Choose the cleanest next action."
+				);
+				const shareCoreMove = isShareDuplicate(rawCoreMove, shareGoodMove)
+					? "Keep the move small, clean, and proportional."
+					: rawCoreMove;
+				const shareRealLifeText = isShareDuplicate(
+					realLifeText,
+					shareGoodMove
+				)
+					? "Use the read as one practical action, not a full-field project."
+					: cleanShareSentence(
+						realLifeText,
 						"Translate the read into one practical action."
-				);
+					  );
+
+				setText("shareCardCoreMove", shareCoreMove);
+
+				setText("shareCardTodayRead", cleanShareSentence(todayRead));
+				setText("shareCardRealLife", shareRealLifeText);
 				setText(
 					"shareCardMotionStyle",
 					harmonicText(motionStyle || "—")
 				);
 				setText("shareCardDriverNote", driverNote);
-				setText("shareCardGoodMove", goodMove);
+				setText("shareCardGoodMove", shareGoodMove);
 				setText("shareCardReturn", returnText);
 
 				updateRegulationSupportsUI(regulationSupports);
@@ -12532,56 +13932,80 @@
 
 			function getShareText() {
 				const supports = latestSharePayload.regulationSupports || {};
-				const tryFirstItems = getShortTryFirstItems(supports, 3);
-				const avoidItems = getShortAvoidItems(supports, 3);
+				const tryFirstItems = getUniqueShareItems(
+					getShortTryFirstItems(supports, 3),
+					3
+				);
+				const avoidItems = getUniqueShareItems(
+					getShortAvoidItems(supports, 3),
+					3
+				);
+				const shareGoodMove = getShareSafeMove(
+					latestSharePayload.goodMove,
+					latestSharePayload.coreRule?.makeMove
+				);
+				const rawCoreMove = cleanShareSentence(
+					latestSharePayload.coreRule?.makeMove,
+					"Choose the cleanest next action."
+				);
+				const shareCoreMove = isShareDuplicate(rawCoreMove, shareGoodMove)
+					? "Keep the move small, clean, and proportional."
+					: rawCoreMove;
+				const includeOneGoodMove = !isShareDuplicate(
+					shareCoreMove,
+					shareGoodMove
+				);
 
 				const lines = [
 					"Lucy.OS Pro",
 					"",
 					"Today’s System Weather:",
-					latestSharePayload.systemWeather ||
-						"Structured signal architecture meeting a live field",
+					cleanShareSentence(
+						latestSharePayload.systemWeather,
+						"Structured signal architecture meeting a live field"
+					),
 					"",
 					"Current Field Direction:",
-					latestSharePayload.fieldDirectionTitle || "—",
-					latestSharePayload.fieldDirectionText ||
-						"Waiting for field direction.",
+					cleanShareSentence(latestSharePayload.fieldDirectionTitle, "—"),
+					cleanShareSentence(
+						latestSharePayload.fieldDirectionText,
+						"Waiting for field direction."
+					),
 					"",
 					"Core Rule:",
-					`Use your gift: ${
-						latestSharePayload.coreRule?.useGift ||
+					`Use your gift: ${cleanShareSentence(
+						latestSharePayload.coreRule?.useGift,
 						"Use your gift cleanly."
-					}`,
-					`Watch the distortion: ${
-						latestSharePayload.coreRule?.watchDistortion ||
+					)}`,
+					`Watch the distortion: ${cleanShareSentence(
+						latestSharePayload.coreRule?.watchDistortion,
 						"Watch the distortion before responding."
-					}`,
-					`Make the move: ${
-						latestSharePayload.coreRule?.makeMove ||
-						latestSharePayload.goodMove ||
-						"Choose one clear next move."
-					}`,
+					)}`,
+					`Make the move: ${shareCoreMove}`,
 				];
 
 				if (latestSharePayload.moonstampModifier?.hasMoonstamp) {
 					lines.push(
 						"",
 						"Moonstamp Modifier:",
-						latestSharePayload.moonstampModifier.title ||
+						cleanShareSentence(
+							latestSharePayload.moonstampModifier.title,
 							"Lunar timing modifier"
+						)
 					);
 
-					const moonText =
+					const moonText = cleanShareSentence(
 						latestSharePayload.moonstampModifier.shareLine ||
-						latestSharePayload.moonstampModifier.text ||
-						"The lunar field adds timing texture to today’s read.";
+							latestSharePayload.moonstampModifier.text,
+						"The lunar field adds timing texture to today’s read."
+					);
 					if (moonText) lines.push(moonText);
 				}
 
 				lines.push(
 					"",
 					"Regulation Supports:",
-					`State: ${supports.state || "—"}`,
+					`State: ${cleanShareSentence(supports.state, "—")}`,
 					`Best Support Today: ${buildShortSupportQuality(supports) || "—"}`,
 					"",
 					"Try First:",
@@ -12597,16 +14021,25 @@
 					)
 				);
 
+				const todayRead = cleanShareSentence(
+					latestSharePayload.todayRead,
+					"Waiting for daily read."
+				);
+				if (!isShareDuplicate(todayRead, shareGoodMove)) {
+					lines.push("", "Today’s Read:", todayRead);
+				}
+
+				if (includeOneGoodMove) {
+					lines.push("", "One Good Move:", shareGoodMove);
+				}
+
 				lines.push(
 					"",
-					"Today’s Read:",
-					latestSharePayload.todayRead || "Waiting for daily read.",
-					"",
-					"One Good Move:",
-					latestSharePayload.goodMove || "Choose one clear next move.",
-					"",
 					"Return Path:",
-					latestSharePayload.returnText || "Return to your own center first.",
+					cleanShareSentence(
+						latestSharePayload.returnText,
+						"Return to your own center first."
+					),
 					"",
 					"Personal field guidance · Lucy.OS Pro"
 				);
@@ -12933,6 +14366,17 @@
 					repairSignature >= 1.05 ||
 					(tPluto >= 0.68 && tSaturn >= 0.55);
 
+				const venusRelationalSupport =
+					tVenus >= 0.42 &&
+					relationalSignature >= 0.56 &&
+					!repairGate &&
+					(
+						forecastState.includes("mobilized") ||
+						currentLoad >= 0.45 ||
+						currentStrain >= 0.45 ||
+						tMoon >= 0.45
+					);
+
 				addScore(fieldScores, "Structured", structuredSignature);
 				addScore(fieldScores, "Contained", containmentSignature);
 				addScore(
@@ -12941,6 +14385,9 @@
 					activationSignature + currentStrain * 0.14
 				);
 				addScore(fieldScores, "Relational", relationalSignature);
+				if (venusRelationalSupport) {
+					addScore(fieldScores, "Relational", 0.18);
+				}
 				addScore(fieldScores, "Threshold", thresholdSignature);
 				addScore(
 					fieldScores,
@@ -13067,6 +14514,26 @@
 					todayField = "Reconstructive";
 				}
 
+				const relationalScore = safeNum(
+					normalizedFieldScores.Relational
+				);
+				const selectedScoreAfterRepair = safeNum(
+					normalizedFieldScores[todayField]
+				);
+				const venusRelationalCloseCall =
+					!repairGate &&
+					todayField !== "Reconstructive" &&
+					tVenus >= 0.32 &&
+					relationalSignature >= 0.42 &&
+					relationalScore > 0 &&
+					selectedScoreAfterRepair > 0 &&
+					selectedScoreAfterRepair - relationalScore <= 0.06 &&
+					relationalScore >= selectedScoreAfterRepair * 0.72;
+
+				if (venusRelationalSupport || venusRelationalCloseCall) {
+					todayField = "Relational";
+				}
+
 				const topCandidates = getTopFieldCandidates(
 					normalizedFieldScores,
 					3
@@ -13081,6 +14548,12 @@
 						const selectedCandidate = topCandidates[selectedIndex];
 						topCandidates.splice(selectedIndex, 1);
 						topCandidates.unshift(selectedCandidate);
+					} else if (selectedIndex === -1) {
+						topCandidates.unshift({
+							field: todayField,
+							score: safeNum(normalizedFieldScores[todayField]),
+						});
+						topCandidates.length = Math.min(topCandidates.length, 3);
 					}
 				}
 
@@ -13091,6 +14564,8 @@
 					fieldWeights,
 					normalizedFieldScores,
 					repairGate,
+					venusRelationalSupport,
+					venusRelationalCloseCall,
 					repairSignature,
 					wideFieldSignature,
 					activationSignature,
@@ -13989,12 +15464,7 @@
 					quality: quality || supports.quality,
 					tryFirstItems,
 					avoidItems,
-					snapshotSupport:
-						getFieldCalibratedElectricalMove(
-							supports.snapshotSupport,
-							helper,
-							profile
-						) || supports.snapshotSupport,
+					snapshotSupport: quality || supports.snapshotSupport,
 					why: appendElectricalSentence(supports.why, helper.why),
 				};
 			}
@@ -14114,6 +15584,8 @@
 					loadBand: loadBandFromValue(data?.state?.amplifiedLoad),
 				});
 
+				updateTopLiveFieldStrip(data, harmonics, guidance);
+
 				setHTML("systemWeatherLine", systemWeatherHTML);
 				setHTML(
 					"pairingExplain",
@@ -14124,6 +15596,7 @@
 
 				updateInteractionMap(primaryMeta.label, fieldMeta.label);
 				updateFieldUndertoneUI(fieldUndertone);
+				updateRootPatternExplainer(primaryMeta.label, fieldMeta.label);
 
 				setHTML("topMotionStyle", motionStyleLabel);
 				setText("topMotionStyleRead", motionStyleRead);
@@ -14163,6 +15636,16 @@
 					`${distortionState.short}. ${distortionState.plain}`
 				);
 				setText("harmonicPlainRead", primaryMeta.plainRead);
+				updateYouArchitectureExplanations({
+					primary: primaryMeta.label,
+					support: harmonics.support || supportMeta.label,
+					profileTranslation: stableProfileLabel,
+					motionStyle: harmonics.motionStyle || "Steady",
+					distortion: distortionMeta.label,
+					distortionState,
+					signalQuality: primaryMeta.signalQuality,
+					todayField: fieldMeta.label,
+				});
 
 				setHTML(
 					"profileStateChip",
@@ -14940,6 +16423,71 @@
 				return results;
 			}
 
+			function initLucyAppTabs() {
+				const tabs = Array.from(
+					document.querySelectorAll(
+						".lucyAppTabs a[href^='#']"
+					)
+				);
+				if (!tabs.length) return;
+
+				const tabTargets = tabs
+					.map((tab) => {
+						const id = tab.getAttribute("href").replace("#", "");
+						const target = document.getElementById(id);
+						return { tab, target };
+					})
+					.filter((item) => item.target);
+
+				if (!tabTargets.length) return;
+
+				function setActiveTab(activeTab) {
+					tabs.forEach((tab) =>
+						tab.classList.toggle("active", tab === activeTab)
+					);
+				}
+
+				function updateActiveTab() {
+					const offset = window.innerWidth < 821 ? 120 : 90;
+					let current = tabTargets[0];
+
+					tabTargets.forEach((item) => {
+						const rect = item.target.getBoundingClientRect();
+						if (rect.top <= offset) {
+							current = item;
+						}
+					});
+
+					setActiveTab(current.tab);
+				}
+
+				tabs.forEach((tab) => {
+					tab.addEventListener("click", () => {
+						setActiveTab(tab);
+					});
+				});
+
+				let ticking = false;
+				window.addEventListener(
+					"scroll",
+					() => {
+						if (ticking) return;
+						ticking = true;
+						window.requestAnimationFrame(() => {
+							updateActiveTab();
+							ticking = false;
+						});
+					},
+					{ passive: true }
+				);
+
+				window.addEventListener("resize", updateActiveTab, {
+					passive: true,
+				});
+
+				updateActiveTab();
+			}
+
 			window.runSyntheticHarmonicBalanceTest =
 				runSyntheticHarmonicBalanceTest;
 			window.runAstrologyCalibrationTest = runAstrologyCalibrationTest;
@@ -14951,10 +16499,14 @@
 			window.buildProfileAwareEnglishRead = buildProfileAwareEnglishRead;
 			window.getFieldUndertone = getFieldUndertone;
 			window.buildFieldUndertoneText = buildFieldUndertoneText;
+			window.buildSuggestedSoundSupport = buildSuggestedSoundSupport;
 			window.buildRegulationSupports = buildRegulationSupports;
 			window.buildLiveFieldDashboardMetrics =
 				buildLiveFieldDashboardMetrics;
 			window.updateLiveFieldDashboardUI = updateLiveFieldDashboardUI;
+			window.buildTopLiveFieldDriverLine = buildTopLiveFieldDriverLine;
+			window.buildTopLiveFieldMove = buildTopLiveFieldMove;
+			window.updateTopLiveFieldStrip = updateTopLiveFieldStrip;
 			window.buildLiveDashboardDayType = buildLiveDashboardDayType;
 			window.buildMobileSnapshotSupport = buildMobileSnapshotSupport;
 			window.updateMobileReadSnapshot = updateMobileReadSnapshot;
@@ -14996,6 +16548,8 @@
 			document.getElementById("tob").value = "6:20";
 			document.getElementById("ampm").value = "AM";
 			document.getElementById("location").value = "Cuero, TX";
+
+			initLucyAppTabs();
 
 			setTechnicalDetailsDefault();
 			renderHarmonicLibrary();
