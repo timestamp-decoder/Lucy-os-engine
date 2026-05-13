@@ -27,6 +27,7 @@
 <!-- Top live field driver sentence binding fix: changed the top public driver line to field-first language so raw pressure drivers no longer appear as the selected field leader. Copy-binding only; no API, backend, scoring, selected-field logic, Venus override, repairGate, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, Root Avatar, or result meanings changed. -->
 <!-- First Read Guide restore update: restored a static first-read orientation guide near the top of the result flow. UI/copy only; no API, backend, engine, scoring, selected-field logic, Venus override, repairGate, Field Undertone thresholds, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, Root Avatar, or result meanings changed. -->
 <!-- First Read Guide position move update: moved the existing First Read Guide directly below Today’s Read Snapshot / top read result area and before Today’s Live Field. DOM-order/UI placement only; no API, backend, engine, scoring, selected-field logic, Venus override, repairGate, Field Undertone thresholds, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, Root Avatar, JavaScript logic, or result meanings changed. -->
+<!-- Mobile result flow reorder update: moved existing First Read Guide and Today’s Read Snapshot below the input / saved profiles / Calculate area, so the top flow reads Header → Input → First Read Guide → Today’s Read Snapshot → Today’s Live Field. DOM-order/UI placement only; no API, backend, engine, scoring, selected-field logic, Venus override, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, dashboard scores, mobile nav behavior, Root Avatar, JavaScript logic, or result meanings changed. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -412,6 +413,21 @@
 				width: 100%;
 				max-width: 100%;
 				min-width: 0;
+			}
+
+			.grid > .firstReadGuideCard {
+				grid-column: 2;
+				grid-row: 1;
+			}
+
+			.grid > .mobileReadSnapshot {
+				grid-column: 2;
+				grid-row: 2;
+			}
+
+			.grid > .mainStack {
+				grid-column: 2;
+				grid-row: 3;
 			}
 
 			.panel {
@@ -5548,6 +5564,13 @@
 					grid-template-columns: minmax(0, 1fr);
 				}
 
+				.grid > .firstReadGuideCard,
+				.grid > .mobileReadSnapshot,
+				.grid > .mainStack {
+					grid-column: 1;
+					grid-row: auto;
+				}
+
 				.inputPanel {
 					position: static;
 				}
@@ -6287,61 +6310,8 @@
 				<a href="#youSection">You</a>
 			</nav>
 
-			<section class="mobileReadSnapshot" id="mobileReadSnapshot">
-				<div class="mobileSnapshotKicker">TODAY’S READ SNAPSHOT</div>
-				<div class="mobileSnapshotWeather" id="mobileSnapshotWeather">
-					Waiting for field read.
-				</div>
-				<div class="mobileSnapshotText" id="mobileSnapshotText">
-					Calculate to see today’s practical read.
-				</div>
-
-				<div class="mobileSnapshotGrid">
-					<div>
-						<span>One Good Move</span>
-						<strong id="mobileSnapshotMove">—</strong>
-					</div>
-					<div>
-						<span>Do Not Overdo</span>
-						<strong id="mobileSnapshotAvoid">—</strong>
-					</div>
-					<div>
-						<span>Regulation Support</span>
-						<strong id="mobileSnapshotSupport">—</strong>
-					</div>
-				</div>
-
-				<div class="mobileSnapshotMeta" id="mobileSnapshotMeta">
-					State: — · Field: — · Load: —
-				</div>
-			</section>
 
 
-			<section class="firstReadGuideCard" id="firstReadGuide">
-				<div class="firstReadGuideKicker">FIRST READ GUIDE</div>
-				<div class="firstReadGuideTitle">How to read today’s result</div>
-				<div class="firstReadGuideText">
-					Start with the shared field, then read how it lands in your pattern. Use the Plain Read for the cleanest next move, and use Regulation Supports when the field feels loud.
-				</div>
-				<div class="firstReadGuideSteps">
-					<div class="firstReadGuideStep">
-						<span>1 · Field</span>
-						<strong>What is the shared atmosphere today?</strong>
-					</div>
-					<div class="firstReadGuideStep">
-						<span>2 · Landing</span>
-						<strong>How does that field hit this chart or pattern?</strong>
-					</div>
-					<div class="firstReadGuideStep">
-						<span>3 · Move</span>
-						<strong>What is the smallest clean action?</strong>
-					</div>
-					<div class="firstReadGuideStep">
-						<span>4 · Support</span>
-						<strong>What helps the system return to coherence?</strong>
-					</div>
-				</div>
-			</section>
 
 
 			<div class="grid">
@@ -6451,6 +6421,63 @@
 						</div>
 					</details>
 				</div>
+
+
+				<section class="firstReadGuideCard" id="firstReadGuide">
+					<div class="firstReadGuideKicker">FIRST READ GUIDE</div>
+					<div class="firstReadGuideTitle">How to read today’s result</div>
+					<div class="firstReadGuideText">
+						Start with the shared field, then read how it lands in your pattern. Use the Plain Read for the cleanest next move, and use Regulation Supports when the field feels loud.
+					</div>
+					<div class="firstReadGuideSteps">
+						<div class="firstReadGuideStep">
+							<span>1 · Field</span>
+							<strong>What is the shared atmosphere today?</strong>
+						</div>
+						<div class="firstReadGuideStep">
+							<span>2 · Landing</span>
+							<strong>How does that field hit this chart or pattern?</strong>
+						</div>
+						<div class="firstReadGuideStep">
+							<span>3 · Move</span>
+							<strong>What is the smallest clean action?</strong>
+						</div>
+						<div class="firstReadGuideStep">
+							<span>4 · Support</span>
+							<strong>What helps the system return to coherence?</strong>
+						</div>
+					</div>
+				</section>
+
+
+				<section class="mobileReadSnapshot" id="mobileReadSnapshot">
+					<div class="mobileSnapshotKicker">TODAY’S READ SNAPSHOT</div>
+					<div class="mobileSnapshotWeather" id="mobileSnapshotWeather">
+						Waiting for field read.
+					</div>
+					<div class="mobileSnapshotText" id="mobileSnapshotText">
+						Calculate to see today’s practical read.
+					</div>
+
+					<div class="mobileSnapshotGrid">
+						<div>
+							<span>One Good Move</span>
+							<strong id="mobileSnapshotMove">—</strong>
+						</div>
+						<div>
+							<span>Do Not Overdo</span>
+							<strong id="mobileSnapshotAvoid">—</strong>
+						</div>
+						<div>
+							<span>Regulation Support</span>
+							<strong id="mobileSnapshotSupport">—</strong>
+						</div>
+					</div>
+
+					<div class="mobileSnapshotMeta" id="mobileSnapshotMeta">
+						State: — · Field: — · Load: —
+					</div>
+				</section>
 
 				<div class="mainStack">
 
