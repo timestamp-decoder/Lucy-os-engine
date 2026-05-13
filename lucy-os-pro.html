@@ -22,6 +22,7 @@
 <!-- Pass 18 update: expanded You destination personal architecture cards with compact plain-English meaning lines only. Display-only helper copy uses existing selected values; no API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, mobile nav behavior, or calibration-test behavior changed. -->
 <!-- Pass 19 update: added Suggested Sound Support card inside Support destination only. Display-only sensory support language uses existing selected values; no API, backend, engine, scoring, routing, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, mobile nav behavior, or calibration-test behavior changed. -->
 <!-- Field engine restore update: restored old working Venus / Relational field-selection behavior from lucy-os-pro-venus-relational-field-support-v2.html into this polished file. UI, CSS, API payload, backend behavior, saved profiles, share export, mobile nav, root avatar UI, support cards, Moonstamp display, and updateUI unchanged. -->
+<!-- Field calibration fix update: added narrow Venus / Relational soft-support and final override calibration so live Relational signal can surface when Venus is active but not dominant. UI, CSS, API payload, backend behavior, saved profiles, share export, mobile nav, root avatar UI, support cards, Moonstamp display, and updateUI unchanged. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -6132,6 +6133,7 @@
 				<h1>Lucy.OS Pro</h1>
 				<p>Full personal field guidance inside the live timing field</p>
 			</div>
+
 
 			<nav class="lucyAppTabs" aria-label="Lucy.OS app navigation">
 				<a href="#inputSection">Input</a>
@@ -14377,6 +14379,17 @@
 						tMoon >= 0.45
 					);
 
+				const venusRelationalSoftSupport =
+					tVenus >= 0.22 &&
+					relationalSignature >= 0.2 &&
+					!repairGate &&
+					(
+						forecastState.includes("mobilized") ||
+						currentLoad >= 0.45 ||
+						currentStrain >= 0.45 ||
+						tMoon >= 0.2
+					);
+
 				addScore(fieldScores, "Structured", structuredSignature);
 				addScore(fieldScores, "Contained", containmentSignature);
 				addScore(
@@ -14387,6 +14400,8 @@
 				addScore(fieldScores, "Relational", relationalSignature);
 				if (venusRelationalSupport) {
 					addScore(fieldScores, "Relational", 0.18);
+				} else if (venusRelationalSoftSupport) {
+					addScore(fieldScores, "Relational", 0.12);
 				}
 				addScore(fieldScores, "Threshold", thresholdSignature);
 				addScore(
@@ -14523,14 +14538,28 @@
 				const venusRelationalCloseCall =
 					!repairGate &&
 					todayField !== "Reconstructive" &&
-					tVenus >= 0.32 &&
-					relationalSignature >= 0.42 &&
+					tVenus >= 0.22 &&
+					relationalSignature >= 0.2 &&
 					relationalScore > 0 &&
 					selectedScoreAfterRepair > 0 &&
-					selectedScoreAfterRepair - relationalScore <= 0.06 &&
-					relationalScore >= selectedScoreAfterRepair * 0.72;
+					selectedScoreAfterRepair - relationalScore <= 0.08 &&
+					relationalScore >= selectedScoreAfterRepair * 0.62;
 
-				if (venusRelationalSupport || venusRelationalCloseCall) {
+				const venusRelationalOverride =
+					venusRelationalSoftSupport &&
+					todayField !== "Reconstructive" &&
+					(
+						todayField === "Integrative" ||
+						todayField === "Diffused" ||
+						todayField === "Regulated" ||
+						relationalScore >= selectedScoreAfterRepair * 0.52
+					);
+
+				if (
+					venusRelationalSupport ||
+					venusRelationalCloseCall ||
+					venusRelationalOverride
+				) {
 					todayField = "Relational";
 				}
 
@@ -14565,7 +14594,9 @@
 					normalizedFieldScores,
 					repairGate,
 					venusRelationalSupport,
+					venusRelationalSoftSupport,
 					venusRelationalCloseCall,
+					venusRelationalOverride,
 					repairSignature,
 					wideFieldSignature,
 					activationSignature,
