@@ -30,6 +30,7 @@
 <!-- Pass 26 update: added compact Root Pattern Avatar card inside the You destination only. Display-only visual profile instrument uses existing root, field, and load/strain values; no API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, IDs, button listeners, mobile nav behavior, updateUI, result meanings, or calibration-test behavior changed. -->
 <!-- Pass 27 update: refined Root Avatar landing-line helper with root + field specific copy only. No visual/card sizing, API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, IDs, button listeners, mobile nav behavior, updateUI, result meanings, or calibration-test behavior changed. -->
 <!-- Pass 24 update: removed duplicated “You are viewing” label inside the You destination and tightened the root pattern card entry only. No API, backend, engine, scoring, routing, Moonstamp, Electrical Mapping, saved profiles, share export, IDs, button listeners, updateUI, result meanings, mobile nav behavior, or calibration-test behavior changed. -->
+<!-- Pass 28 update: added Venus relational field support calibration only. When transit Venus is meaningfully active with relational field support, Relational can surface as the selected field instead of being buried by generic mobilization/load. Field Undertone thresholds, repairGate, Reconstructive weighting, API payload, backend behavior, Moonstamp, Electrical Mapping, saved profiles, share export, mobile nav, IDs, button listeners, updateUI, and result display structure unchanged. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -15498,6 +15499,17 @@
 					repairSignature >= 1.05 ||
 					(tPluto >= 0.68 && tSaturn >= 0.55);
 
+				const venusRelationalSupport =
+					tVenus >= 0.42 &&
+					relationalSignature >= 0.56 &&
+					!repairGate &&
+					(
+						forecastState.includes("mobilized") ||
+						currentLoad >= 0.45 ||
+						currentStrain >= 0.45 ||
+						tMoon >= 0.45
+					);
+
 				addScore(fieldScores, "Structured", structuredSignature);
 				addScore(fieldScores, "Contained", containmentSignature);
 				addScore(
@@ -15506,6 +15518,9 @@
 					activationSignature + currentStrain * 0.14
 				);
 				addScore(fieldScores, "Relational", relationalSignature);
+				if (venusRelationalSupport) {
+					addScore(fieldScores, "Relational", 0.18);
+				}
 				addScore(fieldScores, "Threshold", thresholdSignature);
 				addScore(
 					fieldScores,
@@ -15656,6 +15671,7 @@
 					fieldWeights,
 					normalizedFieldScores,
 					repairGate,
+					venusRelationalSupport,
 					repairSignature,
 					wideFieldSignature,
 					activationSignature,
@@ -17397,6 +17413,26 @@
 						},
 					},
 					{
+						name: "Venus Relational Support Can Surface Relational Field",
+						expectedField: ["Relational"],
+						build: () => {
+							const data = baseData();
+							data.state.strain = 0.55;
+							data.state.amplifiedLoad = 0.62;
+							data.state.regulation = 0.44;
+							data.planetary.transitVenus = 0.48;
+							data.planetary.transitMoon = 0.62;
+							data.planetary.transitMars = 0.3;
+							data.planetary.transitUranus = 0.25;
+							data.planetary.transitJupiter = 0.35;
+							data.planetary.transitSaturn = 0.42;
+							data.planetary.transitMercury = 0.35;
+							data.planetary.transitPluto = 0.25;
+							data.forecast.now.state = "Mobilized";
+							return data;
+						},
+					},
+					{
 						name: "Close Relational / Reconstructive Scores Should Show Undertone",
 						expectedField: ["Relational", "Reconstructive"],
 						expectedUndertoneActive: true,
@@ -17498,6 +17534,8 @@
 							result.dailyFieldDebug?.wideFieldSignature,
 						relationalSignature:
 							result.dailyFieldDebug?.relationalSignature,
+						venusRelationalSupport:
+							result.dailyFieldDebug?.venusRelationalSupport,
 						regulationSupportState: regulationSupports.state,
 						regulationSupportQuality: regulationSupports.quality,
 						regulationSupportTry: regulationSupports.tryItems,
