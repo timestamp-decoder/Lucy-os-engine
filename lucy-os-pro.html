@@ -1026,11 +1026,12 @@ function calculateHarmonics(data) {
     document.getElementById("saveShareCardBtn").addEventListener("click",saveShareCard);
     document.getElementById("copyShareTextBtn").addEventListener("click",copyShareText);
 
-    document.getElementById("dob").value="1992-04-18";
-    document.getElementById("tob").value="9:15";
+    // Public Lite should not auto-run a demo chart.
+    // Leave inputs empty so users do not mistake the sample chart for their own field.
+    document.getElementById("dob").value="";
+    document.getElementById("tob").value="";
     document.getElementById("ampm").value="AM";
-    document.getElementById("location").value="Portland, OR";
-    calculate();
+    document.getElementById("location").value="";
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
