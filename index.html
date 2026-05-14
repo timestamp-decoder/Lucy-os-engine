@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<!-- Lucy.OS Lite aligned to current Pro field resolver. -->
-<!-- Source of truth: uploaded Lucy.OS Pro file, mobile result flow reorder build. -->
-<!-- Lite UI remains simplified; field calculation now uses Pro-aligned calculateHarmonics, Venus/Relational soft support, repairGate protection, Field Undertone logic, and pressure-vs-field driver language. -->
+<!-- Lucy.OS Lite — sample preview and Lite clarity pass. -->
+<!-- Source of truth: uploaded Lucy.OS Lite file. -->
+<!-- Lite UI remains simplified: field + basic pattern + one landing sentence + one good move. -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -136,6 +136,23 @@
     .shareActions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-top:14px;}
     .shareStatus{min-height:18px;margin-top:10px;color:var(--blue);font-size:12px;font-weight:800;line-height:1.4;overflow-wrap:break-word;}
 
+
+    .samplePreviewCard{margin-top:16px;position:relative;width:100%;max-width:100%;min-width:0;overflow:hidden;border:1px solid rgba(79,142,164,.24);border-radius:18px;padding:16px;color:var(--card-text);background:radial-gradient(circle at 88% 8%, rgba(103,193,255,.12), transparent 28%),linear-gradient(180deg,#FFFFFF 0%,#F1F5F8 52%,#E6EDF2 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.86),inset 0 -1px 0 rgba(0,0,0,.035),0 12px 28px rgba(0,0,0,.12);isolation:isolate;contain:paint;}
+    .samplePreviewCard::before{content:"";position:absolute;inset:1px;pointer-events:none;border-radius:17px;border:1px solid rgba(120,210,230,.16);box-shadow:inset 1px 0 0 rgba(103,193,255,.05),inset -1px 0 0 rgba(141,132,199,.05);z-index:0;}
+    .samplePreviewCard>*{position:relative;z-index:1;}
+    .samplePreviewCard[hidden]{display:none;}
+    .sampleKicker{margin:0 0 8px;color:var(--blueDeep);font-size:10px;font-weight:950;letter-spacing:.13em;text-transform:uppercase;}
+    .samplePreviewCard h2{margin:0;color:var(--card-text);font-size:18px;line-height:1.2;}
+    .sampleSubtitle{margin:6px 0 0;color:var(--card-muted);font-size:12px;line-height:1.45;}
+    .samplePreviewGrid{display:grid;gap:10px;margin-top:14px;}
+    .samplePreviewBlock{border:1px solid var(--card-border);border-radius:14px;padding:12px;background:#FFFFFF;box-shadow:inset 0 1px 0 rgba(255,255,255,.76),inset 0 -1px 0 rgba(0,0,0,.025);}
+    .samplePreviewLabel{color:var(--card-muted);font-size:10px;font-weight:950;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;}
+    .samplePreviewValue{color:var(--card-text);font-size:13px;line-height:1.48;font-weight:700;}
+    .samplePreviewValue strong{color:var(--gold);font-weight:950;}
+    .liteResultUpsell{margin-top:14px;border:1px solid rgba(79,142,164,.20);border-radius:14px;padding:12px;background:#FFFFFF;color:var(--card-muted);font-size:12px;line-height:1.55;font-weight:750;}
+    .liteResultUpsell strong{color:var(--blueDeep);}
+    .liteErrorText{color:var(--red)!important;}
+
     @media (max-width:1120px){.grid{grid-template-columns:minmax(0,1fr);}.inputPanel{position:static;}.guidanceGrid,.plainMeaningGrid,.liteSummaryGrid,.proPreviewGrid{grid-template-columns:minmax(0,1fr);}.shareIntro{display:grid;}.shareIntroChips{justify-content:flex-start;min-width:0;}}
     @media (max-width:720px){.wrap{padding:12px 14px 18px;}.hero{margin-bottom:12px;padding:15px 14px 13px;border-radius:16px;}.hero h1{font-size:30px;}.hero p{font-size:12px;}.lucy-lite-banner{height:132px;border-radius:16px;margin-bottom:12px;}.liteIntroCard,.panel,.premiumCard,.howUseCard,.plainMeaningCard,.liteWhyCard,.liteSummaryCard,.nodeCard,.proPreviewCard,.upgradeCard,.shareSection{border-radius:16px;padding:16px;}.liteIntroTitle{font-size:23px;}.weatherLine{font-size:29px;line-height:1.03;}.todayRead{font-size:15px;line-height:1.62;}.todayOutlookLine{border-radius:14px;}.plainMeaningMain{font-size:20px;}.liteSummaryHeader{display:grid;}.shareCardInner{padding:22px;}.shareCardTop{display:grid;gap:8px;}.shareCardWeather{font-size:34px;}.shareCardRead{font-size:15px;}.shareCardPlainLine{font-size:18px;}.shareActions{grid-template-columns:minmax(0,1fr);}}
   </style>
@@ -169,6 +186,30 @@
         <button id="calcBtn">Calculate</button>
         <div class="tiny">Birth details help Lucy.OS personalize the simple daily read.</div>
         <div class="routeTiny">Lite gives the simple daily read. Pro opens the deeper personal operating manual.</div>
+
+        <section class="samplePreviewCard" id="samplePreviewCard" aria-label="Sample Lucy.OS Read">
+          <p class="sampleKicker">Sample preview</p>
+          <h2>Sample Lucy.OS Read</h2>
+          <p class="sampleSubtitle">Preview only — enter your birth details above for your personal result.</p>
+          <div class="samplePreviewGrid">
+            <div class="samplePreviewBlock">
+              <div class="samplePreviewLabel">Today’s Field</div>
+              <div class="samplePreviewValue"><strong>Relational Field</strong><br>Contact, tone, response, and repair may be more active today.</div>
+            </div>
+            <div class="samplePreviewBlock">
+              <div class="samplePreviewLabel">Your Basic Pattern</div>
+              <div class="samplePreviewValue"><strong>Structured Pattern</strong><br>You may stabilize pressure by giving it shape, order, or a simple frame.</div>
+            </div>
+            <div class="samplePreviewBlock">
+              <div class="samplePreviewLabel">How They Meet</div>
+              <div class="samplePreviewValue"><strong>Structured pattern meeting a Relational field.</strong><br>You may want to organize the room before the signal is fully clear.</div>
+            </div>
+            <div class="samplePreviewBlock">
+              <div class="samplePreviewLabel">One Good Move</div>
+              <div class="samplePreviewValue">Name what needs attention, then keep the response simple and kind.</div>
+            </div>
+          </div>
+        </section>
       </div>
 
       <div class="mainStack">
@@ -179,97 +220,89 @@
           <div class="liteIntroRule"><strong>Simple split:</strong> Lite gives the simple daily read. Pro gives the deeper personal operating manual.</div>
         </section>
 
-        <section class="premiumCard">
+        <section class="premiumCard" id="liteResultCard">
           <div class="cardContent">
-            <p class="kicker">Today’s System Weather</p>
-            <h2 class="weatherLine" id="systemWeatherLine">Your pattern meeting today’s field</h2>
-            <p class="todayRead" id="dailyTodayRead">Waiting for chart calculation. Lucy.OS Lite will translate today’s field into one practical read.</p>
+            <p class="kicker">Personal Lite Result</p>
+            <h2 class="weatherLine" id="systemWeatherLine">Your result will appear here</h2>
+            <p class="todayRead" id="dailyTodayRead">Enter your birth details and calculate to replace the sample preview with your personal Lite read.</p>
             <div class="guidanceGrid">
-              <div class="guidanceBlock"><div class="guidanceLabel">What to lean into</div><div class="guidanceText" id="dailyLeanInto">—</div></div>
-              <div class="guidanceBlock"><div class="guidanceLabel">What to watch for</div><div class="guidanceText" id="dailyWatchFor">—</div></div>
-              <div class="guidanceBlock full"><div class="guidanceLabel">One Good Move</div><div class="guidanceText" id="dailyGoodMove">—</div></div>
-              <div class="guidanceBlock full"><div class="guidanceLabel">Return to yourself by</div><div class="guidanceText" id="dailyReturn">—</div></div>
+              <div class="guidanceBlock">
+                <div class="guidanceLabel">Today’s Field</div>
+                <div class="guidanceText" id="liteFieldValue">—</div>
+              </div>
+              <div class="guidanceBlock">
+                <div class="guidanceLabel">Your Basic Pattern</div>
+                <div class="guidanceText" id="litePatternValue">—</div>
+              </div>
+              <div class="guidanceBlock full">
+                <div class="guidanceLabel">How They Meet</div>
+                <div class="guidanceText" id="liteLandingValue">—</div>
+              </div>
+              <div class="guidanceBlock full">
+                <div class="guidanceLabel">One Good Move</div>
+                <div class="guidanceText" id="dailyGoodMove">—</div>
+              </div>
             </div>
-            <div class="todayOutlookLine" id="todayOutlookLine">Current Outlook: <span>Trend: —</span> · Driver: — · —</div>
+            <div class="liteResultUpsell" id="liteProUpsellLine"><strong>Lite gives you the field and one clean move.</strong> Pro shows why it fits your chart, what pressure is underneath, what to watch, and how to regulate it.</div>
+            <div id="todayOutlookLine" class="routeTiny">Status: waiting for your personal read.</div>
           </div>
         </section>
 
         <section class="howUseCard">
           <h2>How to use this read</h2>
-          <p>Start with Today’s System Weather. Then use One Good Move as the practical focus for the day. The goal is not to explain everything — it is to keep today’s field workable.</p>
-        </section>
-
-        <section class="plainMeaningCard">
-          <h2>What This Means Today</h2>
-          <p class="plainMeaningIntro">A plain-language translation of your pattern meeting today’s field.</p>
-          <div class="plainMeaningGrid">
-            <div class="plainMeaningBlock"><div class="plainMeaningLabel">In plain English</div><div class="plainMeaningMain" id="plainEnglishLine">Waiting for plain-English translation.</div></div>
-            <div class="plainMeaningBlock"><div class="plainMeaningLabel">What this means in real life</div><div class="plainMeaningText" id="plainRealLifeText">Waiting for today’s read.</div></div>
-            <div class="plainMeaningBlock full"><div class="plainMeaningLabel">You vs. the day</div><div class="plainMeaningText" id="plainIdentityFieldNote">Your pattern is how your system tends to move. Today’s field is the active pressure around the day. The field is not your whole identity.</div></div>
-          </div>
-          <div class="plainMeaningNote"><strong>Simple rule:</strong> the field is shared, the landing is personal, and the return path is individual.</div>
-        </section>
-
-        <section class="liteWhyCard">
-          <h2>Why Today Feels This Way</h2>
-          <p>Lite keeps the explanation simple: selected field, pressure driver, undertone, Moonstamp modifier, and the practical direction behind the read.</p>
-          <div class="liteWhyText" id="liteWhyTodayText">Waiting for today’s driver note.</div>
-        </section>
-
-        <section class="liteSummaryCard">
-          <div class="liteSummaryHeader">
-            <div><h2>Today’s Simple Summary</h2><p>Your pattern and today’s active field, kept simple for the public/free version.</p></div>
-            <div class="chipRow" style="margin-top:0;"><span class="chip gold" id="liteSummaryStateChip" data-tone-target="true">Pattern: —</span><span class="chip field" id="liteSummaryFieldChip" data-tone-target="true">Field: —</span><span class="chip violet" id="liteSummaryLoadChip">Load: —</span></div>
-          </div>
-          <div class="liteSummaryGrid">
-            <div class="liteSummaryBlock"><div class="liteSummaryLabel">Your Pattern</div><div class="liteSummaryValue harmonicToneText" id="primaryHarmonic">—</div><div class="liteSummaryDesc">The main way your system tends to organize pressure.</div></div>
-            <div class="liteSummaryBlock"><div class="liteSummaryLabel">Today’s Field</div><div class="liteSummaryValue harmonicToneText" id="todayFieldHarmonic">—</div><div class="liteSummaryDesc">The main pressure or support active in today’s read.</div></div>
-            <div class="liteSummaryBlock"><div class="liteSummaryLabel">System Load / Intensity</div><div class="liteSummaryValue" id="systemLoadIntensity">—</div><div class="liteSummaryDesc">Simplified load state from the same API response.</div></div>
-            <div class="liteSummaryBlock"><div class="liteSummaryLabel">Moonstamp Modifier</div><div class="liteSummaryValue" id="moonstampModifier">—</div><div class="liteSummaryDesc">The lunar timing modifier, where available.</div></div>
-            <div class="liteSummaryBlock full"><div class="liteSummaryLabel">Field Undertone</div><div class="guidanceText" id="fieldUndertoneLine">No strong undertone yet.</div></div>
-            <div class="liteSummaryBlock full"><div class="liteSummaryLabel">Plain Read</div><div class="guidanceText" id="harmonicPlainRead">Waiting for profile summary.</div></div>
-          </div>
-        </section>
-
-        <section class="nodeCard">
-          <h2>The 9 Pattern Languages</h2>
-          <p>Lucy.OS uses nine simple pattern languages under the hood to describe how pressure organizes.</p>
-          <div class="nodeGrid"><span class="nodeChip structured">Structured</span><span class="nodeChip contained">Contained</span><span class="nodeChip chaotic">Chaotic</span><span class="nodeChip relational">Relational</span><span class="nodeChip threshold">Threshold</span><span class="nodeChip reconstructive">Reconstructive</span><span class="nodeChip integrative">Integrative</span><span class="nodeChip diffused">Diffused</span><span class="nodeChip regulated">Regulated</span></div>
-        </section>
-
-        <section class="proPreviewCard">
-          <h2>Lite shows the daily layer</h2>
-          <p class="proPreviewIntro">Lucy.OS Lite gives the simple daily read. Lucy.OS Pro expands it into a deeper personal operating manual.</p>
-          <div class="proPreviewGrid">
-            <div class="proPreviewItem"><h3>Your Pattern</h3><p>How your system tends to move, stabilize, and organize pressure.</p></div>
-            <div class="proPreviewItem"><h3>Today’s Field</h3><p>What the day is activating and how it lands against your personal pattern.</p></div>
-            <div class="proPreviewItem"><h3>System Load State</h3><p>Whether the day is calm, active, strained, or carrying too much pressure.</p></div>
-            <div class="proPreviewItem"><h3>Regulation Supports</h3><p>Practical supports for lowering load and keeping the day workable.</p></div>
-            <div class="proPreviewItem"><h3>Why This Read</h3><p>The deeper explanation behind the guidance, without losing the plain-language read.</p></div>
-            <div class="proPreviewItem"><h3>Share Card + Details</h3><p>A stronger share card, deeper timing layers, and optional technical details for Pro users.</p></div>
-          </div>
-          <div class="proPreviewFooter">Lite is the daily read. Pro is the operating manual.</div>
+          <p>Start with Today’s Field, then read Your Basic Pattern and How They Meet. Use One Good Move as the practical focus. Lite is meant to be simple: one field, one landing, one clean move.</p>
         </section>
 
         <section class="upgradeCard">
           <h2>Go deeper with Lucy.OS Pro</h2>
-          <p>Pro expands the simple daily read into your deeper personal pattern, support system, load state, regulation supports, why-this-read layer, share card, and optional technical details.</p>
+          <p>Lite gives you the field and one clean move. Pro shows why it fits your chart, what pressure is underneath, what to watch, and how to regulate it.</p>
           <a class="upgradeButton" href="lucy-os-pro.html">Open Lucy.OS Pro</a>
           <div class="routeTiny">Pro access route will be finalized after checkout is wired.</div>
         </section>
 
         <section class="shareSection">
-          <div class="shareIntro"><div><h2>Share Card</h2><p>Save or copy the daily guidance layer. This card shows the simple field read, not the full Pro system.</p></div><div class="shareIntroChips"><span class="shareChip gold" id="shareBaselineChip" data-tone-target="true">Pattern: —</span><span class="shareChip field" id="shareFieldChip" data-tone-target="true">Field: —</span><span class="shareChip violet" id="shareStateChip">State: —</span></div></div>
+          <div class="shareIntro">
+            <div>
+              <h2>Share Card</h2>
+              <p>Save or copy the Lite guidance layer: today’s field, your basic pattern, how they meet, and one good move.</p>
+            </div>
+            <div class="shareIntroChips">
+              <span class="shareChip gold" id="shareBaselineChip" data-tone-target="true">Pattern: —</span>
+              <span class="shareChip field" id="shareFieldChip" data-tone-target="true">Field: —</span>
+            </div>
+          </div>
           <div class="shareExportFrame">
-            <div id="lucyShareCard" class="shareCard"><div class="shareCardInner">
-              <div class="shareCardTop"><span>Lucy.OS Lite</span><span>Simple Daily Field Read</span></div>
-              <div class="shareCardChips"><span class="shareCardChip gold" id="shareCardBaselineChip" data-tone-target="true">Pattern: —</span><span class="shareCardChip field" id="shareCardFieldChip" data-tone-target="true">Field: —</span><span class="shareCardChip violet" id="shareCardStateChip">State: —</span></div>
-              <div class="shareCardSection"><div class="shareCardLabel">Today’s System Weather</div><div class="shareCardWeather" id="shareCardWeather">Your pattern meeting today’s field</div></div>
-              <div class="shareCardSection"><div class="shareCardLabel">What This Means Today</div><div class="shareCardPlainBox"><div class="shareCardPlainLine" id="shareCardPlainEnglishLine">Waiting for plain-English translation.</div><div class="shareCardRead" id="shareCardPlainRealLifeText">Waiting for today’s read.</div></div></div>
-              <div class="shareCardSection"><div class="shareCardLabel">Today’s Read</div><div class="shareCardRead" id="shareCardTodayRead">Waiting for daily read.</div></div>
-              <div class="shareCardMiniGrid"><div class="shareCardMini"><div class="shareCardLabel">Today’s Driver</div><div class="shareCardRead" id="shareCardDriverNote">Waiting for driver note.</div></div><div class="shareCardMini"><div class="shareCardLabel">One Good Move</div><div class="shareCardRead" id="shareCardGoodMove">—</div></div><div class="shareCardMini"><div class="shareCardLabel">Return to yourself by</div><div class="shareCardRead" id="shareCardReturn">—</div></div></div>
-              <div class="shareFooter">Simple daily field read · Lucy.OS Lite</div>
-            </div></div>
+            <div id="lucyShareCard" class="shareCard">
+              <div class="shareCardInner">
+                <div class="shareCardTop"><span>Lucy.OS Lite</span><span>Field · Landing · One Move</span></div>
+                <div class="shareCardChips">
+                  <span class="shareCardChip gold" id="shareCardBaselineChip" data-tone-target="true">Pattern: —</span>
+                  <span class="shareCardChip field" id="shareCardFieldChip" data-tone-target="true">Field: —</span>
+                </div>
+                <div class="shareCardSection">
+                  <div class="shareCardLabel">How They Meet</div>
+                  <div class="shareCardWeather" id="shareCardWeather">Your pattern meeting today’s field</div>
+                </div>
+                <div class="shareCardSection">
+                  <div class="shareCardLabel">Today’s Field</div>
+                  <div class="shareCardRead" id="shareCardTodayRead">Waiting for daily read.</div>
+                </div>
+                <div class="shareCardSection">
+                  <div class="shareCardLabel">Simple Landing</div>
+                  <div class="shareCardPlainBox">
+                    <div class="shareCardPlainLine" id="shareCardPlainEnglishLine">Waiting for personal landing.</div>
+                    <div class="shareCardRead" id="shareCardPlainRealLifeText">Waiting for today’s read.</div>
+                  </div>
+                </div>
+                <div class="shareCardMiniGrid">
+                  <div class="shareCardMini">
+                    <div class="shareCardLabel">One Good Move</div>
+                    <div class="shareCardRead" id="shareCardGoodMove">—</div>
+                  </div>
+                </div>
+                <div class="shareFooter">Simple daily field read · Lucy.OS Lite</div>
+              </div>
+            </div>
             <div class="shareActions"><button id="saveShareCardBtn" type="button">Save Share Card</button><button id="copyShareTextBtn" type="button">Copy Share Text</button></div>
             <div id="shareStatus" class="shareStatus"></div>
           </div>
@@ -1027,8 +1060,19 @@ function calculateHarmonics(data) {
 
     function buildDriverNote(data,harmonics,fieldTrend,resolvedBinding){const fieldToneDriver=publicDriverName(resolvedBinding?.fieldToneDriver||"");const pressureDriver=publicDriverName(resolvedBinding?.pressureDriver||primaryDriverName(data));const field=resolvedBinding?.selectedField||harmonics?.todayField||"Regulated";const undertone=resolvedBinding?.undertoneField||null;const trend=fieldTrend?.trend||"Stable";let direction="choose one manageable next move.";if(field==="Reconstructive")direction="choose one manageable repair instead of opening the whole system.";else if(field==="Threshold")direction="pause at the edge and choose one clean next step.";else if(field==="Diffused")direction="reduce extra input and look for one simple true line.";else if(field==="Chaotic")direction="give the movement one safe container.";else if(field==="Relational")direction="keep contact clean and responsibility proportional.";else if(field==="Structured")direction="use structure to simplify the next step.";else if(field==="Contained")direction="protect the inner field while naming one small truth.";else if(field==="Integrative")direction="choose the one pattern that actually helps today.";else if(field==="Regulated")direction="keep the pace steady and the load manageable.";const hasFieldTone=resolvedBinding?.fieldToneDriver&&fieldToneDriver!=="The strongest current driver";const hasPressure=resolvedBinding?.pressureDriver&&pressureDriver!=="The strongest current driver";let opening="";if(hasFieldTone&&hasPressure&&fieldToneDriver!==pressureDriver)opening=`${fieldToneDriver} shapes the selected ${field} field. ${pressureDriver} may be the raw pressure driver underneath. `;else if(hasFieldTone)opening=`${fieldToneDriver} shapes the selected ${field} field. `;else if(hasPressure)opening=`${pressureDriver} is the strongest pressure driver today. `;else opening="The strongest current driver is shaping how today’s field lands. ";const undertoneLine=undertone?` ${undertone} is present as a secondary undertone.`:"";const moonLine=buildMoonstampText(data)!=="—"?` Moonstamp: ${buildMoonstampText(data)}.`:"";return `${opening}With a ${field.toLowerCase()} field and a ${trend.toLowerCase()} trend, ${direction}${undertoneLine}${moonLine}`;}
     function formatSystemWeather(primaryLabel,fieldLabel){return `${primaryLabel} pattern meeting a ${fieldLabel} field`;}
-    function updateShareUI(payload){latestSharePayload=payload;setText("shareBaselineChip",`Pattern: ${payload.primary}`);setText("shareFieldChip",`Field: ${payload.field}`);setText("shareStateChip",`State: ${payload.state}`);setText("shareCardBaselineChip",`Pattern: ${payload.primary}`);setText("shareCardFieldChip",`Field: ${payload.field}`);setText("shareCardStateChip",`State: ${payload.state}`);setText("shareCardWeather",payload.systemWeather);setText("shareCardPlainEnglishLine",payload.plainEnglishLine);setText("shareCardPlainRealLifeText",payload.plainRealLifeText);setText("shareCardTodayRead",payload.todayRead);setText("shareCardDriverNote",payload.driverNote);setText("shareCardGoodMove",payload.goodMove);setText("shareCardReturn",payload.returnText);}
-    function getShareText(){return ["Lucy.OS Lite","","Today’s System Weather:",latestSharePayload.systemWeather,"","What This Means Today:",latestSharePayload.plainEnglishLine,latestSharePayload.plainRealLifeText,"","Today’s Read:",latestSharePayload.todayRead,"","Today’s Driver:",latestSharePayload.driverNote,"","One Good Move:",latestSharePayload.goodMove,"","Return to yourself by:",latestSharePayload.returnText,"","Simple daily field read · Lucy.OS Lite"].join("\n");}
+    function updateShareUI(payload){
+      latestSharePayload=payload;
+      setText("shareBaselineChip",`Pattern: ${payload.primary}`);
+      setText("shareFieldChip",`Field: ${payload.field}`);
+      setText("shareCardBaselineChip",`Pattern: ${payload.primary}`);
+      setText("shareCardFieldChip",`Field: ${payload.field}`);
+      setText("shareCardWeather",payload.systemWeather);
+      setText("shareCardPlainEnglishLine",payload.plainEnglishLine);
+      setText("shareCardPlainRealLifeText",payload.plainRealLifeText);
+      setText("shareCardTodayRead",payload.todayRead);
+      setText("shareCardGoodMove",payload.goodMove);
+    }
+    function getShareText(){return ["Lucy.OS Lite","","Today’s Field:",latestSharePayload.todayRead,"","Your Basic Pattern:",latestSharePayload.primary,"","How They Meet:",latestSharePayload.systemWeather,latestSharePayload.plainRealLifeText,"","One Good Move:",latestSharePayload.goodMove,"","Lite gives the field and one clean move."].join("\n");}
     async function copyShareText(){const status=document.getElementById("shareStatus");try{await navigator.clipboard.writeText(getShareText());if(status)status.textContent="Copied share text.";}catch(error){if(status)status.textContent="Copy failed. You can manually select and copy the text.";}}
     async function saveShareCard(){const status=document.getElementById("shareStatus");const card=document.getElementById("lucyShareCard");if(!card){if(status)status.textContent="Share card was not found.";return;}if(typeof html2canvas==="undefined"){if(status)status.textContent="Image exporter did not load. You can still screenshot the card.";return;}try{if(status)status.textContent="Creating image...";const canvas=await html2canvas(card,{backgroundColor:"#F3F5F7",scale:2,useCORS:true,logging:false});canvas.toBlob(blob=>{if(!blob){if(status)status.textContent="Image save failed. You can still screenshot the card.";return;}const url=URL.createObjectURL(blob);const link=document.createElement("a");link.download="lucy-os-lite-share-card.png";link.href=url;document.body.appendChild(link);link.click();document.body.removeChild(link);setTimeout(()=>URL.revokeObjectURL(url),1000);if(status)status.textContent="Saved share card.";},"image/png");}catch(error){console.error("Could not save Lucy.OS Lite share card.",error);if(status)status.textContent="Image save failed. You can still screenshot the card.";}}
 
@@ -1079,45 +1123,49 @@ function calculateHarmonics(data) {
 
     function showLiteEngineDataPathError(details){
       clearHarmonicColorBinding();
+      showSamplePreview();
       const missingText = details?.missing?.length ? details.missing.join(", ") : "none";
       const message = "Lite received API data, but not the planetary weight fields required for field resolution.";
       const diagnostic = `Required fields missing/invalid: ${missingText}. All-zero payload: ${details?.allZero ? "yes" : "no"}. Open the browser console and inspect window.lastLiteApiData and window.lastLitePlanetaryDiagnostic.`;
 
       setText("systemWeatherLine", "Lite engine data path error");
       setText("dailyTodayRead", message);
-      setText("dailyLeanInto", "Do not trust a Structured / Threshold result from this run. The engine blocked the fallback instead of producing a fake read.");
-      setText("dailyWatchFor", "The API response may be valid, but Lite is not receiving the same planetary weight path Pro expects: data.planetary.");
-      setText("dailyGoodMove", "Check window.lastLiteApiData. Confirm whether planetary weights exist at data.planetary, or whether the backend is returning them under a different path.");
-      setText("dailyReturn", diagnostic);
-      setText("todayOutlookLine", "Current Outlook: blocked · Lite planetary payload unavailable · no fake fallback calculated");
-
-      setText("plainEnglishLine", "Engine blocked: missing planetary weights.");
-      setText("plainRealLifeText", "Lite did not calculate a field because the required planetary/transit values were missing, invalid, or all zero.");
-      setText("liteWhyTodayText", `${message} ${diagnostic}`);
-
-      setText("primaryHarmonic", "Blocked");
-      setText("todayFieldHarmonic", "Blocked");
-      setText("systemLoadIntensity", "Blocked");
-      setText("moonstampModifier", "Blocked");
-      setText("fieldUndertoneLine", "Blocked until planetary weights are available.");
-      setText("harmonicPlainRead", message);
-
-      setText("liteSummaryStateChip", "Pattern: blocked");
-      setText("liteSummaryFieldChip", "Field: blocked");
-      setText("liteSummaryLoadChip", "Load: blocked");
+      setText("liteFieldValue", "Blocked — no field calculated.");
+      setText("litePatternValue", "Blocked — no pattern calculated.");
+      setText("liteLandingValue", diagnostic);
+      setText("dailyGoodMove", "Do not trust a repeated default result from this run. Lite blocked the fallback instead of producing a fake read.");
+      setText("todayOutlookLine", "Status: blocked · Lite planetary payload unavailable · no fake fallback calculated");
 
       updateShareUI({
         systemWeather: "Lite engine data path error",
         todayRead: message,
         plainEnglishLine: "Engine blocked: missing planetary weights.",
         plainRealLifeText: diagnostic,
-        driverNote: "No driver note calculated because Lite did not receive usable planetary weights.",
+        driverNote: "",
         goodMove: "Inspect window.lastLiteApiData and compare the response path to Pro.",
         returnText: "No fake fallback result was generated.",
         primary: "Blocked",
         field: "Blocked",
         state: "Blocked"
       });
+    }
+
+    function hideSamplePreview(){const el=document.getElementById("samplePreviewCard");if(el)el.hidden=true;}
+    function showSamplePreview(){const el=document.getElementById("samplePreviewCard");if(el)el.hidden=false;}
+    function fieldLiteDescription(field){const lines={Structured:"Structure, definition, and practical form are more active today.",Contained:"Privacy, slower processing, and protected focus may be more active today.",Chaotic:"Movement, activation, and unstable signal may be more active today.",Relational:"Contact, tone, response, and repair may be more active today.",Threshold:"Edges, timing, openings, and decisions may be more active today.",Reconstructive:"Repair, correction, and stronger form may be more active today.",Integrative:"Meaning, synthesis, and wider pattern recognition may be more active today.",Diffused:"Atmosphere, sensitivity, and unclear signal may be more active today.",Regulated:"Pacing, containment, and load management may be more active today."};return lines[field]||"Today’s field is active. Keep the read simple and practical.";}
+    function patternLiteDescription(primary){const lines={Structured:"You may stabilize pressure by giving it shape, order, or a simple frame.",Contained:"You may stabilize pressure by processing inwardly before you express it.",Chaotic:"You may stabilize pressure by moving charge through a safe container.",Relational:"You may stabilize pressure by reading tone, contact, and shared atmosphere.",Threshold:"You may stabilize pressure by sensing the edge and choosing the next clean step.",Reconstructive:"You may stabilize pressure by finding what needs repair and rebuilding one piece at a time.",Integrative:"You may stabilize pressure by connecting the scattered pieces into a usable pattern.",Diffused:"You may stabilize pressure by giving unclear signal more space before defining it.",Regulated:"You may stabilize pressure by pacing the load and keeping the next step manageable."};return lines[primary]||"Your basic pattern shows how your system tends to organize pressure.";}
+    function buildLiteLanding(primary,field){if(primary==="Structured"&&field==="Relational")return "Structured pattern meeting a Relational field. You may want to organize the room before the signal is fully clear.";if(field==="Relational")return `${primary} pattern meeting a Relational field. Contact may carry more signal than usual, so keep your response simple and proportional.`;if(field==="Reconstructive")return `${primary} pattern meeting a Reconstructive field. Work with one repair point instead of treating the whole system as broken.`;if(field==="Diffused")return `${primary} pattern meeting a Diffused field. Wait for the clear line before forcing the whole thing into shape.`;if(field==="Threshold")return `${primary} pattern meeting a Threshold field. Pause at the edge, then choose one clean next step.`;if(field==="Chaotic")return `${primary} pattern meeting a Chaotic field. Give the movement one safe container before chasing every signal.`;if(field==="Structured")return `${primary} pattern meeting a Structured field. Use structure to simplify the day, not to over-control it.`;if(field==="Contained")return `${primary} pattern meeting a Contained field. Protect the inner signal while naming one small truth.`;if(field==="Integrative")return `${primary} pattern meeting an Integrative field. Notice the larger pattern, then reduce it to one workable step.`;if(field==="Regulated")return `${primary} pattern meeting a Regulated field. Keep the pace steady and the load manageable.`;return `${primary} pattern meeting a ${field} field. Keep the read simple and choose one clean move.`;}
+    function showCalculationError(err){
+      const message=err?.message||"Calculation failed. Check API deployment or payload.";
+      clearHarmonicColorBinding();
+      showSamplePreview();
+      setText("systemWeatherLine","Calculation failed");
+      setText("dailyTodayRead","The sample preview was not replaced because no personal result was generated.");
+      setText("liteFieldValue","No field calculated.");
+      setText("litePatternValue","No pattern calculated.");
+      setText("liteLandingValue",message);
+      setText("dailyGoodMove","Check the API response, payload, or deployment. No fallback result was shown.");
+      setText("todayOutlookLine","Status: calculation failed · no fake fallback calculated");
     }
 
     function updateHarmonicUI(data){
@@ -1128,53 +1176,37 @@ function calculateHarmonics(data) {
       const harmonics={...localHarmonics,todayField:resolvedBinding.selectedField||localHarmonics.todayField||"Regulated"};
       const primaryMeta=HARMONICS[harmonics.primary]||HARMONICS.Structured;
       const fieldMeta=HARMONICS[harmonics.todayField]||HARMONICS.Regulated;
-      const currentState=stateLabelFromMode(data?.state?.mode||"");
-      const fieldTrend=calculateFieldTrend(data,harmonics,resolvedBinding);
       const primaryLabel=primaryMeta.label;
       const fieldLabel=fieldMeta.label;
       const systemWeather=formatSystemWeather(primaryLabel,fieldLabel);
       const guidance=buildDailyGuidance(harmonics,data);
-      const plainLayer=buildPlainEnglishLayer(harmonics,guidance);
-      const driver=publicDriverName(resolvedBinding.pressureDriver||primaryDriverName(data));
-      const driverNote=buildDriverNote(data,harmonics,fieldTrend,resolvedBinding);
-      const loadText=loadLabel(data);
-      const moonText=buildMoonstampText(data);
-      const undertone=resolvedBinding.fieldUndertone;
+      const landing=buildLiteLanding(primaryLabel,fieldLabel);
+      const fieldDescription=fieldLiteDescription(fieldLabel);
+      const patternDescription=patternLiteDescription(primaryLabel);
 
       setHTML("systemWeatherLine",formatSystemWeatherHTML(primaryLabel,fieldLabel));
-      setText("dailyTodayRead",guidance.read);
-      setText("dailyLeanInto",guidance.lean);
-      setText("dailyWatchFor",guidance.watch);
+      setText("dailyTodayRead",fieldDescription);
+      setText("liteFieldValue",`${fieldLabel} Field — ${fieldDescription}`);
+      setText("litePatternValue",`${primaryLabel} Pattern — ${patternDescription}`);
+      setText("liteLandingValue",landing);
       setText("dailyGoodMove",guidance.move);
-      setText("dailyReturn",guidance.ret);
-      setText("todayOutlookLine",`Current Outlook: Trend: ${fieldTrend.trend} · Pressure Driver: ${driver} · ${fieldTrend.fieldPhrase}`);
-      setText("plainEnglishLine",plainLayer.plainLine);
-      setText("plainRealLifeText",plainLayer.realLife);
-      setText("primaryHarmonic",primaryLabel);
-      setText("todayFieldHarmonic",fieldLabel);
-      setText("systemLoadIntensity",loadText);
-      setText("moonstampModifier",moonText);
-      setText("fieldUndertoneLine",undertone?.active?`${undertone.field} undertone — ${undertone.text}`:"No strong undertone is close enough to change the read.");
-      setText("harmonicPlainRead",primaryMeta.plainRead);
-      setText("liteWhyTodayText",driverNote);
-      setText("liteSummaryStateChip",`Pattern: ${primaryLabel}`);
-      setText("liteSummaryFieldChip",`Field: ${fieldLabel}`);
-      setText("liteSummaryLoadChip",`Load: ${loadText}`);
+      setText("todayOutlookLine","Status: personal Lite read generated · sample preview hidden");
 
       updateShareUI({
         systemWeather,
-        todayRead:guidance.read,
-        plainEnglishLine:plainLayer.plainLine,
-        plainRealLifeText:plainLayer.realLife,
-        driverNote,
+        todayRead:`${fieldLabel} Field — ${fieldDescription}`,
+        plainEnglishLine:landing,
+        plainRealLifeText:patternDescription,
+        driverNote:"",
         goodMove:guidance.move,
-        returnText:guidance.ret,
-        primary:primaryMeta.label,
-        field:fieldMeta.label,
-        state:currentState
+        returnText:"",
+        primary:primaryLabel,
+        field:fieldLabel,
+        state:"Lite"
       });
 
       applyHarmonicColorBinding(primaryLabel,fieldLabel);
+      hideSamplePreview();
 
       window.lastLucyLiteHarmonics=harmonics;
       window.lastLucyLiteFieldBinding=resolvedBinding;
@@ -1206,7 +1238,7 @@ function calculateHarmonics(data) {
       setHeroGlow(state.mode||"Regulated",fog,volatility);
       return harmonics;
     }
-    async function calculate(){const dob=document.getElementById("dob").value;const tobRaw=document.getElementById("tob").value.trim();const ampm=document.getElementById("ampm").value;const location=document.getElementById("location").value.trim();const payload={dob,tobRaw,ampm,locationText:location};try{const btn=document.getElementById("calcBtn");btn.disabled=true;btn.textContent="Calculating...";const response=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});const data=await response.json();window.lastLiteApiData=data;if(!response.ok)throw new Error(data?.error||`API error ${response.status}`);updateUI(data);}catch(err){console.error(err);alert("Calculation failed. Check API deployment or payload.");}finally{const btn=document.getElementById("calcBtn");btn.disabled=false;btn.textContent="Calculate";}}
+    async function calculate(){const dob=document.getElementById("dob").value;const tobRaw=document.getElementById("tob").value.trim();const ampm=document.getElementById("ampm").value;const location=document.getElementById("location").value.trim();const payload={dob,tobRaw,ampm,locationText:location};try{const btn=document.getElementById("calcBtn");btn.disabled=true;btn.textContent="Calculating...";const response=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});const data=await response.json();window.lastLiteApiData=data;if(!response.ok)throw new Error(data?.error||`API error ${response.status}`);updateUI(data);}catch(err){console.error(err);showCalculationError(err);}finally{const btn=document.getElementById("calcBtn");btn.disabled=false;btn.textContent="Calculate";}}
 
     document.getElementById("calcBtn").addEventListener("click",calculate);
     document.getElementById("saveShareCardBtn").addEventListener("click",saveShareCard);
