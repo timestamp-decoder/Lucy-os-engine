@@ -28,6 +28,7 @@
 <!-- First Read Guide restore update: restored a static first-read orientation guide near the top of the result flow. UI/copy only; no API, backend, engine, scoring, selected-field logic, Venus override, repairGate, Field Undertone thresholds, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, Root Avatar, or result meanings changed. -->
 <!-- First Read Guide position move update: moved the existing First Read Guide directly below Today’s Read Snapshot / top read result area and before Today’s Live Field. DOM-order/UI placement only; no API, backend, engine, scoring, selected-field logic, Venus override, repairGate, Field Undertone thresholds, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, Root Avatar, JavaScript logic, or result meanings changed. -->
 <!-- Mobile result flow reorder update: moved existing First Read Guide and Today’s Read Snapshot below the input / saved profiles / Calculate area, so the top flow reads Header → Input → First Read Guide → Today’s Read Snapshot → Today’s Live Field. DOM-order/UI placement only; no API, backend, engine, scoring, selected-field logic, Venus override, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, dashboard scores, mobile nav behavior, Root Avatar, JavaScript logic, or result meanings changed. -->
+<!-- Venus / Pluto public driver clarity update: refined display copy so Relational fields name Venus as the contact-tone support while Pluto remains pressure underneath. Copy-binding only; no API, backend, engine, scoring, selected-field logic, Venus override, repairGate, Field Undertone thresholds, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, Root Avatar, or result meanings changed. -->
 <!-- Desktop result gap fix update: tightened desktop grid row placement so the right column flows First Read Guide → Today’s Read Snapshot → Today’s Live Field without inheriting the tall left input-panel height. CSS/layout only; engine, API, scoring, field selection, drivers, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, Root Avatar, JavaScript logic, and result meanings unchanged. -->
 <html lang="en">
 	<head>
@@ -12136,15 +12137,6 @@
 					primaryDriverName(data)
 				);
 				const parts = [];
-
-				if (driver) {
-					if (driver === "Moon") {
-						parts.push("Moon is today’s strongest active driver.");
-					} else {
-						parts.push(`${driver} is today’s strongest active driver.`);
-					}
-				}
-
 				const tVenus = safeNum(
 					planetary.transitVenus,
 					safeNum(planetary.venus)
@@ -12154,9 +12146,21 @@
 					field === "Relational" || relationalScore >= 0.58;
 				const venusIsActive = driver === "Venus" || tVenus >= 0.48;
 
+				if (driver) {
+					if (field === "Relational" && driver !== "Venus") {
+						parts.push(`${driver} is the strongest pressure driver.`);
+					} else if (driver === "Moon") {
+						parts.push("Moon is today’s strongest active driver.");
+					} else if (driver === "Venus") {
+						parts.push("Venus is today’s strongest relational driver.");
+					} else {
+						parts.push(`${driver} is today’s strongest active driver.`);
+					}
+				}
+
 				if (venusIsActive || socialRiseActive) {
 					parts.push(
-						"Venus may be supporting relational lift."
+						"Venus supports the relational tone."
 					);
 				}
 
@@ -12177,6 +12181,7 @@
 				return parts.join(" ");
 			}
 
+			
 			function buildTopLiveFieldDriverLine(data, harmonics) {
 				const debug = harmonics?.dailyFieldDebug || {};
 				const field = harmonics?.todayField || debug?.selectedField || "";
@@ -12197,20 +12202,33 @@
 					parts.push(`${selectedField} leads the field.`);
 				}
 
-				const shouldShowPressureDriver =
-					!!pressureDriver &&
-					pressureDriver !== "—" &&
-					pressureDriver !== "Venus" &&
-					pressureDriver !== selectedField &&
-					(!!undertoneField ||
-						(selectedField === "Relational" && pressureDriver === "Pluto"));
+				if (selectedField === "Relational") {
+					if (pressureDriver === "Venus") {
+						parts.push("Venus carries the contact tone.");
+					} else if (pressureDriver && pressureDriver !== "—") {
+						parts.push(
+							`Venus carries the contact tone; ${pressureDriver} adds${
+								undertoneField
+									? ` ${undertoneField.toLowerCase()} pressure`
+									: " pressure"
+							} underneath.`
+						);
+					} else {
+						parts.push("Venus carries the contact tone.");
+					}
+				} else {
+					const shouldShowPressureDriver =
+						!!pressureDriver &&
+						pressureDriver !== "—" &&
+						pressureDriver !== "Venus" &&
+						pressureDriver !== selectedField &&
+						!!undertoneField;
 
-				if (shouldShowPressureDriver) {
-					parts.push(
-						undertoneField
-							? `${pressureDriver} adds ${undertoneField.toLowerCase()} pressure underneath.`
-							: `${pressureDriver} adds pressure underneath.`
-					);
+					if (shouldShowPressureDriver) {
+						parts.push(
+							`${pressureDriver} adds ${undertoneField.toLowerCase()} pressure underneath.`
+						);
+					}
 				}
 
 				if (!parts.length) {
@@ -12220,6 +12238,7 @@
 				return parts.join(" ");
 			}
 
+			
 			function buildTopLiveFieldMove(field, loadBand, guidance) {
 				const currentField = String(field || "").trim();
 				const currentLoad = String(loadBand || "").trim();
@@ -12265,6 +12284,12 @@
 					const driver = dashboardInfluenceDriverName(
 						primaryDriverName(data)
 					);
+					const planetary = data?.planetary || {};
+					const tVenus = safeNum(
+						planetary.transitVenus,
+						safeNum(planetary.venus)
+					);
+					const venusRelationalTone = isRelational && (driver === "Venus" || tVenus >= 0.22);
 					const moonstamp = getMoonstamp(data) || {};
 					const moonstampState = String(
 						moonstamp?.state || debug?.moonstampInputs?.state || ""
@@ -12292,11 +12317,15 @@
 
 					if (mixedRelational) {
 						sentences.push(
-							"Relational leads by a narrow margin. Contact is active, but meaning-pressure or repair-pressure is close behind."
+							venusRelationalTone
+								? "Venus supports the relational channel while Relational leads by a narrow margin. Contact is active, but meaning-pressure or repair-pressure is close behind."
+								: "Relational leads by a narrow margin. Contact is active, but meaning-pressure or repair-pressure is close behind."
 						);
 					} else if (isRelational) {
 						sentences.push(
-							"Relational leads today, but it is not necessarily a light or simple contact field. Contact, tone, and response are active while deeper pressure may sit underneath."
+							venusRelationalTone
+								? "Venus supports the relational channel, so contact, tone, and response are active. This does not necessarily make the field light or simple; deeper pressure may still sit underneath."
+								: "Relational leads today, but it is not necessarily a light or simple contact field. Contact, tone, and response are active while deeper pressure may sit underneath."
 						);
 					} else {
 						sentences.push(
@@ -12306,7 +12335,7 @@
 
 					if (plutoUnderneath) {
 						sentences.push(
-							"Pluto may be loud underneath, but it is acting as pressure behind the field, not replacing the relational channel."
+							"Pluto may be loud underneath, but it is acting as pressure behind the field, not replacing the Venus-supported relational channel."
 						);
 					}
 
@@ -12736,7 +12765,9 @@
 					load >= 0.75
 				) {
 					trend = "Active";
-					rationale = `The field is active but still workable; ${driver} is the strongest driver.`;
+					rationale = field === "Relational" && driver !== "Venus"
+						? `The field is active but still workable; Venus carries the relational tone while ${driver} adds pressure underneath.`
+						: `The field is active but still workable; ${driver} is the strongest driver.`;
 				} else if (regulation >= 0.5 && strain < 0.55) {
 					trend = "Easing";
 					rationale =
@@ -12758,7 +12789,9 @@
 				const driver = publicDriverName(primaryDriverName(data));
 				const driverText =
 					driver && driver !== "—"
-						? ` ${driver} is the strongest active driver.`
+						? field === "Relational" && driver !== "Venus"
+							? ` Venus carries the contact tone; ${driver} adds pressure underneath.`
+							: ` ${driver} is the strongest active driver.`
 						: "";
 				const undertoneText = undertone?.active
 					? ` ${undertone.text}`
@@ -13788,7 +13821,9 @@
 
 				if (driverLower.includes("pluto")) {
 					note =
-						"Pluto may make the pressure feel deeper or more fundamental today. Use it for one honest repair, not a full rebuild.";
+						field === "Relational"
+							? "Venus carries the relational tone while Pluto may make the pressure feel deeper or more fundamental today. Use the contact field for one honest repair, not a full rebuild."
+							: "Pluto may make the pressure feel deeper or more fundamental today. Use it for one honest repair, not a full rebuild.";
 				} else if (driverLower.includes("mars")) {
 					note =
 						"Mars may raise activation or urgency today. Use the extra charge for one clear action.";
