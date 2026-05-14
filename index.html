@@ -1733,6 +1733,57 @@
       if (el) el.textContent = value;
     }
 
+    function cleanString(value){
+      const text = String(value || "").trim();
+      return text || null;
+    }
+
+    function cleanHarmonicName(value){
+      const text = cleanString(value);
+      if (!text) return null;
+
+      const normalized = text
+        .replace(/[^\w\s/-]/g, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toLowerCase();
+
+      const map = {
+        structured: "Structured",
+        contained: "Contained",
+        chaotic: "Chaotic",
+        "fast signal": "Chaotic",
+        relational: "Relational",
+        threshold: "Threshold",
+        reconstructive: "Reconstructive",
+        integrative: "Integrative",
+        diffused: "Diffused",
+        diffuse: "Diffused",
+        regulated: "Regulated"
+      };
+
+      if (map[normalized]) return map[normalized];
+
+      const direct = Object.keys(HARMONICS).find(key => key.toLowerCase() === normalized);
+      return direct || null;
+    }
+
+    function firstValidHarmonic(...values){
+      for (const value of values) {
+        const harmonic = cleanHarmonicName(value);
+        if (harmonic) return harmonic;
+      }
+      return null;
+    }
+
+    function firstCleanString(...values){
+      for (const value of values) {
+        const text = cleanString(value);
+        if (text) return text;
+      }
+      return null;
+    }
+
     function harmonicSymbol(name){
       const symbols = {
         Structured: "⬡",
@@ -1914,14 +1965,117 @@
       return text;
     }
 
-    function calculateFieldTrend(data, harmonics){
+    function getResolvedFieldBinding(data, localHarmonics){
+      const harmonics = data?.harmonics || {};
+      const telemetry = data?.telemetry || {};
+      const dailyField = data?.dailyField || {};
+      const fieldData = data?.fieldData || {};
+      const resolved = data?.resolved || {};
+      const engine = data?.engine || {};
+
+      const selectedField = firstValidHarmonic(
+        harmonics.selectedField,
+        harmonics.currentField,
+        harmonics.todayField,
+        harmonics.field,
+        dailyField.selectedField,
+        dailyField.currentField,
+        dailyField.todayField,
+        dailyField.field,
+        fieldData.selectedField,
+        fieldData.currentField,
+        fieldData.todayField,
+        fieldData.field,
+        resolved.selectedField,
+        resolved.currentField,
+        resolved.todayField,
+        resolved.field,
+        engine.selectedField,
+        engine.currentField,
+        engine.todayField,
+        engine.field,
+        data.selectedField,
+        data.currentField,
+        data.todayField,
+        data.field,
+        localHarmonics?.todayField,
+        "Regulated"
+      );
+
+      const fieldToneDriver = firstCleanString(
+        harmonics.fieldToneDriver,
+        harmonics.toneDriver,
+        harmonics.selectedFieldDriver,
+        dailyField.fieldToneDriver,
+        dailyField.toneDriver,
+        fieldData.fieldToneDriver,
+        fieldData.toneDriver,
+        telemetry.fieldToneDriver,
+        telemetry.toneDriver,
+        resolved.fieldToneDriver,
+        resolved.toneDriver,
+        engine.fieldToneDriver,
+        engine.toneDriver,
+        data.fieldToneDriver,
+        data.toneDriver
+      );
+
+      const pressureDriver = firstCleanString(
+        harmonics.pressureDriver,
+        harmonics.loadDriver,
+        harmonics.primaryPressureDriver,
+        dailyField.pressureDriver,
+        dailyField.loadDriver,
+        fieldData.pressureDriver,
+        fieldData.loadDriver,
+        telemetry.pressureDriver,
+        telemetry.loadDriver,
+        telemetry.primaryDriver,
+        resolved.pressureDriver,
+        resolved.loadDriver,
+        engine.pressureDriver,
+        engine.loadDriver,
+        data.pressureDriver,
+        data.loadDriver,
+        primaryDriverName(data),
+        "—"
+      );
+
+      const undertoneField = firstValidHarmonic(
+        harmonics.undertoneField,
+        harmonics.fieldUndertone,
+        harmonics.undertone,
+        dailyField.undertoneField,
+        dailyField.fieldUndertone,
+        fieldData.undertoneField,
+        fieldData.fieldUndertone,
+        telemetry.undertoneField,
+        telemetry.fieldUndertone,
+        resolved.undertoneField,
+        resolved.fieldUndertone,
+        engine.undertoneField,
+        engine.fieldUndertone,
+        data.undertoneField,
+        data.fieldUndertone,
+        data.undertone
+      );
+
+      return {
+        selectedField,
+        fieldToneDriver,
+        pressureDriver,
+        undertoneField
+      };
+    }
+
+    function calculateFieldTrend(data, harmonics, resolvedBinding){
       const state = data?.state || {};
-      const field = harmonics?.todayField || "Regulated";
+      const field = resolvedBinding?.selectedField || harmonics?.todayField || "Regulated";
       const modeLabel = stateLabelFromMode(state.mode || "");
       const strain = safeNum(state.strain);
       const load = safeNum(state.amplifiedLoad);
       const regulation = safeNum(state.regulation);
-      const driver = publicDriverName(primaryDriverName(data));
+      const driver = publicDriverName(resolvedBinding?.pressureDriver || primaryDriverName(data));
       const fieldPhrase = fieldPhraseFromHarmonic(field);
 
       let trend = "Stable";
@@ -1940,7 +2094,7 @@
         rationale = `${driver} is increasing ${fieldPhrase}; trend reads as intensifying.`;
       } else if (modeLabel === "Mobilized" || strain >= 0.60 || load >= 0.75) {
         trend = "Active";
-        rationale = `The field is active but still workable; ${driver} is the strongest driver.`;
+        rationale = `The field is active but still workable; ${driver} is the strongest pressure driver.`;
       } else if (regulation >= 0.50 && strain < 0.55) {
         trend = "Easing";
         rationale = "Regulation is holding more of the load; trend reads as easing.";
@@ -2256,9 +2410,11 @@
       return { read, lean, watch, move, ret };
     }
 
-    function buildDriverNote(data, harmonics, fieldTrend){
-      const publicDriver = publicDriverName(primaryDriverName(data));
-      const field = harmonics?.todayField || "Regulated";
+    function buildDriverNote(data, harmonics, fieldTrend, resolvedBinding){
+      const fieldToneDriver = publicDriverName(resolvedBinding?.fieldToneDriver || "");
+      const pressureDriver = publicDriverName(resolvedBinding?.pressureDriver || primaryDriverName(data));
+      const field = resolvedBinding?.selectedField || harmonics?.todayField || "Regulated";
+      const undertone = resolvedBinding?.undertoneField || null;
       const trend = fieldTrend?.trend || "Stable";
       const articleTrend = ["Intensifying", "Active"].includes(trend) ? "an" : "a";
 
@@ -2284,7 +2440,29 @@
         direction = "keep the pace steady and the load manageable.";
       }
 
-      return `${publicDriver} is shaping how today’s field lands. With a ${field.toLowerCase()} field and ${articleTrend} ${trend.toLowerCase()} trend, ${direction}`;
+      const hasFieldTone =
+        resolvedBinding?.fieldToneDriver &&
+        fieldToneDriver !== "The strongest current driver";
+
+      const hasPressure =
+        resolvedBinding?.pressureDriver &&
+        pressureDriver !== "The strongest current driver";
+
+      let opening = "";
+
+      if (hasFieldTone && hasPressure && fieldToneDriver !== pressureDriver) {
+        opening = `${fieldToneDriver} shapes the field tone. ${pressureDriver} may be adding pressure underneath. `;
+      } else if (hasFieldTone) {
+        opening = `${fieldToneDriver} shapes the field tone. `;
+      } else if (hasPressure) {
+        opening = `${pressureDriver} is the strongest pressure driver today. `;
+      } else {
+        opening = "The strongest current driver is shaping how today’s field lands. ";
+      }
+
+      const undertoneLine = undertone ? ` ${undertone} may be present as a secondary undertone.` : "";
+
+      return `${opening}With a ${field.toLowerCase()} field and ${articleTrend} ${trend.toLowerCase()} trend, ${direction}${undertoneLine}`;
     }
 
     function formatSystemWeather(primaryLabel, fieldLabel){
@@ -2412,20 +2590,28 @@
     }
 
     function updateHarmonicUI(data){
-      const harmonics = calculateHarmonics(data);
+      const localHarmonics = calculateHarmonics(data);
+      const resolvedBinding = getResolvedFieldBinding(data, localHarmonics);
+
+      console.log("Lucy.OS Lite resolved field binding:", resolvedBinding);
+
+      const harmonics = {
+        ...localHarmonics,
+        todayField: resolvedBinding.selectedField || localHarmonics.todayField || "Regulated"
+      };
+
       const primaryMeta = HARMONICS[harmonics.primary] || HARMONICS.Structured;
       const fieldMeta = HARMONICS[harmonics.todayField] || HARMONICS.Regulated;
       const currentState = stateLabelFromMode(data?.state?.mode || "");
-      const fieldTrend = calculateFieldTrend(data, harmonics);
+      const fieldTrend = calculateFieldTrend(data, harmonics, resolvedBinding);
 
       const primaryLabel = primaryMeta.label;
       const fieldLabel = fieldMeta.label;
       const systemWeather = formatSystemWeather(primaryLabel, fieldLabel);
       const guidance = buildDailyGuidance(harmonics, data);
       const plainLayer = buildPlainEnglishLayer(harmonics, guidance);
-      const rawDriver = primaryDriverName(data);
-      const driver = publicDriverName(rawDriver);
-      const driverNote = buildDriverNote(data, harmonics, fieldTrend);
+      const driver = publicDriverName(resolvedBinding.pressureDriver || primaryDriverName(data));
+      const driverNote = buildDriverNote(data, harmonics, fieldTrend, resolvedBinding);
 
       setText("systemWeatherLine", systemWeather);
       setText("dailyTodayRead", guidance.read);
@@ -2435,7 +2621,7 @@
       setText("dailyReturn", guidance.ret);
       setText(
         "todayOutlookLine",
-        `Current Outlook: Trend: ${fieldTrend.trend} · Driver: ${driver} · ${fieldTrend.fieldPhrase}`
+        `Current Outlook: Trend: ${fieldTrend.trend} · Pressure Driver: ${driver} · ${fieldTrend.fieldPhrase}`
       );
 
       setText("plainEnglishLine", plainLayer.plainLine);
