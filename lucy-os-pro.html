@@ -28,6 +28,7 @@
 <!-- First Read Guide restore update: restored a static first-read orientation guide near the top of the result flow. UI/copy only; no API, backend, engine, scoring, selected-field logic, Venus override, repairGate, Field Undertone thresholds, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, Root Avatar, or result meanings changed. -->
 <!-- First Read Guide position move update: moved the existing First Read Guide directly below Today’s Read Snapshot / top read result area and before Today’s Live Field. DOM-order/UI placement only; no API, backend, engine, scoring, selected-field logic, Venus override, repairGate, Field Undertone thresholds, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, Root Avatar, JavaScript logic, or result meanings changed. -->
 <!-- Mobile result flow reorder update: moved existing First Read Guide and Today’s Read Snapshot below the input / saved profiles / Calculate area, so the top flow reads Header → Input → First Read Guide → Today’s Read Snapshot → Today’s Live Field. DOM-order/UI placement only; no API, backend, engine, scoring, selected-field logic, Venus override, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, dashboard scores, mobile nav behavior, Root Avatar, JavaScript logic, or result meanings changed. -->
+<!-- Desktop result gap fix update: tightened desktop grid row placement so the right column flows First Read Guide → Today’s Read Snapshot → Today’s Live Field without inheriting the tall left input-panel height. CSS/layout only; engine, API, scoring, field selection, drivers, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, Root Avatar, JavaScript logic, and result meanings unchanged. -->
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -311,7 +312,7 @@
 			}
 
 			.mobileReadSnapshot {
-				display: none;
+				display: block;
 				width: 100%;
 				max-width: 100%;
 				margin: 0 0 14px;
@@ -413,6 +414,15 @@
 				width: 100%;
 				max-width: 100%;
 				min-width: 0;
+			}
+
+			.grid > .inputPanel {
+				grid-column: 1;
+				grid-row: 1 / span 3;
+			}
+
+			.grid > .mobileReadSnapshot {
+				margin: 0;
 			}
 
 			.grid > .firstReadGuideCard {
@@ -5564,6 +5574,7 @@
 					grid-template-columns: minmax(0, 1fr);
 				}
 
+				.grid > .inputPanel,
 				.grid > .firstReadGuideCard,
 				.grid > .mobileReadSnapshot,
 				.grid > .mainStack {
