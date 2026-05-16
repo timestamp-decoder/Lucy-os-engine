@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <!-- Practice edit: upload/edit/download workflow verified. -->
 <!-- Pass 1 update: added top clarity, plain read, system read, and personal landing display layer. Engine, API, scoring, Moonstamp, saved profiles, share export, and calibration tests unchanged. -->
 <!-- Pass 2 update: polished top read snapshot and Regulation Supports language/display density only. Engine, API, scoring, Moonstamp, saved profiles, share export, dashboard logic, and calibration tests unchanged. -->
@@ -30,13 +31,13 @@
 <!-- Mobile result flow reorder update: moved existing First Read Guide and Today’s Read Snapshot below the input / saved profiles / Calculate area, so the top flow reads Header → Input → First Read Guide → Today’s Read Snapshot → Today’s Live Field. DOM-order/UI placement only; no API, backend, engine, scoring, selected-field logic, Venus override, repairGate, Reconstructive weighting, Field Undertone thresholds, Moonstamp logic, Electrical Mapping logic, saved profiles, share export, dashboard scores, mobile nav behavior, Root Avatar, JavaScript logic, or result meanings changed. -->
 <!-- Venus / Pluto public driver clarity update: refined display copy so Relational fields name Venus as the contact-tone support while Pluto remains pressure underneath. Copy-binding only; no API, backend, engine, scoring, selected-field logic, Venus override, repairGate, Field Undertone thresholds, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, Root Avatar, or result meanings changed. -->
 <!-- Desktop result gap fix update: tightened desktop grid row placement so the right column flows First Read Guide → Today’s Read Snapshot → Today’s Live Field without inheriting the tall left input-panel height. CSS/layout only; engine, API, scoring, field selection, drivers, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, Root Avatar, JavaScript logic, and result meanings unchanged. -->
+<!-- Pass 1 safe UX branch update: reordered visible flow to match Input → Field → Landing → Support → You, added Today’s Field Ping, and refined Suggested Sound Support as display-layer-only. Engine, API, scoring, routing, Moonstamp data logic, dashboard score logic, saved profiles, share export, diagnostics, and calibration behavior unchanged. -->
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Lucy.OS Pro</title>
-
-		<style>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lucy.OS Pro</title>
+<style>
 			:root {
 				--bg: #09142f;
 				--panel: #0f1b38;
@@ -5114,6 +5115,7 @@
 			/* Pass 1: Top clarity + personal landing layer */
 			.topClarityCard,
 			.topLiveFieldCard,
+			.fieldPingCard,
 			.firstReadGuideCard,
 			.personalLandingCard,
 			.plainReadCard,
@@ -5236,6 +5238,61 @@
 
 			.topLiveFieldMove {
 				color: var(--text);
+			}
+
+
+			.fieldPingCard {
+				padding: 16px 18px;
+				border: 1px solid rgba(216, 184, 76, 0.24);
+				background: radial-gradient(
+						circle at 10% 0%,
+						rgba(216, 184, 76, 0.12),
+						transparent 34%
+					),
+					radial-gradient(
+						circle at 92% 8%,
+						rgba(103, 193, 255, 0.07),
+						transparent 34%
+					),
+					rgba(255, 255, 255, 0.032);
+			}
+
+			.fieldPingKicker {
+				color: var(--gold);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.13em;
+				text-transform: uppercase;
+				margin-bottom: 8px;
+			}
+
+			.fieldPingSignal {
+				color: var(--text);
+				font-size: 18px;
+				font-weight: 950;
+				line-height: 1.28;
+				letter-spacing: -0.018em;
+				overflow-wrap: break-word;
+			}
+
+			.fieldPingInstruction {
+				margin-top: 8px;
+				color: #d9e0f4;
+				font-size: 13px;
+				line-height: 1.5;
+				font-weight: 800;
+				overflow-wrap: break-word;
+			}
+
+			.fieldPingMeta {
+				margin-top: 10px;
+				padding-top: 9px;
+				border-top: 1px solid rgba(255, 255, 255, 0.07);
+				color: var(--muted2);
+				font-size: 11px;
+				line-height: 1.45;
+				font-weight: 800;
+				overflow-wrap: break-word;
 			}
 
 			.whyThisFieldBridge {
@@ -6301,2318 +6358,1633 @@
 			}
 
 		</style>
-	</head>
-
-	<body>
-		<div class="wrap">
-			<a class="backLink" href="index.html">← Back to Lucy.OS Lite</a>
-
-			<div class="hero">
-				<div class="heroGlow" id="heroGlow"></div>
-				<h1>Lucy.OS Pro</h1>
-				<p>Full personal field guidance inside the live timing field</p>
-			</div>
-
-
-			<nav class="lucyAppTabs" aria-label="Lucy.OS app navigation">
-				<a href="#inputSection">Input</a>
-				<a href="#fieldSection">Field</a>
-				<a href="#landingSection">Landing</a>
-				<a href="#supportSection">Support</a>
-				<a href="#youSection">You</a>
-			</nav>
-
-
-
-
-
-			<div class="grid">
-				<div class="panel inputPanel" id="inputSection">
-					<h2>Inputs</h2>
-
-					<label>Date of Birth</label>
-					<input id="dob" type="date" />
-
-					<div class="row2">
-						<div>
-							<label>Time of Birth</label>
-							<input id="tob" type="text" placeholder="9:15" />
-						</div>
-						<div>
-							<label>AM / PM</label>
-							<select id="ampm">
-								<option>AM</option>
-								<option>PM</option>
-							</select>
-						</div>
-					</div>
-
-					<label>Birth Location</label>
-					<input
-						id="location"
-						type="text"
-						placeholder="Portland, OR"
-					/>
-
-					<button id="calcBtn">Calculate</button>
-
-					<div class="savedProfiles">
-						<h3>Saved Profiles</h3>
-
-						<label>Profile Name</label>
-						<input
-							id="profileName"
-							type="text"
-							placeholder="Profile name"
-						/>
-
-						<button id="saveProfileBtn" type="button">
+</head>
+<body>
+<div class="wrap">
+<a class="backLink" href="index.html">← Back to Lucy.OS Lite</a>
+<div class="hero">
+<div class="heroGlow" id="heroGlow"></div>
+<h1>Lucy.OS Pro</h1>
+<p>Full personal field guidance inside the live timing field</p>
+</div>
+<nav aria-label="Lucy.OS app navigation" class="lucyAppTabs">
+<a href="#inputSection">Input</a>
+<a href="#fieldSection">Field</a>
+<a href="#landingSection">Landing</a>
+<a href="#supportSection">Support</a>
+<a href="#youSection">You</a>
+</nav>
+<div class="grid">
+<div class="panel inputPanel" id="inputSection">
+<h2>Inputs</h2>
+<label>Date of Birth</label>
+<input id="dob" type="date"/>
+<div class="row2">
+<div>
+<label>Time of Birth</label>
+<input id="tob" placeholder="9:15" type="text"/>
+</div>
+<div>
+<label>AM / PM</label>
+<select id="ampm">
+<option>AM</option>
+<option>PM</option>
+</select>
+</div>
+</div>
+<label>Birth Location</label>
+<input id="location" placeholder="Portland, OR" type="text"/>
+<button id="calcBtn">Calculate</button>
+<div class="savedProfiles">
+<h3>Saved Profiles</h3>
+<label>Profile Name</label>
+<input id="profileName" placeholder="Profile name" type="text"/>
+<button id="saveProfileBtn" type="button">
 							Save Current Profile
 						</button>
-
-						<label>Load Saved Profile</label>
-						<select id="savedProfilesSelect">
-							<option value="">No saved profiles yet</option>
-						</select>
-
-						<div class="profileButtonRow">
-							<button id="loadProfileBtn" type="button">
+<label>Load Saved Profile</label>
+<select id="savedProfilesSelect">
+<option value="">No saved profiles yet</option>
+</select>
+<div class="profileButtonRow">
+<button id="loadProfileBtn" type="button">
 								Load Profile
 							</button>
-							<button
-								id="deleteProfileBtn"
-								class="deleteProfileBtn"
-								type="button"
-							>
+<button class="deleteProfileBtn" id="deleteProfileBtn" type="button">
 								Delete Profile
 							</button>
-						</div>
-
-						<div class="profileSaveHelper">
+</div>
+<div class="profileSaveHelper">
 							Saved only on this device/browser.
 						</div>
-						<div
-							id="profileSaveStatus"
-							class="profileSaveStatus"
-						></div>
-					</div>
-
-					<div class="tiny">
+<div class="profileSaveStatus" id="profileSaveStatus"></div>
+</div>
+<div class="tiny">
 						Birth location resolves timezone, angles, and houses for
 						accurate chart input.
 					</div>
-
-					<details
-						class="mobileTechnicalDetails"
-						id="mobileTechnicalDetails"
-						open
-					>
-						<summary>Technical Details</summary>
-
-						<div class="leftStack">
-							<div class="statusBlock">
-								<strong>API Status</strong>
-								<div id="apiStatus">
+<details class="mobileTechnicalDetails" id="mobileTechnicalDetails">
+<summary>Technical Details</summary>
+<div class="leftStack">
+<div class="statusBlock">
+<strong>API Status</strong>
+<div id="apiStatus">
 									Waiting for calculation.
 								</div>
-							</div>
-
-							<div class="statusBlock">
-								<strong>Chart Input</strong>
-								<div id="resolvedInput">
+</div>
+<div class="statusBlock">
+<strong>Chart Input</strong>
+<div id="resolvedInput">
 									No resolved birth data yet.
 								</div>
-							</div>
-
-							<div class="statusBlock">
-								<strong>Chart Debug</strong>
-								<div id="chartDebug">
+</div>
+<div class="statusBlock">
+<strong>Chart Debug</strong>
+<div id="chartDebug">
 									Awaiting first chart load.
 								</div>
-							</div>
-						</div>
-					</details>
-				</div>
-
-
-				<section class="firstReadGuideCard" id="firstReadGuide">
-					<div class="firstReadGuideKicker">FIRST READ GUIDE</div>
-					<div class="firstReadGuideTitle">How to read today’s result</div>
-					<div class="firstReadGuideText">
+</div>
+</div>
+</details>
+</div>
+<section class="firstReadGuideCard" id="firstReadGuide">
+<div class="firstReadGuideKicker">FIRST READ GUIDE</div>
+<div class="firstReadGuideTitle">How to read today’s result</div>
+<div class="firstReadGuideText">
 						Start with the shared field, then read how it lands in your pattern. Use the Plain Read for the cleanest next move, and use Regulation Supports when the field feels loud.
 					</div>
-					<div class="firstReadGuideSteps">
-						<div class="firstReadGuideStep">
-							<span>1 · Field</span>
-							<strong>What is the shared atmosphere today?</strong>
-						</div>
-						<div class="firstReadGuideStep">
-							<span>2 · Landing</span>
-							<strong>How does that field hit this chart or pattern?</strong>
-						</div>
-						<div class="firstReadGuideStep">
-							<span>3 · Move</span>
-							<strong>What is the smallest clean action?</strong>
-						</div>
-						<div class="firstReadGuideStep">
-							<span>4 · Support</span>
-							<strong>What helps the system return to coherence?</strong>
-						</div>
-					</div>
-				</section>
-
-
-				<section class="mobileReadSnapshot" id="mobileReadSnapshot">
-					<div class="mobileSnapshotKicker">TODAY’S READ SNAPSHOT</div>
-					<div class="mobileSnapshotWeather" id="mobileSnapshotWeather">
+<div class="firstReadGuideSteps">
+<div class="firstReadGuideStep">
+<span>1 · Field</span>
+<strong>What is the shared atmosphere today?</strong>
+</div>
+<div class="firstReadGuideStep">
+<span>2 · Landing</span>
+<strong>How does that field hit this chart or pattern?</strong>
+</div>
+<div class="firstReadGuideStep">
+<span>3 · Move</span>
+<strong>What is the smallest clean action?</strong>
+</div>
+<div class="firstReadGuideStep">
+<span>4 · Support</span>
+<strong>What helps the system return to coherence?</strong>
+</div>
+</div>
+</section>
+<section class="mobileReadSnapshot" id="mobileReadSnapshot">
+<div class="mobileSnapshotKicker">TODAY’S READ SNAPSHOT</div>
+<div class="mobileSnapshotWeather" id="mobileSnapshotWeather">
 						Waiting for field read.
 					</div>
-					<div class="mobileSnapshotText" id="mobileSnapshotText">
+<div class="mobileSnapshotText" id="mobileSnapshotText">
 						Calculate to see today’s practical read.
 					</div>
-
-					<div class="mobileSnapshotGrid">
-						<div>
-							<span>One Good Move</span>
-							<strong id="mobileSnapshotMove">—</strong>
-						</div>
-						<div>
-							<span>Do Not Overdo</span>
-							<strong id="mobileSnapshotAvoid">—</strong>
-						</div>
-						<div>
-							<span>Regulation Support</span>
-							<strong id="mobileSnapshotSupport">—</strong>
-						</div>
-					</div>
-
-					<div class="mobileSnapshotMeta" id="mobileSnapshotMeta">
+<div class="mobileSnapshotGrid">
+<div>
+<span>One Good Move</span>
+<strong id="mobileSnapshotMove">—</strong>
+</div>
+<div>
+<span>Do Not Overdo</span>
+<strong id="mobileSnapshotAvoid">—</strong>
+</div>
+<div>
+<span>Regulation Support</span>
+<strong id="mobileSnapshotSupport">—</strong>
+</div>
+</div>
+<div class="mobileSnapshotMeta" id="mobileSnapshotMeta">
 						State: — · Field: — · Load: —
 					</div>
-				</section>
+</section>
+<div class="mainStack">
+<div class="fieldDestinationZone" id="fieldSection">
+<section class="topLiveFieldCard" id="topLiveFieldCard">
+<div class="sectionDestinationLabel topLiveFieldDestinationLabel">
+<span>You are viewing</span>
+<strong>Field · Today’s shared atmosphere</strong>
+</div>
+<div class="topLiveFieldKicker">TODAY’S LIVE FIELD</div>
+<h2 class="topLiveFieldTitle" id="topLiveFieldTitle">Live Field Pending</h2>
+<div class="topLiveFieldExpandedMeta">
+<div class="topLiveFieldMeta topLiveFieldMetaRow" id="topLiveFieldMeta">State: — · Load: —</div>
+<div class="topLiveFieldDriver topLiveFieldMetaRow" id="topLiveFieldDriver">Calculate to see today’s strongest visible influence.</div>
+<div class="topLiveFieldClarifier topLiveFieldMetaRow">Field shows the shared atmosphere. It does not decide your personal response.</div>
+<div class="topLiveFieldMove topLiveFieldMetaRow" id="topLiveFieldMove"><span>Use this field by:</span> Calculate to see today’s cleanest move.</div>
+</div>
+</section>
+<section aria-live="polite" class="fieldPingCard" id="fieldPingCard">
+<div class="fieldPingKicker">Today’s Field Ping</div>
+<div class="fieldPingSignal" id="fieldPingSignal">Calculate to see today’s short field signal.</div>
+<div class="fieldPingInstruction" id="fieldPingInstruction">One clean instruction will appear here after the read.</div>
+<div class="fieldPingMeta" id="fieldPingMeta">In-app card only. Notification-ready later.</div>
+</section>
 
-				<div class="mainStack">
 
-					<div class="fieldDestinationZone" id="fieldSection">
-						<section class="topLiveFieldCard" id="topLiveFieldCard">
-							<div class="sectionDestinationLabel topLiveFieldDestinationLabel">
-								<span>You are viewing</span>
-								<strong>Field · Today’s shared atmosphere</strong>
-							</div>
-							<div class="topLiveFieldKicker">TODAY’S LIVE FIELD</div>
-							<h2 class="topLiveFieldTitle" id="topLiveFieldTitle">Live Field Pending</h2>
-							<div class="topLiveFieldExpandedMeta">
-								<div class="topLiveFieldMeta topLiveFieldMetaRow" id="topLiveFieldMeta">State: — · Load: —</div>
-								<div class="topLiveFieldDriver topLiveFieldMetaRow" id="topLiveFieldDriver">Calculate to see today’s strongest visible influence.</div>
-								<div class="topLiveFieldClarifier topLiveFieldMetaRow">Field shows the shared atmosphere. It does not decide your personal response.</div>
-								<div class="topLiveFieldMove topLiveFieldMetaRow" id="topLiveFieldMove"><span>Use this field by:</span> Calculate to see today’s cleanest move.</div>
-							</div>
-						</section>
-					</div>
+<section aria-live="polite" class="whyThisFieldBridge" id="whyThisFieldBridge">
+<div class="whyThisFieldKicker">WHY THIS FIELD?</div>
+<div class="whyThisFieldTitle" id="whyThisFieldTitle">Mixed field read</div>
+<div class="whyThisFieldText" id="whyThisFieldText">Calculate to see why today’s field is landing this way.</div>
+</section>
 
-					<section class="whyThisFieldBridge" id="whyThisFieldBridge" aria-live="polite">
-						<div class="whyThisFieldKicker">WHY THIS FIELD?</div>
-						<div class="whyThisFieldTitle" id="whyThisFieldTitle">Mixed field read</div>
-						<div class="whyThisFieldText" id="whyThisFieldText">Calculate to see why today’s field is landing this way.</div>
-					</section>
-
-					<span class="sectionAnchor" id="landingSection" aria-hidden="true"></span>
-					<div class="sectionDestinationLabel">
-						<span>Landing</span>
-						<strong>How this field lands in you</strong>
-					</div>
-					<section class="personalLandingCard" id="personalLandingCard">
-						<div class="personalLandingKicker">Lucy.OS read layer</div>
-						<h2 class="personalLandingTitle" id="personalLandingTitle">
-							Same field. Personal landing.
-						</h2>
-						<div class="personalLandingText" id="personalLandingText">
-							The field is shared. The landing is personal. Lucy.OS reads your stable pattern against today’s field, then translates what helps you return to coherence.
-						</div>
-						<div class="personalLandingLine" id="personalLandingLine">
-							Lucy.OS reads how the weather lands in you.
-						</div>
-						<div class="landingClarifier">
-							<span>Landing note</span>
-							<p>Relational field means contact is the channel. Your landing may be connection, caution, distance, or withdrawal.</p>
-						</div>
-					</section>
-
-					<section class="plainReadCard" id="plainReadCard">
-						<div class="plainReadKicker">Plain Read</div>
-						<div class="plainReadText" id="plainReadText">
-							Calculate to see today’s read in plain language.
-						</div>
-
-						<div class="plainReadGrid">
-							<div class="plainReadItem">
-								<div class="plainReadLabel">One Good Move</div>
-								<div class="plainReadValue" id="plainReadMove">—</div>
-							</div>
-							<div class="plainReadItem">
-								<div class="plainReadLabel">Do Not Overdo</div>
-								<div class="plainReadValue" id="plainReadAvoid">—</div>
-							</div>
-							<div class="plainReadItem">
-								<div class="plainReadLabel">Return Path</div>
-								<div class="plainReadValue" id="plainReadReturn">—</div>
-							</div>
-						</div>
-					</section>
-
-					<section class="systemReadCard" id="systemReadCard">
-						<div class="systemReadKicker">System Read</div>
-						<div class="systemReadLine" id="systemReadLine">
-							Waiting for official Lucy.OS labels.
-						</div>
-						<div class="systemReadClarifier" id="systemReadClarifier">
-							Official labels stay intact. Plain language comes first.
-						</div>
-					</section>
-
-					<section class="personalTranslationCard" id="personalTranslationCard">
-						<div class="personalTranslationKicker">Personal Chart Translation</div>
-						<div class="personalTranslationGrid">
-							<div class="personalTranslationItem">
-								<div class="personalTranslationLabel">Baseline Pattern</div>
-								<div class="personalTranslationValue" id="personalBaselinePattern">—</div>
-							</div>
-							<div class="personalTranslationItem">
-								<div class="personalTranslationLabel">Today’s Activation</div>
-								<div class="personalTranslationValue" id="personalTodayActivation">—</div>
-							</div>
-							<div class="personalTranslationItem">
-								<div class="personalTranslationLabel">Where This May Show Up</div>
-								<div class="personalTranslationValue" id="personalWhereShowUp">—</div>
-							</div>
-							<div class="personalTranslationItem">
-								<div class="personalTranslationLabel">Best Personal Move</div>
-								<div class="personalTranslationValue" id="personalBestMove">—</div>
-							</div>
-							<div class="personalTranslationItem full">
-								<div class="personalTranslationLabel">Not You / Just Today</div>
-								<div class="personalTranslationValue" id="personalNotYou">—</div>
-							</div>
-						</div>
-					</section>
-
-					<section class="premiumCard">
-						<div class="cardContent">
-							<p class="kicker">Today’s System Weather</p>
-
-							<h2 class="weatherLine" id="systemWeatherLine">
-								Structured signal architecture<br /><span
-									>meeting a</span
-								>
+<section class="premiumCard">
+<div class="cardContent">
+<p class="kicker">Today’s System Weather</p>
+<h2 class="weatherLine" id="systemWeatherLine">
+								Structured signal architecture<br/><span>meeting a</span>
 								live field
 							</h2>
-
-							<p class="weatherExplain">
+<p class="weatherExplain">
 								Your root pattern meets today’s active field.
 								Lucy.OS reads that interaction and turns it into
 								one practical next move.
 							</p>
-
-							<div class="pairingExplain" id="pairingExplain">
-								<span
-									><strong>Root pattern:</strong>&nbsp;—</span
-								>
-								<span
-									><strong>Current field:</strong
-									>&nbsp;—</span
-								>
-								<span
-									><strong>Recommended move:</strong
-									>&nbsp;—</span
-								>
-							</div>
-
-							<div class="fieldCompass">
-								<div class="fieldCompassLabel">
+<div class="pairingExplain" id="pairingExplain">
+<span><strong>Root pattern:</strong> —</span>
+<span><strong>Current field:</strong> —</span>
+<span><strong>Recommended move:</strong> —</span>
+</div>
+<div class="fieldCompass">
+<div class="fieldCompassLabel">
 									Field Compass
 								</div>
-								<div class="fieldCompassGrid">
-									<div class="fieldCompassRead">
-										<div class="fieldCompassMiniLabel">
+<div class="fieldCompassGrid">
+<div class="fieldCompassRead">
+<div class="fieldCompassMiniLabel">
 											Compass Read
 										</div>
-										<div
-											class="fieldCompassState"
-											id="fieldCompassState"
-										>
+<div class="fieldCompassState" id="fieldCompassState">
 											—
 										</div>
-										<div
-											class="fieldCompassText"
-											id="fieldCompassText"
-										>
+<div class="fieldCompassText" id="fieldCompassText">
 											Waiting for field direction.
 										</div>
-									</div>
-
-									<div class="fieldCompassBalance">
-										<div class="fieldCompassMiniLabel">
+</div>
+<div class="fieldCompassBalance">
+<div class="fieldCompassMiniLabel">
 											Load Balance
 										</div>
-
-										<div class="loadBalanceRows">
-											<div class="loadBalanceRow">
-												<div class="loadBalanceTop">
-													<span
-														class="loadBalanceName"
-														>Capacity</span
-													>
-													<span
-														class="loadBalanceBand"
-														id="fieldCompassCapacityBand"
-														>—</span
-													>
-													<strong
-														id="fieldCompassCapacityValue"
-														>0.00</strong
-													>
-												</div>
-												<div class="loadBalanceTrack">
-													<span
-														id="fieldCompassCapacityBar"
-													></span>
-												</div>
-											</div>
-
-											<div class="loadBalanceRow">
-												<div class="loadBalanceTop">
-													<span
-														class="loadBalanceName"
-														>Load</span
-													>
-													<span
-														class="loadBalanceBand"
-														id="fieldCompassLoadBand"
-														>—</span
-													>
-													<strong
-														id="fieldCompassLoadValue"
-														>0.00</strong
-													>
-												</div>
-												<div class="loadBalanceTrack">
-													<span
-														id="fieldCompassLoadBar"
-													></span>
-												</div>
-											</div>
-
-											<div class="loadBalanceRow">
-												<div class="loadBalanceTop">
-													<span
-														class="loadBalanceName"
-														>Regulation</span
-													>
-													<span
-														class="loadBalanceBand"
-														id="fieldCompassRegulationBand"
-														>—</span
-													>
-													<strong
-														id="fieldCompassRegulationValue"
-														>0.00</strong
-													>
-												</div>
-												<div class="loadBalanceTrack">
-													<span
-														id="fieldCompassRegulationBar"
-													></span>
-												</div>
-											</div>
-										</div>
-
-										<div
-											class="fieldCompassGaugeNote"
-											id="fieldCompassGaugeNote"
-										>
+<div class="loadBalanceRows">
+<div class="loadBalanceRow">
+<div class="loadBalanceTop">
+<span class="loadBalanceName">Capacity</span>
+<span class="loadBalanceBand" id="fieldCompassCapacityBand">—</span>
+<strong id="fieldCompassCapacityValue">0.00</strong>
+</div>
+<div class="loadBalanceTrack">
+<span id="fieldCompassCapacityBar"></span>
+</div>
+</div>
+<div class="loadBalanceRow">
+<div class="loadBalanceTop">
+<span class="loadBalanceName">Load</span>
+<span class="loadBalanceBand" id="fieldCompassLoadBand">—</span>
+<strong id="fieldCompassLoadValue">0.00</strong>
+</div>
+<div class="loadBalanceTrack">
+<span id="fieldCompassLoadBar"></span>
+</div>
+</div>
+<div class="loadBalanceRow">
+<div class="loadBalanceTop">
+<span class="loadBalanceName">Regulation</span>
+<span class="loadBalanceBand" id="fieldCompassRegulationBand">—</span>
+<strong id="fieldCompassRegulationValue">0.00</strong>
+</div>
+<div class="loadBalanceTrack">
+<span id="fieldCompassRegulationBar"></span>
+</div>
+</div>
+</div>
+<div class="fieldCompassGaugeNote" id="fieldCompassGaugeNote">
 											Waiting for load balance.
 										</div>
-									</div>
-								</div>
-							</div>
-
-							<div class="interactionMap">
-								<div class="interactionMapLabel">
+</div>
+</div>
+</div>
+<div class="interactionMap">
+<div class="interactionMapLabel">
 									Root Pattern × Current Field → Recommended
 									Move
 								</div>
-
-								<div class="interactionMapGrid">
-									<div class="interactionNode">
-										<div class="interactionNodeLabel">
+<div class="interactionMapGrid">
+<div class="interactionNode">
+<div class="interactionNodeLabel">
 											Root Pattern
 										</div>
-										<div
-											class="interactionNodeName"
-											id="interactionSystemName"
-										>
+<div class="interactionNodeName" id="interactionSystemName">
 											—
 										</div>
-										<div
-											class="interactionNodeText"
-											id="interactionSystemText"
-										>
+<div class="interactionNodeText" id="interactionSystemText">
 											Waiting for root signal.
 										</div>
-									</div>
-
-									<div class="interactionOperator">×</div>
-
-									<div class="interactionNode">
-										<div class="interactionNodeLabel">
+</div>
+<div class="interactionOperator">×</div>
+<div class="interactionNode">
+<div class="interactionNodeLabel">
 											Current Field
 										</div>
-										<div
-											class="interactionNodeName"
-											id="interactionFieldName"
-										>
+<div class="interactionNodeName" id="interactionFieldName">
 											—
 										</div>
-										<div
-											class="interactionNodeText"
-											id="interactionFieldText"
-										>
+<div class="interactionNodeText" id="interactionFieldText">
 											Waiting for current field.
 										</div>
-									</div>
-
-									<div class="interactionOperator">→</div>
-
-									<div class="interactionNode move">
-										<div class="interactionNodeLabel">
+</div>
+<div class="interactionOperator">→</div>
+<div class="interactionNode move">
+<div class="interactionNodeLabel">
 											Recommended Move
 										</div>
-										<div
-											class="interactionNodeName"
-											id="interactionMoveName"
-										>
+<div class="interactionNodeName" id="interactionMoveName">
 											—
 										</div>
-										<div
-											class="interactionNodeText"
-											id="interactionMoveText"
-										>
+<div class="interactionNodeText" id="interactionMoveText">
 											Waiting for best move.
 										</div>
-									</div>
-								</div>
-							</div>
-
-							<div class="motionStrip">
-								<div class="motionMini">
-									<div class="motionMiniLabel">
+</div>
+</div>
+</div>
+<div class="motionStrip">
+<div class="motionMini">
+<div class="motionMiniLabel">
 										Motion Style
 									</div>
-									<div
-										class="motionMiniValue"
-										id="topMotionStyle"
-									>
+<div class="motionMiniValue" id="topMotionStyle">
 										—
 									</div>
-								</div>
-
-								<div class="motionMini">
-									<div class="motionMiniLabel">
+</div>
+<div class="motionMini">
+<div class="motionMiniLabel">
 										How to read it
 									</div>
-									<div
-										class="motionMiniText"
-										id="topMotionStyleRead"
-									>
+<div class="motionMiniText" id="topMotionStyleRead">
 										Waiting for motion style read.
 									</div>
-								</div>
-							</div>
-
-							<p class="todayRead" id="dailyTodayRead">
+</div>
+</div>
+<p class="todayRead" id="dailyTodayRead">
 								Waiting for chart calculation. Lucy.OS will read
 								your root pattern inside the current field.
 							</p>
-
-							<div class="realLifeBlock">
-								<div class="realLifeLabel">
+<div class="realLifeBlock">
+<div class="realLifeLabel">
 									In Real Life, This Means
 								</div>
-								<div class="realLifeText" id="dailyRealLife">
+<div class="realLifeText" id="dailyRealLife">
 									Waiting for plain-life translation.
 								</div>
-							</div>
-
-							<div class="guidanceGrid">
-								<div class="guidanceBlock">
-									<div class="guidanceLabel">
+</div>
+<div class="guidanceGrid">
+<div class="guidanceBlock">
+<div class="guidanceLabel">
 										What to lean into
 									</div>
-									<div
-										class="guidanceText"
-										id="dailyLeanInto"
-									>
+<div class="guidanceText" id="dailyLeanInto">
 										—
 									</div>
-								</div>
-
-								<div class="guidanceBlock">
-									<div class="guidanceLabel">
+</div>
+<div class="guidanceBlock">
+<div class="guidanceLabel">
 										What to watch for
 									</div>
-									<div
-										class="guidanceText"
-										id="dailyWatchFor"
-									>
+<div class="guidanceText" id="dailyWatchFor">
 										—
 									</div>
-								</div>
-
-								<div class="guidanceBlock full">
-									<div class="guidanceLabel">
+</div>
+<div class="guidanceBlock full">
+<div class="guidanceLabel">
 										One Good Move
 									</div>
-									<div
-										class="guidanceText"
-										id="dailyGoodMove"
-									>
+<div class="guidanceText" id="dailyGoodMove">
 										—
 									</div>
-								</div>
-
-								<div class="guidanceBlock full">
-									<div class="guidanceLabel">
+</div>
+<div class="guidanceBlock full">
+<div class="guidanceLabel">
 										Return to yourself by
 									</div>
-									<div class="guidanceText" id="dailyReturn">
+<div class="guidanceText" id="dailyReturn">
 										—
 									</div>
-								</div>
-							</div>
-
-							<div class="todayOutlookLine" id="todayOutlookLine">
+</div>
+</div>
+<div class="todayOutlookLine" id="todayOutlookLine">
 								Current Field Direction: <span>Trend: —</span> ·
 								Driver: — · —
 							</div>
-
-							<div
-								class="topFieldUndertoneBlock"
-								id="topFieldUndertoneBlock"
-							>
-								<div class="fieldUndertoneLabel">
+<div class="topFieldUndertoneBlock" id="topFieldUndertoneBlock">
+<div class="fieldUndertoneLabel">
 									Field Undertone
 								</div>
-								<div
-									class="fieldUndertoneTitle"
-									id="topFieldUndertoneTitle"
-								>
+<div class="fieldUndertoneTitle" id="topFieldUndertoneTitle">
 									No strong undertone
 								</div>
-								<div
-									class="fieldUndertoneText"
-									id="topFieldUndertoneText"
-								>
+<div class="fieldUndertoneText" id="topFieldUndertoneText">
 									No secondary field is close enough to change
 									the read.
 								</div>
-								<div class="fieldUndertoneHelp">
+<div class="fieldUndertoneHelp">
 									Close second-place field. Adds texture, does
 									not replace the main field.
 								</div>
-								<div
-									class="fieldUndertoneMeta"
-									id="topFieldUndertoneMeta"
-								>
+<div class="fieldUndertoneMeta" id="topFieldUndertoneMeta">
 									Secondary field stays in debug only.
 								</div>
-							</div>
-						</div>
-					</section>
+</div>
+</div>
+</section>
 
-					<section class="liveFieldDashboardCard">
-						<div class="liveFieldDashboardHeader">
-							<div>
-								<h2>Live Field Dashboard</h2>
-								<p>
+<section class="liveFieldDashboardCard">
+<div class="liveFieldDashboardHeader">
+<div>
+<h2>Live Field Dashboard</h2>
+<p>
 									A quick scan of today’s pressure, movement,
 									clarity, contact, and regulation capacity.
 								</p>
-								<p class="liveFieldDashboardClarityLine">
+<p class="liveFieldDashboardClarityLine">
 									This dashboard shows shared field conditions — the
 									atmosphere of the day, not your personal mood or
 									behavior.
 								</p>
-							</div>
-
-							<div class="chipRow" style="margin-top: 0">
-								<span
-									class="chip violet"
-									id="liveDashboardStateChip"
-									>State: —</span
-								>
-								<span
-									class="chip field"
-									id="liveDashboardFieldChip"
-									>Field: —</span
-								>
-							</div>
-						</div>
-
-						<div class="liveDashboardExplanation">
-							<div class="liveDashboardExplanationBlock">
-								<div class="liveDashboardExplanationLabel">
+</div>
+<div class="chipRow" style="margin-top: 0">
+<span class="chip violet" id="liveDashboardStateChip">State: —</span>
+<span class="chip field" id="liveDashboardFieldChip">Field: —</span>
+</div>
+</div>
+<div class="liveDashboardExplanation">
+<div class="liveDashboardExplanationBlock">
+<div class="liveDashboardExplanationLabel">
 									How to read this
 								</div>
-								<div
-									class="liveDashboardExplanationText"
-									id="liveDashboardHowToRead"
-								>
+<div class="liveDashboardExplanationText" id="liveDashboardHowToRead">
 									This dashboard shows shared field conditions — the
 									atmosphere of the day, not your personal mood or
-									behavior.<br /><br />
+									behavior.<br/><br/>
 									It reflects what is loud in the environment and how the
 									current field may interact with your pattern.
 								</div>
-							</div>
-
-							<div class="liveDashboardExplanationBlock">
-								<div class="liveDashboardExplanationLabel">
+</div>
+<div class="liveDashboardExplanationBlock">
+<div class="liveDashboardExplanationLabel">
 									Today’s strongest influences
 								</div>
-								<div
-									class="liveDashboardExplanationText"
-									id="liveDashboardInfluenceSentence"
-								>
+<div class="liveDashboardExplanationText" id="liveDashboardInfluenceSentence">
 									The strongest visible influence is the overall field
 									pattern. Load, regulation, and momentum shape how the
 									day is read.
 								</div>
-							</div>
-						</div>
-
-						<div class="liveDashboardDayType">
-							<div class="liveDashboardDayTypeTop">
-								<div class="liveDashboardDayTypeLabel">
+</div>
+</div>
+<div class="liveDashboardDayType">
+<div class="liveDashboardDayTypeTop">
+<div class="liveDashboardDayTypeLabel">
 									Today’s Field Type
 								</div>
-								<div
-									class="liveDashboardDayTypeUse"
-									id="liveDashboardBestUse"
-								>
+<div class="liveDashboardDayTypeUse" id="liveDashboardBestUse">
 									Best use: —
 								</div>
-							</div>
-							<div
-								class="liveDashboardDayTypeTitle"
-								id="liveDashboardDayTypeTitle"
-							>
+</div>
+<div class="liveDashboardDayTypeTitle" id="liveDashboardDayTypeTitle">
 								Waiting for field type
 							</div>
-							<div
-								class="liveDashboardDayTypeText"
-								id="liveDashboardDayTypeText"
-							>
+<div class="liveDashboardDayTypeText" id="liveDashboardDayTypeText">
 								Calculate to see today’s compact field-type
 								read.
 							</div>
-						</div>
-
-						<div class="liveDashboardGrid" id="liveDashboardGrid">
-							<div class="liveDashboardMetric metric-signal">
-								<div class="liveDashboardMetricTop">
-									<div class="liveDashboardIcon">⌁</div>
-									<div
-										class="liveDashboardScore"
-										id="liveDashboardFieldSignalScore"
-									>
+</div>
+<div class="liveDashboardGrid" id="liveDashboardGrid">
+<div class="liveDashboardMetric metric-signal">
+<div class="liveDashboardMetricTop">
+<div class="liveDashboardIcon">⌁</div>
+<div class="liveDashboardScore" id="liveDashboardFieldSignalScore">
 										—<span>/10</span>
-									</div>
-								</div>
-								<div class="liveDashboardLabel">
+</div>
+</div>
+<div class="liveDashboardLabel">
 									Field Signal
 								</div>
-								<div
-									class="liveDashboardText"
-									id="liveDashboardFieldSignalText"
-								>
+<div class="liveDashboardText" id="liveDashboardFieldSignalText">
 									Overall field strength today.
 								</div>
-								<div class="liveDashboardMeter">
-									<span
-										id="liveDashboardFieldSignalBar"
-									></span>
-								</div>
-								<div
-									class="liveDashboardBand"
-									id="liveDashboardFieldSignalBand"
-								>
+<div class="liveDashboardMeter">
+<span id="liveDashboardFieldSignalBar"></span>
+</div>
+<div class="liveDashboardBand" id="liveDashboardFieldSignalBand">
 									Waiting
 								</div>
-							</div>
-
-							<div class="liveDashboardMetric metric-momentum">
-								<div class="liveDashboardMetricTop">
-									<div class="liveDashboardIcon">↗</div>
-									<div
-										class="liveDashboardScore"
-										id="liveDashboardMomentumScore"
-									>
+</div>
+<div class="liveDashboardMetric metric-momentum">
+<div class="liveDashboardMetricTop">
+<div class="liveDashboardIcon">↗</div>
+<div class="liveDashboardScore" id="liveDashboardMomentumScore">
 										—<span>/10</span>
-									</div>
-								</div>
-								<div class="liveDashboardLabel">Momentum</div>
-								<div
-									class="liveDashboardText"
-									id="liveDashboardMomentumText"
-								>
+</div>
+</div>
+<div class="liveDashboardLabel">Momentum</div>
+<div class="liveDashboardText" id="liveDashboardMomentumText">
 									How much usable movement is available.
 								</div>
-								<div class="liveDashboardMeter">
-									<span id="liveDashboardMomentumBar"></span>
-								</div>
-								<div
-									class="liveDashboardBand"
-									id="liveDashboardMomentumBand"
-								>
+<div class="liveDashboardMeter">
+<span id="liveDashboardMomentumBar"></span>
+</div>
+<div class="liveDashboardBand" id="liveDashboardMomentumBand">
 									Waiting
 								</div>
-							</div>
-
-							<div class="liveDashboardMetric metric-load">
-								<div class="liveDashboardMetricTop">
-									<div class="liveDashboardIcon">▰</div>
-									<div
-										class="liveDashboardScore"
-										id="liveDashboardSystemLoadScore"
-									>
+</div>
+<div class="liveDashboardMetric metric-load">
+<div class="liveDashboardMetricTop">
+<div class="liveDashboardIcon">▰</div>
+<div class="liveDashboardScore" id="liveDashboardSystemLoadScore">
 										—<span>/10</span>
-									</div>
-								</div>
-								<div class="liveDashboardLabel">
+</div>
+</div>
+<div class="liveDashboardLabel">
 									System Load
 								</div>
-								<div
-									class="liveDashboardText"
-									id="liveDashboardSystemLoadText"
-								>
+<div class="liveDashboardText" id="liveDashboardSystemLoadText">
 									How much pressure the system is carrying.
 								</div>
-								<div class="liveDashboardMeter">
-									<span
-										id="liveDashboardSystemLoadBar"
-									></span>
-								</div>
-								<div
-									class="liveDashboardBand"
-									id="liveDashboardSystemLoadBand"
-								>
+<div class="liveDashboardMeter">
+<span id="liveDashboardSystemLoadBar"></span>
+</div>
+<div class="liveDashboardBand" id="liveDashboardSystemLoadBand">
 									Waiting
 								</div>
-							</div>
-
-							<div class="liveDashboardMetric metric-regulation">
-								<div class="liveDashboardMetricTop">
-									<div class="liveDashboardIcon">◉</div>
-									<div
-										class="liveDashboardScore"
-										id="liveDashboardRegulationScore"
-									>
+</div>
+<div class="liveDashboardMetric metric-regulation">
+<div class="liveDashboardMetricTop">
+<div class="liveDashboardIcon">◉</div>
+<div class="liveDashboardScore" id="liveDashboardRegulationScore">
 										—<span>/10</span>
-									</div>
-								</div>
-								<div class="liveDashboardLabel">Regulation</div>
-								<div
-									class="liveDashboardText"
-									id="liveDashboardRegulationText"
-								>
+</div>
+</div>
+<div class="liveDashboardLabel">Regulation</div>
+<div class="liveDashboardText" id="liveDashboardRegulationText">
 									How much pacing and containment are
 									available.
 								</div>
-								<div class="liveDashboardMeter">
-									<span
-										id="liveDashboardRegulationBar"
-									></span>
-								</div>
-								<div
-									class="liveDashboardBand"
-									id="liveDashboardRegulationBand"
-								>
+<div class="liveDashboardMeter">
+<span id="liveDashboardRegulationBar"></span>
+</div>
+<div class="liveDashboardBand" id="liveDashboardRegulationBand">
 									Waiting
 								</div>
-							</div>
-
-							<div class="liveDashboardMetric metric-clarity">
-								<div class="liveDashboardMetricTop">
-									<div class="liveDashboardIcon">◌</div>
-									<div
-										class="liveDashboardScore"
-										id="liveDashboardClarityWindowScore"
-									>
+</div>
+<div class="liveDashboardMetric metric-clarity">
+<div class="liveDashboardMetricTop">
+<div class="liveDashboardIcon">◌</div>
+<div class="liveDashboardScore" id="liveDashboardClarityWindowScore">
 										—<span>/10</span>
-									</div>
-								</div>
-								<div class="liveDashboardLabel">
+</div>
+</div>
+<div class="liveDashboardLabel">
 									Clarity Window
 								</div>
-								<div
-									class="liveDashboardText"
-									id="liveDashboardClarityWindowText"
-								>
+<div class="liveDashboardText" id="liveDashboardClarityWindowText">
 									How readable the signal is right now.
 								</div>
-								<div class="liveDashboardMeter">
-									<span
-										id="liveDashboardClarityWindowBar"
-									></span>
-								</div>
-								<div
-									class="liveDashboardBand"
-									id="liveDashboardClarityWindowBand"
-								>
+<div class="liveDashboardMeter">
+<span id="liveDashboardClarityWindowBar"></span>
+</div>
+<div class="liveDashboardBand" id="liveDashboardClarityWindowBand">
 									Waiting
 								</div>
-							</div>
-
-							<div class="liveDashboardMetric metric-decision">
-								<div class="liveDashboardMetricTop">
-									<div class="liveDashboardIcon">⟡</div>
-									<div
-										class="liveDashboardScore"
-										id="liveDashboardDecisionFlowScore"
-									>
+</div>
+<div class="liveDashboardMetric metric-decision">
+<div class="liveDashboardMetricTop">
+<div class="liveDashboardIcon">⟡</div>
+<div class="liveDashboardScore" id="liveDashboardDecisionFlowScore">
 										—<span>/10</span>
-									</div>
-								</div>
-								<div class="liveDashboardLabel">
+</div>
+</div>
+<div class="liveDashboardLabel">
 									Decision Flow
 								</div>
-								<div
-									class="liveDashboardText"
-									id="liveDashboardDecisionFlowText"
-								>
+<div class="liveDashboardText" id="liveDashboardDecisionFlowText">
 									How cleanly choices can move today.
 								</div>
-								<div class="liveDashboardMeter">
-									<span
-										id="liveDashboardDecisionFlowBar"
-									></span>
-								</div>
-								<div
-									class="liveDashboardBand"
-									id="liveDashboardDecisionFlowBand"
-								>
+<div class="liveDashboardMeter">
+<span id="liveDashboardDecisionFlowBar"></span>
+</div>
+<div class="liveDashboardBand" id="liveDashboardDecisionFlowBand">
 									Waiting
 								</div>
-							</div>
-
-							<div class="liveDashboardMetric metric-social">
-								<div class="liveDashboardMetricTop">
-									<div class="liveDashboardIcon">∞</div>
-									<div
-										class="liveDashboardScore"
-										id="liveDashboardSocialFieldScore"
-									>
+</div>
+<div class="liveDashboardMetric metric-social">
+<div class="liveDashboardMetricTop">
+<div class="liveDashboardIcon">∞</div>
+<div class="liveDashboardScore" id="liveDashboardSocialFieldScore">
 										—<span>/10</span>
-									</div>
-								</div>
-								<div class="liveDashboardLabel">
+</div>
+</div>
+<div class="liveDashboardLabel">
 									Social Field
 								</div>
-								<div
-									class="liveDashboardText"
-									id="liveDashboardSocialFieldText"
-								>
+<div class="liveDashboardText" id="liveDashboardSocialFieldText">
 									How active tone, contact, or relational
 									feedback is.
 								</div>
-								<div class="liveDashboardMeter">
-									<span
-										id="liveDashboardSocialFieldBar"
-									></span>
-								</div>
-								<div
-									class="liveDashboardBand"
-									id="liveDashboardSocialFieldBand"
-								>
+<div class="liveDashboardMeter">
+<span id="liveDashboardSocialFieldBar"></span>
+</div>
+<div class="liveDashboardBand" id="liveDashboardSocialFieldBand">
 									Waiting
 								</div>
-							</div>
-
-							<div class="liveDashboardMetric metric-sensitivity">
-								<div class="liveDashboardMetricTop">
-									<div class="liveDashboardIcon">≋</div>
-									<div
-										class="liveDashboardScore"
-										id="liveDashboardFieldSensitivityScore"
-									>
+</div>
+<div class="liveDashboardMetric metric-sensitivity">
+<div class="liveDashboardMetricTop">
+<div class="liveDashboardIcon">≋</div>
+<div class="liveDashboardScore" id="liveDashboardFieldSensitivityScore">
 										—<span>/10</span>
-									</div>
-								</div>
-								<div class="liveDashboardLabel">
+</div>
+</div>
+<div class="liveDashboardLabel">
 									Field Sensitivity
 								</div>
-								<div
-									class="liveDashboardText"
-									id="liveDashboardFieldSensitivityText"
-								>
+<div class="liveDashboardText" id="liveDashboardFieldSensitivityText">
 									How much subtle or atmospheric signal is
 									active.
 								</div>
-								<div class="liveDashboardMeter">
-									<span
-										id="liveDashboardFieldSensitivityBar"
-									></span>
-								</div>
-								<div
-									class="liveDashboardBand"
-									id="liveDashboardFieldSensitivityBand"
-								>
+<div class="liveDashboardMeter">
+<span id="liveDashboardFieldSensitivityBar"></span>
+</div>
+<div class="liveDashboardBand" id="liveDashboardFieldSensitivityBand">
 									Waiting
 								</div>
-							</div>
-
-							<div class="liveDashboardMetric metric-expansion">
-								<div class="liveDashboardMetricTop">
-									<div class="liveDashboardIcon">◎</div>
-									<div
-										class="liveDashboardScore"
-										id="liveDashboardExpansionPotentialScore"
-									>
+</div>
+<div class="liveDashboardMetric metric-expansion">
+<div class="liveDashboardMetricTop">
+<div class="liveDashboardIcon">◎</div>
+<div class="liveDashboardScore" id="liveDashboardExpansionPotentialScore">
 										—<span>/10</span>
-									</div>
-								</div>
-								<div class="liveDashboardLabel">
+</div>
+</div>
+<div class="liveDashboardLabel">
 									Expansion Potential
 								</div>
-								<div
-									class="liveDashboardText"
-									id="liveDashboardExpansionPotentialText"
-								>
+<div class="liveDashboardText" id="liveDashboardExpansionPotentialText">
 									How much widening, meaning, or opportunity
 									is available.
 								</div>
-								<div class="liveDashboardMeter">
-									<span
-										id="liveDashboardExpansionPotentialBar"
-									></span>
-								</div>
-								<div
-									class="liveDashboardBand"
-									id="liveDashboardExpansionPotentialBand"
-								>
+<div class="liveDashboardMeter">
+<span id="liveDashboardExpansionPotentialBar"></span>
+</div>
+<div class="liveDashboardBand" id="liveDashboardExpansionPotentialBand">
 									Waiting
 								</div>
-							</div>
-						</div>
-
-						<div class="liveDashboardNote">
+</div>
+</div>
+<div class="liveDashboardNote">
 							Scores are simplified 1–10 translations of the current
 							field. They explain the read; they do not change the
 							engine or field selection.
 						</div>
-					</section>
+</section>
 
-					<section class="outlookCard">
-						<div class="outlookHeader">
-							<div>
-								<h2>Current Field Direction</h2>
-								<p>
+<section class="outlookCard">
+<div class="outlookHeader">
+<div>
+<h2>Current Field Direction</h2>
+<p>
 									The main takeaway from today’s live field.
 									Moonstamp adds timing texture, but your
 									harmonic profile stays primary.
 								</p>
-							</div>
-
-							<div class="chipRow" style="margin-top: 0">
-								<span class="chip violet" id="outlookStateChip"
-									>State: —</span
-								>
-								<span class="chip field" id="outlookFieldChip"
-									>Field: —</span
-								>
-							</div>
-						</div>
-
-						<div class="outlookGrid">
-							<div
-								class="outlookBlock primary"
-								id="outlookDirectionBlock"
-							>
-								<div class="outlookLabel">Field Direction</div>
-								<div
-									class="outlookValue"
-									id="outlookDirectionTitle"
-								>
+</div>
+<div class="chipRow" style="margin-top: 0">
+<span class="chip violet" id="outlookStateChip">State: —</span>
+<span class="chip field" id="outlookFieldChip">Field: —</span>
+</div>
+</div>
+<div class="outlookGrid">
+<div class="outlookBlock primary" id="outlookDirectionBlock">
+<div class="outlookLabel">Field Direction</div>
+<div class="outlookValue" id="outlookDirectionTitle">
 									—
 								</div>
-								<div
-									class="outlookText"
-									id="outlookDirectionText"
-								>
+<div class="outlookText" id="outlookDirectionText">
 									Waiting for field direction.
 								</div>
-
-								<div
-									class="fieldUndertoneBlock"
-									id="fieldUndertoneBlock"
-								>
-									<div class="fieldUndertoneLabel">
+<div class="fieldUndertoneBlock" id="fieldUndertoneBlock">
+<div class="fieldUndertoneLabel">
 										Field Undertone
 									</div>
-									<div
-										class="fieldUndertoneTitle"
-										id="fieldUndertoneTitle"
-									>
+<div class="fieldUndertoneTitle" id="fieldUndertoneTitle">
 										No strong undertone
 									</div>
-									<div
-										class="fieldUndertoneText"
-										id="fieldUndertoneText"
-									>
+<div class="fieldUndertoneText" id="fieldUndertoneText">
 										No secondary field is close enough to
 										change the read.
 									</div>
-									<div class="fieldUndertoneHelp">
+<div class="fieldUndertoneHelp">
 										Field Undertone is the close
 										second-place field. It adds background
 										texture without replacing the selected
 										Current Field.
 									</div>
-									<div
-										class="fieldUndertoneMeta"
-										id="fieldUndertoneMeta"
-									>
+<div class="fieldUndertoneMeta" id="fieldUndertoneMeta">
 										Secondary field stays in debug only.
 									</div>
-								</div>
-
-								<div
-									class="moonstampModifierBlock"
-									id="moonstampModifierBlock"
-								>
-									<div class="moonstampModifierLabel">
+</div>
+<div class="moonstampModifierBlock" id="moonstampModifierBlock">
+<div class="moonstampModifierLabel">
 										Moonstamp Modifier
 									</div>
-									<div
-										class="moonstampModifierTitle"
-										id="moonstampModifierTitle"
-									>
+<div class="moonstampModifierTitle" id="moonstampModifierTitle">
 										Moonstamp modifier pending
 									</div>
-									<div
-										class="moonstampModifierText"
-										id="moonstampModifierText"
-									>
+<div class="moonstampModifierText" id="moonstampModifierText">
 										The lunar field adds timing texture to
 										today’s read when Moonstamp data is
 										available.
 									</div>
-									<div
-										class="moonstampModifierMeta"
-										id="moonstampModifierMeta"
-									>
+<div class="moonstampModifierMeta" id="moonstampModifierMeta">
 										Use it as a field modifier, not an
 										identity label.
 									</div>
-								</div>
-							</div>
-
-							<div class="outlookBlock now">
-								<div class="outlookLabel">Now</div>
-								<div class="outlookValue" id="outlookNowState">
+</div>
+</div>
+<div class="outlookBlock now">
+<div class="outlookLabel">Now</div>
+<div class="outlookValue" id="outlookNowState">
 									—
 								</div>
-								<div class="outlookText" id="outlookNowText">
+<div class="outlookText" id="outlookNowText">
 									Waiting for live state.
 								</div>
-							</div>
-
-							<div class="outlookBlock forecastShell">
-								<div class="outlookLabel">
+</div>
+<div class="outlookBlock forecastShell">
+<div class="outlookLabel">
 									Next Timing Window
 								</div>
-								<div
-									class="outlookValue"
-									id="outlookShortState"
-								>
+<div class="outlookValue" id="outlookShortState">
 									—
 								</div>
-								<div class="outlookText" id="outlookShortText">
+<div class="outlookText" id="outlookShortText">
 									Waiting for next timing window.
 								</div>
-							</div>
-
-							<div class="outlookBlock forecastShell">
-								<div class="outlookLabel">
+</div>
+<div class="outlookBlock forecastShell">
+<div class="outlookLabel">
 									Later Field Window
 								</div>
-								<div class="outlookValue" id="outlook24State">
+<div class="outlookValue" id="outlook24State">
 									—
 								</div>
-								<div class="outlookText" id="outlook24Text">
+<div class="outlookText" id="outlook24Text">
 									Waiting for later field window.
 								</div>
-							</div>
-						</div>
-
-						<div class="outlookNote">
+</div>
+</div>
+<div class="outlookNote">
 							Moonstamp reads the timing field. Lucy.OS reads your
 							pattern inside that field. The lunar modifier adds
 							context without overriding the main Lucy.OS read.
 						</div>
-					</section>
+</section>
+</div>
 
-					<section class="regulationSupportCard" id="supportSection">
-						<div class="sectionDestinationLabel">
-							<span>Support</span>
-							<strong>What helps the system regulate</strong>
+<span aria-hidden="true" class="sectionAnchor" id="landingSection"></span>
+<div class="sectionDestinationLabel">
+<span>Landing</span>
+<strong>How this field lands in you</strong>
+</div>
+<section class="personalLandingCard" id="personalLandingCard">
+<div class="personalLandingKicker">Lucy.OS read layer</div>
+<h2 class="personalLandingTitle" id="personalLandingTitle">
+							Same field. Personal landing.
+						</h2>
+<div class="personalLandingText" id="personalLandingText">
+							The field is shared. The landing is personal. Lucy.OS reads your stable pattern against today’s field, then translates what helps you return to coherence.
 						</div>
-						<div class="regulationSupportHeader">
-							<div>
-								<h2>Regulation Supports</h2>
-								<p>
+<div class="personalLandingLine" id="personalLandingLine">
+							Lucy.OS reads how the weather lands in you.
+						</div>
+<div class="landingClarifier">
+<span>Landing note</span>
+<p>Relational field means contact is the channel. Your landing may be connection, caution, distance, or withdrawal.</p>
+</div>
+</section>
+<section class="plainReadCard" id="plainReadCard">
+<div class="plainReadKicker">Plain Read</div>
+<div class="plainReadText" id="plainReadText">
+							Calculate to see today’s read in plain language.
+						</div>
+<div class="plainReadGrid">
+<div class="plainReadItem">
+<div class="plainReadLabel">One Good Move</div>
+<div class="plainReadValue" id="plainReadMove">—</div>
+</div>
+<div class="plainReadItem">
+<div class="plainReadLabel">Do Not Overdo</div>
+<div class="plainReadValue" id="plainReadAvoid">—</div>
+</div>
+<div class="plainReadItem">
+<div class="plainReadLabel">Return Path</div>
+<div class="plainReadValue" id="plainReadReturn">—</div>
+</div>
+</div>
+</section>
+<section class="systemReadCard" id="systemReadCard">
+<div class="systemReadKicker">System Read</div>
+<div class="systemReadLine" id="systemReadLine">
+							Waiting for official Lucy.OS labels.
+						</div>
+<div class="systemReadClarifier" id="systemReadClarifier">
+							Official labels stay intact. Plain language comes first.
+						</div>
+</section>
+<section class="personalTranslationCard" id="personalTranslationCard">
+<div class="personalTranslationKicker">Personal Chart Translation</div>
+<div class="personalTranslationGrid">
+<div class="personalTranslationItem">
+<div class="personalTranslationLabel">Baseline Pattern</div>
+<div class="personalTranslationValue" id="personalBaselinePattern">—</div>
+</div>
+<div class="personalTranslationItem">
+<div class="personalTranslationLabel">Today’s Activation</div>
+<div class="personalTranslationValue" id="personalTodayActivation">—</div>
+</div>
+<div class="personalTranslationItem">
+<div class="personalTranslationLabel">Where This May Show Up</div>
+<div class="personalTranslationValue" id="personalWhereShowUp">—</div>
+</div>
+<div class="personalTranslationItem">
+<div class="personalTranslationLabel">Best Personal Move</div>
+<div class="personalTranslationValue" id="personalBestMove">—</div>
+</div>
+<div class="personalTranslationItem full">
+<div class="personalTranslationLabel">Not You / Just Today</div>
+<div class="personalTranslationValue" id="personalNotYou">—</div>
+</div>
+</div>
+</section>
+
+
+
+<section class="regulationSupportCard" id="supportSection">
+<div class="sectionDestinationLabel">
+<span>Support</span>
+<strong>What helps the system regulate</strong>
+</div>
+<div class="regulationSupportHeader">
+<div>
+<h2>Regulation Supports</h2>
+<p>
 									Practical supports for lowering input, staying
 									proportional, and making the next clean move.
 								</p>
-							</div>
-
-							<div class="chipRow" style="margin-top: 0">
-								<span
-									class="chip violet"
-									id="regulationStateChip"
-									>State: —</span
-								>
-								<span
-									class="chip field"
-									id="regulationFieldChip"
-									>Field: —</span
-								>
-							</div>
-						</div>
-
-						<div class="regulationSupportGrid">
-							<div class="regulationSupportBlock primary">
-								<div class="regulationSupportLabel">State</div>
-								<div
-									class="regulationSupportValue"
-									id="regulationSupportState"
-								>
+</div>
+<div class="chipRow" style="margin-top: 0">
+<span class="chip violet" id="regulationStateChip">State: —</span>
+<span class="chip field" id="regulationFieldChip">Field: —</span>
+</div>
+</div>
+<div class="regulationSupportGrid">
+<div class="regulationSupportBlock primary">
+<div class="regulationSupportLabel">State</div>
+<div class="regulationSupportValue" id="regulationSupportState">
 									—
 								</div>
-								<div
-									class="regulationSupportText"
-									id="regulationSupportStateText"
-								>
+<div class="regulationSupportText" id="regulationSupportStateText">
 									Waiting for regulation state.
 								</div>
-							</div>
-
-							<div class="regulationSupportBlock">
-								<div class="regulationSupportLabel">
+</div>
+<div class="regulationSupportBlock">
+<div class="regulationSupportLabel">
 									Best Support Today
 								</div>
-								<div
-									class="regulationSupportValue"
-									id="regulationSupportQuality"
-								>
+<div class="regulationSupportValue" id="regulationSupportQuality">
 									—
 								</div>
-								<div class="regulationSupportText">
+<div class="regulationSupportText">
 									Use these qualities to shape the room,
 									response, and pace.
 								</div>
-							</div>
-
-							<div class="regulationSupportBlock full">
-								<div class="regulationSupportLabel">Try First</div>
-								<ul
-									class="regulationSupportList"
-									id="regulationSupportTry"
-								>
-									<li>Waiting for support suggestions.</li>
-								</ul>
-							</div>
-
-							<div class="soundSupportCard">
-								<div class="soundSupportLabel">Suggested Sound Support</div>
-								<div class="soundSupportTitle">
-									Tone, texture, and listening environment for today’s regulation need.
-								</div>
-								<div class="soundSupportGrid">
-									<div class="soundSupportMini">
-										<span>Suggested Tone</span>
-										<strong id="soundSupportTone">—</strong>
-									</div>
-									<div class="soundSupportMini">
-										<span>Suggested Texture</span>
-										<strong id="soundSupportTexture">—</strong>
-									</div>
-									<div class="soundSupportMini">
-										<span>How to Use</span>
-										<strong id="soundSupportUse">—</strong>
-									</div>
-									<div class="soundSupportMini">
-										<span>If It Feels Like Too Much</span>
-										<strong id="soundSupportFallback">—</strong>
-									</div>
-								</div>
-								<div class="soundSupportNote" id="soundSupportNote">
-									Use sound as a sensory cue, not something to force.
-								</div>
-							</div>
-
-							<div class="regulationSupportBlock full">
-								<div class="regulationSupportLabel">Avoid</div>
-								<ul
-									class="regulationSupportList"
-									id="regulationSupportAvoid"
-								>
-									<li>Waiting for avoid notes.</li>
-								</ul>
-							</div>
-
-							<div class="regulationSupportBlock">
-								<div class="regulationSupportLabel">Why This Helps</div>
-								<div
-									class="regulationSupportText"
-									id="regulationSupportWhy"
-								>
+</div>
+<div class="regulationSupportBlock full">
+<div class="regulationSupportLabel">Try First</div>
+<ul class="regulationSupportList" id="regulationSupportTry">
+<li>Waiting for support suggestions.</li>
+</ul>
+</div>
+<div class="soundSupportCard">
+<div class="soundSupportLabel">Suggested Sound Support</div>
+<div class="soundSupportTitle">A sound environment matched to today’s regulation need.</div>
+<div class="soundSupportGrid">
+<div class="soundSupportMini">
+<span>Primary Sound</span>
+<strong id="soundSupportTone">—</strong>
+</div>
+<div class="soundSupportMini">
+<span>Why this helps</span>
+<strong id="soundSupportTexture">—</strong>
+</div>
+<div class="soundSupportMini">
+<span>Try</span>
+<strong id="soundSupportUse">—</strong>
+</div>
+<div class="soundSupportMini">
+<span>Avoid</span>
+<strong id="soundSupportFallback">—</strong>
+</div>
+</div>
+<div class="soundSupportNote" id="soundSupportNote">Lucy.OS does not only tell you what the field is. It helps you choose the sound environment your system can actually regulate inside.</div>
+</div>
+<div class="regulationSupportBlock full">
+<div class="regulationSupportLabel">Avoid</div>
+<ul class="regulationSupportList" id="regulationSupportAvoid">
+<li>Waiting for avoid notes.</li>
+</ul>
+</div>
+<div class="regulationSupportBlock">
+<div class="regulationSupportLabel">Why This Helps</div>
+<div class="regulationSupportText" id="regulationSupportWhy">
 									Waiting for regulation explanation.
 								</div>
-							</div>
-
-							<div class="regulationSupportBlock">
-								<div class="regulationSupportLabel">
+</div>
+<div class="regulationSupportBlock">
+<div class="regulationSupportLabel">
 									Optional Sound Support
 								</div>
-								<div
-									class="regulationSupportText"
-									id="regulationSupportMusic"
-								>
+<div class="regulationSupportText" id="regulationSupportMusic">
 									Waiting for music support.
 								</div>
-							</div>
-						</div>
-
-						<div class="regulationSupportNote">
+</div>
+</div>
+<div class="regulationSupportNote">
 							Practical, non-medical support suggestions for reducing
 							input, clarifying the next move, and making the read usable.
 						</div>
-					</section>
-
-					<section class="profileCard" id="youSection">
-						<div class="sectionDestinationLabel">
-							<span>You</span>
-							<strong>Your stable profile pattern</strong>
-						</div>
-						<div class="rootPatternExplainerCard">
-							<div class="sectionDestinationLabel">
-								<span>You are viewing</span>
-								<strong>You · Your root pattern</strong>
-							</div>
-							<div class="rootPatternKicker">Your Root Pattern</div>
-							<h2 id="rootPatternExplainerTitle">Root Pattern</h2>
-							<p id="rootPatternExplainerIntro">
+</section>
+<section class="profileCard" id="youSection">
+<div class="sectionDestinationLabel">
+<span>You</span>
+<strong>Your stable profile pattern</strong>
+</div>
+<div class="rootPatternExplainerCard">
+<div class="sectionDestinationLabel">
+<span>You are viewing</span>
+<strong>You · Your root pattern</strong>
+</div>
+<div class="rootPatternKicker">Your Root Pattern</div>
+<h2 id="rootPatternExplainerTitle">Root Pattern</h2>
+<p id="rootPatternExplainerIntro">
 								This is the stable pattern Lucy.OS reads before today’s field is applied.
 							</p>
-							<div class="rootPatternGrid">
-								<div>
-									<span>Gift</span>
-									<strong id="rootPatternGift">Waiting for root pattern.</strong>
-								</div>
-								<div>
-									<span>Under pressure</span>
-									<strong id="rootPatternPressure">Waiting for pressure pattern.</strong>
-								</div>
-								<div>
-									<span>What helps</span>
-									<strong id="rootPatternHelps">Waiting for stabilizing support.</strong>
-								</div>
-							</div>
-							<div class="rootPatternTodayLine" id="rootPatternTodayLine">
+<div class="rootPatternGrid">
+<div>
+<span>Gift</span>
+<strong id="rootPatternGift">Waiting for root pattern.</strong>
+</div>
+<div>
+<span>Under pressure</span>
+<strong id="rootPatternPressure">Waiting for pressure pattern.</strong>
+</div>
+<div>
+<span>What helps</span>
+<strong id="rootPatternHelps">Waiting for stabilizing support.</strong>
+</div>
+</div>
+<div class="rootPatternTodayLine" id="rootPatternTodayLine">
 								The live field changes; your root pattern explains how your system may receive, filter, and respond.
 							</div>
-						</div>
-						<div class="profileHeader">
-							<div>
-								<h2>Harmonic Profile</h2>
-								<p>
+</div>
+<div class="profileHeader">
+<div>
+<h2>Harmonic Profile</h2>
+<p>
 									Your root pattern, stabilizing support,
 									movement style, and overload pathway.
 									Today’s field shows what is active right now
 									— not who you are permanently.
 								</p>
-							</div>
-
-							<div class="chipRow">
-								<span class="chip gold" id="profileStateChip"
-									>Root Pattern</span
-								>
-								<span class="chip field" id="profileFieldChip"
-									>Field: —</span
-								>
-							</div>
-						</div>
-
-						<div class="profileGrid">
-							<div class="profileBlock">
-								<div class="profileLabel">Root Pattern</div>
-								<div class="profileValue" id="primaryHarmonic">
+</div>
+<div class="chipRow">
+<span class="chip gold" id="profileStateChip">Root Pattern</span>
+<span class="chip field" id="profileFieldChip">Field: —</span>
+</div>
+</div>
+<div class="profileGrid">
+<div class="profileBlock">
+<div class="profileLabel">Root Pattern</div>
+<div class="profileValue" id="primaryHarmonic">
 									—
 								</div>
-								<div class="profileDesc">
+<div class="profileDesc">
 									Your baseline signal pattern.
 								</div>
-								<div class="youArchitectureMeaning" id="youRootMeaning">
+<div class="youArchitectureMeaning" id="youRootMeaning">
 									Waiting for root pattern meaning.
 								</div>
-							</div>
-
-							<div class="profileBlock">
-								<div class="profileLabel">
+</div>
+<div class="profileBlock">
+<div class="profileLabel">
 									Stabilizing Support
 								</div>
-								<div class="profileValue" id="supportHarmonic">
+<div class="profileValue" id="supportHarmonic">
 									—
 								</div>
-								<div class="profileDesc">
+<div class="profileDesc">
 									What helps your system stay coherent.
 								</div>
-								<div class="youArchitectureMeaning" id="youSupportMeaning">
+<div class="youArchitectureMeaning" id="youSupportMeaning">
 									Waiting for stabilizing support meaning.
 								</div>
-							</div>
-
-							<div class="profileBlock">
-								<div class="profileLabel">
+</div>
+<div class="profileBlock">
+<div class="profileLabel">
 									Profile Translation
 								</div>
-								<div
-									class="profileValue"
-									id="profileTranslationLabel"
-								>
+<div class="profileValue" id="profileTranslationLabel">
 									—
 								</div>
-								<div class="profileDesc">
+<div class="profileDesc">
 									Your root pattern translated through your
 									stabilizing support.
 								</div>
-								<div class="youArchitectureMeaning" id="youProfileTranslationMeaning">
+<div class="youArchitectureMeaning" id="youProfileTranslationMeaning">
 									Waiting for profile translation meaning.
 								</div>
-							</div>
-
-							<div class="profileBlock">
-								<div class="profileLabel">Motion Style</div>
-								<div class="profileValue" id="motionStyle">
+</div>
+<div class="profileBlock">
+<div class="profileLabel">Motion Style</div>
+<div class="profileValue" id="motionStyle">
 									—
 								</div>
-								<div class="profileDesc">
+<div class="profileDesc">
 									How your signal tends to move when
 									activated.
 								</div>
-								<div class="profileDesc" id="motionStyleRead">
+<div class="profileDesc" id="motionStyleRead">
 									Waiting for motion style read.
 								</div>
-								<div class="youArchitectureMeaning" id="youMotionMeaning">
+<div class="youArchitectureMeaning" id="youMotionMeaning">
 									Waiting for motion style meaning.
 								</div>
-							</div>
-
-							<div class="profileBlock">
-								<div class="profileLabel">Overload Pathway</div>
-								<div
-									class="profileValue"
-									id="distortionHarmonic"
-								>
+</div>
+<div class="profileBlock">
+<div class="profileLabel">Overload Pathway</div>
+<div class="profileValue" id="distortionHarmonic">
 									—
 								</div>
-								<div class="profileDesc">
+<div class="profileDesc">
 									Where strain tends to route under pressure.
 								</div>
-								<div class="youArchitectureMeaning" id="youOverloadMeaning">
+<div class="youArchitectureMeaning" id="youOverloadMeaning">
 									Waiting for overload pathway meaning.
 								</div>
-							</div>
-
-							<div class="profileBlock wide">
-								<div class="profileLabel">Signal Quality</div>
-								<div class="profileValue" id="signalQuality">
+</div>
+<div class="profileBlock wide">
+<div class="profileLabel">Signal Quality</div>
+<div class="profileValue" id="signalQuality">
 									—
 								</div>
-								<div class="profileDesc">
+<div class="profileDesc">
 									The texture and amount of signal your system
 									tends to carry.
 								</div>
-								<div class="youArchitectureMeaning" id="youSignalMeaning">
+<div class="youArchitectureMeaning" id="youSignalMeaning">
 									Waiting for signal quality meaning.
 								</div>
-							</div>
-
-							<div class="profileBlock">
-								<div class="profileLabel">Today’s Field</div>
-								<div
-									class="profileValue"
-									id="todayFieldHarmonic"
-								>
+</div>
+<div class="profileBlock">
+<div class="profileLabel">Today’s Field</div>
+<div class="profileValue" id="todayFieldHarmonic">
 									—
 								</div>
-								<div class="profileDesc">
+<div class="profileDesc">
 									What the current timing field is activating.
 								</div>
-								<div class="youArchitectureMeaning" id="youTodayFieldMeaning">
+<div class="youArchitectureMeaning" id="youTodayFieldMeaning">
 									Waiting for today’s field meaning.
 								</div>
-							</div>
-
-							<div class="profileBlock wide">
-								<div class="profileLabel">Stability Method</div>
-								<div class="profileValue" id="stabilityMethod">
+</div>
+<div class="profileBlock wide">
+<div class="profileLabel">Stability Method</div>
+<div class="profileValue" id="stabilityMethod">
 									—
 								</div>
-								<div class="profileDesc">
+<div class="profileDesc">
 									How your system returns toward coherence.
 								</div>
-							</div>
-
-							<div class="profileBlock">
-								<div class="profileLabel">Overload Risk</div>
-								<div class="profileValue" id="overloadRisk">
+</div>
+<div class="profileBlock">
+<div class="profileLabel">Overload Risk</div>
+<div class="profileValue" id="overloadRisk">
 									—
 								</div>
-								<div class="profileDesc">
+<div class="profileDesc">
 									Where strain tends to collect.
 								</div>
-							</div>
-
-							<div class="profileBlock full">
-								<div class="profileLabel">Plain Read</div>
-								<div
-									class="guidanceText"
-									id="harmonicPlainRead"
-								>
+</div>
+<div class="profileBlock full">
+<div class="profileLabel">Plain Read</div>
+<div class="guidanceText" id="harmonicPlainRead">
 									Waiting for harmonic profile.
 								</div>
-							</div>
-						</div>
-					</section>
-
-					<section class="profileCard">
-						<div class="profileHeader">
-							<div>
-								<h2>Today’s Field Translation</h2>
-								<p>
+</div>
+</div>
+</section>
+<section class="profileCard">
+<div class="profileHeader">
+<div>
+<h2>Today’s Field Translation</h2>
+<p>
 									This turns today’s active field into simple
 									language. It describes current pressure, not
 									your identity.
 								</p>
-							</div>
-
-							<div class="chipRow">
-								<span
-									class="chip field"
-									id="fieldTranslationChip"
-									>Field: —</span
-								>
-							</div>
-						</div>
-
-						<div class="profileGrid">
-							<div class="profileBlock">
-								<div class="profileLabel">Today’s Field</div>
-								<div
-									class="profileValue"
-									id="fieldTranslationTitle"
-								>
+</div>
+<div class="chipRow">
+<span class="chip field" id="fieldTranslationChip">Field: —</span>
+</div>
+</div>
+<div class="profileGrid">
+<div class="profileBlock">
+<div class="profileLabel">Today’s Field</div>
+<div class="profileValue" id="fieldTranslationTitle">
 									—
 								</div>
-								<div
-									class="profileDesc"
-									id="fieldTranslationShort"
-								>
+<div class="profileDesc" id="fieldTranslationShort">
 									Waiting for field translation.
 								</div>
-							</div>
-
-							<div class="profileBlock wide">
-								<div class="profileLabel">
+</div>
+<div class="profileBlock wide">
+<div class="profileLabel">
 									Plain-English Meaning
 								</div>
-								<div
-									class="guidanceText"
-									id="fieldTranslationMeaning"
-								>
+<div class="guidanceText" id="fieldTranslationMeaning">
 									Waiting for field translation.
 								</div>
-							</div>
-
-							<div class="profileBlock">
-								<div class="profileLabel">Use This For</div>
-								<div
-									class="guidanceText"
-									id="fieldTranslationBest"
-								>
+</div>
+<div class="profileBlock">
+<div class="profileLabel">Use This For</div>
+<div class="guidanceText" id="fieldTranslationBest">
 									—
 								</div>
-							</div>
-
-							<div class="profileBlock wide">
-								<div class="profileLabel">Do Not Overdo</div>
-								<div
-									class="guidanceText"
-									id="fieldTranslationWatch"
-								>
+</div>
+<div class="profileBlock wide">
+<div class="profileLabel">Do Not Overdo</div>
+<div class="guidanceText" id="fieldTranslationWatch">
 									—
 								</div>
-							</div>
-						</div>
-					</section>
-
-					<section class="whyReadCard">
-						<div class="profileHeader" style="margin-bottom: 0">
-							<div>
-								<h2>Why This Read?</h2>
-								<p>
+</div>
+</div>
+</section>
+<section class="whyReadCard">
+<div class="profileHeader" style="margin-bottom: 0">
+<div>
+<h2>Why This Read?</h2>
+<p>
 									The plain explanation of why Lucy.OS gave
 									this guidance. The engine details stay
 									underneath; the takeaway stays human.
 								</p>
-							</div>
-						</div>
-
-						<div class="whyReadGrid">
-							<div class="whyMini">
-								<div class="whyMiniLabel">Root Pattern</div>
-								<div class="whyMiniValue" id="whyBaseline">
+</div>
+</div>
+<div class="whyReadGrid">
+<div class="whyMini">
+<div class="whyMiniLabel">Root Pattern</div>
+<div class="whyMiniValue" id="whyBaseline">
 									—
 								</div>
-							</div>
-
-							<div class="whyMini">
-								<div class="whyMiniLabel">Current Field</div>
-								<div class="whyMiniValue" id="whyField">—</div>
-							</div>
-
-							<div
-								class="whyMini whyUndertoneMini"
-								id="whyFieldUndertoneMini"
-							>
-								<div class="whyMiniLabel">Field Undertone</div>
-								<div
-									class="whyMiniValue"
-									id="whyFieldUndertone"
-								>
+</div>
+<div class="whyMini">
+<div class="whyMiniLabel">Current Field</div>
+<div class="whyMiniValue" id="whyField">—</div>
+</div>
+<div class="whyMini whyUndertoneMini" id="whyFieldUndertoneMini">
+<div class="whyMiniLabel">Field Undertone</div>
+<div class="whyMiniValue" id="whyFieldUndertone">
 									No strong undertone
 								</div>
-								<div class="whyMiniHelp">
+<div class="whyMiniHelp">
 									Close second-place field. Adds texture, does
 									not replace the main field.
 								</div>
-							</div>
-
-							<div class="whyMini">
-								<div class="whyMiniLabel">Motion Style</div>
-								<div class="whyMiniValue" id="whyMotionStyle">
+</div>
+<div class="whyMini">
+<div class="whyMiniLabel">Motion Style</div>
+<div class="whyMiniValue" id="whyMotionStyle">
 									—
 								</div>
-							</div>
-
-							<div class="whyMini">
-								<div class="whyMiniLabel">State</div>
-								<div class="whyMiniValue" id="whyState">—</div>
-							</div>
-
-							<div class="whyMini">
-								<div class="whyMiniLabel">Primary Driver</div>
-								<div class="whyMiniValue" id="whyDriver">—</div>
-							</div>
-
-							<div class="whyMini">
-								<div class="whyMiniLabel">Load</div>
-								<div class="whyMiniValue" id="whyLoad">—</div>
-							</div>
-
-							<div class="whyMini">
-								<div class="whyMiniLabel">Capacity</div>
-								<div class="whyMiniValue" id="whyCapacity">
+</div>
+<div class="whyMini">
+<div class="whyMiniLabel">State</div>
+<div class="whyMiniValue" id="whyState">—</div>
+</div>
+<div class="whyMini">
+<div class="whyMiniLabel">Primary Driver</div>
+<div class="whyMiniValue" id="whyDriver">—</div>
+</div>
+<div class="whyMini">
+<div class="whyMiniLabel">Load</div>
+<div class="whyMiniValue" id="whyLoad">—</div>
+</div>
+<div class="whyMini">
+<div class="whyMiniLabel">Capacity</div>
+<div class="whyMiniValue" id="whyCapacity">
 									—
 								</div>
-							</div>
-
-							<div class="whyMini">
-								<div class="whyMiniLabel">Regulation</div>
-								<div class="whyMiniValue" id="whyRegulation">
+</div>
+<div class="whyMini">
+<div class="whyMiniLabel">Regulation</div>
+<div class="whyMiniValue" id="whyRegulation">
 									—
 								</div>
-							</div>
-
-							<div class="whyMini">
-								<div class="whyMiniLabel">Distortion State</div>
-								<div class="whyMiniValue" id="whyDistortion">
+</div>
+<div class="whyMini">
+<div class="whyMiniLabel">Distortion State</div>
+<div class="whyMiniValue" id="whyDistortion">
 									—
 								</div>
-							</div>
-
-							<div class="whyMini">
-								<div class="whyMiniLabel">Direction</div>
-								<div class="whyMiniValue" id="whyDirection">
+</div>
+<div class="whyMini">
+<div class="whyMiniLabel">Direction</div>
+<div class="whyMiniValue" id="whyDirection">
 									—
 								</div>
-							</div>
-
-							<div class="whyMini">
-								<div class="whyMiniLabel">Moonstamp Timing</div>
-								<div class="whyMiniValue" id="whyPeakTiming">
+</div>
+<div class="whyMini">
+<div class="whyMiniLabel">Moonstamp Timing</div>
+<div class="whyMiniValue" id="whyPeakTiming">
 									Moonstamp modifier pending
 								</div>
-							</div>
-
-							<div class="whyMini">
-								<div class="whyMiniLabel">
+</div>
+<div class="whyMini">
+<div class="whyMiniLabel">
 									Moonstamp Modifier
 								</div>
-								<div
-									class="whyMiniValue"
-									id="whyMoonstampModifier"
-								>
+<div class="whyMiniValue" id="whyMoonstampModifier">
 									Moonstamp modifier pending
 								</div>
-							</div>
-
-							<div class="whyMini">
-								<div class="whyMiniLabel">
+</div>
+<div class="whyMini">
+<div class="whyMiniLabel">
 									Regulation Supports
 								</div>
-								<div
-									class="whyMiniValue"
-									id="whyRegulationSupports"
-								>
+<div class="whyMiniValue" id="whyRegulationSupports">
 									Waiting for support read.
 								</div>
-							</div>
-
-							<div class="whyMini full">
-								<div class="whyMiniLabel">Rationale</div>
-								<div class="whyMiniValue" id="whyRationale">
+</div>
+<div class="whyMini full">
+<div class="whyMiniLabel">Rationale</div>
+<div class="whyMiniValue" id="whyRationale">
 									Waiting for rationale.
 								</div>
-							</div>
-						</div>
-
-						<div class="whyExplain" id="whyConfigText">
+</div>
+</div>
+<div class="whyExplain" id="whyConfigText">
 							Waiting for configuration.
 						</div>
-					</section>
-
-					<section class="shareSection">
-						<div class="shareIntro">
-							<div>
-								<h2>Share Card</h2>
-								<p>
+</section>
+<section class="shareSection">
+<div class="shareIntro">
+<div>
+<h2>Share Card</h2>
+<p>
 									Save or copy a compact version of today’s practical read.
 								</p>
-							</div>
-
-							<div class="shareIntroChips">
-								<span
-									class="shareChip gold"
-									id="shareBaselineChip"
-									>Root: —</span
-								>
-								<span
-									class="shareChip field"
-									id="shareFieldChip"
-									>Field: —</span
-								>
-								<span
-									class="shareChip violet"
-									id="shareStateChip"
-									>State: —</span
-								>
-							</div>
-						</div>
-
-						<div class="shareExportFrame">
-							<div id="lucyShareCard" class="shareCard">
-								<div class="shareCardInner">
-									<div class="shareCardTop">
-										<span>Lucy.OS Pro</span>
-										<span>Personal Field Guidance</span>
-									</div>
-
-									<div class="shareCardChips">
-										<span
-											class="shareCardChip gold"
-											id="shareCardBaselineChip"
-											>Root: —</span
-										>
-										<span
-											class="shareCardChip field"
-											id="shareCardFieldChip"
-											>Field: —</span
-										>
-										<span
-											class="shareCardChip violet"
-											id="shareCardStateChip"
-											>State: —</span
-										>
-									</div>
-
-									<div class="shareCardSection">
-										<div class="shareCardLabel">
+</div>
+<div class="shareIntroChips">
+<span class="shareChip gold" id="shareBaselineChip">Root: —</span>
+<span class="shareChip field" id="shareFieldChip">Field: —</span>
+<span class="shareChip violet" id="shareStateChip">State: —</span>
+</div>
+</div>
+<div class="shareExportFrame">
+<div class="shareCard" id="lucyShareCard">
+<div class="shareCardInner">
+<div class="shareCardTop">
+<span>Lucy.OS Pro</span>
+<span>Personal Field Guidance</span>
+</div>
+<div class="shareCardChips">
+<span class="shareCardChip gold" id="shareCardBaselineChip">Root: —</span>
+<span class="shareCardChip field" id="shareCardFieldChip">Field: —</span>
+<span class="shareCardChip violet" id="shareCardStateChip">State: —</span>
+</div>
+<div class="shareCardSection">
+<div class="shareCardLabel">
 											Today’s System Weather
 										</div>
-										<div
-											class="shareCardWeather"
-											id="shareCardWeather"
-										>
+<div class="shareCardWeather" id="shareCardWeather">
 											Structured signal architecture
 											meeting a live field
 										</div>
-									</div>
-
-									<div
-										class="shareCardFieldDirection"
-										id="shareCardFieldDirectionBlock"
-									>
-										<div class="shareCardSection">
-											<div class="shareCardLabel">
+</div>
+<div class="shareCardFieldDirection" id="shareCardFieldDirectionBlock">
+<div class="shareCardSection">
+<div class="shareCardLabel">
 												Current Field Direction
 											</div>
-											<div
-												class="shareCardFieldTitle"
-												id="shareCardFieldDirectionTitle"
-											>
+<div class="shareCardFieldTitle" id="shareCardFieldDirectionTitle">
 												—
 											</div>
-											<div
-												class="shareCardFieldText"
-												id="shareCardFieldDirectionText"
-											>
+<div class="shareCardFieldText" id="shareCardFieldDirectionText">
 												Waiting for field direction.
 											</div>
-										</div>
-									</div>
-
-									<div
-										class="shareCardFieldUndertone"
-										id="shareCardFieldUndertoneBlock"
-									>
-										<div class="shareCardSection">
-											<div class="shareCardLabel">
+</div>
+</div>
+<div class="shareCardFieldUndertone" id="shareCardFieldUndertoneBlock">
+<div class="shareCardSection">
+<div class="shareCardLabel">
 												Field Undertone
 											</div>
-											<div
-												class="shareCardFieldTitle"
-												id="shareCardFieldUndertoneTitle"
-											>
+<div class="shareCardFieldTitle" id="shareCardFieldUndertoneTitle">
 												No strong undertone
 											</div>
-											<div
-												class="shareCardFieldText"
-												id="shareCardFieldUndertoneText"
-											>
+<div class="shareCardFieldText" id="shareCardFieldUndertoneText">
 												No secondary field is close
 												enough to change the read.
 											</div>
-											<div class="shareCardFieldHelp">
+<div class="shareCardFieldHelp">
 												Close second-place field. Adds
 												texture, does not replace the
 												main field.
 											</div>
-										</div>
-									</div>
-
-									<div class="shareCardCoreRule">
-										<div class="shareCardSection">
-											<div class="shareCardLabel">
+</div>
+</div>
+<div class="shareCardCoreRule">
+<div class="shareCardSection">
+<div class="shareCardLabel">
 												Core Rule
 											</div>
-
-											<div class="shareCardCoreGrid">
-												<div class="shareCardCoreItem">
-													<div
-														class="shareCardCoreTitle"
-													>
+<div class="shareCardCoreGrid">
+<div class="shareCardCoreItem">
+<div class="shareCardCoreTitle">
 														Use your gift:
 													</div>
-													<div
-														class="shareCardCoreText"
-														id="shareCardCoreGift"
-													>
+<div class="shareCardCoreText" id="shareCardCoreGift">
 														—
 													</div>
-												</div>
-
-												<div class="shareCardCoreItem">
-													<div
-														class="shareCardCoreTitle"
-													>
+</div>
+<div class="shareCardCoreItem">
+<div class="shareCardCoreTitle">
 														Watch the distortion:
 													</div>
-													<div
-														class="shareCardCoreText"
-														id="shareCardCoreDistortion"
-													>
+<div class="shareCardCoreText" id="shareCardCoreDistortion">
 														—
 													</div>
-												</div>
-
-												<div class="shareCardCoreItem">
-													<div
-														class="shareCardCoreTitle"
-													>
+</div>
+<div class="shareCardCoreItem">
+<div class="shareCardCoreTitle">
 														Make the move:
 													</div>
-													<div
-														class="shareCardCoreText"
-														id="shareCardCoreMove"
-													>
+<div class="shareCardCoreText" id="shareCardCoreMove">
 														—
 													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-
-									<div
-										class="shareCardMoonstamp"
-										id="shareCardMoonstampBlock"
-									>
-										<div class="shareCardSection">
-											<div class="shareCardLabel">
+</div>
+</div>
+</div>
+</div>
+<div class="shareCardMoonstamp" id="shareCardMoonstampBlock">
+<div class="shareCardSection">
+<div class="shareCardLabel">
 												Moonstamp Modifier
 											</div>
-											<div
-												class="shareCardRead"
-												id="shareCardMoonstampModifier"
-											>
+<div class="shareCardRead" id="shareCardMoonstampModifier">
 												The lunar field adds timing
 												texture to today’s read.
 											</div>
-										</div>
-									</div>
-
-									<div class="shareCardSection">
-										<div class="shareCardLabel">
+</div>
+</div>
+<div class="shareCardSection">
+<div class="shareCardLabel">
 											Today’s Read
 										</div>
-										<div
-											class="shareCardRead"
-											id="shareCardTodayRead"
-										>
+<div class="shareCardRead" id="shareCardTodayRead">
 											Waiting for daily read.
 										</div>
-									</div>
-
-									<div class="shareCardRealLife">
-										<div class="shareCardSection">
-											<div class="shareCardLabel">
+</div>
+<div class="shareCardRealLife">
+<div class="shareCardSection">
+<div class="shareCardLabel">
 												In Real Life, This Means
 											</div>
-											<div
-												class="shareCardRead"
-												id="shareCardRealLife"
-											>
+<div class="shareCardRead" id="shareCardRealLife">
 												Waiting for plain-life
 												translation.
 											</div>
-										</div>
-									</div>
-
-									<div
-										class="shareCardRegulationSupport"
-										id="shareCardRegulationBlock"
-									>
-										<div class="shareCardSection">
-											<div class="shareCardLabel">
+</div>
+</div>
+<div class="shareCardRegulationSupport" id="shareCardRegulationBlock">
+<div class="shareCardSection">
+<div class="shareCardLabel">
 												Regulation Supports
 											</div>
-
-											<div class="shareCardCoreGrid">
-												<div class="shareCardCoreItem">
-													<div
-														class="shareCardCoreTitle"
-													>
+<div class="shareCardCoreGrid">
+<div class="shareCardCoreItem">
+<div class="shareCardCoreTitle">
 														State:
 													</div>
-													<div
-														class="shareCardCoreText"
-														id="shareCardRegulationState"
-													>
+<div class="shareCardCoreText" id="shareCardRegulationState">
 														—
 													</div>
-												</div>
-
-												<div class="shareCardCoreItem">
-													<div
-														class="shareCardCoreTitle"
-													>
+</div>
+<div class="shareCardCoreItem">
+<div class="shareCardCoreTitle">
 														Best Support:
 													</div>
-													<div
-														class="shareCardCoreText"
-														id="shareCardRegulationQuality"
-													>
+<div class="shareCardCoreText" id="shareCardRegulationQuality">
 														—
 													</div>
-												</div>
-
-												<div class="shareCardCoreItem">
-													<div
-														class="shareCardCoreTitle"
-													>
+</div>
+<div class="shareCardCoreItem">
+<div class="shareCardCoreTitle">
 														Try First:
 													</div>
-													<div
-														class="shareCardCoreText"
-														id="shareCardRegulationTry"
-													>
+<div class="shareCardCoreText" id="shareCardRegulationTry">
 														—
 													</div>
-												</div>
-
-												<div class="shareCardCoreItem">
-													<div
-														class="shareCardCoreTitle"
-													>
+</div>
+<div class="shareCardCoreItem">
+<div class="shareCardCoreTitle">
 														Avoid:
 													</div>
-													<div
-														class="shareCardCoreText"
-														id="shareCardRegulationMusic"
-													>
+<div class="shareCardCoreText" id="shareCardRegulationMusic">
 														—
 													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-
-									<div class="shareCardMiniGrid">
-										<div class="shareCardMini">
-											<div class="shareCardLabel">
+</div>
+</div>
+</div>
+</div>
+<div class="shareCardMiniGrid">
+<div class="shareCardMini">
+<div class="shareCardLabel">
 												Motion Style
 											</div>
-											<div
-												class="shareCardRead"
-												id="shareCardMotionStyle"
-											>
+<div class="shareCardRead" id="shareCardMotionStyle">
 												—
 											</div>
-										</div>
-
-										<div class="shareCardMini">
-											<div class="shareCardLabel">
+</div>
+<div class="shareCardMini">
+<div class="shareCardLabel">
 												Today’s Driver
 											</div>
-											<div
-												class="shareCardRead"
-												id="shareCardDriverNote"
-											>
+<div class="shareCardRead" id="shareCardDriverNote">
 												Waiting for driver note.
 											</div>
-										</div>
-
-										<div class="shareCardMini">
-											<div class="shareCardLabel">
+</div>
+<div class="shareCardMini">
+<div class="shareCardLabel">
 												One Good Move
 											</div>
-											<div
-												class="shareCardRead"
-												id="shareCardGoodMove"
-											>
+<div class="shareCardRead" id="shareCardGoodMove">
 												—
 											</div>
-										</div>
-
-										<div class="shareCardMini">
-											<div class="shareCardLabel">
+</div>
+<div class="shareCardMini">
+<div class="shareCardLabel">
 												Return to yourself by
 											</div>
-											<div
-												class="shareCardRead"
-												id="shareCardReturn"
-											>
+<div class="shareCardRead" id="shareCardReturn">
 												—
 											</div>
-										</div>
-									</div>
-
-									<div class="shareFooter">
+</div>
+</div>
+<div class="shareFooter">
 										Personal field guidance · Lucy.OS Pro
 									</div>
-								</div>
-							</div>
-
-							<div class="shareActions">
-								<button id="saveShareCardBtn" type="button">
+</div>
+</div>
+<div class="shareActions">
+<button id="saveShareCardBtn" type="button">
 									Save Share Card
 								</button>
-								<button id="copyShareTextBtn" type="button">
+<button id="copyShareTextBtn" type="button">
 									Copy Share Text
 								</button>
-							</div>
-
-							<div id="shareStatus" class="shareStatus"></div>
-						</div>
-					</section>
-
-					<details class="librarySection">
-						<summary>Open Harmonic Library</summary>
-						<div class="libraryBody">
-							<p class="libraryIntro">
+</div>
+<div class="shareStatus" id="shareStatus"></div>
+</div>
+</section>
+<details class="librarySection">
+<summary>Open Harmonic Library</summary>
+<div class="libraryBody">
+<p class="libraryIntro">
 								The Pro library is here for context. Your result
 								comes first; the library shows the full
 								9-harmonic vocabulary.
 							</p>
-
-							<div
-								class="libraryGrid"
-								id="harmonicLibraryGrid"
-							></div>
-						</div>
-					</details>
-
-					<details class="engineDetails">
-						<summary>Open Engine Details</summary>
-						<div class="engineBody">
-							<div class="engineHeader">
-								<div>
-									<h2>Engine Details</h2>
-									<p>
+<div class="libraryGrid" id="harmonicLibraryGrid"></div>
+</div>
+</details>
+<details class="engineDetails">
+<summary>Open Engine Details</summary>
+<div class="engineBody">
+<div class="engineHeader">
+<div>
+<h2>Engine Details</h2>
+<p>
 										Technical state, API confirmation,
 										drivers, stabilizers, and chart debug
 										remain visible here.
 									</p>
-								</div>
-
-								<div class="metaRow" style="margin-top: 0">
-									<span class="metaPill field" id="envBand"
-										>Field: —</span
-									>
-									<span
-										class="metaPill forecast"
-										id="forecastBand"
-										>Timing: —</span
-									>
-								</div>
-							</div>
-
-							<div class="liveFieldDebugCard">
-								<div class="liveFieldDebugHeader">
-									<div>
-										<h2>Live Field Debug</h2>
-										<p>
+</div>
+<div class="metaRow" style="margin-top: 0">
+<span class="metaPill field" id="envBand">Field: —</span>
+<span class="metaPill forecast" id="forecastBand">Timing: —</span>
+</div>
+</div>
+<div class="liveFieldDebugCard">
+<div class="liveFieldDebugHeader">
+<div>
+<h2>Live Field Debug</h2>
+<p>
 											Visible readout of Today’s Field
 											selection using the existing
 											dailyFieldDebug object.
 										</p>
-									</div>
-
-									<span
-										class="liveFieldDebugBadge"
-										id="liveDebugSelectedFieldBadge"
-										>Selected Field: —</span
-									>
-								</div>
-
-								<div class="liveFieldSelected">
-									<div class="liveDebugLabel">
+</div>
+<span class="liveFieldDebugBadge" id="liveDebugSelectedFieldBadge">Selected Field: —</span>
+</div>
+<div class="liveFieldSelected">
+<div class="liveDebugLabel">
 										Selected Field
 									</div>
-									<div
-										class="liveDebugSelectedValue"
-										id="liveDebugSelectedField"
-									>
+<div class="liveDebugSelectedValue" id="liveDebugSelectedField">
 										—
 									</div>
-								</div>
-
-								<div
-									class="liveDebugBlock liveDebugUndertoneBlock"
-									id="liveDebugFieldUndertoneBlock"
-								>
-									<div class="liveDebugLabel">
+</div>
+<div class="liveDebugBlock liveDebugUndertoneBlock" id="liveDebugFieldUndertoneBlock">
+<div class="liveDebugLabel">
 										Field Undertone
 									</div>
-									<div class="liveDebugHelp">
+<div class="liveDebugHelp">
 										Close second-place field. Adds texture,
 										does not replace the main field.
 									</div>
-									<div
-										class="liveDebugMiniGrid"
-										id="liveDebugFieldUndertone"
-									>
-										<div class="liveDebugMiniItem">
-											<span>Status</span
-											><strong>—</strong>
-										</div>
-										<div class="liveDebugMiniItem">
-											<span>Secondary</span
-											><strong>—</strong>
-										</div>
-										<div class="liveDebugMiniItem">
-											<span>Gap / Ratio</span
-											><strong>—</strong>
-										</div>
-									</div>
-								</div>
-
-								<div class="liveDebugBlock">
-									<div class="liveDebugLabel">
+<div class="liveDebugMiniGrid" id="liveDebugFieldUndertone">
+<div class="liveDebugMiniItem">
+<span>Status</span><strong>—</strong>
+</div>
+<div class="liveDebugMiniItem">
+<span>Secondary</span><strong>—</strong>
+</div>
+<div class="liveDebugMiniItem">
+<span>Gap / Ratio</span><strong>—</strong>
+</div>
+</div>
+</div>
+<div class="liveDebugBlock">
+<div class="liveDebugLabel">
 										Top 3 Candidates
 									</div>
-									<div
-										class="liveDebugTopList"
-										id="liveDebugTopCandidates"
-									>
-										<div class="liveDebugCandidateRow">
-											<span>1. —</span>
-											<strong>—</strong>
-										</div>
-										<div class="liveDebugCandidateRow">
-											<span>2. —</span>
-											<strong>—</strong>
-										</div>
-										<div class="liveDebugCandidateRow">
-											<span>3. —</span>
-											<strong>—</strong>
-										</div>
-									</div>
-								</div>
-
-								<div class="liveDebugBlock">
-									<div class="liveDebugLabel">
+<div class="liveDebugTopList" id="liveDebugTopCandidates">
+<div class="liveDebugCandidateRow">
+<span>1. —</span>
+<strong>—</strong>
+</div>
+<div class="liveDebugCandidateRow">
+<span>2. —</span>
+<strong>—</strong>
+</div>
+<div class="liveDebugCandidateRow">
+<span>3. —</span>
+<strong>—</strong>
+</div>
+</div>
+</div>
+<div class="liveDebugBlock">
+<div class="liveDebugLabel">
 										All 9 Normalized Field Scores
 									</div>
-									<div
-										class="liveDebugScoreGrid"
-										id="liveDebugAllFieldScores"
-									>
-										<div class="liveDebugScoreItem">
-											<span>Structured</span
-											><strong>—</strong>
-										</div>
-										<div class="liveDebugScoreItem">
-											<span>Contained</span
-											><strong>—</strong>
-										</div>
-										<div class="liveDebugScoreItem">
-											<span>Chaotic</span
-											><strong>—</strong>
-										</div>
-										<div class="liveDebugScoreItem">
-											<span>Relational</span
-											><strong>—</strong>
-										</div>
-										<div class="liveDebugScoreItem">
-											<span>Threshold</span
-											><strong>—</strong>
-										</div>
-										<div class="liveDebugScoreItem">
-											<span>Reconstructive</span
-											><strong>—</strong>
-										</div>
-										<div class="liveDebugScoreItem">
-											<span>Integrative</span
-											><strong>—</strong>
-										</div>
-										<div class="liveDebugScoreItem">
-											<span>Diffused</span
-											><strong>—</strong>
-										</div>
-										<div class="liveDebugScoreItem">
-											<span>Regulated</span
-											><strong>—</strong>
-										</div>
-									</div>
-								</div>
-
-								<div class="liveDebugThreeColumn">
-									<div class="liveDebugBlock">
-										<div class="liveDebugLabel">
+<div class="liveDebugScoreGrid" id="liveDebugAllFieldScores">
+<div class="liveDebugScoreItem">
+<span>Structured</span><strong>—</strong>
+</div>
+<div class="liveDebugScoreItem">
+<span>Contained</span><strong>—</strong>
+</div>
+<div class="liveDebugScoreItem">
+<span>Chaotic</span><strong>—</strong>
+</div>
+<div class="liveDebugScoreItem">
+<span>Relational</span><strong>—</strong>
+</div>
+<div class="liveDebugScoreItem">
+<span>Threshold</span><strong>—</strong>
+</div>
+<div class="liveDebugScoreItem">
+<span>Reconstructive</span><strong>—</strong>
+</div>
+<div class="liveDebugScoreItem">
+<span>Integrative</span><strong>—</strong>
+</div>
+<div class="liveDebugScoreItem">
+<span>Diffused</span><strong>—</strong>
+</div>
+<div class="liveDebugScoreItem">
+<span>Regulated</span><strong>—</strong>
+</div>
+</div>
+</div>
+<div class="liveDebugThreeColumn">
+<div class="liveDebugBlock">
+<div class="liveDebugLabel">
 											System Load Inputs
 										</div>
-										<div
-											class="liveDebugMiniGrid"
-											id="liveDebugLoadInputs"
-										>
-											<div class="liveDebugMiniItem">
-												<span>Current Strain</span
-												><strong>—</strong>
-											</div>
-											<div class="liveDebugMiniItem">
-												<span>Current Load</span
-												><strong>—</strong>
-											</div>
-											<div class="liveDebugMiniItem">
-												<span>Current Regulation</span
-												><strong>—</strong>
-											</div>
-										</div>
-									</div>
-
-									<div class="liveDebugBlock">
-										<div class="liveDebugLabel">
+<div class="liveDebugMiniGrid" id="liveDebugLoadInputs">
+<div class="liveDebugMiniItem">
+<span>Current Strain</span><strong>—</strong>
+</div>
+<div class="liveDebugMiniItem">
+<span>Current Load</span><strong>—</strong>
+</div>
+<div class="liveDebugMiniItem">
+<span>Current Regulation</span><strong>—</strong>
+</div>
+</div>
+</div>
+<div class="liveDebugBlock">
+<div class="liveDebugLabel">
 											Key Transit / Field Inputs
 										</div>
-										<div
-											class="liveDebugMiniGrid"
-											id="liveDebugTransitInputs"
-										>
-											<div class="liveDebugMiniItem">
-												<span>Transit Pluto</span
-												><strong>—</strong>
-											</div>
-											<div class="liveDebugMiniItem">
-												<span>Transit Uranus</span
-												><strong>—</strong>
-											</div>
-											<div class="liveDebugMiniItem">
-												<span>Transit Neptune</span
-												><strong>—</strong>
-											</div>
-											<div class="liveDebugMiniItem">
-												<span>Transit Mars</span
-												><strong>—</strong>
-											</div>
-											<div class="liveDebugMiniItem">
-												<span>Transit Saturn</span
-												><strong>—</strong>
-											</div>
-											<div class="liveDebugMiniItem">
-												<span>Transit Mercury</span
-												><strong>—</strong>
-											</div>
-										</div>
-									</div>
-
-									<div class="liveDebugBlock">
-										<div class="liveDebugLabel">
+<div class="liveDebugMiniGrid" id="liveDebugTransitInputs">
+<div class="liveDebugMiniItem">
+<span>Transit Pluto</span><strong>—</strong>
+</div>
+<div class="liveDebugMiniItem">
+<span>Transit Uranus</span><strong>—</strong>
+</div>
+<div class="liveDebugMiniItem">
+<span>Transit Neptune</span><strong>—</strong>
+</div>
+<div class="liveDebugMiniItem">
+<span>Transit Mars</span><strong>—</strong>
+</div>
+<div class="liveDebugMiniItem">
+<span>Transit Saturn</span><strong>—</strong>
+</div>
+<div class="liveDebugMiniItem">
+<span>Transit Mercury</span><strong>—</strong>
+</div>
+</div>
+</div>
+<div class="liveDebugBlock">
+<div class="liveDebugLabel">
 											Moonstamp Inputs
 										</div>
-										<div
-											class="liveDebugMiniGrid"
-											id="liveDebugMoonstampInputs"
-										>
-											<div class="liveDebugMiniItem">
-												<span>Moonstamp State</span
-												><strong>—</strong>
-											</div>
-											<div class="liveDebugMiniItem">
-												<span>Moonstamp Phase</span
-												><strong>—</strong>
-											</div>
-											<div class="liveDebugMiniItem">
-												<span>Forecast Modifier</span
-												><strong>—</strong>
-											</div>
-										</div>
-									</div>
-								</div>
-
-								<div class="liveFieldDebugNote">
+<div class="liveDebugMiniGrid" id="liveDebugMoonstampInputs">
+<div class="liveDebugMiniItem">
+<span>Moonstamp State</span><strong>—</strong>
+</div>
+<div class="liveDebugMiniItem">
+<span>Moonstamp Phase</span><strong>—</strong>
+</div>
+<div class="liveDebugMiniItem">
+<span>Forecast Modifier</span><strong>—</strong>
+</div>
+</div>
+</div>
+</div>
+<div class="liveFieldDebugNote">
 									Today’s Field describes current field
 									weather. Field Undertone is a close
 									second-place field only when it is close
@@ -8620,239 +7992,209 @@
 									describes how much pressure the system is
 									carrying.
 								</div>
-							</div>
-
-							<div class="heroStats">
-								<div class="stat">
-									<div class="label">Capacity</div>
-									<div class="big" id="capacityScore">
+</div>
+<div class="heroStats">
+<div class="stat">
+<div class="label">Capacity</div>
+<div class="big" id="capacityScore">
 										0.00
 									</div>
-									<div class="sub" id="capacityLabel">
+<div class="sub" id="capacityLabel">
 										Available system bandwidth
 									</div>
-									<div class="meter meter-capacity">
-										<span id="capacityBar"></span>
-									</div>
-								</div>
-
-								<div class="stat">
-									<div class="label">Strain</div>
-									<div class="big" id="strainScore">0.00</div>
-									<div class="sub" id="strainLabel">
+<div class="meter meter-capacity">
+<span id="capacityBar"></span>
+</div>
+</div>
+<div class="stat">
+<div class="label">Strain</div>
+<div class="big" id="strainScore">0.00</div>
+<div class="sub" id="strainLabel">
 										Current active load
 									</div>
-									<div class="meter meter-strain">
-										<span id="strainBar"></span>
-									</div>
-								</div>
-
-								<div class="stat">
-									<div class="label">State</div>
-									<div class="big" id="stateText">
+<div class="meter meter-strain">
+<span id="strainBar"></span>
+</div>
+</div>
+<div class="stat">
+<div class="label">State</div>
+<div class="big" id="stateText">
 										Regulated
 									</div>
-									<div class="sub" id="stateLabel">
+<div class="sub" id="stateLabel">
 										Stable with manageable load
 									</div>
-									<div class="stateBadge" id="stateBadge">
+<div class="stateBadge" id="stateBadge">
 										Regulated
 									</div>
-								</div>
-							</div>
-
-							<div class="midRow">
-								<div class="microCard">
-									<div class="microHeader">
-										<div class="microTitle">
+</div>
+</div>
+<div class="midRow">
+<div class="microCard">
+<div class="microHeader">
+<div class="microTitle">
 											Timing Shell
 										</div>
-									</div>
-									<div class="forecastBig" id="forecastTitle">
+</div>
+<div class="forecastBig" id="forecastTitle">
 										Timing: —
 									</div>
-									<div class="forecastSub" id="forecastText">
+<div class="forecastSub" id="forecastText">
 										Waiting for timing shell state.
 									</div>
-								</div>
-
-								<div class="microCard">
-									<div class="microHeader">
-										<div class="microTitle">Sky Data</div>
-										<div
-											class="verifiedBadge"
-											id="skyVerified"
-										>
+</div>
+<div class="microCard">
+<div class="microHeader">
+<div class="microTitle">Sky Data</div>
+<div class="verifiedBadge" id="skyVerified">
 											Verified
 										</div>
-									</div>
-									<div class="forecastBig" id="skyDataTitle">
+</div>
+<div class="forecastBig" id="skyDataTitle">
 										Chart Loaded
 									</div>
-									<div class="forecastSub" id="skyDataText">
+<div class="forecastSub" id="skyDataText">
 										Waiting for resolved birth data and
 										ephemeris source confirmation.
 									</div>
-								</div>
-							</div>
-
-							<div class="whyCard">
-								<div class="whyTitle">Why</div>
-								<div class="whyText" id="whyText">
+</div>
+</div>
+<div class="whyCard">
+<div class="whyTitle">Why</div>
+<div class="whyText" id="whyText">
 									Waiting for chart interpretation.
 								</div>
-							</div>
-
-							<div class="summaryTitle">System Summary</div>
-							<table class="table">
-								<thead>
-									<tr>
-										<th>Metric</th>
-										<th>Value</th>
-										<th>Band</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>Capacity</td>
-										<td id="capVal">0.00</td>
-										<td>
-											<span class="badge b-gold"
-												>Capacity</span
-											>
-										</td>
-									</tr>
-									<tr>
-										<td>Amplified Load</td>
-										<td id="loadVal">0.00</td>
-										<td>
-											<span class="badge b-red"
-												>Load</span
-											>
-										</td>
-									</tr>
-									<tr>
-										<td>Regulation</td>
-										<td id="regVal">0.00</td>
-										<td>
-											<span class="badge b-green"
-												>Regulation</span
-											>
-										</td>
-									</tr>
-									<tr>
-										<td>Effective Load</td>
-										<td id="effVal">0.00</td>
-										<td>
-											<span class="badge b-blue"
-												>Net</span
-											>
-										</td>
-									</tr>
-									<tr class="softMetric">
-										<td>Regulator Average</td>
-										<td id="stabilityVal">0.00</td>
-										<td>
-											<span class="badge b-violet"
-												>Derived</span
-											>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-
-							<div class="bottomGrid">
-								<div class="miniPanel">
-									<div
-										class="summaryTitle"
-										style="
+</div>
+<div class="summaryTitle">System Summary</div>
+<table class="table">
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+<th>Band</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Capacity</td>
+<td id="capVal">0.00</td>
+<td>
+<span class="badge b-gold">Capacity</span>
+</td>
+</tr>
+<tr>
+<td>Amplified Load</td>
+<td id="loadVal">0.00</td>
+<td>
+<span class="badge b-red">Load</span>
+</td>
+</tr>
+<tr>
+<td>Regulation</td>
+<td id="regVal">0.00</td>
+<td>
+<span class="badge b-green">Regulation</span>
+</td>
+</tr>
+<tr>
+<td>Effective Load</td>
+<td id="effVal">0.00</td>
+<td>
+<span class="badge b-blue">Net</span>
+</td>
+</tr>
+<tr class="softMetric">
+<td>Regulator Average</td>
+<td id="stabilityVal">0.00</td>
+<td>
+<span class="badge b-violet">Derived</span>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="bottomGrid">
+<div class="miniPanel">
+<div class="summaryTitle" style="
 											font-size: 13px;
 											margin-bottom: 10px;
-										"
-									>
+										">
 										Active Drivers
 									</div>
-									<table class="table">
-										<thead>
-											<tr>
-												<th>Driver</th>
-												<th>Strength</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>Primary Driver</td>
-												<td id="primaryDriver">—</td>
-											</tr>
-											<tr>
-												<td>Volatility (Uranus)</td>
-												<td id="volatilityVal">0.00</td>
-											</tr>
-											<tr>
-												<td>Fog (Neptune)</td>
-												<td id="fogVal">0.00</td>
-											</tr>
-											<tr>
-												<td>Activation (Mars)</td>
-												<td id="activationVal">0.00</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-
-								<div class="miniPanel">
-									<div
-										class="summaryTitle"
-										style="
+<table class="table">
+<thead>
+<tr>
+<th>Driver</th>
+<th>Strength</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primary Driver</td>
+<td id="primaryDriver">—</td>
+</tr>
+<tr>
+<td>Volatility (Uranus)</td>
+<td id="volatilityVal">0.00</td>
+</tr>
+<tr>
+<td>Fog (Neptune)</td>
+<td id="fogVal">0.00</td>
+</tr>
+<tr>
+<td>Activation (Mars)</td>
+<td id="activationVal">0.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="miniPanel">
+<div class="summaryTitle" style="
 											font-size: 13px;
 											margin-bottom: 10px;
-										"
-									>
+										">
 										Stabilizers
 									</div>
-									<table class="table">
-										<thead>
-											<tr>
-												<th>Regulator</th>
-												<th>Strength</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>Saturn</td>
-												<td id="saturnVal">0.00</td>
-											</tr>
-											<tr>
-												<td>Venus</td>
-												<td id="venusVal">0.00</td>
-											</tr>
-											<tr>
-												<td>Mercury</td>
-												<td id="mercuryVal">0.00</td>
-											</tr>
-											<tr>
-												<td>Current State</td>
-												<td id="stateCondition">—</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-
-							<div class="tiny">
+<table class="table">
+<thead>
+<tr>
+<th>Regulator</th>
+<th>Strength</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Saturn</td>
+<td id="saturnVal">0.00</td>
+</tr>
+<tr>
+<td>Venus</td>
+<td id="venusVal">0.00</td>
+</tr>
+<tr>
+<td>Mercury</td>
+<td id="mercuryVal">0.00</td>
+</tr>
+<tr>
+<td>Current State</td>
+<td id="stateCondition">—</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="tiny">
 								Timing shell, regulator average, harmonic
 								routing, field undertone, regulation supports,
 								and why-line are interpretive layers on top of
 								the current V2.5 engine. Moonstamp modifies the
 								timing field only.
 							</div>
-						</div>
-					</details>
-				</div>
-			</div>
-		</div>
-
-		<script>
+</div>
+</details>
+</div>
+</div>
+</div>
+<script>
 			const API_URL = "/api/chart_inputs";
 			const SAVED_PROFILES_KEY = "lucyOSProSavedProfiles";
 
@@ -10230,96 +9572,92 @@
 				const stateBase = String(systemLoadState || "");
 				const motionText = String(motionStyle || "");
 				const moonText = String(moonstampModifierRead?.text || "").toLowerCase();
-				const combined = `${rootBase} ${supportBase} ${fieldBase} ${stateBase} ${motionText}`.toLowerCase();
+				const combined = `${rootBase} ${supportBase} ${fieldBase} ${stateBase} ${motionText} ${moonText}`.toLowerCase();
 
-				const makeSupport = (tone, texture, use, note = "Sound is optional. If sound feels like more input, use silence or a quieter room instead.") => ({
-					tone,
-					texture,
-					use,
-					fallback: "Choose silence, brown noise, or a quieter room instead.",
-					note,
+				const makeSupport = (category, why, tryLine, avoid) => ({
+					tone: category,
+					texture: why,
+					use: tryLine,
+					fallback: avoid,
+					note:
+						"Lucy.OS does not only tell you what the field is. It helps you choose the sound environment your system can actually regulate inside.",
 				});
-
-				let sound;
 
 				if (
 					stateBase === "Overloaded" ||
 					combined.includes("overload") ||
-					combined.includes("high load")
+					combined.includes("high load") ||
+					combined.includes("too much") ||
+					fieldBase === "Diffused"
 				) {
-					sound = makeSupport(
-						"432–528 Hz or silence",
-						"brown noise, rain, low steady drone, or very soft bowl",
-						"Lower input and make the listening environment simpler. Keep volume low enough that it supports the room instead of becoming the focus."
-					);
-				} else if (fieldBase === "Chaotic" || combined.includes("chaotic") || combined.includes("fast")) {
-					sound = makeSupport(
-						"432 Hz or low steady drone",
-						"low steady drone, soft bowl, brown noise, or slow ambient pad",
-						"Use a steady background to reduce signal spikes and give the body one simple sensory cue."
-					);
-				} else if (fieldBase === "Relational") {
-					sound = makeSupport(
-						"528–639 Hz",
-						"harp, soft bowl, warm hum, gentle vocal pad, or soft ambient tone",
-						"Soften the room without forcing emotional processing. Harp or soft strings may help the space feel warmer and less pressurized."
-					);
-				} else if (fieldBase === "Diffused") {
-					sound = makeSupport(
-						"396–432 Hz",
-						"brown noise, low drum pulse, soft repetitive rhythm, or grounded ambient tone",
-						"Give the field a simple center without adding more atmosphere."
-					);
-				} else if (fieldBase === "Threshold" || combined.includes("threshold")) {
-					sound = makeSupport(
-						"417–432 Hz",
-						"slow drum, low gong used gently, steady pulse, or grounding drone",
-						"Organize activation before crossing or deciding. Keep the sound slow, low, and steady.",
-						"Use gong gently. If it feels sharp or activating, switch to a softer texture or silence."
-					);
-				} else if (fieldBase === "Reconstructive") {
-					sound = makeSupport(
-						"528 Hz",
-						"soft bowl, cello drone, warm ambient pad, or low gong used gently",
-						"Support one repair without pushing a full rebuild. Keep the texture warm and non-intrusive.",
-						"Use gong gently. If it feels sharp or activating, switch to soft bowl, warm drone, or silence."
-					);
-				} else if (fieldBase === "Structured") {
-					sound = makeSupport(
-						"432 Hz",
-						"metronomic pulse, soft strings, clean repetitive pattern, or low drone",
-						"Help pressure move into sequence and next steps without adding intensity."
-					);
-				} else if (fieldBase === "Integrative") {
-					sound = makeSupport(
-						"528–741 Hz",
-						"layered ambient, harp, soft chimes, or gentle melodic drone",
-						"Support reflection and integration without overstimulation. Keep layers soft and spacious."
-					);
-				} else if (fieldBase === "Contained") {
-					sound = makeSupport(
-						"432 Hz",
-						"low steady drone, soft drum, grounding hum, soft bowl, or brown noise",
-						"Help the system hold pressure without tightening too much. Keep the sound warm and low."
-					);
-				} else {
-					sound = makeSupport(
-						"528 Hz, soft ambient, or silence",
-						"gentle harp, soft bowl, light rain, quiet room, or warm ambient tone",
-						"Maintain coherence without adding unnecessary input."
+					return makeSupport(
+						"Low-Input Sounds — silence, room tone, quiet nature",
+						"The field is already carrying a lot of signal, so the support should remove input before adding more texture.",
+						"Try silence, room tone, quiet nature, or very low brown noise for a short reset window.",
+						"Avoid layered music, sharp tones, loud bowls, or anything that makes the room feel busier."
 					);
 				}
 
-				if (
-					moonText.includes("lower-load") ||
-					moonText.includes("simplify") ||
-					moonText.includes("reduce")
-				) {
-					sound.fallback = "Use silence, brown noise, or a quieter room if sound starts to feel like extra input.";
-					sound.note = `${sound.note} Today’s lunar modifier may support a quieter, lower-load listening environment.`;
+				if (fieldBase === "Relational") {
+					return makeSupport(
+						"Softening Sounds — harp, rain, soft piano, gentle ambient",
+						"Relational fields need warmth and lower pressure so contact can stay clean instead of turning into over-reading.",
+						"Try soft piano, harp, rain, or gentle ambient at low volume while you keep communication simple.",
+						"Avoid emotionally intense playlists or lyrics that pull you into someone else’s mood."
+					);
 				}
 
-				return sound;
+				if (fieldBase === "Chaotic" || combined.includes("chaotic") || combined.includes("fast")) {
+					return makeSupport(
+						"Grounding Sounds — drums, brown noise, fireplace, low cello, low steady drone",
+						"Fast signal needs one steady sensory channel so the system can stop chasing every spike.",
+						"Try brown noise, low cello, fireplace, or a low steady drone while you do one concrete task.",
+						"Avoid bright, jumpy, shuffled, or high-tempo sound if it increases urgency."
+					);
+				}
+
+				if (fieldBase === "Threshold" || combined.includes("threshold")) {
+					return makeSupport(
+						"Movement Sounds — dance, percussion, rhythmic music, earthy downtempo",
+						"Threshold energy needs motion with rhythm, not random acceleration.",
+						"Try earthy downtempo, slow percussion, or a steady beat to move activation through the body.",
+						"Avoid sounds that make you rush the crossing before the timing is clean."
+					);
+				}
+
+				if (fieldBase === "Reconstructive") {
+					return makeSupport(
+						"Clearing Sounds — gong, singing bowls, bells, wind, ocean",
+						"Repair fields need a sense of clearing, but only enough to support one repair instead of a full rebuild.",
+						"Try ocean, wind, soft bowls, bells, or a gentle gong cue while you fix one weak point.",
+						"Avoid harsh clearing sounds if they make the whole field feel like a teardown."
+					);
+				}
+
+				if (fieldBase === "Structured" || fieldBase === "Contained") {
+					return makeSupport(
+						"Focus Sounds — lo-fi, pink noise, steady instrumental, soft beat",
+						"Structured or contained fields regulate best through clean rhythm, repetition, and low-friction focus.",
+						"Try pink noise, lo-fi, steady instrumental, or a soft beat while you define the next step.",
+						"Avoid overly complex music that pulls attention away from the structure."
+					);
+				}
+
+				if (fieldBase === "Integrative" || supportBase === "Integrative") {
+					return makeSupport(
+						"Emotional Processing Sounds — strings, piano, rain, cello",
+						"Integrative fields need enough feeling to connect the pieces, but not so much that reflection becomes flooding.",
+						"Try strings, piano, rain, or cello while you name the main thread and leave the rest for later.",
+						"Avoid music that opens too many emotional loops at once."
+					);
+				}
+
+				return makeSupport(
+					"Grounding Sounds — drums, brown noise, fireplace, low cello, low steady drone",
+					"A steady sound environment helps the read land in the body instead of staying abstract.",
+					"Try brown noise, fireplace, low cello, or a low steady drone while you make one clean move.",
+					"Avoid adding sound if silence would regulate the system better."
+				);
 			}
 
 			function buildSnapshotSupportLine(field, intensityLabel, regulationSupports) {
@@ -12388,6 +11726,76 @@
 					bridge?.text ||
 						"The selected field is the main channel for today’s read."
 				);
+			}
+
+
+			function buildTodayFieldPing(data, harmonics, guidance) {
+				const field = getHarmonicBaseName(harmonics?.todayField || "Regulated");
+				const root = getHarmonicBaseName(harmonics?.primary || "");
+				const state = stateLabelFromMode(data?.state?.mode || "");
+				const loadBand = loadBandFromValue(data?.state?.amplifiedLoad);
+				const move = guidance?.move || "Choose one clean move and keep it proportional.";
+
+				if (state === "Overloaded" || loadBand === "High") {
+					return {
+						signal: "The field is already carrying enough input.",
+						instruction: "Lower the noise before adding another thread.",
+						meta: `${state || "Active"} state · ${loadBand || "—"} load`,
+					};
+				}
+
+				if (field === "Relational") {
+					return {
+						signal: "The field is asking for cleaner contact, not more interpretation.",
+						instruction: "Stabilize yourself first, then communicate simply.",
+						meta: `${getPublicFieldLabel(field)} field · ${state || "Regulated"}`,
+					};
+				}
+
+				if (field === "Chaotic" || root === "Chaotic") {
+					return {
+						signal: "Signal is moving fast today.",
+						instruction: "Give the charge one safe channel before you respond.",
+						meta: `${getPublicFieldLabel(field)} field · ${state || "Regulated"}`,
+					};
+				}
+
+				if (field === "Threshold") {
+					return {
+						signal: "The field is near a crossing point.",
+						instruction: "Let timing matter more than intensity.",
+						meta: `${getPublicFieldLabel(field)} field · ${state || "Regulated"}`,
+					};
+				}
+
+				if (field === "Reconstructive") {
+					return {
+						signal: "Repair pressure is active, but the whole field does not need a rebuild.",
+						instruction: "Fix one weak point, then stop.",
+						meta: `${getPublicFieldLabel(field)} field · ${state || "Regulated"}`,
+					};
+				}
+
+				if (field === "Diffused" || field === "Integrative") {
+					return {
+						signal: "The field is wide enough to blur the main thread.",
+						instruction: "Choose one anchor and let the useful signal stand out.",
+						meta: `${getPublicFieldLabel(field)} field · ${state || "Regulated"}`,
+					};
+				}
+
+				return {
+					signal: "Today’s field needs one clean, readable move.",
+					instruction: move,
+					meta: `${getPublicFieldLabel(field)} field · ${state || "Regulated"}`,
+				};
+			}
+
+			function updateTodayFieldPingUI(data, harmonics, guidance) {
+				const ping = buildTodayFieldPing(data, harmonics, guidance);
+				setText("fieldPingSignal", ping.signal);
+				setText("fieldPingInstruction", ping.instruction);
+				setText("fieldPingMeta", ping.meta);
 			}
 
 			function updateTopLiveFieldStrip(data, harmonics, guidance) {
@@ -16000,6 +15408,7 @@
 				});
 
 				updateTopLiveFieldStrip(data, harmonics, guidance);
+				updateTodayFieldPingUI(data, harmonics, guidance);
 				updateWhyThisFieldBridgeUI(data, harmonics);
 
 				setHTML("systemWeatherLine", systemWeatherHTML);
@@ -16972,7 +16381,6 @@
 			renderSavedProfiles();
 			calculate({ shouldAutoScroll: false });
 		</script>
-
-		<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-	</body>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</body>
 </html>
