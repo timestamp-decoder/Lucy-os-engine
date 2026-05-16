@@ -33,6 +33,8 @@
 <!-- Desktop result gap fix update: tightened desktop grid row placement so the right column flows First Read Guide → Today’s Read Snapshot → Today’s Live Field without inheriting the tall left input-panel height. CSS/layout only; engine, API, scoring, field selection, drivers, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, Root Avatar, JavaScript logic, and result meanings unchanged. -->
 <!-- Pass 1 safe UX branch update: reordered visible flow to match Input → Field → Landing → Support → You, added Today’s Field Ping, and refined Suggested Sound Support as display-layer-only. Engine, API, scoring, routing, Moonstamp data logic, dashboard score logic, saved profiles, share export, diagnostics, and calibration behavior unchanged. -->
 <!-- Pass 2 modifiers branch update: added Moonstamp Modifier, Live Field Modifier, and How These Layers Interact display cards only. Uses existing Moonstamp/current-field/state/load/guidance data; no engine, API, scoring, routing, Moonstamp data logic, dashboard score logic, saved profiles, share export, diagnostics, or calibration behavior changed. -->
+<!-- Pass 3A update: added Chart Kernel Data Inspection inside Engine Details only. Existing /api/chart_inputs response is inspected defensively for future chart-kernel support; no API payload, backend, engine, scoring, routing, Moonstamp, dashboard, saved profiles, share export, or public result behavior changed. -->
+<!-- Pass 3B update: refined Chart Kernel Data Inspection wording for hybrid support only. Core field mechanics remain tropical; sidereal Lahiri is framed only as lunar/node micro-texture for inspection. No API payload, backend, engine, scoring, routing, Moonstamp, dashboard, saved profiles, share export, diagnostics behavior, or public result behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -810,6 +812,116 @@
 				font-weight: 750;
 				overflow-wrap: break-word;
 			}
+
+			.chartKernelInspection {
+				margin: 0 0 16px;
+				border: 1px solid rgba(216, 184, 76, 0.2);
+				border-radius: 16px;
+				background: radial-gradient(
+						circle at 10% 0%,
+						rgba(216, 184, 76, 0.09),
+						transparent 36%
+					),
+					rgba(255, 255, 255, 0.024);
+				overflow: hidden;
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.engineDetails .chartKernelInspection summary {
+				padding: 14px;
+				font-size: 14px;
+				font-weight: 950;
+				letter-spacing: 0.04em;
+				text-transform: none;
+				color: var(--text);
+			}
+
+			.chartKernelInspectionBody {
+				border-top: 1px solid rgba(255, 255, 255, 0.075);
+				padding: 14px;
+				display: grid;
+				gap: 14px;
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.chartKernelInspectionHelper {
+				color: var(--muted);
+				font-size: 12px;
+				line-height: 1.45;
+				font-weight: 750;
+				overflow-wrap: break-word;
+			}
+
+			.chartKernelSummaryGrid,
+			.chartKernelFieldGrid {
+				display: grid;
+				gap: 7px;
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.chartKernelSummaryRow,
+			.chartKernelFieldRow {
+				display: grid;
+				grid-template-columns: minmax(0, 1fr) auto;
+				gap: 10px;
+				align-items: center;
+				padding: 8px 10px;
+				border-radius: 11px;
+				border: 1px solid rgba(255, 255, 255, 0.075);
+				background: rgba(255, 255, 255, 0.03);
+				color: var(--muted);
+				font-size: 12px;
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.chartKernelSummaryRow span,
+			.chartKernelFieldRow span {
+				min-width: 0;
+				overflow-wrap: anywhere;
+			}
+
+			.chartKernelSummaryRow strong,
+			.chartKernelFieldRow strong {
+				color: var(--blue);
+				font-weight: 950;
+				text-align: right;
+				white-space: nowrap;
+			}
+
+			.chartKernelStatusAvailable {
+				color: var(--green) !important;
+			}
+
+			.chartKernelStatusUnclear {
+				color: var(--amber) !important;
+			}
+
+			.chartKernelStatusMissing {
+				color: #ff9c9c !important;
+			}
+
+			.chartKernelRawPreview {
+				width: 100%;
+				max-width: 100%;
+				min-height: 120px;
+				max-height: 340px;
+				margin: 0;
+				padding: 12px;
+				overflow: auto;
+				border: 1px solid rgba(255, 255, 255, 0.075);
+				border-radius: 12px;
+				background: rgba(4, 10, 24, 0.72);
+				color: #d9e0f4;
+				font-size: 11px;
+				line-height: 1.45;
+				white-space: pre-wrap;
+				overflow-wrap: anywhere;
+			}
+
 
 			.ok {
 				color: var(--green);
@@ -8167,6 +8279,78 @@
 									carrying.
 								</div>
 </div>
+
+<details class="chartKernelInspection" id="chartKernelDataInspection">
+<summary>Chart Kernel Data Inspection</summary>
+<div class="chartKernelInspectionBody">
+<div class="chartKernelInspectionHelper">
+										Shows what the current API response contains
+										for hybrid Chart Kernel support. Lucy.OS is a
+										field engine, not a symbolic astrology app:
+										core field mechanics remain tropical for
+										Field, Landing, System Weather, Motion Style,
+										Load Balance, Driver Logic, Undertone Logic,
+										houses, angles, degrees, transits, field
+										timing, and sign/rāśi geometry. Sidereal
+										Lahiri is reserved for nakshatra / lunar-node
+										micro-texture, Moonstamp modifier texture,
+										emotional-processor language, and
+										Rahu/Ketu vector interpretation. Rahu is
+										treated as a Directional Vector / Growth
+										Trajectory; Ketu is treated as a Release
+										Vector / Mastery Pattern. This is inspection
+										only and does not affect the read.
+									</div>
+<div>
+<div class="liveDebugLabel">
+											Inspection Summary
+										</div>
+<div class="chartKernelSummaryGrid" id="chartKernelInspectionSummary">
+<div class="chartKernelSummaryRow">
+<span>Tropical sign/rāśi geometry returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
+</div>
+<div class="chartKernelSummaryRow">
+<span>Sidereal Lahiri texture support returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
+</div>
+<div class="chartKernelSummaryRow">
+<span>Tropical longitudes/degrees returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
+</div>
+<div class="chartKernelSummaryRow">
+<span>Sign/rāśi placements returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
+</div>
+<div class="chartKernelSummaryRow">
+<span>House/angle geometry returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
+</div>
+<div class="chartKernelSummaryRow">
+<span>Rahu/Ketu vector data returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
+</div>
+<div class="chartKernelSummaryRow">
+<span>Placement/field object returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
+</div>
+<div class="chartKernelSummaryRow">
+<span>Safe for diagnostics-only hybrid inspection?</span><strong class="chartKernelStatusMissing">Not returned</strong>
+</div>
+</div>
+</div>
+<div>
+<div class="liveDebugLabel">
+											Known Chart-Related Fields
+										</div>
+<div class="chartKernelFieldGrid" id="chartKernelFieldAvailability">
+<div class="chartKernelFieldRow">
+<span>Waiting for calculation</span><strong class="chartKernelStatusMissing">Not returned</strong>
+</div>
+</div>
+</div>
+<div>
+<div class="liveDebugLabel">
+											Raw Debug Preview
+										</div>
+<pre class="chartKernelRawPreview" id="chartKernelRawPreview">No hybrid Chart Kernel inspection data found in the current API response.</pre>
+</div>
+</div>
+</details>
+
 <div class="heroStats">
 <div class="stat">
 <div class="label">Capacity</div>
@@ -8881,6 +9065,338 @@
 				const el = document.getElementById(id);
 				if (el) el.innerHTML = value;
 			}
+
+			function chartKernelEscapeHtml(value) {
+				return String(value ?? "")
+					.replace(/&/g, "&amp;")
+					.replace(/</g, "&lt;")
+					.replace(/>/g, "&gt;")
+					.replace(/"/g, "&quot;")
+					.replace(/'/g, "&#039;");
+			}
+
+			function chartKernelIsPlainObject(value) {
+				return !!value && typeof value === "object" && !Array.isArray(value);
+			}
+
+			function chartKernelHasValue(value) {
+				if (value === null || value === undefined) return false;
+				if (typeof value === "string") return value.trim().length > 0;
+				if (Array.isArray(value)) return value.length > 0;
+				if (typeof value === "object") return Object.keys(value).length > 0;
+				return true;
+			}
+
+			function chartKernelStatusClass(status) {
+				if (status === "Available") return "chartKernelStatusAvailable";
+				if (status === "Unclear") return "chartKernelStatusUnclear";
+				return "chartKernelStatusMissing";
+			}
+
+			function renderChartKernelStatusRow(label, status) {
+				return `<div class="chartKernelSummaryRow"><span>${chartKernelEscapeHtml(
+					label
+				)}</span><strong class="${chartKernelStatusClass(status)}">${chartKernelEscapeHtml(
+					status
+				)}</strong></div>`;
+			}
+
+			function renderChartKernelFieldRow(label, status) {
+				return `<div class="chartKernelFieldRow"><span>${chartKernelEscapeHtml(
+					label
+				)}</span><strong class="${chartKernelStatusClass(status)}">${chartKernelEscapeHtml(
+					status
+				)}</strong></div>`;
+			}
+
+			function chartKernelWalk(value, visitor, path = "", depth = 0, seen = new WeakSet()) {
+				if (!value || typeof value !== "object" || depth > 6) return;
+				if (seen.has(value)) return;
+				seen.add(value);
+
+				if (Array.isArray(value)) {
+					value.slice(0, 24).forEach((item, index) => {
+						const nextPath = path ? `${path}[${index}]` : `[${index}]`;
+						visitor(nextPath, index, item);
+						chartKernelWalk(item, visitor, nextPath, depth + 1, seen);
+					});
+					return;
+				}
+
+				Object.keys(value).forEach((key) => {
+					const nextPath = path ? `${path}.${key}` : key;
+					const nextValue = value[key];
+					visitor(nextPath, key, nextValue);
+					chartKernelWalk(nextValue, visitor, nextPath, depth + 1, seen);
+				});
+			}
+
+			function chartKernelFindByKeyOrValue(data, keyPatterns = [], valuePatterns = []) {
+				let found = false;
+				chartKernelWalk(data, (path, key, value) => {
+					if (found) return;
+					const keyText = `${key || ""} ${path || ""}`.toLowerCase();
+					const valueText =
+						typeof value === "string" || typeof value === "number"
+							? String(value).toLowerCase()
+							: "";
+					found =
+						keyPatterns.some((pattern) => pattern.test(keyText)) ||
+						valuePatterns.some((pattern) => pattern.test(valueText));
+				});
+				return found;
+			}
+
+			function chartKernelFindPathValue(data, keyPatterns = [], valuePatterns = []) {
+				const matches = [];
+				chartKernelWalk(data, (path, key, value) => {
+					if (matches.length >= 40) return;
+					const keyText = `${key || ""} ${path || ""}`.toLowerCase();
+					const valueText =
+						typeof value === "string" || typeof value === "number"
+							? String(value).toLowerCase()
+							: "";
+					const matched =
+						keyPatterns.some((pattern) => pattern.test(keyText)) ||
+						valuePatterns.some((pattern) => pattern.test(valueText));
+					if (matched && chartKernelHasValue(value)) {
+						matches.push({
+							path,
+							value:
+								value && typeof value === "object"
+									? Array.isArray(value)
+										? `[array:${value.length}]`
+										: `[object:${Object.keys(value).length}]`
+									: value,
+						});
+					}
+				});
+				return matches;
+			}
+
+			function chartKernelPrunePreview(value, depth = 0, seen = new WeakSet()) {
+				if (depth > 5) return "[Max depth reached]";
+				if (!value || typeof value !== "object") return value;
+				if (seen.has(value)) return "[Circular]";
+				seen.add(value);
+
+				if (Array.isArray(value)) {
+					const limited = value
+						.slice(0, 24)
+						.map((item) => chartKernelPrunePreview(item, depth + 1, seen));
+					if (value.length > 24) {
+						limited.push(`[+${value.length - 24} more items]`);
+					}
+					return limited;
+				}
+
+				const output = {};
+				const keys = Object.keys(value);
+				keys.slice(0, 80).forEach((key) => {
+					output[key] = chartKernelPrunePreview(value[key], depth + 1, seen);
+				});
+				if (keys.length > 80) {
+					output.__truncatedKeys = `+${keys.length - 80} more keys`;
+				}
+				return output;
+			}
+
+			function buildChartKernelRawPreview(data) {
+				const preview = {};
+				const directKeys = [
+					"planetary",
+					"_longitudesDeg",
+					"angles",
+					"ephemeris",
+					"natal",
+					"transits",
+					"placements",
+					"chart",
+					"nodes",
+					"rahu",
+					"ketu",
+				];
+
+				directKeys.forEach((key) => {
+					if (chartKernelHasValue(data?.[key])) {
+						preview[key] = chartKernelPrunePreview(data[key]);
+					}
+				});
+
+				const keywordMatches = chartKernelFindPathValue(data, [
+					/zodiac/,
+					/ayanamsa/,
+					/sidereal/,
+					/tropical/,
+					/lahiri/,
+					/longitude/,
+					/longitudes/,
+					/\blon\b/,
+					/sign/,
+					/degree/,
+					/ascendant/,
+					/\basc\b/,
+					/\bmc\b/,
+					/rahu/,
+					/ketu/,
+					/north.?node/,
+					/south.?node/,
+				], [/sidereal/, /tropical/, /lahiri/]);
+
+				if (keywordMatches.length) {
+					preview.keywordMatches = keywordMatches;
+				}
+
+				return preview;
+			}
+
+			function renderChartKernelDataInspection(data) {
+				const summaryEl = document.getElementById("chartKernelInspectionSummary");
+				const fieldEl = document.getElementById("chartKernelFieldAvailability");
+				const rawEl = document.getElementById("chartKernelRawPreview");
+				if (!summaryEl || !fieldEl || !rawEl) return;
+
+				const directFields = [
+					["data.planetary", data?.planetary],
+					["data._longitudesDeg (tropical degrees)", data?._longitudesDeg],
+					["data.angles (tropical houses/angles)", data?.angles],
+					["data.ephemeris", data?.ephemeris],
+					["data.natal", data?.natal],
+					["data.transits", data?.transits],
+					["data.placements", data?.placements],
+					["data.chart", data?.chart],
+					["data.nodes (Rahu/Ketu vectors)", data?.nodes],
+					["data.rahu (Directional Vector / Growth Trajectory)", data?.rahu],
+					["data.ketu (Release Vector / Mastery Pattern)", data?.ketu],
+				];
+
+				const zodiacReturned = chartKernelFindByKeyOrValue(
+					data,
+					[/zodiac/, /sidereal/, /tropical/, /zodiac.?mode/],
+					[/sidereal/, /tropical/]
+				)
+					? "Available"
+					: "Not returned";
+
+				const ayanamsaReturned = chartKernelFindByKeyOrValue(
+					data,
+					[/ayanamsa/, /lahiri/],
+					[/lahiri/]
+				)
+					? "Available"
+					: "Not returned";
+
+				const longitudeObjectReturned =
+					chartKernelHasValue(data?._longitudesDeg) ||
+					chartKernelFindByKeyOrValue(data, [
+						/longitude/,
+						/longitudes/,
+						/\blon\b/,
+						/degree/,
+					]);
+
+				const natalLongitudesReturned = longitudeObjectReturned
+					? "Available"
+					: "Not returned";
+
+				const natalSignsFound = chartKernelFindByKeyOrValue(data, [
+					/(^|\.)natal.*sign/,
+					/placement.*sign/,
+					/chart.*sign/,
+					/\bsign\b/,
+					/zodiac.?sign/,
+				]);
+
+				const natalSignsReturned = natalSignsFound
+					? "Available"
+					: longitudeObjectReturned
+					? "Unclear"
+					: "Not returned";
+
+				const ascendantReturned = chartKernelFindByKeyOrValue(data, [
+					/ascendant/,
+					/(^|\.|\b)asc($|\.|\b)/,
+					/angles.*asc/,
+				])
+					? "Available"
+					: "Not returned";
+
+				const rahuFound =
+					chartKernelHasValue(data?.rahu) ||
+					chartKernelFindByKeyOrValue(data, [/rahu/, /north.?node/]);
+				const ketuFound =
+					chartKernelHasValue(data?.ketu) ||
+					chartKernelFindByKeyOrValue(data, [/ketu/, /south.?node/]);
+				const nodesReturned =
+					rahuFound && ketuFound
+						? "Available"
+						: rahuFound || ketuFound || chartKernelHasValue(data?.nodes)
+						? "Unclear"
+						: "Not returned";
+
+				const placementObjectReturned =
+					chartKernelHasValue(data?.placements) ||
+					chartKernelHasValue(data?.chart) ||
+					chartKernelHasValue(data?.natal) ||
+					chartKernelHasValue(data?.planetary)
+						? "Available"
+						: "Not returned";
+
+				let safeForCards = "Not returned";
+				if (
+					placementObjectReturned === "Available" &&
+					natalSignsReturned === "Available" &&
+					nodesReturned === "Available" &&
+					(zodiacReturned === "Available" || ayanamsaReturned === "Available")
+				) {
+					safeForCards = "Available";
+				} else if (
+					longitudeObjectReturned ||
+					placementObjectReturned === "Available" ||
+					natalSignsReturned === "Available" ||
+					nodesReturned !== "Not returned"
+				) {
+					safeForCards = "Unclear";
+				}
+
+				summaryEl.innerHTML = [
+					renderChartKernelStatusRow("Tropical sign/rāśi geometry returned?", zodiacReturned),
+					renderChartKernelStatusRow("Sidereal Lahiri texture support returned?", ayanamsaReturned),
+					renderChartKernelStatusRow(
+						"Tropical longitudes/degrees returned?",
+						natalLongitudesReturned
+					),
+					renderChartKernelStatusRow("Sign/rāśi placements returned?", natalSignsReturned),
+					renderChartKernelStatusRow("House/angle geometry returned?", ascendantReturned),
+					renderChartKernelStatusRow("Rahu/Ketu vector data returned?", nodesReturned),
+					renderChartKernelStatusRow(
+						"Placement/field object returned?",
+						placementObjectReturned
+					),
+					renderChartKernelStatusRow(
+						"Safe for diagnostics-only hybrid inspection?",
+						safeForCards
+					),
+				].join("");
+
+				fieldEl.innerHTML = directFields
+					.map(([label, value]) =>
+						renderChartKernelFieldRow(
+							label,
+							chartKernelHasValue(value) ? "Available" : "Not returned"
+						)
+					)
+					.join("");
+
+				const preview = buildChartKernelRawPreview(data);
+				if (!chartKernelHasValue(preview)) {
+					rawEl.textContent =
+						"No hybrid Chart Kernel inspection data found in the current API response.";
+				} else {
+					rawEl.textContent = JSON.stringify(preview, null, 2);
+				}
+			}
+
 
 			function setBar(id, value, max = 1.2) {
 				const el = document.getElementById(id);
@@ -16251,6 +16767,7 @@ ${bodyLine}${loadLine}`,
 					}
 
 					updateUI(data);
+					renderChartKernelDataInspection(data);
 
 					if (shouldAutoScroll) {
 						scrollToMobileReadSnapshot();
