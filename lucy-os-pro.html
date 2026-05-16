@@ -32,6 +32,7 @@
 <!-- Venus / Pluto public driver clarity update: refined display copy so Relational fields name Venus as the contact-tone support while Pluto remains pressure underneath. Copy-binding only; no API, backend, engine, scoring, selected-field logic, Venus override, repairGate, Field Undertone thresholds, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, Root Avatar, or result meanings changed. -->
 <!-- Desktop result gap fix update: tightened desktop grid row placement so the right column flows First Read Guide → Today’s Read Snapshot → Today’s Live Field without inheriting the tall left input-panel height. CSS/layout only; engine, API, scoring, field selection, drivers, Moonstamp, Electrical Mapping, saved profiles, share export, dashboard scores, mobile nav, Root Avatar, JavaScript logic, and result meanings unchanged. -->
 <!-- Pass 1 safe UX branch update: reordered visible flow to match Input → Field → Landing → Support → You, added Today’s Field Ping, and refined Suggested Sound Support as display-layer-only. Engine, API, scoring, routing, Moonstamp data logic, dashboard score logic, saved profiles, share export, diagnostics, and calibration behavior unchanged. -->
+<!-- Pass 2 modifiers branch update: added Moonstamp Modifier, Live Field Modifier, and How These Layers Interact display cards only. Uses existing Moonstamp/current-field/state/load/guidance data; no engine, API, scoring, routing, Moonstamp data logic, dashboard score logic, saved profiles, share export, diagnostics, or calibration behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -3028,6 +3029,140 @@
 				overflow-wrap: anywhere;
 			}
 
+			.fieldModifierDeck {
+				display: grid;
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				gap: 12px;
+				margin-top: 12px;
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.fieldModifierCard {
+				border: 1px solid rgba(103, 193, 255, 0.17);
+				border-radius: 16px;
+				padding: 14px;
+				background: radial-gradient(
+						circle at 10% 0%,
+						rgba(103, 193, 255, 0.085),
+						transparent 34%
+					),
+					rgba(255, 255, 255, 0.026);
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.fieldModifierCard.liveFieldModifierBlock {
+				border-color: rgba(255, 155, 183, 0.2);
+				background: radial-gradient(
+						circle at 10% 0%,
+						rgba(255, 155, 183, 0.09),
+						transparent 34%
+					),
+					rgba(255, 255, 255, 0.026);
+			}
+
+			.layerInteractionCard {
+				grid-column: 1 / -1;
+				border: 1px solid rgba(216, 184, 76, 0.22);
+				border-radius: 18px;
+				padding: 15px;
+				background: radial-gradient(
+						circle at 8% 0%,
+						rgba(216, 184, 76, 0.11),
+						transparent 34%
+					),
+					rgba(255, 255, 255, 0.026);
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.fieldModifierLabel,
+			.layerInteractionLabel {
+				color: var(--muted);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				margin-bottom: 9px;
+			}
+
+			.fieldModifierCard.moonstampModifierBlock .fieldModifierLabel {
+				color: #cab1ff;
+			}
+
+			.fieldModifierCard.liveFieldModifierBlock .fieldModifierLabel {
+				color: var(--h-relational);
+			}
+
+			.layerInteractionLabel {
+				color: var(--gold);
+			}
+
+			.fieldModifierRows {
+				display: grid;
+				gap: 9px;
+			}
+
+			.fieldModifierRow {
+				display: grid;
+				gap: 4px;
+				min-width: 0;
+			}
+
+			.fieldModifierRow span {
+				color: var(--muted);
+				font-size: 9.5px;
+				font-weight: 950;
+				letter-spacing: 0.11em;
+				text-transform: uppercase;
+			}
+
+			.fieldModifierRow strong {
+				color: var(--text);
+				font-size: 14px;
+				line-height: 1.34;
+				font-weight: 900;
+				overflow-wrap: anywhere;
+			}
+
+			.fieldModifierRow p {
+				margin: 0;
+				color: #d9e0f4;
+				font-size: 12.5px;
+				line-height: 1.52;
+				font-weight: 700;
+				overflow-wrap: break-word;
+			}
+
+			.layerInteractionPattern {
+				color: var(--text);
+				font-size: 16px;
+				font-weight: 950;
+				line-height: 1.32;
+				margin-bottom: 10px;
+				overflow-wrap: anywhere;
+			}
+
+			.layerInteractionText {
+				color: #d9e0f4;
+				font-size: 13px;
+				line-height: 1.62;
+				font-weight: 720;
+				overflow-wrap: break-word;
+			}
+
+			.layerInteractionMove {
+				margin-top: 11px;
+				padding-top: 10px;
+				border-top: 1px solid rgba(255, 255, 255, 0.075);
+				color: var(--text);
+				font-size: 13px;
+				line-height: 1.5;
+				font-weight: 850;
+				overflow-wrap: break-word;
+			}
+
 			.outlookNote {
 				margin-top: 12px;
 				color: var(--muted2);
@@ -5692,6 +5827,10 @@
 			}
 
 			@media (max-width: 720px) {
+				.fieldModifierDeck {
+					grid-template-columns: minmax(0, 1fr);
+				}
+
 				.wrap {
 					padding: 12px 14px 14px;
 				}
@@ -7030,22 +7169,57 @@
 										Secondary field stays in debug only.
 									</div>
 </div>
-<div class="moonstampModifierBlock" id="moonstampModifierBlock">
-<div class="moonstampModifierLabel">
+<div class="fieldModifierDeck" id="fieldModifierDeck">
+<div class="fieldModifierCard moonstampModifierBlock" id="moonstampModifierBlock">
+<div class="fieldModifierLabel">
 										Moonstamp Modifier
 									</div>
-<div class="moonstampModifierTitle" id="moonstampModifierTitle">
-										Moonstamp modifier pending
+<div class="fieldModifierRows">
+<div class="fieldModifierRow">
+<span>Today’s Moon State</span>
+<strong id="moonstampModifierTitle">Moonstamp modifier pending</strong>
+</div>
+<div class="fieldModifierRow">
+<span>What it modifies</span>
+<p id="moonstampModifierText">
+										The lunar field adds timing texture to today’s read when Moonstamp data is available.
+									</p>
+</div>
+<div class="fieldModifierRow">
+<span>Practical instruction</span>
+<p id="moonstampModifierMeta">Use it as a field modifier, not an identity label.</p>
+</div>
+</div>
+</div>
+<div class="fieldModifierCard liveFieldModifierBlock" id="liveFieldModifierBlock">
+<div class="fieldModifierLabel">
+										Live Field Modifier
 									</div>
-<div class="moonstampModifierText" id="moonstampModifierText">
-										The lunar field adds timing texture to
-										today’s read when Moonstamp data is
-										available.
-									</div>
-<div class="moonstampModifierMeta" id="moonstampModifierMeta">
-										Use it as a field modifier, not an
-										identity label.
-									</div>
+<div class="fieldModifierRows">
+<div class="fieldModifierRow">
+<span>Active Field</span>
+<strong id="liveFieldModifierTitle">Live field pending</strong>
+</div>
+<div class="fieldModifierRow">
+<span>What it adds</span>
+<p id="liveFieldModifierAdds">Calculate to see what today’s live field adds to the read.</p>
+</div>
+<div class="fieldModifierRow">
+<span>Watch point</span>
+<p id="liveFieldModifierWatch">Waiting for field watch point.</p>
+</div>
+<div class="fieldModifierRow">
+<span>Best use</span>
+<p id="liveFieldModifierBestUse">Waiting for today’s best use.</p>
+</div>
+</div>
+</div>
+<div class="layerInteractionCard" id="layerInteractionCard">
+<div class="layerInteractionLabel">How These Layers Interact</div>
+<div class="layerInteractionPattern" id="layerInteractionPattern">Interaction pending</div>
+<div class="layerInteractionText" id="layerInteractionText">Calculate to see how Moonstamp timing and today’s live field work together.</div>
+<div class="layerInteractionMove" id="layerInteractionMove">Clean move: —</div>
+</div>
 </div>
 </div>
 <div class="outlookBlock now">
@@ -13366,7 +13540,7 @@
 					);
 					setText(
 						"moonstampModifierMeta",
-						"The lunar field adds timing texture when backend Moonstamp data is available."
+						"Use the lunar layer for pace once Moonstamp data is available."
 					);
 					setText("shareCardMoonstampModifier", "");
 					return {
@@ -13404,9 +13578,7 @@
 				const text =
 					modifier ||
 					"The lunar field adds timing texture to today’s read. Use it as a field modifier, not an identity label.";
-				const meta = metaParts.length
-					? metaParts.join(" · ")
-					: "Moonstamp modifies the timing field only.";
+				const meta = moonstampPracticalInstruction(moonstamp, text);
 
 				setText("moonstampModifierTitle", title);
 				setText("moonstampModifierText", text);
@@ -13421,6 +13593,243 @@
 					meta,
 					shareLine: `${title}: ${text}`,
 				};
+			}
+
+
+			function getMoonstampAdjectives(moonstamp) {
+				const state = String(moonstamp?.state || "").trim();
+				const phase = String(moonstamp?.phase || "").trim();
+				const key = `${state} ${phase}`.toLowerCase();
+
+				if (key.includes("reduce") || key.includes("waning") || key.includes("last quarter")) {
+					return "simplifying, lowering input, narrowing scope, release-oriented";
+				}
+				if (key.includes("reset") || key.includes("new moon")) {
+					return "quiet, low-input, clearing, baseline-seeking";
+				}
+				if (key.includes("re-enter")) {
+					return "early, gentle, reactivating, low-pressure";
+				}
+				if (key.includes("emerge") || key.includes("waxing crescent")) {
+					return "forming, tentative, protected, early-building";
+				}
+				if (key.includes("threshold") || key.includes("first quarter")) {
+					return "committing, crossing, decision-facing, pressure-aware";
+				}
+				if (key.includes("build") || key.includes("waxing gibbous")) {
+					return "strengthening, accumulating, reinforcing, momentum-building";
+				}
+				if (key.includes("show")) {
+					return "visible, near-peak, exposed, presentation-oriented";
+				}
+				if (key.includes("culminate") || key.includes("full")) {
+					return "bright, full, visible, high-exposure";
+				}
+				if (key.includes("release")) {
+					return "unwinding, distributing, post-peak, letting-go";
+				}
+
+				return "timing-based, body-aware, pacing-oriented";
+			}
+
+			function moonstampPracticalInstruction(moonstamp, modifierText) {
+				const state = String(moonstamp?.state || "").trim().toLowerCase();
+				const text = String(modifierText || "").toLowerCase();
+
+				if (state.includes("reduce") || text.includes("reduce") || text.includes("simplify")) {
+					return "Cut noise, narrow the task, and stop feeding unnecessary pressure.";
+				}
+				if (state.includes("reset") || text.includes("reset")) {
+					return "Clear the field first. Let the next move be small and clean.";
+				}
+				if (state.includes("re-enter")) {
+					return "Return gently. Make contact with one next step before adding more.";
+				}
+				if (state.includes("emerge")) {
+					return "Protect the early signal. Let it form before asking it to perform.";
+				}
+				if (state.includes("threshold")) {
+					return "Name the crossing point and move only the part that is ready.";
+				}
+				if (state.includes("build")) {
+					return "Strengthen what is already working before expanding the scope.";
+				}
+				if (state.includes("show")) {
+					return "Let what is ready become visible, but do not force the whole field open.";
+				}
+				if (state.includes("culminate")) {
+					return "Use the visibility for clarity. Do not add drama to an already bright field.";
+				}
+				if (state.includes("release")) {
+					return "Let the peak pass through. Share, unwind, and avoid re-tightening the field.";
+				}
+
+				return "Use the lunar layer for pace: adjust input, timing, and scope without changing the main read.";
+			}
+
+			function buildLiveFieldModifierRead(data, harmonics, guidance, fieldDirection) {
+				const field = harmonics?.todayField || "Regulated";
+				const fieldName = getPublicFieldLabel(field);
+				const state = stateLabelFromMode(data?.state?.mode || "");
+				const loadBand = loadBandFromValue(data?.state?.amplifiedLoad);
+				const directionTitle = fieldDirection?.title || "Today’s field is active";
+				const directionText = fieldDirection?.text || "The active field adds context to the practical read.";
+				const bestUse = guidance?.move || "Choose one clean next move and keep it proportional.";
+
+				const reads = {
+					Relational: {
+						adds: "Contact, tone, feedback, or repair pressure may carry more signal than usual.",
+						watch: "Watch the urge to read the whole room or take responsibility for every signal.",
+						best: "Clarify one contact point and keep the response proportional.",
+					},
+					Reconstructive: {
+						adds: "Weak points, repairs, and unfinished structure may become easier to see.",
+						watch: "Watch the urge to turn one repair into a full rebuild.",
+						best: "Fix one real weak point and stop before the repair expands.",
+					},
+					Chaotic: {
+						adds: "Movement, spikes, disruption, or fast signal may become louder.",
+						watch: "Watch reacting to the first spike before the signal has form.",
+						best: "Give the energy one safe channel and let the rest pass through.",
+					},
+					Threshold: {
+						adds: "Edges, decisions, openings, or crossings may feel more active.",
+						watch: "Watch forcing a crossing before the timing is clean.",
+						best: "Name the real threshold and move one step at a time.",
+					},
+					Diffused: {
+						adds: "Atmosphere, subtle signal, fog, or blended inputs may be louder.",
+						watch: "Watch adding more input when the field needs one anchor.",
+						best: "Reduce noise and choose one simple true line.",
+					},
+					Contained: {
+						adds: "Privacy, inward processing, and protected formation may matter more.",
+						watch: "Watch holding everything inside until it becomes harder to name.",
+						best: "Protect the channel and let one small piece become workable.",
+					},
+					Integrative: {
+						adds: "Connections, meaning, synthesis, and pattern-linking may be active.",
+						watch: "Watch trying to integrate every loose end today.",
+						best: "Name the larger pattern, then reduce it to one usable step.",
+					},
+					Structured: {
+						adds: "Order, sequence, form, and practical next steps may be easier to access.",
+						watch: "Watch turning clarity into pressure or over-tightening the container.",
+						best: "Use the structure for one clean step, not a total overhaul.",
+					},
+					Regulated: {
+						adds: "Rhythm, steadiness, and pacing are the most useful signal today.",
+						watch: "Watch making a stable field more complicated than it needs to be.",
+						best: "Keep the rhythm simple and follow the most workable next move.",
+					},
+				};
+
+				const read = reads[field] || reads.Regulated;
+				const loadNote = loadBand && loadBand !== "—" ? ` Current load reads ${loadBand.toLowerCase()}, so scale the move to capacity.` : "";
+
+				return {
+					title: `${fieldName} field is active`,
+					adds: read.adds || directionText,
+					watch: `${read.watch}${loadNote}`,
+					best: read.best || bestUse,
+					state,
+					loadBand,
+					directionTitle,
+				};
+			}
+
+			function buildLayerInteractionRead(data, harmonics, moonstampModifierRead, liveFieldRead, guidance, fieldDirection) {
+				const moonstamp = getMoonstamp(data);
+				const hasMoonstamp = hasMoonstampData(data);
+				const moonState = hasMoonstamp
+					? String(moonstamp?.state || moonstamp?.phase || "Moonstamp timing").trim()
+					: "Moonstamp timing";
+				const field = harmonics?.todayField || "Regulated";
+				const fieldName = getPublicFieldLabel(field);
+				const stateLabel = stateLabelFromMode(data?.state?.mode || "");
+				const loadBand = loadBandFromValue(data?.state?.amplifiedLoad);
+				const moonAdjectives = hasMoonstamp
+					? getMoonstampAdjectives(moonstamp)
+					: "timing-based, pacing-oriented, context-setting";
+				const fieldAdjectives = fieldAdjectiveText(field);
+				const cleanMove = guidance?.move || liveFieldRead?.best || "Choose one clean next move and keep it proportional.";
+
+				let pattern = `${moonState} timing is modifying a ${fieldName} field.`;
+				let bodyLine = "The timing layer sets the pace; the live field shows where the pressure is moving.";
+
+				if (hasMoonstamp && String(moonState).toLowerCase().includes("reduce")) {
+					pattern = `Today’s field is asking for less input and cleaner contact.`;
+					bodyLine = `The Moonstamp layer wants simplification, while the ${fieldName} field shows where the signal is active. The system may do better with fewer inputs and one precise response.`;
+				} else if (hasMoonstamp && String(moonState).toLowerCase().includes("reset")) {
+					pattern = `Today’s field is asking for a clean baseline before action.`;
+					bodyLine = `The Moonstamp layer wants clearing, while the ${fieldName} field shows what is trying to become readable. Start with less noise before interpreting the signal.`;
+				} else if (field === "Relational") {
+					pattern = `Timing and contact are working together today.`;
+					bodyLine = `The Moonstamp layer sets the pacing, while the Relational field makes tone, contact, or repair more important. The body may notice other people’s signals faster than usual, so center first and respond second.`;
+				} else if (field === "Reconstructive") {
+					pattern = `Timing and repair pressure are working together today.`;
+					bodyLine = `The Moonstamp layer sets the pace, while the Reconstructive field points toward one weak spot. Repair only what is actually asking for attention.`;
+				} else if (field === "Chaotic") {
+					pattern = `Timing and fast signal are working together today.`;
+					bodyLine = `The Moonstamp layer sets the pace, while the active field may spike or move quickly. Let the charge discharge before making it mean everything.`;
+				} else if (field === "Threshold") {
+					pattern = `Timing and crossing pressure are working together today.`;
+					bodyLine = `The Moonstamp layer sets the pace, while the active field points toward an edge or decision. Do not cross every threshold just because one is lit up.`;
+				}
+
+				const loadLine = loadBand && loadBand !== "—"
+					? ` Current system load reads ${loadBand.toLowerCase()}; keep the move scaled to what the field can actually hold.`
+					: "";
+
+				return {
+					pattern,
+					text: `The Moonstamp layer is ${moonState}: ${moonAdjectives}.
+
+The Live Field layer is ${fieldName}: ${fieldAdjectives}.
+
+${bodyLine}${loadLine}`,
+					move: `Clean move: ${cleanMove}`,
+				};
+			}
+
+			function fieldAdjectiveText(field) {
+				const map = {
+					Relational: "contact-based, tone-sensitive, feedback-aware, repair-oriented",
+					Reconstructive: "repair-focused, pressure-aware, diagnostic, rebuilding-sensitive",
+					Chaotic: "fast, disruptive, mobile, signal-spiking",
+					Threshold: "edge-based, decision-facing, activated, crossing-oriented",
+					Diffused: "atmospheric, subtle, foggy, input-sensitive",
+					Contained: "private, inward, protected, boundary-aware",
+					Integrative: "pattern-linking, meaning-seeking, widening, synthesis-oriented",
+					Structured: "ordered, practical, sequenced, form-building",
+					Regulated: "steady, paced, workable, rhythm-based",
+				};
+				return map[field] || map.Regulated;
+			}
+
+			function updateFieldModifierCards(data, harmonics, guidance, fieldDirection, moonstampModifierRead) {
+				const moonstamp = getMoonstamp(data);
+				const hasMoonstamp = hasMoonstampData(data);
+				const modifierText = moonstampModifierRead?.text || buildMoonstampModifier(data);
+				const practicalInstruction = hasMoonstamp
+					? moonstampPracticalInstruction(moonstamp, modifierText)
+					: "Use the lunar layer for pace once Moonstamp data is available.";
+				const liveFieldRead = buildLiveFieldModifierRead(data, harmonics, guidance, fieldDirection);
+				const interaction = buildLayerInteractionRead(data, harmonics, moonstampModifierRead, liveFieldRead, guidance, fieldDirection);
+
+				if (hasMoonstamp) {
+					setText("moonstampModifierText", modifierText || "The lunar field adds timing texture to today’s read.");
+					setText("moonstampModifierMeta", practicalInstruction);
+				}
+
+				setText("liveFieldModifierTitle", liveFieldRead.title);
+				setText("liveFieldModifierAdds", liveFieldRead.adds);
+				setText("liveFieldModifierWatch", liveFieldRead.watch);
+				setText("liveFieldModifierBestUse", liveFieldRead.best);
+
+				setText("layerInteractionPattern", interaction.pattern);
+				setText("layerInteractionText", interaction.text);
+				setText("layerInteractionMove", interaction.move);
 			}
 
 			function renderWhyExplainBlock(title, text) {
@@ -15410,6 +15819,13 @@
 				updateTopLiveFieldStrip(data, harmonics, guidance);
 				updateTodayFieldPingUI(data, harmonics, guidance);
 				updateWhyThisFieldBridgeUI(data, harmonics);
+				updateFieldModifierCards(
+					data,
+					harmonics,
+					guidance,
+					fieldDirection,
+					moonstampModifier
+				);
 
 				setHTML("systemWeatherLine", systemWeatherHTML);
 				setHTML(
