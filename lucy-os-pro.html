@@ -50,6 +50,7 @@
 <!-- Pass 11 update: tightened Personal Architecture Beta component meaning lines only. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, or core public read behavior changed. -->
 <!-- Pass 12 update: tightened Personal Architecture Beta component-card density and scan spacing only. CSS/layout polish only; no backend/API, scoring, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, or core public read behavior changed. -->
 <!-- Pass 13 update: added compact Personal Architecture daily component detail lines only. Uses existing current-field/support/load values for display language; no backend/API, scoring, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, or core public read behavior changed. -->
+<!-- Pass 14 update: added compact Personal Architecture field-context micro-line only. Uses existing selected current-field values for display context; no backend/API, scoring, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, bottom padding, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -3690,6 +3691,27 @@
 				line-height: 1.45;
 				font-weight: 800;
 				overflow-wrap: break-word;
+			}
+
+			.personalArchitectureFieldContext {
+				margin: -3px 0 12px;
+				display: inline-flex;
+				align-items: center;
+				max-width: 100%;
+				padding: 7px 10px;
+				border: 1px solid rgba(216, 184, 76, 0.16);
+				border-radius: 999px;
+				background: rgba(216, 184, 76, 0.055);
+				color: #f0e6c2;
+				font-size: 11px;
+				line-height: 1.35;
+				font-weight: 850;
+				overflow-wrap: anywhere;
+			}
+
+			.personalArchitectureFieldContext strong {
+				color: var(--gold);
+				font-weight: 950;
 			}
 
 			.personalArchitectureBetaGrid {
@@ -8046,6 +8068,7 @@
 <div class="personalArchitectureMeaningBridge"><strong>Today’s field</strong> shows what is moving. <strong>Your architecture</strong> shows where it lands. <strong>Support</strong> shows how to return to coherence.</div>
 <div class="personalArchitectureDailyLanding" id="personalArchitectureDailyLanding">Today’s field may enter through these channels before it becomes a response.</div>
 <div class="personalArchitectureHowToUse">When today’s read feels strong, scan these channels to see where the pressure may be landing first.</div>
+<div class="personalArchitectureFieldContext" id="personalArchitectureFieldContext">Today’s component notes are tuned to the current field when available.</div>
 <div class="personalArchitectureBetaGrid" id="personalArchitectureBetaGrid">
 <div class="personalArchitectureBetaItem">
 <div class="personalArchitectureRole">Interface Kernel</div>
@@ -9821,7 +9844,8 @@
 				if (!gridEl) return;
 
 				const harmonics = calculateHarmonics(data);
-				const currentField = harmonics?.todayField || harmonics?.dailyFieldDebug?.selectedField || "current";
+				const selectedField = harmonics?.todayField || harmonics?.dailyFieldDebug?.selectedField || "";
+				const currentField = selectedField || "current";
 				const dailyComponentLines = personalArchitectureGetDailyComponentLines(
 					currentField,
 					harmonics?.supportHarmonic,
@@ -9831,6 +9855,13 @@
 				if (dailyLandingEl) {
 					const fieldName = publicFieldText(currentField);
 					dailyLandingEl.textContent = `Today’s ${fieldName} field may enter through these channels before it becomes a mood, choice, reaction, or return path.`;
+				}
+				const fieldContextEl = document.getElementById("personalArchitectureFieldContext");
+				if (fieldContextEl) {
+					const fieldLabel = selectedField ? publicFieldText(selectedField) : "";
+					fieldContextEl.innerHTML = fieldLabel
+						? `Today’s component notes are tuned to the current field: <strong>${chartKernelEscapeHtml(fieldLabel)}</strong>.`
+						: "Today’s component notes are tuned to the current field when available.";
 				}
 
 				const chartKernel = data?.chartKernel || {};
