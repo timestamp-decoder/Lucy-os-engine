@@ -59,6 +59,7 @@
 <!-- Pass 17 optional profile name update: added an optional front-end Name / Profile Name input for saved-profile labels and future share personalization foundation. Saved profiles now store/restore the optional name defensively and use it as the friendly dropdown label when present. No backend/API payload, engine, scoring, field selection, Moonstamp, dashboard, share text, visual share card, share export behavior, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, Personal Architecture Beta content, PASS 15 component note language, PASS 16 visual line, PASS 16B copied-share line, or core public read behavior changed. -->
 <!-- Pass 19 visual share card compression update: compressed the visual share card into a poster-style summary only. Copied share text, in-app read content, backend/API, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, Profile Name behavior, Chart Kernel extraction, diagnostics, bottom nav, Personal Architecture Beta, and share export mechanics are unchanged beyond the visual card text/section list. -->
 <!-- Pass 20 update: added temporary TimestampDecoder.com CTA footer line to visual share card and copied share text only. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, visual share-card section list, visual title personalization, share export mechanics beyond footer text, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, in-app read content, Personal Architecture Beta content, PASS 15 component note language, or core public read behavior changed. -->
+<!-- Pass 21 update: lightly polished visual share-card footer spacing only after the CTA footer addition. No copied share text, backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, visual share-card section list, visual title personalization, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, in-app read content, Personal Architecture Beta content, PASS 15 component note language, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -5286,11 +5287,14 @@
 			}
 
 			.shareFooter {
-				padding-top: 2px;
+				display: grid;
+				gap: 5px;
+				padding-top: 8px;
 				color: var(--muted);
-				font-size: 11px;
+				font-size: 10.5px;
 				font-weight: 900;
-				letter-spacing: 0.14em;
+				line-height: 1.35;
+				letter-spacing: 0.13em;
 				text-transform: uppercase;
 				overflow-wrap: break-word;
 			}
