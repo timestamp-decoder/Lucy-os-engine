@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 
+<!-- Pass 35C update: fixed the Personal Architecture Beta Explore / Deeper Read toggle as a true dedicated mobile stack. The Explore label now sits above a full-width one-line toggle button on small screens, preventing word-by-word stacking. CSS/markup layout safety only; no backend/API, payload, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share behavior, bottom nav, Landing flow, title/sign/degree logic, Chart Kernel extraction, Live Field Modifier proof panel, PASS 35 Deeper Read copy generation, or core public read behavior changed. -->
 <!-- Pass 35B update: fixed Personal Architecture Beta Explore / Deeper Read toggle row mobile layout only. The Explore row now uses a full-width tappable layout so “Open Deeper Read” does not squeeze into one-letter-per-line wrapping. No backend/API, payload, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share behavior, bottom nav, Landing flow, Personal Architecture title/sign/degree logic, Chart Kernel extraction, Live Field Modifier proof panel, PASS 35 Deeper Read copy generation, or core public read behavior changed. -->
 <!-- Pass 35 update: added Personal Architecture Beta card-local Deeper Read expanders inside the You section only. The Explore row now opens concise display-only guidance per placement using existing card/render context. No backend/API, payload, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share behavior, bottom nav, Landing flow, Personal Architecture title/sign/degree logic, Chart Kernel extraction, Live Field Modifier proof panel, or core public read behavior changed. -->
 <!-- Pass 34E update: hardened the diagnostics-only Live Mercury Source Proof panel so deployed builds can verify whether PASS 34D is running, whether the frontend response was scanned, and whether any safe live/current/transit Mercury sign source exists. Public Live Field Modifier still updates only when a safe runtime live Mercury sign is accepted. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, bottom padding, Landing flow, Personal Architecture PASS 33H title logic, Chart Kernel extraction, or core public read behavior changed. -->
@@ -3928,18 +3929,21 @@
 
 			.personalArchitectureExploreRow {
 				display: grid;
-				grid-template-columns: minmax(0, 1fr);
-				gap: 0;
-				padding: 0;
+				grid-template-columns: minmax(0, 92px) minmax(0, 1fr);
+				gap: 12px;
+				align-items: center;
+				padding: 6px 7px;
 				border-color: rgba(103, 193, 255, 0.055);
 				background: rgba(103, 193, 255, 0.018);
+				min-width: 0;
 			}
 
-			.personalArchitectureExploreRow span {
+			.personalArchitectureExploreRow > span {
 				color: rgba(103, 193, 255, 0.72);
+				min-width: 0;
 			}
 
-			.personalArchitectureExploreRow strong {
+			.personalArchitectureExploreRow > strong {
 				color: rgba(170, 183, 214, 0.82);
 				font-weight: 820;
 			}
@@ -3949,31 +3953,30 @@
 				min-width: 0;
 				min-height: 34px;
 				margin: 0;
-				padding: 6px 7px;
+				padding: 8px 10px;
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
 				gap: 10px;
-				border: 0;
+				border: 1px solid rgba(103, 193, 255, 0.12);
 				border-radius: 9px;
-				background: transparent;
+				background: rgba(103, 193, 255, 0.035);
 				box-shadow: none;
 				color: inherit;
 				text-align: left;
 				cursor: pointer;
-			}
-
-			.personalArchitectureExploreButton span {
-				flex: 0 0 auto;
+				white-space: nowrap;
 			}
 
 			.personalArchitectureExploreButton strong {
 				flex: 1 1 auto;
 				min-width: 0;
-				text-align: right;
-				white-space: normal;
+				text-align: left;
+				white-space: nowrap;
 				overflow-wrap: normal;
-				word-break: keep-all;
+				word-break: normal;
+				color: rgba(170, 183, 214, 0.88);
+				font-weight: 850;
 			}
 
 			.personalArchitectureExploreButton:hover,
@@ -6686,9 +6689,15 @@
 					padding: 6px 7px;
 				}
 
+				.personalArchitectureExploreRow {
+					grid-template-columns: minmax(0, 92px) minmax(0, 1fr);
+					gap: 10px;
+					padding: 6px 7px;
+				}
+
 				.personalArchitectureExploreButton {
 					min-height: 36px;
-					padding: 7px 8px;
+					padding: 8px 9px;
 				}
 
 				.personalArchitectureExploreButton strong {
@@ -6778,18 +6787,24 @@
 				}
 			}
 
-			@media (max-width: 420px) {
-				.personalArchitectureExploreButton {
-					display: grid;
+			@media (max-width: 640px) {
+				.personalArchitectureExploreRow {
 					grid-template-columns: minmax(0, 1fr);
-					justify-content: stretch;
-					align-items: start;
-					gap: 4px;
+					gap: 8px;
+					align-items: stretch;
+				}
+
+				.personalArchitectureExploreButton {
+					width: 100%;
+					justify-content: flex-start;
+					white-space: nowrap;
 				}
 
 				.personalArchitectureExploreButton strong {
 					text-align: left;
-					white-space: normal;
+					white-space: nowrap;
+					overflow-wrap: normal;
+					word-break: normal;
 				}
 			}
 
@@ -11496,11 +11511,11 @@
 					item.meaning
 				)}</strong></div><div class="personalArchitectureCardRow"><span>Use</span><strong>${chartKernelEscapeHtml(
 					item.use || "Notice where this part receives the field, then choose one clean response."
-				)}</strong></div><div class="personalArchitectureCardRow personalArchitectureExploreRow"><button type="button" class="personalArchitectureExploreButton" aria-expanded="false" aria-controls="${chartKernelEscapeHtml(
+				)}</strong></div><div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><button type="button" class="personalArchitectureExploreButton" aria-expanded="false" aria-controls="${chartKernelEscapeHtml(
 					deeperReadId
 				)}" onclick="return togglePersonalArchitectureDeeperRead('${chartKernelEscapeHtml(
 					deeperReadId
-				)}')"><span>Explore</span><strong>Open Deeper Read</strong></button></div></div>${deeperReadPanelHtml}${todayHtml}${todayMeaningHtml}<div class="personalArchitectureMeta">${
+				)}')"><strong>Open Deeper Read</strong></button></div></div>${deeperReadPanelHtml}${todayHtml}${todayMeaningHtml}<div class="personalArchitectureMeta">${
 					metaHtml || chartKernelEscapeHtml(item.meta || "Awaiting placement texture")
 				}</div></div>`;
 			}
