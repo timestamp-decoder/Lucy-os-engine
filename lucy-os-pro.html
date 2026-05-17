@@ -63,6 +63,7 @@
 <!-- Pass 22 update: added optional Profile Name personalization to the visual share-card title only. No copied share text, backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name input/save/load behavior, visual share-card section list, visual share-card compression, footer CTA, footer spacing, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, in-app read content, Personal Architecture Beta content, PASS 15 component note language, or core public read behavior changed. -->
 <!-- Pass 22B update: fixed the real exported visual share-card title hook so optional Profile Name renders on the visible/exported card title. Visual share-card title personalization only; copied share text, Profile Name input/save/load behavior, saved profiles, backend/API, engine, scoring, Moonstamp, dashboard, field selection, calibration, visual card sections/compression/footer, Chart Kernel, diagnostics, bottom nav, and in-app read behavior unchanged. -->
 <!-- Pass 23 update: compressed the visual share-card footer CTA styling only so the temporary TimestampDecoder.com line reads softer and stays more compact. Copied share text, visual title personalization, engine/API, scoring, Moonstamp, dashboard, saved profiles, Chart Kernel, diagnostics, bottom nav, and in-app read behavior unchanged. -->
+<!-- Pass 24 update: added compact Personal Architecture Beta “What this means today” detail lines only. Uses existing current-field/support/load display values defensively; no backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, PASS 15 component note language, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -3810,6 +3811,30 @@
 			.personalArchitectureToday strong {
 				color: var(--gold);
 				font-weight: 950;
+			}
+
+			.personalArchitectureTodayMeaning {
+				margin-top: 6px;
+				padding: 7px 8px;
+				border: 1px solid rgba(103, 193, 255, 0.105);
+				border-radius: 10px;
+				background: rgba(103, 193, 255, 0.035);
+				color: rgba(217, 224, 244, 0.92);
+				font-size: 10.65px;
+				line-height: 1.34;
+				font-weight: 740;
+				overflow-wrap: break-word;
+			}
+
+			.personalArchitectureTodayMeaning strong {
+				display: block;
+				margin-bottom: 3px;
+				color: var(--blue);
+				font-size: 9.2px;
+				line-height: 1.2;
+				font-weight: 950;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
 			}
 
 			.personalArchitectureMeta {
@@ -8177,6 +8202,7 @@
 <div class="personalArchitectureLabel">Ascendant</div>
 <div class="personalArchitectureMeaning">How the field first meets your system.</div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice how the field first meets your attention, body, or environment.</div>
+<div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up in how quickly you read the room, pressure, tone, or first impression before choosing a response.</div>
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
 </div>
 <div class="personalArchitectureBetaItem">
@@ -8184,6 +8210,7 @@
 <div class="personalArchitectureLabel">Sun</div>
 <div class="personalArchitectureMeaning">The core signal your system organizes around.</div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice what feels central, important, or identity-linked in the read.</div>
+<div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up in where your energy feels clear, strained, pulled, or ready to move today.</div>
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
 </div>
 <div class="personalArchitectureBetaItem">
@@ -8191,6 +8218,7 @@
 <div class="personalArchitectureLabel">Moon</div>
 <div class="personalArchitectureMeaning">How your body and emotions process the field.</div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice how the field lands in body-state, mood, comfort, or emotional rhythm.</div>
+<div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up through body-state, comfort, emotional rhythm, or the need for steadier pacing.</div>
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
 </div>
 <div class="personalArchitectureBetaItem">
@@ -8198,6 +8226,7 @@
 <div class="personalArchitectureLabel">Rahu / North Node</div>
 <div class="personalArchitectureMeaning">Where the system is being pulled forward.</div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice where the read pulls you toward a next step, new edge, or unfamiliar pattern.</div>
+<div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up as the edge your system is being asked to move toward without forcing it.</div>
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
 </div>
 <div class="personalArchitectureBetaItem">
@@ -8205,6 +8234,7 @@
 <div class="personalArchitectureLabel">Ketu / South Node</div>
 <div class="personalArchitectureMeaning">What the system may need to release or stop overusing.</div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice what old reflex, overuse, or attachment the return path may ask you to loosen.</div>
+<div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up as what your system needs to simplify, stop over-carrying, or let become quieter today.</div>
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
 </div>
 </div>
@@ -9796,6 +9826,109 @@
 
 				return lines;
 			}
+
+			function personalArchitectureGetTodayMeaningLines(field, support, loadState) {
+				const fieldBase = getHarmonicBaseName(field || "");
+				const supportBase = getHarmonicBaseName(support || "");
+				const loadText = String(loadState || "").toLowerCase();
+				const isHighLoad =
+					loadText.includes("high") ||
+					loadText.includes("overload") ||
+					loadText.includes("strained") ||
+					loadText.includes("heavy");
+
+				const defaults = {
+					interface: "This may show up in how quickly you read the room, pressure, tone, or first impression before choosing a response.",
+					core: "This may show up in where your energy feels clear, strained, pulled, or ready to move today.",
+					emotional: "This may show up through body-state, comfort, emotional rhythm, or the need for steadier pacing.",
+					growth: "This may show up as the edge your system is being asked to move toward without forcing it.",
+					release: "This may show up as what your system needs to simplify, stop over-carrying, or let become quieter today.",
+				};
+
+				const fieldLines = {
+					Relational: {
+						interface: "This may show up in how quickly you notice tone, contact, response, or relational pressure before choosing what to do.",
+						core: "This may show up in where contact, feedback, or repair pressure pulls on your energy today.",
+						emotional: "This may show up through body-state, tone sensitivity, comfort needs, or the pace of connection.",
+						growth: "This may show up as the edge of responding cleanly without taking responsibility for the whole relational field.",
+						release: "This may show up as what needs to be released, simplified, or not over-carried in contact today.",
+					},
+					Reconstructive: {
+						interface: "This may show up in how quickly you notice what needs repair, cleanup, or a smaller rebuild.",
+						core: "This may show up where your energy wants to fix the weak point but needs a clean scope first.",
+						emotional: "This may show up through repair pressure in the body, mood, or nervous system pace.",
+						growth: "This may show up as the edge of repairing one real piece without turning the whole day into a rebuild.",
+						release: "This may show up as what needs to be stopped, cleared, or no longer carried as unfinished repair.",
+					},
+					Chaotic: {
+						interface: "This may show up in fast signal, sudden activation, urgency, or noticing disruption before it fully forms.",
+						core: "This may show up where your energy spikes quickly and needs form before it becomes action.",
+						emotional: "This may show up as body activation, urgency, restlessness, or a need to slow the signal before responding.",
+						growth: "This may show up as the edge of letting fast signal move without chasing every open loop.",
+						release: "This may show up as false urgency, extra noise, or activation your system does not need to keep carrying.",
+					},
+					Structured: {
+						interface: "This may show up in how quickly you look for order, form, steps, or a clean container.",
+						core: "This may show up where your energy wants a simple sequence before taking the next step.",
+						emotional: "This may show up as the body wanting clearer pacing, less ambiguity, or more defined structure.",
+						growth: "This may show up as the edge of building enough form without making the moment too rigid.",
+						release: "This may show up as rules, categories, or control that can soften once enough structure exists.",
+					},
+					Diffused: {
+						interface: "This may show up in atmosphere, fog, subtle tension, field-noise, or sensitivity before there is a clear reason.",
+						core: "This may show up where your energy needs one named signal instead of absorbing the whole atmosphere.",
+						emotional: "This may show up through mood, body-state, environmental sensitivity, or feeling what may not be yours.",
+						growth: "This may show up as the edge of choosing one clear thread from a wider field of signals.",
+						release: "This may show up as atmosphere, noise, or pressure your system can let move out instead of identifying with it.",
+					},
+					Integrative: {
+						interface: "This may show up in how quickly you sense the wider pattern, meaning, or how separate pieces connect.",
+						core: "This may show up where your energy wants to synthesize the day into one usable center.",
+						emotional: "This may show up through the body needing simplicity before carrying the whole meaning-field.",
+						growth: "This may show up as the edge of bringing pieces together without overloading the system.",
+						release: "This may show up as unrelated signals, meanings, or threads that do not need to be integrated today.",
+					},
+					Threshold: {
+						interface: "This may show up in decision edges, crossings, timing pressure, or the sense that a next step is near.",
+						core: "This may show up where your energy wants movement but needs to know which opening is actually ready.",
+						emotional: "This may show up as anticipation, edge pressure, or body tension around what comes next.",
+						growth: "This may show up as the edge of crossing at the right pace instead of forcing the door open.",
+						release: "This may show up as pressure to rush a crossing that has not opened cleanly yet.",
+					},
+					Contained: {
+						interface: "This may show up in boundaries, compression, limits, or the need to protect your pace before responding.",
+						core: "This may show up where your energy needs fewer inputs and a stronger container to stay clear.",
+						emotional: "This may show up through the body asking for protected pacing, reduced exposure, or less pressure.",
+						growth: "This may show up as the edge of staying protected while still allowing the next clean movement.",
+						release: "This may show up as over-holding, over-protection, or pressure that can soften once safety is present.",
+					},
+					Regulated: {
+						interface: "This may show up in steadiness, rhythm, pacing, or the need to keep the day proportional.",
+						core: "This may show up where your energy becomes clearer when the next move stays steady and manageable.",
+						emotional: "This may show up through body rhythm, baseline needs, or the return to a steadier state.",
+						growth: "This may show up as the edge of trusting the clean pace instead of adding intensity.",
+						release: "This may show up as extra pressure, urgency, or control that can drop once the rhythm is stable.",
+					},
+				};
+
+				const lines = { ...(fieldLines[fieldBase] || defaults) };
+
+				if (isHighLoad) {
+					lines.core = `${lines.core} Keep the scope small before adding more energy.`;
+					lines.emotional = `${lines.emotional} Reduce input before trying to interpret everything.`;
+				}
+
+				if (supportBase === "Contained" && fieldBase !== "Contained") {
+					lines.release = `${lines.release} Let support come through fewer open channels.`;
+				} else if (supportBase === "Regulated" && fieldBase !== "Regulated") {
+					lines.growth = `${lines.growth} Keep the move paced and proportional.`;
+				} else if (supportBase === "Structured" && fieldBase !== "Structured") {
+					lines.core = `${lines.core} A simple sequence is enough.`;
+				}
+
+				return lines;
+			}
+
 			function renderPersonalArchitectureBetaItem(item) {
 				const metaHtml = String(item.meta || "")
 					.split("\n")
@@ -9809,13 +9942,16 @@
 				const todayHtml = item.today
 					? `<div class="personalArchitectureToday"><strong>Today:</strong> ${chartKernelEscapeHtml(item.today)}</div>`
 					: "";
+				const todayMeaningHtml = item.todayMeaning
+					? `<div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>${chartKernelEscapeHtml(item.todayMeaning)}</div>`
+					: "";
 				return `<div class="personalArchitectureBetaItem"><div class="personalArchitectureRole">${chartKernelEscapeHtml(
 					personalArchitecturePublicRoleLabel(item.role)
 				)}</div><div class="personalArchitectureLabel">${chartKernelEscapeHtml(
 					item.label
 				)}</div><div class="personalArchitectureMeaning">${chartKernelEscapeHtml(
 					item.meaning
-				)}</div>${todayHtml}<div class="personalArchitectureMeta">${
+				)}</div>${todayHtml}${todayMeaningHtml}<div class="personalArchitectureMeta">${
 					metaHtml || chartKernelEscapeHtml(item.meta || "Awaiting placement texture")
 				}</div></div>`;
 			}
@@ -9828,6 +9964,11 @@
 				const selectedField = harmonics?.todayField || harmonics?.dailyFieldDebug?.selectedField || "";
 				const currentField = selectedField || "current";
 				const dailyComponentLines = personalArchitectureGetDailyComponentLines(
+					currentField,
+					harmonics?.supportHarmonic,
+					harmonics?.systemLoadState || harmonics?.loadState
+				);
+				const todayMeaningLines = personalArchitectureGetTodayMeaningLines(
 					currentField,
 					harmonics?.supportHarmonic,
 					harmonics?.systemLoadState || harmonics?.loadState
@@ -9868,6 +10009,7 @@
 						role: personalArchitecturePickRole(data, [/^asc(endant)?$/], "Interface Kernel"),
 						meaning: "How the field first meets your system.",
 						today: dailyComponentLines.interface,
+						todayMeaning: todayMeaningLines.interface,
 						meta: personalArchitectureFormatPlacementMeta({
 							data,
 							placement: ascPlacement,
@@ -9880,6 +10022,7 @@
 						role: personalArchitecturePickRole(data, [/^sun$/], "Core Voltage"),
 						meaning: "The core signal your system organizes around.",
 						today: dailyComponentLines.core,
+						todayMeaning: todayMeaningLines.core,
 						meta: personalArchitectureFormatPlacementMeta({
 							data,
 							placement: sunPlacement,
@@ -9892,6 +10035,7 @@
 						role: personalArchitecturePickRole(data, [/^moon$/], "Emotional Processor"),
 						meaning: "How your body and emotions process the field.",
 						today: dailyComponentLines.emotional,
+						todayMeaning: todayMeaningLines.emotional,
 						meta: personalArchitectureFormatPlacementMeta({
 							data,
 							placement: moonPlacement,
@@ -9904,6 +10048,7 @@
 						role: personalArchitecturePickRole(data, [/rahu/, /north.?node/], "Growth Vector"),
 						meaning: "Where the system is being pulled forward.",
 						today: dailyComponentLines.growth,
+						todayMeaning: todayMeaningLines.growth,
 						meta: personalArchitectureFormatNodeMeta(rahu, "") || (roleAvailable ? "Role available" : "Awaiting placement texture"),
 					},
 					{
@@ -9911,6 +10056,7 @@
 						role: personalArchitecturePickRole(data, [/ketu/, /south.?node/], "Release Vector"),
 						meaning: "What the system may need to release or stop overusing.",
 						today: dailyComponentLines.release,
+						todayMeaning: todayMeaningLines.release,
 						meta: personalArchitectureFormatNodeMeta(ketu, "") || (roleAvailable ? "Role available" : "Awaiting placement texture"),
 					},
 				];
