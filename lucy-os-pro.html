@@ -81,6 +81,7 @@
 <!-- Pass 33F update: restricted Personal Architecture Beta title sign lookup to placement-scoped sources only, so broad/global sign containers cannot bleed one sign across every card. Existing runtime degree fallback remains display-only for unscoped or missing signs. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, Landing flow, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <!-- Pass 33G update: validated Personal Architecture Beta title sign labels against each rendered placement's own existing degree when available. Conflicting safeSign values are rejected and the degree-derived display sign wins. Display-title validation only; no backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, Landing flow, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <!-- Pass 33H update: made each Personal Architecture Beta title use the card-local degree source before any safeSign value. The same existing degree value used for the visible Degree metadata row now derives the title sign, and safeSign is ignored whenever that card-local degree exists. Display-title binding only; no backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, bottom padding, Landing flow, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
+<!-- Pass 34 update: added display-only Live Field Modifier planet-sign title support for existing safe runtime live Mercury data. Mercury in Taurus displays as Grounded Signal Processor, Mercury in Gemini displays as Fast Signal Processor, and missing live Mercury sign data preserves the existing field-theme title. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, bottom padding, Landing flow, Personal Architecture PASS 33H title logic, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -16520,6 +16521,141 @@
 				return "Use the lunar layer for pace: adjust input, timing, and scope without changing the main read.";
 			}
 
+
+			function getMercuryModifierLabel(sign) {
+				if (sign === "Taurus") return "Grounded Signal Processor";
+				if (sign === "Gemini") return "Fast Signal Processor";
+				return "Signal Processor";
+			}
+
+			function liveFieldModifierExtractMercurySignFromString(value) {
+				if (typeof value !== "string") return "";
+				const text = value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+				if (!/\bmercury\b/i.test(text)) return "";
+				const signs = personalArchitectureZodiacSigns();
+				const inMatch = text.match(new RegExp(`\\bmercury\\s+in\\s+(${signs.join("|")})\\b`, "i"));
+				if (inMatch) return normalizeExistingZodiacSignLabel(inMatch[1]);
+				const signMatch = text.match(new RegExp(`\\b(${signs.join("|")})\\b`, "i"));
+				return signMatch ? normalizeExistingZodiacSignLabel(signMatch[1]) : "";
+			}
+
+			function liveFieldModifierGetMercurySignFromScopedSource(source, sourceLabel = "") {
+				if (!source) return { sign: "", source: "" };
+
+				if (typeof source === "string") {
+					const sign = liveFieldModifierExtractMercurySignFromString(source);
+					return sign ? { sign, source: sourceLabel || "live Mercury string" } : { sign: "", source: "" };
+				}
+
+				if (Array.isArray(source)) {
+					for (const entry of source) {
+						const lookup = liveFieldModifierGetMercurySignFromScopedSource(entry, sourceLabel || "live Mercury array");
+						if (lookup.sign) return lookup;
+					}
+					return { sign: "", source: "" };
+				}
+
+				if (typeof source !== "object") return { sign: "", source: "" };
+
+				if (personalArchitectureObjectMatchesPlacement(source, "Mercury", sourceLabel)) {
+					const directSign = personalArchitectureGetSafeExistingSignLabel(source);
+					if (directSign) return { sign: directSign, source: sourceLabel || "live Mercury object" };
+
+					const nestedSign = personalArchitectureGetNestedSafeExistingSignLabel(source, "Mercury", sourceLabel || "live Mercury object");
+					if (nestedSign) return { sign: nestedSign, source: sourceLabel || "live Mercury nested object" };
+
+					const labelSign = [source.title, source.label, source.name, source.displayLabel, source.fullLabel]
+						.map(liveFieldModifierExtractMercurySignFromString)
+						.find(Boolean);
+					if (labelSign) return { sign: labelSign, source: sourceLabel || "live Mercury label" };
+				}
+
+				for (const [key, value] of Object.entries(source)) {
+					const keyText = String(key || "");
+					const mercuryScopedKey = /\bmercury\b/i.test(keyText);
+
+					if (mercuryScopedKey) {
+						if (typeof value === "string") {
+							const sign = normalizeExistingZodiacSignLabel(value) || liveFieldModifierExtractMercurySignFromString(`Mercury in ${value}`);
+							if (sign) return { sign, source: sourceLabel ? `${sourceLabel}.${key}` : key };
+						}
+
+						if (value && typeof value === "object") {
+							const directSign = personalArchitectureGetSafeExistingSignLabel(value);
+							if (directSign) return { sign: directSign, source: sourceLabel ? `${sourceLabel}.${key}` : key };
+
+							const nestedSign = personalArchitectureGetNestedSafeExistingSignLabel(value, "Mercury", sourceLabel ? `${sourceLabel}.${key}` : key);
+							if (nestedSign) return { sign: nestedSign, source: sourceLabel ? `${sourceLabel}.${key}` : key };
+						}
+					}
+
+					if (typeof value === "string") {
+						const sign = liveFieldModifierExtractMercurySignFromString(value);
+						if (sign) return { sign, source: sourceLabel ? `${sourceLabel}.${key}` : key };
+					}
+
+					if (value && typeof value === "object" && personalArchitectureObjectMatchesPlacement(value, "Mercury", keyText)) {
+						const lookup = liveFieldModifierGetMercurySignFromScopedSource(value, sourceLabel ? `${sourceLabel}.${key}` : key);
+						if (lookup.sign) return lookup;
+					}
+				}
+
+				return { sign: "", source: "" };
+			}
+
+			function liveFieldModifierFindRuntimeMercurySign(data) {
+				const scopedSources = [
+					["data.liveFieldModifier", data?.liveFieldModifier],
+					["data.currentLiveModifier", data?.currentLiveModifier],
+					["data.liveModifier", data?.liveModifier],
+					["data.signalWeather", data?.signalWeather],
+					["data.liveSignalWeather", data?.liveSignalWeather],
+					["data.currentSignalWeather", data?.currentSignalWeather],
+					["data.currentSky", data?.currentSky],
+					["data.liveSky", data?.liveSky],
+					["data.sky", data?.sky],
+					["data.transits", data?.transits],
+					["data.currentTransits", data?.currentTransits],
+					["data.liveTransits", data?.liveTransits],
+					["data.transitPlacements", data?.transitPlacements],
+					["data.currentPlacements", data?.currentPlacements],
+					["data.livePlacements", data?.livePlacements],
+					["data.chartKernel.transits", data?.chartKernel?.transits],
+					["data.chartKernel.currentTransits", data?.chartKernel?.currentTransits],
+					["data.chartKernel.liveTransits", data?.chartKernel?.liveTransits],
+					["data.chartKernel.currentSky", data?.chartKernel?.currentSky],
+					["data.chartKernel.liveSky", data?.chartKernel?.liveSky],
+				];
+
+				for (const [sourceLabel, source] of scopedSources) {
+					const lookup = liveFieldModifierGetMercurySignFromScopedSource(source, sourceLabel);
+					if (lookup.sign) return lookup;
+				}
+
+				return { sign: "", source: "" };
+			}
+
+			function buildLiveFieldModifierPlanetSignTitle(data, existingLiveFieldModifierTitle) {
+				const mercuryLookup = liveFieldModifierFindRuntimeMercurySign(data);
+				const mercurySign = normalizeExistingZodiacSignLabel(mercuryLookup.sign);
+				const sourceUsed = mercurySign ? mercuryLookup.source : "field-title fallback";
+				const liveModifierTitle = mercurySign
+					? `Mercury in ${mercurySign} — ${getMercuryModifierLabel(mercurySign)}`
+					: existingLiveFieldModifierTitle;
+
+				console.debug("PASS 34 LIVE FIELD MODIFIER PROOF", {
+					mercurySign,
+					liveModifierTitle,
+					sourceUsed,
+				});
+
+				return {
+					title: liveModifierTitle,
+					mercurySign,
+					sourceUsed,
+				};
+			}
+
 			function buildLiveFieldModifierRead(data, harmonics, guidance, fieldDirection) {
 				const field = harmonics?.todayField || "Regulated";
 				const fieldName = getPublicFieldLabel(field);
@@ -16580,14 +16716,19 @@
 				const read = reads[field] || reads.Regulated;
 				const loadNote = loadBand && loadBand !== "—" ? ` Current load reads ${loadBand.toLowerCase()}, so scale the move to capacity.` : "";
 
+				const existingLiveFieldModifierTitle = `${fieldName} field is active`;
+				const livePlanetSignTitle = buildLiveFieldModifierPlanetSignTitle(data, existingLiveFieldModifierTitle);
+
 				return {
-					title: `${fieldName} field is active`,
+					title: livePlanetSignTitle.title || existingLiveFieldModifierTitle,
 					adds: read.adds || directionText,
 					watch: `${read.watch}${loadNote}`,
 					best: read.best || bestUse,
 					state,
 					loadBand,
 					directionTitle,
+					mercurySign: livePlanetSignTitle.mercurySign || "",
+					sourceUsed: livePlanetSignTitle.sourceUsed || "",
 				};
 			}
 
