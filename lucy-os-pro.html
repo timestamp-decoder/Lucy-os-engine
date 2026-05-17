@@ -77,6 +77,7 @@
 <!-- Pass 33B update: traced existing safe sign labels through the Personal Architecture card source, current row source object, and already-present chartKernel placement collections before binding titles. Display-title binding only; no backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share-card behavior, bottom nav, bottom padding, Landing flow, PASS 15 component note language meaning, PASS 24 helper meaning, PASS 26 framing strip meaning, PASS 27 hierarchy, PASS 28 component-card styling direction, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, PASS 31 Landing styling, PASS 32 card structure, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <!-- Pass 41 recovery update: restored Live Field Modifier displayTitle binding, sign-aware Personal Architecture card titles, stable receiving component eyebrow, and Deeper Read expanders. Display-only recovery; no backend/API, payload, engine, scoring, field selection, normalized transit values, Moonstamp, Chart Kernel extraction, natal placement logic, saved profiles, share behavior, bottom nav, Landing flow, diagnostics, degree metadata, Today lines, Meaning/Use rows, or support behavior changed. -->
 <!-- Pass 44 update: canonical baseline recovery and regression lock. Restored display-only Live Field Modifier contract binding, degree-derived Personal Architecture title signs, Personal Architecture Sign Source Proof diagnostics, and Deeper Read expander preservation. No backend/API, payload, engine, scoring, field selection, normalized transit values, Moonstamp, chartKernel extraction, natal placement logic, saved profiles, share behavior, bottom nav, or Landing flow changed. -->
+<!-- Pass 45 update: rebuilt Personal Architecture Deeper Read panel shape only. Current PASS 44 Deeper Read content remains sourced from the current baseline and now renders as a separate four-section panel below the Explore row. No backend/API, payload, engine, scoring, field selection, normalized transit values, Moonstamp, chartKernel extraction, natal placement logic, saved profiles, share behavior, bottom nav, Landing flow, Live Field Modifier, interaction copy, title-sign derivation, proof panel, Today rows, Meaning/Use rows, degree rows, metadata rows, or Explore rows changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -3931,6 +3932,8 @@
 
 
 			.personalArchitectureDeeperRead {
+				display: grid;
+				gap: 7px;
 				min-width: 0;
 				max-width: 100%;
 			}
@@ -3938,36 +3941,98 @@
 			.personalArchitectureDeeperRead summary {
 				list-style: none;
 				cursor: pointer;
-				display: inline-flex;
-				align-items: center;
-				width: auto;
+				min-width: 0;
 				max-width: 100%;
-				color: rgba(170, 183, 214, 0.9);
-				font-size: 10.75px;
-				line-height: 1.34;
-				font-weight: 850;
-				white-space: nowrap;
-				word-break: keep-all;
 			}
 
 			.personalArchitectureDeeperRead summary::-webkit-details-marker {
 				display: none;
 			}
 
-			.personalArchitectureDeeperRead summary::after {
-				content: " +";
+			.personalArchitectureDeeperReadToggleText {
+				display: inline-flex;
+				align-items: center;
+				gap: 4px;
+				max-width: 100%;
+				color: rgba(170, 183, 214, 0.9);
+				font-size: 10.75px;
+				line-height: 1.34;
+				font-weight: 850;
+				white-space: normal;
+				overflow-wrap: break-word;
+				word-break: normal;
+			}
+
+			.personalArchitectureDeeperReadToggleText .toggleClose {
+				display: none;
+			}
+
+			.personalArchitectureDeeperRead[open] .personalArchitectureDeeperReadToggleText .toggleOpen {
+				display: none;
+			}
+
+			.personalArchitectureDeeperRead[open] .personalArchitectureDeeperReadToggleText .toggleClose {
+				display: inline;
+			}
+
+			.personalArchitectureDeeperReadToggleMark {
 				color: rgba(103, 193, 255, 0.78);
 				font-weight: 950;
 			}
 
-			.personalArchitectureDeeperRead[open] summary::after {
-				content: " -";
+			.personalArchitectureDeeperReadPanel {
+				margin-top: 0;
+				padding: 10px 10px 11px;
+				border: 1px solid rgba(103, 193, 255, 0.12);
+				border-radius: 12px;
+				background: radial-gradient(
+						circle at 8% 0%,
+						rgba(103, 193, 255, 0.07),
+						transparent 34%
+					),
+					rgba(255, 255, 255, 0.026);
+				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.014);
+				min-width: 0;
+				max-width: 100%;
+				overflow: hidden;
+			}
+
+			.personalArchitectureDeeperReadTitle {
+				margin: 0 0 8px;
+				color: var(--blue);
+				font-size: 9.5px;
+				font-weight: 950;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+			}
+
+			.personalArchitectureDeeperReadSections {
+				display: grid;
+				gap: 7px;
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.personalArchitectureDeeperReadSection {
+				padding: 8px 9px;
+				border: 1px solid rgba(255, 255, 255, 0.06);
+				border-radius: 10px;
+				background: rgba(255, 255, 255, 0.024);
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.personalArchitectureDeeperReadSectionLabel {
+				margin: 0 0 4px;
+				color: rgba(216, 184, 76, 0.88);
+				font-size: 8.4px;
+				font-weight: 950;
+				letter-spacing: 0.085em;
+				line-height: 1.2;
+				text-transform: uppercase;
 			}
 
 			.personalArchitectureDeeperReadBody {
-				margin-top: 7px;
-				padding-top: 7px;
-				border-top: 1px solid rgba(255, 255, 255, 0.07);
 				color: rgba(217, 224, 244, 0.88);
 				font-size: 11px;
 				line-height: 1.45;
@@ -8554,7 +8619,7 @@
 <div class="personalArchitectureCardRows">
 <div class="personalArchitectureCardRow"><span>Meaning</span><strong>This is where the day first meets your attention, body, or environment.</strong></div>
 <div class="personalArchitectureCardRow"><span>Use</span><strong>Notice what feels charged, then slow the first response.</strong></div>
-<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><details class="personalArchitectureDeeperRead"><summary>Open Deeper Read</summary><div class="personalArchitectureDeeperReadBody">Calculate to open the placement-specific deeper read.</div></details></div>
+<details class="personalArchitectureDeeperRead"><summary class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong class="personalArchitectureDeeperReadToggleText"><span class="toggleOpen">Open Deeper Read <span class="personalArchitectureDeeperReadToggleMark">+</span></span><span class="toggleClose">Close Deeper Read <span class="personalArchitectureDeeperReadToggleMark">−</span></span></strong></summary><div class="personalArchitectureDeeperReadPanel"><div class="personalArchitectureDeeperReadTitle">DEEPER READ</div><div class="personalArchitectureDeeperReadSections"><div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">HOW THIS COMPONENT WORKS</div><div class="personalArchitectureDeeperReadBody">Calculate to open the placement-specific deeper read.</div></div><div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">HOW TODAY’S FIELD HITS IT</div><div class="personalArchitectureDeeperReadBody">The current field detail appears here after calculation.</div></div><div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">CLEAN MOVE</div><div class="personalArchitectureDeeperReadBody">Use this component to choose one clean response after calculation.</div></div><div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">WATCH FOR</div><div class="personalArchitectureDeeperReadBody">Watch for over-identifying with the first signal before the read is calculated.</div></div></div></div></details>
 </div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice how the field first meets your attention, body, or environment.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up in how quickly you read the room, pressure, tone, or first impression before choosing a response.</div>
@@ -8568,7 +8633,7 @@
 <div class="personalArchitectureCardRows">
 <div class="personalArchitectureCardRow"><span>Meaning</span><strong>This is where your system looks for energy, clarity, and a clean center.</strong></div>
 <div class="personalArchitectureCardRow"><span>Use</span><strong>Choose one clean priority before adding energy.</strong></div>
-<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><details class="personalArchitectureDeeperRead"><summary>Open Deeper Read</summary><div class="personalArchitectureDeeperReadBody">Calculate to open the placement-specific deeper read.</div></details></div>
+<details class="personalArchitectureDeeperRead"><summary class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong class="personalArchitectureDeeperReadToggleText"><span class="toggleOpen">Open Deeper Read <span class="personalArchitectureDeeperReadToggleMark">+</span></span><span class="toggleClose">Close Deeper Read <span class="personalArchitectureDeeperReadToggleMark">−</span></span></strong></summary><div class="personalArchitectureDeeperReadPanel"><div class="personalArchitectureDeeperReadTitle">DEEPER READ</div><div class="personalArchitectureDeeperReadSections"><div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">HOW THIS COMPONENT WORKS</div><div class="personalArchitectureDeeperReadBody">Calculate to open the placement-specific deeper read.</div></div><div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">HOW TODAY’S FIELD HITS IT</div><div class="personalArchitectureDeeperReadBody">The current field detail appears here after calculation.</div></div><div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">CLEAN MOVE</div><div class="personalArchitectureDeeperReadBody">Use this component to choose one clean response after calculation.</div></div><div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">WATCH FOR</div><div class="personalArchitectureDeeperReadBody">Watch for over-identifying with the first signal before the read is calculated.</div></div></div></div></details>
 </div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice what feels central, important, or identity-linked in the read.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up in where your energy feels clear, strained, pulled, or ready to move today.</div>
@@ -8582,7 +8647,7 @@
 <div class="personalArchitectureCardRows">
 <div class="personalArchitectureCardRow"><span>Meaning</span><strong>This is where the field lands through body-state, comfort, mood, and rhythm.</strong></div>
 <div class="personalArchitectureCardRow"><span>Use</span><strong>Ground first, then clarify what your system needs.</strong></div>
-<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><details class="personalArchitectureDeeperRead"><summary>Open Deeper Read</summary><div class="personalArchitectureDeeperReadBody">Calculate to open the placement-specific deeper read.</div></details></div>
+<details class="personalArchitectureDeeperRead"><summary class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong class="personalArchitectureDeeperReadToggleText"><span class="toggleOpen">Open Deeper Read <span class="personalArchitectureDeeperReadToggleMark">+</span></span><span class="toggleClose">Close Deeper Read <span class="personalArchitectureDeeperReadToggleMark">−</span></span></strong></summary><div class="personalArchitectureDeeperReadPanel"><div class="personalArchitectureDeeperReadTitle">DEEPER READ</div><div class="personalArchitectureDeeperReadSections"><div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">HOW THIS COMPONENT WORKS</div><div class="personalArchitectureDeeperReadBody">Calculate to open the placement-specific deeper read.</div></div><div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">HOW TODAY’S FIELD HITS IT</div><div class="personalArchitectureDeeperReadBody">The current field detail appears here after calculation.</div></div><div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">CLEAN MOVE</div><div class="personalArchitectureDeeperReadBody">Use this component to choose one clean response after calculation.</div></div><div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">WATCH FOR</div><div class="personalArchitectureDeeperReadBody">Watch for over-identifying with the first signal before the read is calculated.</div></div></div></div></details>
 </div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice how the field lands in body-state, mood, comfort, or emotional rhythm.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up through body-state, comfort, emotional rhythm, or the need for steadier pacing.</div>
@@ -8596,7 +8661,7 @@
 <div class="personalArchitectureCardRows">
 <div class="personalArchitectureCardRow"><span>Meaning</span><strong>This points toward the edge your system is learning to move into.</strong></div>
 <div class="personalArchitectureCardRow"><span>Use</span><strong>Take one small step toward the unfamiliar without forcing the whole path.</strong></div>
-<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><details class="personalArchitectureDeeperRead"><summary>Open Deeper Read</summary><div class="personalArchitectureDeeperReadBody">Calculate to open the placement-specific deeper read.</div></details></div>
+<details class="personalArchitectureDeeperRead"><summary class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong class="personalArchitectureDeeperReadToggleText"><span class="toggleOpen">Open Deeper Read <span class="personalArchitectureDeeperReadToggleMark">+</span></span><span class="toggleClose">Close Deeper Read <span class="personalArchitectureDeeperReadToggleMark">−</span></span></strong></summary><div class="personalArchitectureDeeperReadPanel"><div class="personalArchitectureDeeperReadTitle">DEEPER READ</div><div class="personalArchitectureDeeperReadSections"><div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">HOW THIS COMPONENT WORKS</div><div class="personalArchitectureDeeperReadBody">Calculate to open the placement-specific deeper read.</div></div><div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">HOW TODAY’S FIELD HITS IT</div><div class="personalArchitectureDeeperReadBody">The current field detail appears here after calculation.</div></div><div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">CLEAN MOVE</div><div class="personalArchitectureDeeperReadBody">Use this component to choose one clean response after calculation.</div></div><div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">WATCH FOR</div><div class="personalArchitectureDeeperReadBody">Watch for over-identifying with the first signal before the read is calculated.</div></div></div></div></details>
 </div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice where the read pulls you toward a next step, new edge, or unfamiliar pattern.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up as the edge your system is being asked to move toward without forcing it.</div>
@@ -8610,7 +8675,7 @@
 <div class="personalArchitectureCardRows">
 <div class="personalArchitectureCardRow"><span>Meaning</span><strong>This shows the pattern your system may default to when pressure rises.</strong></div>
 <div class="personalArchitectureCardRow"><span>Use</span><strong>Keep the wisdom, but do not retreat into the old loop.</strong></div>
-<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><details class="personalArchitectureDeeperRead"><summary>Open Deeper Read</summary><div class="personalArchitectureDeeperReadBody">Calculate to open the placement-specific deeper read.</div></details></div>
+<details class="personalArchitectureDeeperRead"><summary class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong class="personalArchitectureDeeperReadToggleText"><span class="toggleOpen">Open Deeper Read <span class="personalArchitectureDeeperReadToggleMark">+</span></span><span class="toggleClose">Close Deeper Read <span class="personalArchitectureDeeperReadToggleMark">−</span></span></strong></summary><div class="personalArchitectureDeeperReadPanel"><div class="personalArchitectureDeeperReadTitle">DEEPER READ</div><div class="personalArchitectureDeeperReadSections"><div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">HOW THIS COMPONENT WORKS</div><div class="personalArchitectureDeeperReadBody">Calculate to open the placement-specific deeper read.</div></div><div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">HOW TODAY’S FIELD HITS IT</div><div class="personalArchitectureDeeperReadBody">The current field detail appears here after calculation.</div></div><div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">CLEAN MOVE</div><div class="personalArchitectureDeeperReadBody">Use this component to choose one clean response after calculation.</div></div><div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">WATCH FOR</div><div class="personalArchitectureDeeperReadBody">Watch for over-identifying with the first signal before the read is calculated.</div></div></div></div></details>
 </div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice what old reflex, overuse, or attachment the return path may ask you to loosen.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up as what your system needs to simplify, stop over-carrying, or let become quieter today.</div>
@@ -10985,6 +11050,51 @@
 				return "This component shows one stable receiving channel in your architecture. Use it to notice where the field lands first, then choose a response that is proportional, grounded, and clean.";
 			}
 
+			function buildPersonalArchitectureDeeperReadSections(item, deeperRead) {
+				const label = String(item?.label || "this component").trim() || "this component";
+				const role = personalArchitecturePublicRoleLabel(item?.role || "") || "stable receiving component";
+				const componentRead = String(deeperRead || item?.explore || personalArchitectureBuildDeeperRead(item) || "").trim();
+				const todayRead = String(item?.todayMeaning || item?.today || "").trim();
+				const cleanMove = String(item?.use || "Notice where this part receives the field, then choose one clean response.").trim();
+				const watchForMap = {
+					"sun": "Watch for pushing energy into the day before the center is clear enough to hold it.",
+					"moon": "Watch for making every body-state or mood into the whole story before your system has settled.",
+					"ascendant": "Watch for treating the first read of the room, setting, or pressure as the final answer.",
+					"rahu / north node": "Watch for forcing the future open when one unfamiliar next step is enough.",
+					"ketu / south node": "Watch for retreating into the familiar pattern just because pressure rose.",
+				};
+				const key = label.toLowerCase();
+				const watchFor =
+					watchForMap[key] ||
+					`Watch for over-identifying with ${label} as a fixed identity. Read it as a ${role} receiving channel, then choose a proportional response.`;
+				return {
+					component: componentRead || `This component shows how ${label} functions as a ${role} in your stable architecture.`,
+					today: todayRead || `Today’s field may land through ${label} before it becomes a mood, choice, reaction, or return path.`,
+					cleanMove,
+					watchFor,
+				};
+			}
+
+			function renderPersonalArchitectureDeeperReadPanel(item, deeperRead) {
+				const sections = buildPersonalArchitectureDeeperReadSections(item, deeperRead);
+				const sectionRows = [
+					["HOW THIS COMPONENT WORKS", sections.component],
+					["HOW TODAY’S FIELD HITS IT", sections.today],
+					["CLEAN MOVE", sections.cleanMove],
+					["WATCH FOR", sections.watchFor],
+				]
+					.map(
+						([label, text]) =>
+							`<div class="personalArchitectureDeeperReadSection"><div class="personalArchitectureDeeperReadSectionLabel">${label}</div><div class="personalArchitectureDeeperReadBody">${chartKernelEscapeHtml(text)}</div></div>`
+					)
+					.join("");
+				return `<div class="personalArchitectureDeeperReadPanel"><div class="personalArchitectureDeeperReadTitle">DEEPER READ</div><div class="personalArchitectureDeeperReadSections">${sectionRows}</div></div>`;
+			}
+
+			function getPersonalArchitectureDeeperReadToggleLabel() {
+				return `<strong class="personalArchitectureDeeperReadToggleText"><span class="toggleOpen">Open Deeper Read <span class="personalArchitectureDeeperReadToggleMark">+</span></span><span class="toggleClose">Close Deeper Read <span class="personalArchitectureDeeperReadToggleMark">−</span></span></strong>`;
+			}
+
 			function renderPersonalArchitectureBetaItem(item) {
 				const metaHtml = String(item.meta || "")
 					.split("\n")
@@ -11004,14 +11114,15 @@
 				const title = personalArchitectureBuildPlacementTitle(item);
 				const systemRole = "STABLE RECEIVING COMPONENT";
 				const deeperRead = item.explore || personalArchitectureBuildDeeperRead(item);
-				const deeperReadHtml = `<details class="personalArchitectureDeeperRead"><summary>Open Deeper Read</summary><div class="personalArchitectureDeeperReadBody">${chartKernelEscapeHtml(deeperRead)}</div></details>`;
+				const deeperReadPanel = renderPersonalArchitectureDeeperReadPanel(item, deeperRead);
+				const deeperReadHtml = `<details class="personalArchitectureDeeperRead"><summary class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span>${getPersonalArchitectureDeeperReadToggleLabel()}</summary>${deeperReadPanel}</details>`;
 				return `<div class="personalArchitectureBetaItem"><div class="personalArchitectureComponentHeader"><div class="personalArchitecturePlacementTitle">${chartKernelEscapeHtml(
 					title
 				)}</div><div class="personalArchitectureSystemRole">${systemRole}</div></div><div class="personalArchitectureCardRows"><div class="personalArchitectureCardRow"><span>Meaning</span><strong>${chartKernelEscapeHtml(
 					item.meaning
 				)}</strong></div><div class="personalArchitectureCardRow"><span>Use</span><strong>${chartKernelEscapeHtml(
 					item.use || "Notice where this part receives the field, then choose one clean response."
-				)}</strong></div><div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span>${deeperReadHtml}</div></div>${todayHtml}${todayMeaningHtml}<div class="personalArchitectureMeta">${
+				)}</strong></div>${deeperReadHtml}</div>${todayHtml}${todayMeaningHtml}<div class="personalArchitectureMeta">${
 					metaHtml || chartKernelEscapeHtml(item.meta || "Awaiting placement texture")
 				}</div></div>`;
 			}
