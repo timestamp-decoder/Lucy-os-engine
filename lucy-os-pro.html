@@ -15729,9 +15729,15 @@ ${bodyLine}${loadLine}`,
 					sharePersonalLandingField && sharePersonalLandingField !== "—"
 						? `Personal Landing: Today’s ${sharePersonalLandingField} field may register through your interface, center, and body-state first.`
 						: "Personal Landing: Today’s field may register through your interface, center, and body-state first.";
+				const profileName = (
+					document.getElementById("profileNameInput")?.value || ""
+				).trim();
+				const shareTitle = profileName
+					? `Lucy.OS Pro for ${profileName}`
+					: "Lucy.OS Pro";
 
 				const lines = [
-					"Lucy.OS Pro",
+					shareTitle,
 					"",
 					"Today’s System Weather:",
 					cleanShareSentence(
