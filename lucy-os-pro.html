@@ -48,6 +48,7 @@
 <!-- Pass 9 update: added compact Personal Architecture how-to-use micro-note only. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, or core public read behavior changed. -->
 <!-- Pass 10 update: tightened Personal Architecture Beta intro copy only. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, or core public read behavior changed. -->
 <!-- Pass 11 update: tightened Personal Architecture Beta component meaning lines only. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, or core public read behavior changed. -->
+<!-- Pass 12 update: tightened Personal Architecture Beta component-card density and scan spacing only. CSS/layout polish only; no backend/API, scoring, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -3693,56 +3694,58 @@
 			.personalArchitectureBetaGrid {
 				display: grid;
 				grid-template-columns: repeat(5, minmax(0, 1fr));
-				gap: 9px;
+				gap: 7px;
 				min-width: 0;
 				max-width: 100%;
 			}
 
 			.personalArchitectureBetaItem {
+				display: grid;
+				align-content: start;
 				min-width: 0;
 				max-width: 100%;
-				padding: 11px;
+				padding: 9px 9px 8px;
 				border: 1px solid rgba(255, 255, 255, 0.075);
-				border-radius: 14px;
-				background: rgba(255, 255, 255, 0.034);
+				border-radius: 13px;
+				background: rgba(255, 255, 255, 0.03);
 				overflow: hidden;
 			}
 
 			.personalArchitectureRole {
 				color: var(--text);
-				font-size: 13px;
+				font-size: 12.7px;
 				font-weight: 950;
-				line-height: 1.22;
+				line-height: 1.16;
 				overflow-wrap: anywhere;
 			}
 
 			.personalArchitectureLabel {
-				margin-top: 5px;
+				margin-top: 2px;
 				color: var(--gold);
-				font-size: 10px;
+				font-size: 9.4px;
 				font-weight: 950;
 				letter-spacing: 0.08em;
 				text-transform: uppercase;
-				line-height: 1.25;
+				line-height: 1.18;
 				overflow-wrap: anywhere;
 			}
 
 			.personalArchitectureMeaning {
-				margin-top: 7px;
-				color: #d9e0f4;
-				font-size: 11.5px;
-				line-height: 1.42;
+				margin-top: 5px;
+				color: rgba(217, 224, 244, 0.9);
+				font-size: 11.1px;
+				line-height: 1.32;
 				font-weight: 720;
 				overflow-wrap: break-word;
 			}
 
 			.personalArchitectureMeta {
-				margin-top: 8px;
-				padding-top: 7px;
-				border-top: 1px solid rgba(255, 255, 255, 0.065);
+				margin-top: 6px;
+				padding-top: 5px;
+				border-top: 1px solid rgba(255, 255, 255, 0.055);
 				color: var(--muted2);
-				font-size: 10.5px;
-				line-height: 1.38;
+				font-size: 10.2px;
+				line-height: 1.3;
 				font-weight: 850;
 				overflow-wrap: anywhere;
 			}
@@ -3755,7 +3758,7 @@
 			}
 
 			.personalArchitectureMetaLine + .personalArchitectureMetaLine {
-				margin-top: 3px;
+				margin-top: 1px;
 			}
 
 			.personalArchitectureBetaHelper {
@@ -6194,6 +6197,14 @@
 
 				.personalArchitectureBetaBadge {
 					justify-self: start;
+				}
+
+				.personalArchitectureBetaGrid {
+					gap: 7px;
+				}
+
+				.personalArchitectureBetaItem {
+					padding: 9px 10px 8px;
 				}
 
 				.profileBlock.wide,
