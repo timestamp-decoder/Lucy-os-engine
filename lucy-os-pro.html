@@ -51,6 +51,7 @@
 <!-- Pass 12 update: tightened Personal Architecture Beta component-card density and scan spacing only. CSS/layout polish only; no backend/API, scoring, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, or core public read behavior changed. -->
 <!-- Pass 13 update: added compact Personal Architecture daily component detail lines only. Uses existing current-field/support/load values for display language; no backend/API, scoring, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, or core public read behavior changed. -->
 <!-- Pass 14 update: added compact Personal Architecture field-context micro-line only. Uses existing selected current-field values for display context; no backend/API, scoring, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, bottom padding, or core public read behavior changed. -->
+<!-- Pass 15 update: refined compact Personal Architecture component Today notes only. Uses existing current-field/support/load display values; no backend/API, scoring, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, bottom padding, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -9722,99 +9723,119 @@
 			function personalArchitectureGetDailyComponentLines(field, support, loadState) {
 				const fieldBase = getHarmonicBaseName(field || "");
 				const supportBase = getHarmonicBaseName(support || "");
+				const fieldText = String(field || "").toLowerCase();
 				const loadText = String(loadState || "").toLowerCase();
 				const isHighLoad =
 					loadText.includes("high") ||
 					loadText.includes("overload") ||
-					loadText.includes("threshold");
+					loadText.includes("threshold") ||
+					loadText.includes("strain");
+				const isFastSignal =
+					fieldBase === "Chaotic" ||
+					fieldText.includes("chaotic") ||
+					fieldText.includes("fast");
+				const isEdgeField =
+					fieldBase === "Threshold" || fieldText.includes("threshold");
 
 				const defaults = {
-					interface: "Notice how the field first meets your attention, body, or environment.",
-					core: "Notice what feels central, important, or identity-linked in the read.",
-					emotional: "Notice how the field lands in your body-state, mood, comfort, or emotional rhythm.",
-					growth: "Notice where the read pulls you toward a next step, new edge, or unfamiliar pattern.",
-					release: "Notice what old reflex, overuse, or attachment the return path may ask you to loosen.",
+					interface: "Notice where today’s field first enters attention, body, or environment before you respond.",
+					core: "Keep the center clear enough to know what actually deserves your energy.",
+					emotional: "Track body-state, comfort, and emotional rhythm before turning the signal into a story.",
+					growth: "Move toward one clean next step instead of forcing the whole pattern to resolve.",
+					release: "Loosen the old reflex that adds pressure after the useful signal has already arrived.",
 				};
 
 				const fieldLines = {
 					Relational: {
-						interface: "Contact pressure may register first through tone, atmosphere, or how the room feels.",
-						core: "The field may pull on what feels central in contact, response, or repair.",
-						emotional: "Tone, closeness, or feedback may affect body-state before it becomes a clear thought.",
-						growth: "The growth edge may be cleaner contact, proportionate response, or honest repair.",
-						release: "The return path may ask you to loosen over-reading, old attachment, or taking on what is not yours.",
+						interface: "Notice how contact, tone, or response enters your system before reacting.",
+						core: "Keep your center steady before letting someone else’s signal shape the day.",
+						emotional: "Track comfort, body-state, and relational tone without absorbing the whole room.",
+						growth: "Practice clean connection without over-explaining or over-reaching.",
+						release: "Let old contact pressure exit before making a new move.",
 					},
 					Reconstructive: {
-						interface: "You may notice the weak point, broken pattern, or place that needs repair first.",
-						core: "The field may pull attention toward what needs to be rebuilt or made workable.",
-						emotional: "Repair pressure may land as tension, urgency, or the need for a cleaner sequence.",
-						growth: "The growth edge may be repairing one real thing without rebuilding everything.",
-						release: "The return path may ask you to stop carrying a structure that no longer holds.",
+						interface: "Notice the weak point without turning the whole day into a rebuild.",
+						core: "Put energy into one clean repair, not every unfinished thread.",
+						emotional: "Give the body time to sort what actually needs fixing.",
+						growth: "Move toward the repair that creates stability, not more pressure.",
+						release: "Release the part of the pattern that is no longer holding.",
 					},
 					Chaotic: {
-						interface: "Fast signal may enter through disruption, surprise, urgency, or sudden pattern change.",
-						core: "The field may pull attention toward what is unstable, unresolved, or moving quickly.",
-						emotional: "Activation may reach the body before the meaning is fully clear.",
-						growth: "The growth edge may be giving fast signal a clean form.",
-						release: "The return path may ask you to loosen urgency before responding.",
+						interface: "Let the signal arrive before deciding what it means.",
+						core: "Give fast activation a clean container before acting.",
+						emotional: "Slow the body before chasing every open loop.",
+						growth: "Move toward the next clean step, not the loudest signal.",
+						release: "Drop the false urgency that does not need your response.",
 					},
 					Structured: {
-						interface: "Structure may show up first through what needs order, clarity, or a cleaner container.",
-						core: "The field may pull attention toward the rule, plan, or form that organizes the read.",
-						emotional: "Clarity needs may land in the body as relief when the next step becomes simple.",
-						growth: "The growth edge may be making the next step clear without overbuilding the whole system.",
-						release: "The return path may ask you to loosen extra rules that the moment does not need.",
+						interface: "Notice what wants order, sequence, or a cleaner container first.",
+						core: "Let structure support the day without making every detail carry equal weight.",
+						emotional: "Watch how the body settles when the next step becomes simple.",
+						growth: "Build the part that clarifies movement instead of overbuilding the whole system.",
+						release: "Set down the extra rule that is no longer helping the moment hold.",
 					},
 					Contained: {
-						interface: "The field may meet you through boundary, privacy, pacing, or the need to keep things close.",
-						core: "The read may pull on what needs protection, reserve, or a smaller container.",
-						emotional: "Pressure may land as needing quiet, space, or fewer open channels.",
-						growth: "The growth edge may be choosing the right boundary without shutting the whole field down.",
-						release: "The return path may ask you to loosen over-protection once enough safety is present.",
+						interface: "Notice where boundary, privacy, or pacing helps the field stay readable.",
+						core: "Protect the center without shrinking the whole day around protection.",
+						emotional: "Let quiet, space, or fewer inputs help the body identify what is true.",
+						growth: "Choose the boundary that preserves clarity without closing every channel.",
+						release: "Loosen over-protection once enough safety and pacing are present.",
 					},
 					Threshold: {
-						interface: "You may notice the crossing point, decision edge, or moment that wants timing first.",
-						core: "The field may pull attention toward what is ready to move and what is not ready yet.",
-						emotional: "Edge pressure may land as anticipation, restlessness, or needing a cleaner pause.",
-						growth: "The growth edge may be crossing at the right time instead of rushing the opening.",
-						release: "The return path may ask you to loosen the need to force the next door open.",
+						interface: "Notice the decision edge before stepping through it.",
+						core: "Keep attention on what is actually ready to move, not what only feels urgent.",
+						emotional: "Let anticipation settle before treating edge pressure as instruction.",
+						growth: "Cross through the right opening at the right pace.",
+						release: "Release the push to force a door that has not opened cleanly yet.",
 					},
 					Integrative: {
-						interface: "The field may meet you through connections, patterns, or pieces asking to become whole.",
-						core: "The read may pull attention toward the larger meaning without losing the next small move.",
-						emotional: "Many pieces may land at once, so the body may need simplicity before synthesis.",
-						growth: "The growth edge may be connecting the right pieces without carrying every layer.",
-						release: "The return path may ask you to loosen the need to make every signal fit today.",
+						interface: "Notice the pattern without trying to hold every piece at once.",
+						core: "Let the larger meaning organize around one usable center.",
+						emotional: "Give the body simplicity before asking it to synthesize the whole field.",
+						growth: "Connect the pieces that create coherence, not more load.",
+						release: "Let unrelated signals stay outside today’s pattern.",
 					},
 					Diffused: {
-						interface: "Atmosphere, subtle tension, or unclear signals may register before the reason is obvious.",
-						core: "The field may pull attention toward what needs grounding, naming, or a clearer edge.",
-						emotional: "Mood or environment may affect body-state before the signal is easy to separate.",
-						growth: "The growth edge may be choosing one clear signal from the wider atmosphere.",
-						release: "The return path may ask you to loosen what is not yours to hold.",
+						interface: "Notice atmosphere and subtle tension without assuming it all belongs to you.",
+						core: "Ground the field into one named signal before making it central.",
+						emotional: "Separate mood, environment, and body-state before deciding what the feeling means.",
+						growth: "Choose one clear signal from the wider atmosphere.",
+						release: "Let what is not yours move out of the system.",
 					},
 					Regulated: {
-						interface: "The field may meet you through rhythm, pace, and the chance to keep things steady.",
-						core: "The read may pull attention toward what keeps the system proportional and workable.",
-						emotional: "Steady pacing may help body-state stay clear enough to read the moment.",
-						growth: "The growth edge may be trusting a clean rhythm instead of adding extra pressure.",
-						release: "The return path may ask you to loosen control once the rhythm is stable enough.",
+						interface: "Notice the rhythm that helps the day become workable.",
+						core: "Let proportional pacing protect the center from unnecessary pressure.",
+						emotional: "Keep the body in a steady rhythm before adding more input.",
+						growth: "Trust the clean pace instead of adding intensity to prove movement.",
+						release: "Loosen control once the rhythm is stable enough to hold.",
 					},
 				};
 
 				const lines = { ...(fieldLines[fieldBase] || defaults) };
 
+				if (isFastSignal && isEdgeField) {
+					lines.interface = "Let the fast signal arrive, then check whether it is an actual crossing point.";
+					lines.core = "Give activation a clear container before making the next move.";
+					lines.emotional = "Slow the body before treating urgency as timing.";
+					lines.growth = "Move toward the next clean step, not the loudest open loop.";
+					lines.release = "Drop false urgency before crossing into a new response.";
+				}
+
 				if (isHighLoad) {
+					lines.core = `${lines.core} Reduce scope before adding energy.`;
 					lines.emotional = `${lines.emotional} Keep the signal small enough to process.`;
 				}
 
 				if (supportBase === "Contained" && fieldBase !== "Contained") {
 					lines.release = `${lines.release} Let support come through pacing and fewer open channels.`;
+				} else if (supportBase === "Regulated" && fieldBase !== "Regulated") {
+					lines.growth = `${lines.growth} Keep the move paced and proportional.`;
+				} else if (supportBase === "Structured" && fieldBase !== "Structured") {
+					lines.core = `${lines.core} A simple sequence is enough.`;
 				}
 
 				return lines;
 			}
-
 			function renderPersonalArchitectureBetaItem(item) {
 				const metaHtml = String(item.meta || "")
 					.split("\n")
