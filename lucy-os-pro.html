@@ -65,6 +65,7 @@
 <!-- Pass 23 update: compressed the visual share-card footer CTA styling only so the temporary TimestampDecoder.com line reads softer and stays more compact. Copied share text, visual title personalization, engine/API, scoring, Moonstamp, dashboard, saved profiles, Chart Kernel, diagnostics, bottom nav, and in-app read behavior unchanged. -->
 <!-- Pass 24 update: added compact Personal Architecture Beta “What this means today” detail lines only. Uses existing current-field/support/load display values defensively; no backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, PASS 15 component note language, or core public read behavior changed. -->
 <!-- Pass 25 update: lightly tightened Personal Architecture Beta “What this means today” mini-block density only. CSS/layout polish only; PASS 24 wording/helpers, PASS 15 component note language, backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, and core public read behavior unchanged. -->
+<!-- Pass 26 update: added compact Personal Architecture Beta framing strip only. Static display/copy bridge clarifies stable receiving architecture versus daily moving field. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, PASS 15 component note language, PASS 24 wording/helpers, PASS 25 mini-block styling, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -3748,6 +3749,54 @@
 				white-space: nowrap;
 				overflow-wrap: normal;
 				word-break: keep-all;
+			}
+
+			.personalArchitectureFramingStrip {
+				margin: -2px 0 12px;
+				padding: 10px 12px;
+				border: 1px solid rgba(216, 184, 76, 0.14);
+				border-radius: 14px;
+				background: linear-gradient(
+					135deg,
+					rgba(216, 184, 76, 0.055),
+					rgba(103, 193, 255, 0.035)
+				);
+				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.018);
+				overflow: hidden;
+			}
+
+			.personalArchitectureFramingTitle {
+				margin: 0 0 4px;
+				color: var(--text);
+				font-size: 12px;
+				line-height: 1.25;
+				font-weight: 950;
+				letter-spacing: 0.055em;
+				text-transform: uppercase;
+			}
+
+			.personalArchitectureFramingText {
+				margin: 0;
+				color: #d9e0f4;
+				font-size: 11.5px;
+				line-height: 1.42;
+				font-weight: 760;
+				overflow-wrap: break-word;
+			}
+
+			.personalArchitectureFramingText + .personalArchitectureFramingText {
+				margin-top: 5px;
+			}
+
+			.personalArchitectureFramingText strong {
+				color: var(--gold);
+				font-weight: 950;
+			}
+
+			.personalArchitectureFramingCaution {
+				color: var(--muted);
+				font-size: 11px;
+				font-weight: 800;
 			}
 
 			.personalArchitectureBetaGrid {
@@ -8209,6 +8258,12 @@
 <div class="personalArchitectureDailyLanding" id="personalArchitectureDailyLanding">Today’s field may enter through these channels before it becomes a response.</div>
 <div class="personalArchitectureHowToUse">When today’s read feels strong, scan these channels to see where the pressure may be landing first.</div>
 <div class="personalArchitectureFieldContext" id="personalArchitectureFieldContext">Today’s component notes are tuned to the current field when available.</div>
+<div class="personalArchitectureFramingStrip">
+<div class="personalArchitectureFramingTitle">How your architecture works</div>
+<p class="personalArchitectureFramingText">The field changes daily. Your architecture explains how it lands.</p>
+<p class="personalArchitectureFramingText">Use these cards as your <strong>stable receiving map</strong>. The daily field shows what is moving now; Personal Architecture shows where your system is likely to register it first.</p>
+<p class="personalArchitectureFramingText personalArchitectureFramingCaution">This is not a fixed identity label. It is a daily landing map built from stable architecture.</p>
+</div>
 <div class="personalArchitectureBetaGrid" id="personalArchitectureBetaGrid">
 <div class="personalArchitectureBetaItem">
 <div class="personalArchitectureRole">Interface Kernel</div>
