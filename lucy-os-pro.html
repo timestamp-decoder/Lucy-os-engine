@@ -35,6 +35,7 @@
 <!-- Pass 2 modifiers branch update: added Moonstamp Modifier, Live Field Modifier, and How These Layers Interact display cards only. Uses existing Moonstamp/current-field/state/load/guidance data; no engine, API, scoring, routing, Moonstamp data logic, dashboard score logic, saved profiles, share export, diagnostics, or calibration behavior changed. -->
 <!-- Pass 3A update: added Chart Kernel Data Inspection inside Engine Details only. Existing /api/chart_inputs response is inspected defensively for future chart-kernel support; no API payload, backend, engine, scoring, routing, Moonstamp, dashboard, saved profiles, share export, or public result behavior changed. -->
 <!-- Pass 3B update: refined Chart Kernel Data Inspection wording for hybrid support only. Core field mechanics remain tropical; sidereal Lahiri is framed only as lunar/node micro-texture for inspection. No API payload, backend, engine, scoring, routing, Moonstamp, dashboard, saved profiles, share export, diagnostics behavior, or public result behavior changed. -->
+<!-- Pass 3D-B update: cleaned Chart Kernel Data Inspection labels/detection so placeholder support is separated from real calculated astrology data. Front-end diagnostics wording only; no backend/API, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, or calibration behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -8284,22 +8285,15 @@
 <summary>Chart Kernel Data Inspection</summary>
 <div class="chartKernelInspectionBody">
 <div class="chartKernelInspectionHelper">
-										Shows what the current API response contains
-										for hybrid Chart Kernel support. Lucy.OS is a
-										field engine, not a symbolic astrology app:
-										core field mechanics remain tropical for
-										Field, Landing, System Weather, Motion Style,
-										Load Balance, Driver Logic, Undertone Logic,
-										houses, angles, degrees, transits, field
-										timing, and sign/rāśi geometry. Sidereal
-										Lahiri is reserved for nakshatra / lunar-node
-										micro-texture, Moonstamp modifier texture,
-										emotional-processor language, and
-										Rahu/Ketu vector interpretation. Rahu is
-										treated as a Directional Vector / Growth
-										Trajectory; Ketu is treated as a Release
-										Vector / Mastery Pattern. This is inspection
-										only and does not affect the read.
+										PASS 3D returns a diagnostics-only chartKernel
+										object. It confirms the backend can expose
+										tropical geometry, angles, houses, and
+										placement role labels without changing the
+										engine. Rahu/Ketu, Sidereal Lahiri, and
+										nakshatras may appear as placeholders, but
+										they are not calculated until future passes.
+										This is inspection only and does not affect
+										the read.
 									</div>
 <div>
 <div class="liveDebugLabel">
@@ -8307,28 +8301,37 @@
 										</div>
 <div class="chartKernelSummaryGrid" id="chartKernelInspectionSummary">
 <div class="chartKernelSummaryRow">
-<span>Tropical sign/rāśi geometry returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
-</div>
-<div class="chartKernelSummaryRow">
-<span>Sidereal Lahiri texture support returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
+<span>chartKernel inspection object returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
 </div>
 <div class="chartKernelSummaryRow">
 <span>Tropical longitudes/degrees returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
 </div>
 <div class="chartKernelSummaryRow">
-<span>Sign/rāśi placements returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
-</div>
-<div class="chartKernelSummaryRow">
 <span>House/angle geometry returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
 </div>
 <div class="chartKernelSummaryRow">
-<span>Rahu/Ketu vector data returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
+<span>Placement role labels returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
 </div>
 <div class="chartKernelSummaryRow">
-<span>Placement/field object returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
+<span>Sign/rāśi placement objects returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
 </div>
 <div class="chartKernelSummaryRow">
-<span>Safe for diagnostics-only hybrid inspection?</span><strong class="chartKernelStatusMissing">Not returned</strong>
+<span>Rahu/Ketu role placeholders returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
+</div>
+<div class="chartKernelSummaryRow">
+<span>Rahu/Ketu calculated node data returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
+</div>
+<div class="chartKernelSummaryRow">
+<span>Sidereal Lahiri placeholder returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
+</div>
+<div class="chartKernelSummaryRow">
+<span>Sidereal Lahiri calculated texture returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
+</div>
+<div class="chartKernelSummaryRow">
+<span>Nakshatra data returned?</span><strong class="chartKernelStatusMissing">Not returned</strong>
+</div>
+<div class="chartKernelSummaryRow">
+<span>Safe diagnostics-only hybrid inspection?</span><strong class="chartKernelStatusMissing">Not returned</strong>
 </div>
 </div>
 </div>
@@ -9256,134 +9259,160 @@
 				const rawEl = document.getElementById("chartKernelRawPreview");
 				if (!summaryEl || !fieldEl || !rawEl) return;
 
+				const chartKernel = data?.chartKernel;
+				const hasObject = (value) =>
+					!!value && typeof value === "object" && !Array.isArray(value) && Object.keys(value).length > 0;
+				const hasArray = (value) => Array.isArray(value) && value.length > 0;
+				const hasRealValue = (value) => {
+					if (value === null || value === undefined) return false;
+					if (typeof value === "boolean") return value === true;
+					if (typeof value === "number") return Number.isFinite(value);
+					if (typeof value === "string") return value.trim().length > 0;
+					if (Array.isArray(value)) return value.length > 0;
+					if (typeof value === "object") return Object.keys(value).length > 0;
+					return false;
+				};
+				const objectHasCalculatedData = (value) => {
+					if (!hasRealValue(value)) return false;
+					if (value && typeof value === "object" && !Array.isArray(value) && value.available === false) {
+						return false;
+					}
+					return true;
+				};
+				const status = (condition, missingText = "Not returned") =>
+					condition ? "Available" : missingText;
+				const calculatedStatus = (condition) =>
+					condition ? "Available" : "Not calculated yet";
+
+				const chartKernelReturned = hasObject(chartKernel);
+				const tropicalLongitudesReturned =
+					hasObject(data?._longitudesDeg) ||
+					hasObject(chartKernel?.tropicalLongitudesDeg);
+				const houseAngleGeometryReturned =
+					hasObject(data?.angles) ||
+					hasObject(data?.houses) ||
+					hasObject(chartKernel?.geometry);
+				const placementRolesReturned = hasObject(chartKernel?.placementRoles);
+				const signPlacementObjectsReturned =
+					objectHasCalculatedData(data?.placements) ||
+					objectHasCalculatedData(chartKernel?.placements) ||
+					objectHasCalculatedData(data?.natal?.placements);
+
+				const rahuKetuRolePlaceholdersReturned =
+					(hasRealValue(chartKernel?.placementRoles?.rahu) &&
+						hasRealValue(chartKernel?.placementRoles?.ketu)) ||
+					(chartKernel?.nodes && chartKernel.nodes.available === false);
+
+				const rahuKetuCalculatedNodeDataReturned =
+					(hasRealValue(data?.nodes?.rahu) && hasRealValue(data?.nodes?.ketu)) ||
+					(hasRealValue(data?.rahu) && hasRealValue(data?.ketu)) ||
+					chartKernel?.nodes?.available === true;
+
+				const siderealLahiriPlaceholderReturned = hasObject(chartKernel?.siderealLahiri);
+				const siderealLahiriCalculatedTextureReturned =
+					chartKernel?.siderealLahiri?.available === true ||
+					(hasRealValue(data?.siderealLahiri) && data?.siderealLahiri?.available !== false) ||
+					(hasRealValue(data?.lahiri) && data?.lahiri?.available !== false) ||
+					(hasRealValue(data?.ayanamsa) && data?.ayanamsa?.available !== false) ||
+					(hasRealValue(chartKernel?.ayanamsa) && chartKernel?.ayanamsa?.available !== false);
+
+				const nakshatraDataReturned =
+					(hasArray(data?.nakshatras) && data?.nakshatras?.available !== false) ||
+					objectHasCalculatedData(data?.nakshatras) ||
+					(hasArray(chartKernel?.nakshatras) && chartKernel?.nakshatras?.available !== false) ||
+					objectHasCalculatedData(chartKernel?.nakshatras) ||
+					chartKernel?.siderealLahiri?.nakshatraSupport === true;
+
+				const safeDiagnosticsOnlyHybridInspection =
+					chartKernel?.status === "inspection-only" ||
+					hasObject(chartKernel?.safety) ||
+					hasArray(chartKernel?.safety);
+
 				const directFields = [
-					["data.planetary", data?.planetary],
-					["data._longitudesDeg (tropical degrees)", data?._longitudesDeg],
-					["data.angles (tropical houses/angles)", data?.angles],
-					["data.ephemeris", data?.ephemeris],
-					["data.natal", data?.natal],
-					["data.transits", data?.transits],
-					["data.placements", data?.placements],
-					["data.chart", data?.chart],
-					["data.nodes (Rahu/Ketu vectors)", data?.nodes],
-					["data.rahu (Directional Vector / Growth Trajectory)", data?.rahu],
-					["data.ketu (Release Vector / Mastery Pattern)", data?.ketu],
+					["data.chartKernel", chartKernel, "Not returned"],
+					["data.chartKernel.geometry", chartKernel?.geometry, "Not returned"],
+					["data.chartKernel.placementRoles", chartKernel?.placementRoles, "Not returned"],
+					[
+						"data.chartKernel.tropicalLongitudesDeg",
+						chartKernel?.tropicalLongitudesDeg,
+						"Not returned",
+					],
+					[
+						"calculated Rahu/Ketu nodes",
+						rahuKetuCalculatedNodeDataReturned,
+						"Not calculated yet",
+					],
+					[
+						"calculated Sidereal Lahiri texture",
+						siderealLahiriCalculatedTextureReturned,
+						"Not calculated yet",
+					],
+					[
+						"calculated nakshatras",
+						nakshatraDataReturned,
+						"Not calculated yet",
+					],
+					[
+						"sign/rāśi placement objects",
+						signPlacementObjectsReturned,
+						"Not calculated yet",
+					],
 				];
 
-				const zodiacReturned = chartKernelFindByKeyOrValue(
-					data,
-					[/zodiac/, /sidereal/, /tropical/, /zodiac.?mode/],
-					[/sidereal/, /tropical/]
-				)
-					? "Available"
-					: "Not returned";
-
-				const ayanamsaReturned = chartKernelFindByKeyOrValue(
-					data,
-					[/ayanamsa/, /lahiri/],
-					[/lahiri/]
-				)
-					? "Available"
-					: "Not returned";
-
-				const longitudeObjectReturned =
-					chartKernelHasValue(data?._longitudesDeg) ||
-					chartKernelFindByKeyOrValue(data, [
-						/longitude/,
-						/longitudes/,
-						/\blon\b/,
-						/degree/,
-					]);
-
-				const natalLongitudesReturned = longitudeObjectReturned
-					? "Available"
-					: "Not returned";
-
-				const natalSignsFound = chartKernelFindByKeyOrValue(data, [
-					/(^|\.)natal.*sign/,
-					/placement.*sign/,
-					/chart.*sign/,
-					/\bsign\b/,
-					/zodiac.?sign/,
-				]);
-
-				const natalSignsReturned = natalSignsFound
-					? "Available"
-					: longitudeObjectReturned
-					? "Unclear"
-					: "Not returned";
-
-				const ascendantReturned = chartKernelFindByKeyOrValue(data, [
-					/ascendant/,
-					/(^|\.|\b)asc($|\.|\b)/,
-					/angles.*asc/,
-				])
-					? "Available"
-					: "Not returned";
-
-				const rahuFound =
-					chartKernelHasValue(data?.rahu) ||
-					chartKernelFindByKeyOrValue(data, [/rahu/, /north.?node/]);
-				const ketuFound =
-					chartKernelHasValue(data?.ketu) ||
-					chartKernelFindByKeyOrValue(data, [/ketu/, /south.?node/]);
-				const nodesReturned =
-					rahuFound && ketuFound
-						? "Available"
-						: rahuFound || ketuFound || chartKernelHasValue(data?.nodes)
-						? "Unclear"
-						: "Not returned";
-
-				const placementObjectReturned =
-					chartKernelHasValue(data?.placements) ||
-					chartKernelHasValue(data?.chart) ||
-					chartKernelHasValue(data?.natal) ||
-					chartKernelHasValue(data?.planetary)
-						? "Available"
-						: "Not returned";
-
-				let safeForCards = "Not returned";
-				if (
-					placementObjectReturned === "Available" &&
-					natalSignsReturned === "Available" &&
-					nodesReturned === "Available" &&
-					(zodiacReturned === "Available" || ayanamsaReturned === "Available")
-				) {
-					safeForCards = "Available";
-				} else if (
-					longitudeObjectReturned ||
-					placementObjectReturned === "Available" ||
-					natalSignsReturned === "Available" ||
-					nodesReturned !== "Not returned"
-				) {
-					safeForCards = "Unclear";
-				}
-
 				summaryEl.innerHTML = [
-					renderChartKernelStatusRow("Tropical sign/rāśi geometry returned?", zodiacReturned),
-					renderChartKernelStatusRow("Sidereal Lahiri texture support returned?", ayanamsaReturned),
+					renderChartKernelStatusRow(
+						"chartKernel inspection object returned?",
+						status(chartKernelReturned)
+					),
 					renderChartKernelStatusRow(
 						"Tropical longitudes/degrees returned?",
-						natalLongitudesReturned
-					),
-					renderChartKernelStatusRow("Sign/rāśi placements returned?", natalSignsReturned),
-					renderChartKernelStatusRow("House/angle geometry returned?", ascendantReturned),
-					renderChartKernelStatusRow("Rahu/Ketu vector data returned?", nodesReturned),
-					renderChartKernelStatusRow(
-						"Placement/field object returned?",
-						placementObjectReturned
+						status(tropicalLongitudesReturned)
 					),
 					renderChartKernelStatusRow(
-						"Safe for diagnostics-only hybrid inspection?",
-						safeForCards
+						"House/angle geometry returned?",
+						status(houseAngleGeometryReturned)
+					),
+					renderChartKernelStatusRow(
+						"Placement role labels returned?",
+						status(placementRolesReturned)
+					),
+					renderChartKernelStatusRow(
+						"Sign/rāśi placement objects returned?",
+						calculatedStatus(signPlacementObjectsReturned)
+					),
+					renderChartKernelStatusRow(
+						"Rahu/Ketu role placeholders returned?",
+						status(rahuKetuRolePlaceholdersReturned)
+					),
+					renderChartKernelStatusRow(
+						"Rahu/Ketu calculated node data returned?",
+						calculatedStatus(rahuKetuCalculatedNodeDataReturned)
+					),
+					renderChartKernelStatusRow(
+						"Sidereal Lahiri placeholder returned?",
+						status(siderealLahiriPlaceholderReturned)
+					),
+					renderChartKernelStatusRow(
+						"Sidereal Lahiri calculated texture returned?",
+						calculatedStatus(siderealLahiriCalculatedTextureReturned)
+					),
+					renderChartKernelStatusRow(
+						"Nakshatra data returned?",
+						calculatedStatus(nakshatraDataReturned)
+					),
+					renderChartKernelStatusRow(
+						"Safe diagnostics-only hybrid inspection?",
+						status(safeDiagnosticsOnlyHybridInspection)
 					),
 				].join("");
 
 				fieldEl.innerHTML = directFields
-					.map(([label, value]) =>
+					.map(([label, value, missingText]) =>
 						renderChartKernelFieldRow(
 							label,
-							chartKernelHasValue(value) ? "Available" : "Not returned"
+							(typeof value === "boolean" ? value : chartKernelHasValue(value))
+								? "Available"
+								: missingText
 						)
 					)
 					.join("");
@@ -9396,7 +9425,6 @@
 					rawEl.textContent = JSON.stringify(preview, null, 2);
 				}
 			}
-
 
 			function setBar(id, value, max = 1.2) {
 				const el = document.getElementById(id);
