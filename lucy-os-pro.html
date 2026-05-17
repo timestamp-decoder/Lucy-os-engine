@@ -80,6 +80,7 @@
 <!-- Pass 33E update: added display-only Personal Architecture title sign fallback from already-present runtime placement degrees when no safe sign string exists. Safe sign strings remain first; degree fallback is title readability only. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, Landing flow, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <!-- Pass 33F update: restricted Personal Architecture Beta title sign lookup to placement-scoped sources only, so broad/global sign containers cannot bleed one sign across every card. Existing runtime degree fallback remains display-only for unscoped or missing signs. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, Landing flow, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <!-- Pass 33G update: validated Personal Architecture Beta title sign labels against each rendered placement's own existing degree when available. Conflicting safeSign values are rejected and the degree-derived display sign wins. Display-title validation only; no backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, Landing flow, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
+<!-- Pass 33H update: made each Personal Architecture Beta title use the card-local degree source before any safeSign value. The same existing degree value used for the visible Degree metadata row now derives the title sign, and safeSign is ignored whenever that card-local degree exists. Display-title binding only; no backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, bottom padding, Landing flow, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -10555,31 +10556,39 @@
 			}
 
 			function buildVisiblePersonalArchitectureTitle(placementName, systemLabel, item, chartKernel) {
-				const placement = String(placementName || "").trim();
-				const role = personalArchitecturePublicRoleLabel(systemLabel || "");
-				const safeSignResult = getExistingPlacementSignRuntimeLookup(placement, item, chartKernel);
-				const safeSign = (typeof safeSignResult === "object" ? safeSignResult.sign : safeSignResult) || "";
-				const fallbackDegree = getExistingPlacementDegreeFromRuntimeData(placement, item, chartKernel);
-				const fallbackSign = deriveDisplaySignFromExistingDegree(fallbackDegree);
-				const safeSignAccepted = !!safeSign && (!fallbackSign || normalizeSignName(safeSign) === normalizeSignName(fallbackSign));
-				const finalSign = safeSignAccepted ? safeSign : (fallbackSign || safeSign || "");
-				let visibleTitle = role || "Stable receiving component";
+				const placementNameClean = String(placementName || "").trim();
+				const placementNameForLookup = placementNameClean;
+				const systemLabelClean = personalArchitecturePublicRoleLabel(systemLabel || "");
+				const cardLocalDegree = normalizeExistingPlacementDegreeValue(item?.cardLocalDegree);
+				const degreeSign = deriveDisplaySignFromExistingDegree(cardLocalDegree);
+				const safeSignLookup = getExistingPlacementSignRuntimeLookup(placementNameForLookup, item, chartKernel);
+				const placementScopedSafeSign = (typeof safeSignLookup === "object" ? safeSignLookup.sign : safeSignLookup) || "";
+				let finalSign = "";
 
-				if (placement && role) {
-					visibleTitle = finalSign ? `${placement} in ${finalSign} — ${role}` : `${placement} — ${role}`;
-				} else if (placement) {
-					visibleTitle = finalSign ? `${placement} in ${finalSign}` : placement;
+				if (degreeSign) {
+					finalSign = degreeSign;
+				} else if (placementScopedSafeSign) {
+					finalSign = placementScopedSafeSign;
 				}
 
-				console.debug("PASS 33G PA SIGN VALIDATION PROOF", {
-					placementName: placement,
-					systemLabel,
-					safeSign,
-					fallbackDegree,
-					fallbackSign,
-					safeSignAccepted,
+				let visibleTitle = systemLabelClean || "Stable receiving component";
+
+				if (placementNameClean && systemLabelClean) {
+					visibleTitle = finalSign
+						? `${placementNameClean} in ${finalSign} — ${systemLabelClean}`
+						: `${placementNameClean} — ${systemLabelClean}`;
+				} else if (placementNameClean) {
+					visibleTitle = finalSign ? `${placementNameClean} in ${finalSign}` : placementNameClean;
+				}
+
+				console.debug("PASS 33H PA CARD-LOCAL TITLE PROOF", {
+					placementName: placementNameClean,
+					systemLabel: systemLabelClean,
+					cardLocalDegree,
+					degreeSign,
+					placementScopedSafeSign,
 					finalSign,
-					visibleTitle,
+					visibleTitle
 				});
 
 				return visibleTitle;
@@ -10636,14 +10645,19 @@
 				return personalArchitectureFormatMetaLines(lines) || (roleAvailable ? "Role available" : "Awaiting placement texture");
 			}
 
-			function personalArchitectureFormatNodeMeta(node, fallbackLabel) {
-				if (!node || typeof node !== "object") return "";
-				const longitudeValue = chartKernelPickFirstValue(node, [
+			function personalArchitectureGetNodeCardLocalDegree(node) {
+				if (!node || typeof node !== "object") return null;
+				return chartKernelPickFirstValue(node, [
 					/^longitude(deg|degree|degrees)?$/,
 					/^longitude_?deg(rees)?$/,
 					/^lon(gitude)?_?deg(rees)?$/,
 					/^deg(rees)?$/,
 				]);
+			}
+
+			function personalArchitectureFormatNodeMeta(node, fallbackLabel) {
+				if (!node || typeof node !== "object") return "";
+				const longitudeValue = personalArchitectureGetNodeCardLocalDegree(node);
 				const normalizedValue = chartKernelPickFirstValue(node, [
 					/^normalized$/,
 					/^normalized(value)?$/,
@@ -11160,43 +11174,9 @@
 				const placementName = String(item?.label || "").trim();
 				const systemLabel = personalArchitecturePublicRoleLabel(item?.role || "");
 				const chartKernel = item?.chartKernel || item?.data?.chartKernel || {};
-				const safeSignLookup = getExistingPlacementSignRuntimeLookup(placementName, item, chartKernel);
-				const safeSign = safeSignLookup.sign || "";
-				const safeSignSource = safeSignLookup.source || "";
-				const fallbackDegree = safeSign ? "" : getExistingPlacementDegreeFromRuntimeData(placementName, item, chartKernel);
-				const fallbackSign = safeSign ? "" : deriveDisplaySignFromExistingDegree(fallbackDegree);
-				const signLookupResult = safeSign || fallbackSign;
+				const degreeSign = deriveDisplaySignFromExistingDegree(item?.cardLocalDegree);
+				const signLookupResult = degreeSign || getExistingPlacementSignFromRuntimeData(placementName, item, chartKernel);
 				const visibleTitle = buildVisiblePersonalArchitectureTitle(placementName, systemLabel, item, chartKernel);
-				const component = item?.component;
-				const role = item?.role;
-				const source = item?.source;
-				const raw = item?.raw || item?.source?.raw;
-				const data = item?.data || item?.source?.data;
-				const meta = item?.meta || item?.source?.meta;
-				const sourceData = item?.sourceData || item?.source?.sourceData;
-				if (typeof console !== "undefined" && typeof console.debug === "function") {
-					console.debug("PASS 33F PA SIGN SCOPE PROOF", {
-						placementName,
-						systemLabel,
-						safeSign,
-						safeSignSource,
-						fallbackDegree,
-						fallbackSign,
-						finalSign: safeSign || fallbackSign,
-						visibleTitle,
-						item,
-						component,
-						role,
-						source,
-						raw,
-						data,
-						meta,
-						sourceData,
-						chartKernel,
-						chartKernelKeys: chartKernel && typeof chartKernel === "object" ? Object.keys(chartKernel) : [],
-						signLookupResult,
-					});
-				}
 				const systemRole = signLookupResult && !/node/i.test(String(item.label || ""))
 					? "Stable receiving component"
 					: chartKernelEscapeHtml(item.label || "Stable receiving component");
@@ -11259,12 +11239,18 @@
 				const moonPlacement = personalArchitectureFindPlacementObject(data, [/^moon$/]);
 				const rahu = chartKernelFindNodeObject(data, "rahu");
 				const ketu = chartKernelFindNodeObject(data, "ketu");
+				const ascCardLocalDegree = data?.angles?.asc ?? data?.chartKernel?.geometry?.asc;
+				const sunCardLocalDegree = data?._longitudesDeg?.sun ?? data?.chartKernel?.tropicalLongitudesDeg?.sun;
+				const moonCardLocalDegree = data?._longitudesDeg?.moon ?? data?.chartKernel?.tropicalLongitudesDeg?.moon;
+				const rahuCardLocalDegree = personalArchitectureGetNodeCardLocalDegree(rahu);
+				const ketuCardLocalDegree = personalArchitectureGetNodeCardLocalDegree(ketu);
 
 				const rows = [
 					{
 						label: "Ascendant",
 						role: personalArchitecturePickRole(data, [/^asc(endant)?$/], "Interface Kernel"),
 						source: ascPlacement,
+						cardLocalDegree: ascCardLocalDegree,
 						sign: personalArchitectureGetPlacementSign(ascPlacement),
 						meaning: "This is where the day first meets your attention, body, or environment.",
 						use: "Notice what feels charged, then slow the first response.",
@@ -11273,7 +11259,7 @@
 						meta: personalArchitectureFormatPlacementMeta({
 							data,
 							placement: ascPlacement,
-							degree: data?.angles?.asc ?? data?.chartKernel?.geometry?.asc,
+							degree: ascCardLocalDegree,
 							roleAvailable,
 						}),
 					},
@@ -11281,6 +11267,7 @@
 						label: "Sun",
 						role: personalArchitecturePickRole(data, [/^sun$/], "Core Voltage"),
 						source: sunPlacement,
+						cardLocalDegree: sunCardLocalDegree,
 						sign: personalArchitectureGetPlacementSign(sunPlacement),
 						meaning: "This is where your system looks for energy, clarity, and a clean center.",
 						use: "Choose one clean priority before adding energy.",
@@ -11289,7 +11276,7 @@
 						meta: personalArchitectureFormatPlacementMeta({
 							data,
 							placement: sunPlacement,
-							degree: data?._longitudesDeg?.sun ?? data?.chartKernel?.tropicalLongitudesDeg?.sun,
+							degree: sunCardLocalDegree,
 							roleAvailable,
 						}),
 					},
@@ -11297,6 +11284,7 @@
 						label: "Moon",
 						role: personalArchitecturePickRole(data, [/^moon$/], "Emotional Processor"),
 						source: moonPlacement,
+						cardLocalDegree: moonCardLocalDegree,
 						sign: personalArchitectureGetPlacementSign(moonPlacement),
 						meaning: "This is where the field lands through body-state, comfort, mood, and rhythm.",
 						use: "Ground first, then clarify what your system needs.",
@@ -11305,7 +11293,7 @@
 						meta: personalArchitectureFormatPlacementMeta({
 							data,
 							placement: moonPlacement,
-							degree: data?._longitudesDeg?.moon ?? data?.chartKernel?.tropicalLongitudesDeg?.moon,
+							degree: moonCardLocalDegree,
 							roleAvailable,
 						}),
 					},
@@ -11313,6 +11301,7 @@
 						label: "Rahu / North Node",
 						role: personalArchitecturePickRole(data, [/rahu/, /north.?node/], "Growth Vector"),
 						source: rahu,
+						cardLocalDegree: rahuCardLocalDegree,
 						sign: personalArchitectureGetPlacementSign(rahu),
 						meaning: "This points toward the edge your system is learning to move into.",
 						use: "Take one small step toward the unfamiliar without forcing the whole path.",
@@ -11324,6 +11313,7 @@
 						label: "Ketu / South Node",
 						role: personalArchitecturePickRole(data, [/ketu/, /south.?node/], "Release Vector"),
 						source: ketu,
+						cardLocalDegree: ketuCardLocalDegree,
 						sign: personalArchitectureGetPlacementSign(ketu),
 						meaning: "This shows the pattern your system may default to when pressure rises.",
 						use: "Keep the wisdom, but do not retreat into the old loop.",
