@@ -67,6 +67,7 @@
 <!-- Pass 25 update: lightly tightened Personal Architecture Beta “What this means today” mini-block density only. CSS/layout polish only; PASS 24 wording/helpers, PASS 15 component note language, backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, and core public read behavior unchanged. -->
 <!-- Pass 26 update: added compact Personal Architecture Beta framing strip only. Static display/copy bridge clarifies stable receiving architecture versus daily moving field. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, PASS 15 component note language, PASS 24 wording/helpers, PASS 25 mini-block styling, or core public read behavior changed. -->
 <!-- Pass 27 update: polished Personal Architecture Beta scan hierarchy only. Consolidated repeated helper lines into the existing framing strip, placed the current-field micro-line directly before the component cards, and lightly tightened helper spacing. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, PASS 15 component note language, PASS 24 wording/helpers, PASS 25 mini-block styling, PASS 26 framing strip meaning, or core public read behavior changed. -->
+<!-- Pass 28 update: polished Personal Architecture Beta component-card scan hierarchy only. CSS/layout tuning makes the Today line read as the main practical line, keeps the PASS 24 detail as lighter support, and quiets degree/metadata emphasis. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, in-app Today’s Read, PASS 15 component note language, PASS 24 wording/helpers, PASS 26 framing strip meaning, PASS 27 top hierarchy, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -3813,27 +3814,31 @@
 				align-content: start;
 				min-width: 0;
 				max-width: 100%;
-				padding: 9px 9px 8px;
+				padding: 10px 10px 9px;
 				border: 1px solid rgba(255, 255, 255, 0.075);
 				border-radius: 13px;
-				background: rgba(255, 255, 255, 0.03);
+				background: linear-gradient(
+					180deg,
+					rgba(255, 255, 255, 0.036),
+					rgba(255, 255, 255, 0.024)
+				);
 				overflow: hidden;
 			}
 
 			.personalArchitectureRole {
 				color: var(--text);
-				font-size: 12.7px;
+				font-size: 13px;
 				font-weight: 950;
-				line-height: 1.16;
+				line-height: 1.15;
 				overflow-wrap: anywhere;
 			}
 
 			.personalArchitectureLabel {
-				margin-top: 2px;
-				color: var(--gold);
-				font-size: 9.4px;
+				margin-top: 3px;
+				color: rgba(216, 184, 76, 0.92);
+				font-size: 9.2px;
 				font-weight: 950;
-				letter-spacing: 0.08em;
+				letter-spacing: 0.085em;
 				text-transform: uppercase;
 				line-height: 1.18;
 				overflow-wrap: anywhere;
@@ -3841,21 +3846,23 @@
 
 			.personalArchitectureMeaning {
 				margin-top: 5px;
-				color: rgba(217, 224, 244, 0.9);
-				font-size: 11.1px;
+				color: rgba(217, 224, 244, 0.82);
+				font-size: 10.85px;
 				line-height: 1.32;
-				font-weight: 720;
+				font-weight: 710;
 				overflow-wrap: break-word;
 			}
 
 			.personalArchitectureToday {
-				margin-top: 6px;
-				padding-top: 6px;
-				border-top: 1px solid rgba(216, 184, 76, 0.105);
-				color: #d9e0f4;
-				font-size: 10.8px;
-				line-height: 1.34;
-				font-weight: 760;
+				margin-top: 7px;
+				padding: 7px 8px;
+				border: 1px solid rgba(216, 184, 76, 0.12);
+				border-radius: 10px;
+				background: rgba(216, 184, 76, 0.035);
+				color: #e8edf9;
+				font-size: 10.9px;
+				line-height: 1.36;
+				font-weight: 810;
 				overflow-wrap: break-word;
 			}
 
@@ -3867,21 +3874,21 @@
 			.personalArchitectureTodayMeaning {
 				margin-top: 5px;
 				padding: 5px 7px;
-				border: 1px solid rgba(103, 193, 255, 0.075);
+				border: 1px solid rgba(103, 193, 255, 0.055);
 				border-radius: 9px;
-				background: rgba(103, 193, 255, 0.022);
-				color: rgba(217, 224, 244, 0.9);
-				font-size: 10.45px;
+				background: rgba(103, 193, 255, 0.014);
+				color: rgba(217, 224, 244, 0.76);
+				font-size: 10.25px;
 				line-height: 1.3;
-				font-weight: 720;
+				font-weight: 690;
 				overflow-wrap: break-word;
 			}
 
 			.personalArchitectureTodayMeaning strong {
 				display: block;
 				margin-bottom: 2px;
-				color: rgba(103, 193, 255, 0.88);
-				font-size: 8.9px;
+				color: rgba(103, 193, 255, 0.76);
+				font-size: 8.75px;
 				line-height: 1.15;
 				font-weight: 950;
 				letter-spacing: 0.075em;
@@ -3889,13 +3896,13 @@
 			}
 
 			.personalArchitectureMeta {
-				margin-top: 6px;
-				padding-top: 5px;
-				border-top: 1px solid rgba(255, 255, 255, 0.055);
-				color: var(--muted2);
-				font-size: 10.2px;
-				line-height: 1.3;
-				font-weight: 850;
+				margin-top: 5px;
+				padding-top: 4px;
+				border-top: 1px solid rgba(255, 255, 255, 0.038);
+				color: rgba(127, 143, 184, 0.72);
+				font-size: 9.65px;
+				line-height: 1.28;
+				font-weight: 780;
 				overflow-wrap: anywhere;
 			}
 
@@ -6394,23 +6401,36 @@
 				}
 
 				.personalArchitectureBetaGrid {
-					gap: 7px;
+					gap: 8px;
 				}
 
 				.personalArchitectureBetaItem {
-					padding: 9px 10px 8px;
+					padding: 10px 11px 9px;
+				}
+
+				.personalArchitectureMeaning {
+					font-size: 10.8px;
+				}
+
+				.personalArchitectureToday {
+					margin-top: 7px;
+					padding: 7px 8px;
 				}
 
 				.personalArchitectureTodayMeaning {
 					margin-top: 5px;
 					padding: 5px 7px;
-					font-size: 10.35px;
+					font-size: 10.2px;
 					line-height: 1.28;
 				}
 
 				.personalArchitectureTodayMeaning strong {
 					margin-bottom: 2px;
-					font-size: 8.75px;
+					font-size: 8.65px;
+				}
+
+				.personalArchitectureMeta {
+					font-size: 9.55px;
 				}
 
 				.personalArchitectureFieldContext {
