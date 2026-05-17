@@ -268,6 +268,67 @@ def compute_angles_and_houses(jd_ut: float, lat: float, lon: float):
     }, houses
 
 
+def unavailable_lunar_nodes(note: str) -> dict:
+    return {
+        "available": False,
+        "calculation": None,
+        "zodiacMode": "tropical",
+        "rahu": None,
+        "ketu": None,
+        "note": note,
+    }
+
+
+def compute_lunar_nodes(jd_ut: float) -> dict:
+    """Compute tropical Rahu/Ketu node data for diagnostics-only Chart Kernel use."""
+    try:
+        node_body = getattr(swe, "TRUE_NODE", None)
+        calculation = "true-node"
+
+        if node_body is None:
+            node_body = getattr(swe, "MEAN_NODE", None)
+            calculation = "mean-node"
+
+        if node_body is None:
+            return unavailable_lunar_nodes(
+                "Rahu/Ketu node calculation unavailable: Swiss Ephemeris node constants are missing."
+            )
+
+        try:
+            xx, _ = swe.calc_ut(jd_ut, node_body, FLAGS)
+        except Exception as true_node_error:
+            mean_node_body = getattr(swe, "MEAN_NODE", None)
+            if calculation == "true-node" and mean_node_body is not None:
+                xx, _ = swe.calc_ut(jd_ut, mean_node_body, FLAGS)
+                calculation = "mean-node"
+            else:
+                return unavailable_lunar_nodes(
+                    f"Rahu/Ketu node calculation failed: {true_node_error}"
+                )
+
+        rahu_deg = normalize_degrees(float(xx[0]))
+        ketu_deg = normalize_degrees(rahu_deg + 180.0)
+
+        return {
+            "available": True,
+            "calculation": calculation,
+            "zodiacMode": "tropical",
+            "rahu": {
+                "role": "Growth Vector / Directional Trajectory",
+                "longitudeDeg": round(rahu_deg, 4),
+                "normalized": round(normalize_longitude(rahu_deg), 6),
+            },
+            "ketu": {
+                "role": "Release Vector / Mastery Pattern",
+                "longitudeDeg": round(ketu_deg, 4),
+                "normalized": round(normalize_longitude(ketu_deg), 6),
+            },
+            "note": "Rahu/Ketu calculated as tropical lunar node vectors for diagnostics-only Chart Kernel inspection. They do not affect Lucy.OS scoring or public output.",
+        }
+    except Exception as e:
+        return unavailable_lunar_nodes(f"Rahu/Ketu node calculation failed safely: {e}")
+
+
 def compute_chart_inputs(
     dob: str,
     tob: str,
@@ -302,6 +363,7 @@ def compute_chart_inputs(
     result["_longitudesDeg"] = longitudes_deg
     result["angles"] = angles
     result["houses"] = houses
+    result["_nodes"] = compute_lunar_nodes(jd_ut)
 
     result["_meta"] = {
         "source": "Swiss Ephemeris",
@@ -520,6 +582,15 @@ def build_chart_kernel_inspection(chart: dict) -> dict:
     angles = chart.get("angles", {}) or {}
     houses = chart.get("houses", []) or []
     tropical_longitudes_deg = chart.get("_longitudesDeg", {}) or {}
+    nodes = chart.get("_nodes") or unavailable_lunar_nodes(
+        "Rahu/Ketu node data was not attached to this chart response."
+    )
+
+    nodes_available = bool(
+        nodes.get("available")
+        and isinstance(nodes.get("rahu"), dict)
+        and isinstance(nodes.get("ketu"), dict)
+    )
 
     ascendant_deg = angles.get("asc")
     mc_deg = angles.get("mc")
@@ -560,17 +631,12 @@ def build_chart_kernel_inspection(chart: dict) -> dict:
             "ascendant": ascendant_deg is not None,
             "mc": mc_deg is not None,
             "houses": len(houses) > 0,
-            "rahu": False,
-            "ketu": False,
+            "rahu": nodes_available,
+            "ketu": nodes_available,
             "siderealLahiri": False,
             "nakshatras": False,
         },
-        "nodes": {
-            "available": False,
-            "rahu": None,
-            "ketu": None,
-            "note": "Rahu/Ketu are not calculated yet. Future implementation should add node calculation additively.",
-        },
+        "nodes": nodes,
         "siderealLahiri": {
             "available": False,
             "ayanamsa": None,
