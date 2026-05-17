@@ -52,6 +52,7 @@
 <!-- Pass 13 update: added compact Personal Architecture daily component detail lines only. Uses existing current-field/support/load values for display language; no backend/API, scoring, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, or core public read behavior changed. -->
 <!-- Pass 14 update: added compact Personal Architecture field-context micro-line only. Uses existing selected current-field values for display context; no backend/API, scoring, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, bottom padding, or core public read behavior changed. -->
 <!-- Pass 15 update: refined compact Personal Architecture component Today notes only. Uses existing current-field/support/load display values; no backend/API, scoring, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, bottom padding, or core public read behavior changed. -->
+<!-- Personal Architecture field-context overflow fix: wrapped the field-context label defensively so mobile does not split field names mid-word. CSS/markup safety only; no backend/API, scoring, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, bottom padding, PASS 15 component note language, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -3698,6 +3699,8 @@
 				margin: -3px 0 12px;
 				display: inline-flex;
 				align-items: center;
+				flex-wrap: wrap;
+				gap: 2px 4px;
 				max-width: 100%;
 				padding: 7px 10px;
 				border: 1px solid rgba(216, 184, 76, 0.16);
@@ -3707,12 +3710,24 @@
 				font-size: 11px;
 				line-height: 1.35;
 				font-weight: 850;
-				overflow-wrap: anywhere;
+				overflow-wrap: break-word;
+				word-break: normal;
 			}
 
-			.personalArchitectureFieldContext strong {
+			.personalArchitectureFieldLead {
+				min-width: 0;
+				max-width: 100%;
+				overflow-wrap: break-word;
+				word-break: normal;
+			}
+
+			.personalArchitectureFieldContext strong,
+			.personalArchitectureFieldLabel {
 				color: var(--gold);
 				font-weight: 950;
+				white-space: nowrap;
+				overflow-wrap: normal;
+				word-break: keep-all;
 			}
 
 			.personalArchitectureBetaGrid {
@@ -6245,6 +6260,21 @@
 
 				.personalArchitectureBetaItem {
 					padding: 9px 10px 8px;
+				}
+
+				.personalArchitectureFieldContext {
+					display: flex;
+					align-items: flex-start;
+					border-radius: 14px;
+				}
+
+				.personalArchitectureFieldLead {
+					flex: 1 1 100%;
+				}
+
+				.personalArchitectureFieldLabel {
+					display: inline-block;
+					max-width: 100%;
 				}
 
 				.profileBlock.wide,
@@ -9881,7 +9911,7 @@
 				if (fieldContextEl) {
 					const fieldLabel = selectedField ? publicFieldText(selectedField) : "";
 					fieldContextEl.innerHTML = fieldLabel
-						? `Today’s component notes are tuned to the current field: <strong>${chartKernelEscapeHtml(fieldLabel)}</strong>.`
+						? `<span class="personalArchitectureFieldLead">Today’s component notes are tuned to the current field:</span> <strong class="personalArchitectureFieldLabel">${chartKernelEscapeHtml(fieldLabel)}</strong>`
 						: "Today’s component notes are tuned to the current field when available.";
 				}
 
