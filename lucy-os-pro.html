@@ -60,6 +60,7 @@
 <!-- Pass 19 visual share card compression update: compressed the visual share card into a poster-style summary only. Copied share text, in-app read content, backend/API, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, Profile Name behavior, Chart Kernel extraction, diagnostics, bottom nav, Personal Architecture Beta, and share export mechanics are unchanged beyond the visual card text/section list. -->
 <!-- Pass 20 update: added temporary TimestampDecoder.com CTA footer line to visual share card and copied share text only. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, visual share-card section list, visual title personalization, share export mechanics beyond footer text, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, in-app read content, Personal Architecture Beta content, PASS 15 component note language, or core public read behavior changed. -->
 <!-- Pass 21 update: lightly polished visual share-card footer spacing only after the CTA footer addition. No copied share text, backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, visual share-card section list, visual title personalization, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, in-app read content, Personal Architecture Beta content, PASS 15 component note language, or core public read behavior changed. -->
+<!-- Pass 22 update: added optional Profile Name personalization to the visual share-card title only. No copied share text, backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name input/save/load behavior, visual share-card section list, visual share-card compression, footer CTA, footer spacing, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, in-app read content, Personal Architecture Beta content, PASS 15 component note language, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -8368,7 +8369,7 @@
 <div class="shareCard" id="lucyShareCard">
 <div class="shareCardInner">
 <div class="shareCardTop">
-<span>Lucy.OS Pro</span>
+<span id="shareCardTitle">Lucy.OS Pro</span>
 </div>
 <div class="shareCardSection">
 <div class="shareCardLabel">
@@ -15388,6 +15389,20 @@ ${bodyLine}${loadLine}`,
 				);
 			}
 
+			function getCurrentProfileNameForShare() {
+				return (
+					document.getElementById("profileNameInput")?.value || ""
+				).trim();
+			}
+
+			function updateVisualShareCardTitle() {
+				const profileName = getCurrentProfileNameForShare();
+				setText(
+					"shareCardTitle",
+					profileName ? `Lucy.OS Pro for ${profileName}` : "Lucy.OS Pro"
+				);
+			}
+
 			function updateShareUI({
 				systemWeather,
 				fieldDirectionTitle,
@@ -15447,6 +15462,8 @@ ${bodyLine}${loadLine}`,
 					motionStyle,
 					motionStyleRead,
 				};
+
+				updateVisualShareCardTitle();
 
 				setHTML(
 					"shareBaselineChip",
@@ -15739,6 +15756,8 @@ ${bodyLine}${loadLine}`,
 
 				try {
 					if (status) status.textContent = "Creating image...";
+
+					updateVisualShareCardTitle();
 
 					const canvas = await html2canvas(card, {
 						backgroundColor: "#09142f",
