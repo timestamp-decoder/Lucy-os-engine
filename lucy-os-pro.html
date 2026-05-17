@@ -66,6 +66,7 @@
 <!-- Pass 24 update: added compact Personal Architecture Beta “What this means today” detail lines only. Uses existing current-field/support/load display values defensively; no backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, PASS 15 component note language, or core public read behavior changed. -->
 <!-- Pass 25 update: lightly tightened Personal Architecture Beta “What this means today” mini-block density only. CSS/layout polish only; PASS 24 wording/helpers, PASS 15 component note language, backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, and core public read behavior unchanged. -->
 <!-- Pass 26 update: added compact Personal Architecture Beta framing strip only. Static display/copy bridge clarifies stable receiving architecture versus daily moving field. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, PASS 15 component note language, PASS 24 wording/helpers, PASS 25 mini-block styling, or core public read behavior changed. -->
+<!-- Pass 27 update: polished Personal Architecture Beta scan hierarchy only. Consolidated repeated helper lines into the existing framing strip, placed the current-field micro-line directly before the component cards, and lightly tightened helper spacing. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, PASS 15 component note language, PASS 24 wording/helpers, PASS 25 mini-block styling, PASS 26 framing strip meaning, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -3639,7 +3640,7 @@
 				justify-content: space-between;
 				align-items: flex-start;
 				gap: 12px;
-				margin-bottom: 12px;
+				margin-bottom: 10px;
 				min-width: 0;
 			}
 
@@ -3716,7 +3717,7 @@
 			}
 
 			.personalArchitectureFieldContext {
-				margin: -3px 0 12px;
+				margin: 0 0 10px;
 				display: inline-grid;
 				grid-template-columns: minmax(0, auto) auto;
 				align-items: center;
@@ -3724,14 +3725,14 @@
 				row-gap: 2px;
 				width: fit-content;
 				max-width: 100%;
-				padding: 7px 10px;
-				border: 1px solid rgba(216, 184, 76, 0.16);
+				padding: 6px 9px;
+				border: 1px solid rgba(216, 184, 76, 0.13);
 				border-radius: 999px;
-				background: rgba(216, 184, 76, 0.055);
+				background: rgba(216, 184, 76, 0.045);
 				color: #f0e6c2;
-				font-size: 11px;
+				font-size: 10.7px;
 				line-height: 1.35;
-				font-weight: 850;
+				font-weight: 830;
 				overflow: hidden;
 			}
 
@@ -3752,7 +3753,7 @@
 			}
 
 			.personalArchitectureFramingStrip {
-				margin: -2px 0 12px;
+				margin: 0 0 9px;
 				padding: 10px 12px;
 				border: 1px solid rgba(216, 184, 76, 0.14);
 				border-radius: 14px;
@@ -3785,7 +3786,7 @@
 			}
 
 			.personalArchitectureFramingText + .personalArchitectureFramingText {
-				margin-top: 5px;
+				margin-top: 4px;
 			}
 
 			.personalArchitectureFramingText strong {
@@ -6418,7 +6419,9 @@
 					align-items: start;
 					justify-items: start;
 					width: 100%;
-					border-radius: 14px;
+					margin-bottom: 9px;
+					padding: 6px 9px;
+					border-radius: 12px;
 				}
 
 				.personalArchitectureFieldLead {
@@ -8254,16 +8257,13 @@
 </div>
 <div class="personalArchitectureBetaBadge">Display Only</div>
 </div>
-<div class="personalArchitectureMeaningBridge"><strong>Today’s field</strong> shows what is moving. <strong>Your architecture</strong> shows where it lands. <strong>Support</strong> shows how to return to coherence.</div>
-<div class="personalArchitectureDailyLanding" id="personalArchitectureDailyLanding">Today’s field may enter through these channels before it becomes a response.</div>
-<div class="personalArchitectureHowToUse">When today’s read feels strong, scan these channels to see where the pressure may be landing first.</div>
-<div class="personalArchitectureFieldContext" id="personalArchitectureFieldContext">Today’s component notes are tuned to the current field when available.</div>
 <div class="personalArchitectureFramingStrip">
 <div class="personalArchitectureFramingTitle">How your architecture works</div>
 <p class="personalArchitectureFramingText">The field changes daily. Your architecture explains how it lands.</p>
-<p class="personalArchitectureFramingText">Use these cards as your <strong>stable receiving map</strong>. The daily field shows what is moving now; Personal Architecture shows where your system is likely to register it first.</p>
+<p class="personalArchitectureFramingText">Use these cards as your <strong>stable receiving map</strong>. The daily field shows what is moving now; Personal Architecture shows where your system is likely to register it first; Support shows how to return to coherence.</p>
 <p class="personalArchitectureFramingText personalArchitectureFramingCaution">This is not a fixed identity label. It is a daily landing map built from stable architecture.</p>
 </div>
+<div class="personalArchitectureFieldContext" id="personalArchitectureFieldContext">Today’s component notes are tuned to the current field when available.</div>
 <div class="personalArchitectureBetaGrid" id="personalArchitectureBetaGrid">
 <div class="personalArchitectureBetaItem">
 <div class="personalArchitectureRole">Interface Kernel</div>
