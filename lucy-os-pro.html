@@ -78,6 +78,7 @@
 <!-- Pass 41 recovery update: restored Live Field Modifier displayTitle binding, sign-aware Personal Architecture card titles, stable receiving component eyebrow, and Deeper Read expanders. Display-only recovery; no backend/API, payload, engine, scoring, field selection, normalized transit values, Moonstamp, Chart Kernel extraction, natal placement logic, saved profiles, share behavior, bottom nav, Landing flow, diagnostics, degree metadata, Today lines, Meaning/Use rows, or support behavior changed. -->
 <!-- Pass 44 update: canonical baseline recovery and regression lock. Restored display-only Live Field Modifier contract binding, degree-derived Personal Architecture title signs, Personal Architecture Sign Source Proof diagnostics, and Deeper Read expander preservation. No backend/API, payload, engine, scoring, field selection, normalized transit values, Moonstamp, chartKernel extraction, natal placement logic, saved profiles, share behavior, bottom nav, or Landing flow changed. -->
 <!-- Pass 45 update: rebuilt Personal Architecture Deeper Read panel shape only. Current PASS 44 Deeper Read content remains sourced from the current baseline and now renders as a separate four-section panel below the Explore row. No backend/API, payload, engine, scoring, field selection, normalized transit values, Moonstamp, chartKernel extraction, natal placement logic, saved profiles, share behavior, bottom nav, Landing flow, Live Field Modifier, interaction copy, title-sign derivation, proof panel, Today rows, Meaning/Use rows, degree rows, metadata rows, or Explore rows changed. -->
+<!-- Pass 46 update: personalized share title text only. Copied share text and visual share-card title now use the optional Profile Name when present, with fallback Daily Field Read title when blank. No backend/API, payload, engine, scoring, field selection, normalized transit values, Moonstamp, chartKernel extraction, natal placement logic, saved profiles, Profile Name save/load/dropdown behavior, share export mechanics, bottom nav, Landing flow, Live Field Modifier, interaction copy, Personal Architecture title-sign derivation, proof panel, or Deeper Read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -7503,7 +7504,7 @@
 <label for="profileNameInput">Name / Profile Name</label>
 <input id="profileNameInput" name="profileName" placeholder="Optional — for saved profiles and share text" type="text"/>
 <div class="profileNameHelper">
-						Optional. Used for saved-profile labels and future personalized share text.
+						Optional. Used for saved-profile labels and personalized share cards.
 					</div>
 <label>Date of Birth</label>
 <input id="dob" type="date"/>
@@ -16773,9 +16774,15 @@ ${bodyLine}${loadLine}`,
 				);
 			}
 
-			function getVisualShareCardTitle() {
+			function getShareTitle() {
 				const profileName = getCurrentProfileNameForShare();
-				return profileName ? `Lucy.OS Pro for ${profileName}` : "Lucy.OS Pro";
+				return profileName
+					? `${profileName} · Lucy.OS Pro Field Read`
+					: "Lucy.OS Pro · Daily Field Read";
+			}
+
+			function getVisualShareCardTitle() {
+				return getShareTitle();
 			}
 
 			function updateVisualShareCardTitle() {
@@ -17008,12 +17015,7 @@ ${bodyLine}${loadLine}`,
 					sharePersonalLandingField && sharePersonalLandingField !== "—"
 						? `Personal Landing: Today’s ${sharePersonalLandingField} field may register through your interface, center, and body-state first.`
 						: "Personal Landing: Today’s field may register through your interface, center, and body-state first.";
-				const profileName = (
-					document.getElementById("profileNameInput")?.value || ""
-				).trim();
-				const shareTitle = profileName
-					? `Lucy.OS Pro for ${profileName}`
-					: "Lucy.OS Pro";
+				const shareTitle = getShareTitle();
 
 				const lines = [
 					shareTitle,
