@@ -79,6 +79,7 @@
 <!-- Pass 33D update: added runtime chartKernel shape proof and bound the exact Personal Architecture Beta visible title renderer to a final existing-sign lookup helper. Sign labels are used only when already present as safe runtime strings; no sign calculation, longitude derivation, backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, Landing flow, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <!-- Pass 33E update: added display-only Personal Architecture title sign fallback from already-present runtime placement degrees when no safe sign string exists. Safe sign strings remain first; degree fallback is title readability only. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, Landing flow, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <!-- Pass 33F update: restricted Personal Architecture Beta title sign lookup to placement-scoped sources only, so broad/global sign containers cannot bleed one sign across every card. Existing runtime degree fallback remains display-only for unscoped or missing signs. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, Landing flow, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
+<!-- Pass 33G update: validated Personal Architecture Beta title sign labels against each rendered placement's own existing degree when available. Conflicting safeSign values are rejected and the degree-derived display sign wins. Display-title validation only; no backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, Landing flow, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -10519,10 +10520,11 @@
 			}
 
 			function deriveDisplaySignFromExistingDegree(degree) {
-				// PASS 33F note:
+				// PASS 33G note:
 				// This fallback is title-readability only.
 				// It derives a visible sign label from an already-present runtime degree
-				// when no safe sign string exists.
+				// and is also used to validate any existing safe sign string attached
+				// to the same rendered Personal Architecture placement.
 				// It does not affect chartKernel data, scoring, field selection, Moonstamp,
 				// dashboard, diagnostics, API payload, saved profiles, or share behavior.
 				const normalizedDegree = normalizeZodiacDegree360(degree);
@@ -10545,17 +10547,42 @@
 				return signs[index] || "";
 			}
 
+			function normalizeSignName(value) {
+				return String(value || "")
+					.trim()
+					.toLowerCase()
+					.replace(/[^a-z]/g, "");
+			}
+
 			function buildVisiblePersonalArchitectureTitle(placementName, systemLabel, item, chartKernel) {
 				const placement = String(placementName || "").trim();
 				const role = personalArchitecturePublicRoleLabel(systemLabel || "");
-				const safeSignLookup = getExistingPlacementSignRuntimeLookup(placement, item, chartKernel);
-				const safeSign = safeSignLookup.sign || "";
-				const fallbackDegree = safeSign ? "" : getExistingPlacementDegreeFromRuntimeData(placement, item, chartKernel);
-				const fallbackSign = safeSign ? "" : deriveDisplaySignFromExistingDegree(fallbackDegree);
-				const sign = safeSign || fallbackSign;
-				if (placement && role) return sign ? `${placement} in ${sign} — ${role}` : `${placement} — ${role}`;
-				if (placement) return sign ? `${placement} in ${sign}` : placement;
-				return role || "Stable receiving component";
+				const safeSignResult = getExistingPlacementSignRuntimeLookup(placement, item, chartKernel);
+				const safeSign = (typeof safeSignResult === "object" ? safeSignResult.sign : safeSignResult) || "";
+				const fallbackDegree = getExistingPlacementDegreeFromRuntimeData(placement, item, chartKernel);
+				const fallbackSign = deriveDisplaySignFromExistingDegree(fallbackDegree);
+				const safeSignAccepted = !!safeSign && (!fallbackSign || normalizeSignName(safeSign) === normalizeSignName(fallbackSign));
+				const finalSign = safeSignAccepted ? safeSign : (fallbackSign || safeSign || "");
+				let visibleTitle = role || "Stable receiving component";
+
+				if (placement && role) {
+					visibleTitle = finalSign ? `${placement} in ${finalSign} — ${role}` : `${placement} — ${role}`;
+				} else if (placement) {
+					visibleTitle = finalSign ? `${placement} in ${finalSign}` : placement;
+				}
+
+				console.debug("PASS 33G PA SIGN VALIDATION PROOF", {
+					placementName: placement,
+					systemLabel,
+					safeSign,
+					fallbackDegree,
+					fallbackSign,
+					safeSignAccepted,
+					finalSign,
+					visibleTitle,
+				});
+
+				return visibleTitle;
 			}
 
 			function personalArchitectureBuildPlacementTitle(item) {
