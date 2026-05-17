@@ -44,6 +44,7 @@
 <!-- Pass 5B update: removed redundant role-label repeat from Personal Architecture Beta node data stacks and added a small display-only helper note. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, or core read behavior changed. -->
 <!-- Pass 6 update: polished Personal Architecture Beta intro, public component labels, and display-only bridge/caution copy only. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, or core public read behavior changed. -->
 <!-- Pass 7 update: added a compact Personal Architecture meaning bridge explaining Daily Field, Architecture, and Support relationship only. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, or core public read behavior changed. -->
+<!-- Pass 8 update: added compact Personal Architecture daily landing micro-line using existing current field values only. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -3662,6 +3663,15 @@
 			.personalArchitectureMeaningBridge strong {
 				color: var(--text);
 				font-weight: 950;
+			}
+
+			.personalArchitectureDailyLanding {
+				margin: -4px 0 12px;
+				color: var(--muted);
+				font-size: 12px;
+				line-height: 1.45;
+				font-weight: 750;
+				overflow-wrap: break-word;
 			}
 
 			.personalArchitectureBetaGrid {
@@ -7990,6 +8000,7 @@
 <div class="personalArchitectureBetaBadge">Display Only</div>
 </div>
 <div class="personalArchitectureMeaningBridge"><strong>Today’s field</strong> shows what is moving. <strong>Your architecture</strong> shows where it lands. <strong>Support</strong> shows how to return to coherence.</div>
+<div class="personalArchitectureDailyLanding" id="personalArchitectureDailyLanding">Today’s field may enter through these channels before it becomes a response.</div>
 <div class="personalArchitectureBetaGrid" id="personalArchitectureBetaGrid">
 <div class="personalArchitectureBetaItem">
 <div class="personalArchitectureRole">Interface Kernel</div>
@@ -9659,6 +9670,16 @@
 			function renderPersonalArchitectureBetaCard(data) {
 				const gridEl = document.getElementById("personalArchitectureBetaGrid");
 				if (!gridEl) return;
+
+				const dailyLandingEl = document.getElementById("personalArchitectureDailyLanding");
+				if (dailyLandingEl) {
+					const harmonics = calculateHarmonics(data);
+					const fieldName = publicFieldText(
+						harmonics?.todayField || harmonics?.dailyFieldDebug?.selectedField || "current"
+					);
+					dailyLandingEl.textContent = `Today’s ${fieldName} field may enter through these channels before it becomes a mood, choice, reaction, or return path.`;
+				}
+
 				const chartKernel = data?.chartKernel || {};
 				const placementRoles = chartKernel?.placementRoles;
 				const roleAvailable = !!(
