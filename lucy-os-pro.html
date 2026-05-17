@@ -39,6 +39,7 @@
 <!-- Pass 4B update: added compact calculated Rahu/Ketu node vector display inside Chart Kernel Data Inspection only. Front-end diagnostics display only; no backend/API, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, or public result behavior changed. -->
 <!-- Pass 4B-B update: fixed narrow-screen Engine Details diagnostic row wrapping only. Diagnostic labels/values now stack and wrap cleanly on mobile. No backend/API, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, or public result behavior changed. -->
 <!-- Pass 4C update: cleaned Chart Kernel Raw Debug Preview display inside Engine Details only. Raw preview remains available with the same backend preview content, now in a smaller controlled scroll area with a debugging-only helper line. No backend/API, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, or public result behavior changed. -->
+<!-- Pass 4D update: added Personal Architecture Beta card inside the You destination only. Public display layer uses existing chartKernel placementRoles, existing tropical degree/sign data where already available, and calculated Rahu/Ketu node vectors where already returned. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, raw diagnostics, or core read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -3582,6 +3583,122 @@
 				font-weight: 900;
 			}
 
+			.personalArchitectureBetaCard {
+				width: 100%;
+				max-width: 100%;
+				min-width: 0;
+				margin-top: 14px;
+				padding: 16px;
+				border: 1px solid rgba(216, 184, 76, 0.2);
+				border-radius: 18px;
+				background: radial-gradient(
+						circle at 12% 0%,
+						rgba(216, 184, 76, 0.1),
+						transparent 34%
+					),
+					rgba(255, 255, 255, 0.026);
+				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.018);
+				overflow: hidden;
+			}
+
+			.personalArchitectureBetaHeader {
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-start;
+				gap: 12px;
+				margin-bottom: 12px;
+				min-width: 0;
+			}
+
+			.personalArchitectureBetaHeader h3 {
+				margin: 0;
+				color: var(--text);
+				font-size: 17px;
+				line-height: 1.2;
+			}
+
+			.personalArchitectureBetaHeader p {
+				margin: 5px 0 0;
+				color: var(--muted);
+				font-size: 12px;
+				line-height: 1.45;
+				font-weight: 750;
+				overflow-wrap: break-word;
+			}
+
+			.personalArchitectureBetaBadge {
+				display: inline-flex;
+				align-items: center;
+				min-height: 26px;
+				padding: 5px 9px;
+				border-radius: 999px;
+				border: 1px solid rgba(216, 184, 76, 0.25);
+				background: rgba(216, 184, 76, 0.075);
+				color: var(--gold);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				white-space: nowrap;
+			}
+
+			.personalArchitectureBetaGrid {
+				display: grid;
+				grid-template-columns: repeat(5, minmax(0, 1fr));
+				gap: 9px;
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.personalArchitectureBetaItem {
+				min-width: 0;
+				max-width: 100%;
+				padding: 11px;
+				border: 1px solid rgba(255, 255, 255, 0.075);
+				border-radius: 14px;
+				background: rgba(255, 255, 255, 0.034);
+				overflow: hidden;
+			}
+
+			.personalArchitectureRole {
+				color: var(--text);
+				font-size: 13px;
+				font-weight: 950;
+				line-height: 1.22;
+				overflow-wrap: anywhere;
+			}
+
+			.personalArchitectureLabel {
+				margin-top: 5px;
+				color: var(--gold);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				line-height: 1.25;
+				overflow-wrap: anywhere;
+			}
+
+			.personalArchitectureMeaning {
+				margin-top: 7px;
+				color: #d9e0f4;
+				font-size: 11.5px;
+				line-height: 1.42;
+				font-weight: 720;
+				overflow-wrap: break-word;
+			}
+
+			.personalArchitectureMeta {
+				margin-top: 8px;
+				padding-top: 7px;
+				border-top: 1px solid rgba(255, 255, 255, 0.065);
+				color: var(--muted2);
+				font-size: 10.5px;
+				line-height: 1.38;
+				font-weight: 850;
+				overflow-wrap: anywhere;
+			}
+
 			.chipRow {
 				display: flex;
 				gap: 8px;
@@ -5997,8 +6114,18 @@
 				.outlookGrid,
 				.interactionMapGrid,
 				.fieldCompassGrid,
-				.liveDebugThreeColumn {
+				.liveDebugThreeColumn,
+				.personalArchitectureBetaGrid {
 					grid-template-columns: minmax(0, 1fr);
+				}
+
+				.personalArchitectureBetaHeader {
+					display: grid;
+					grid-template-columns: minmax(0, 1fr);
+				}
+
+				.personalArchitectureBetaBadge {
+					justify-self: start;
 				}
 
 				.profileBlock.wide,
@@ -7812,6 +7939,47 @@
 								</div>
 </div>
 </div>
+<div class="personalArchitectureBetaCard" id="personalArchitectureBetaCard">
+<div class="personalArchitectureBetaHeader">
+<div>
+<h3>Personal Architecture — Beta</h3>
+<p>These are system-component labels from your chart kernel. They describe how Lucy.OS organizes the personal landing layer, not fixed personality traits.</p>
+</div>
+<div class="personalArchitectureBetaBadge">Display only</div>
+</div>
+<div class="personalArchitectureBetaGrid" id="personalArchitectureBetaGrid">
+<div class="personalArchitectureBetaItem">
+<div class="personalArchitectureRole">Interface Kernel</div>
+<div class="personalArchitectureLabel">Ascendant</div>
+<div class="personalArchitectureMeaning">How your system meets the field.</div>
+<div class="personalArchitectureMeta">Awaiting placement texture</div>
+</div>
+<div class="personalArchitectureBetaItem">
+<div class="personalArchitectureRole">Core Voltage / CPU</div>
+<div class="personalArchitectureLabel">Sun</div>
+<div class="personalArchitectureMeaning">Core operating voltage.</div>
+<div class="personalArchitectureMeta">Awaiting placement texture</div>
+</div>
+<div class="personalArchitectureBetaItem">
+<div class="personalArchitectureRole">Emotional Processor / GPU</div>
+<div class="personalArchitectureLabel">Moon</div>
+<div class="personalArchitectureMeaning">Body-state, comfort, emotional rhythm, and timing texture.</div>
+<div class="personalArchitectureMeta">Awaiting placement texture</div>
+</div>
+<div class="personalArchitectureBetaItem">
+<div class="personalArchitectureRole">Growth Vector</div>
+<div class="personalArchitectureLabel">Rahu / North Node</div>
+<div class="personalArchitectureMeaning">Growth Vector / Directional Trajectory.</div>
+<div class="personalArchitectureMeta">Awaiting placement texture</div>
+</div>
+<div class="personalArchitectureBetaItem">
+<div class="personalArchitectureRole">Release Vector</div>
+<div class="personalArchitectureLabel">Ketu / South Node</div>
+<div class="personalArchitectureMeaning">Release Vector / Mastery Pattern.</div>
+<div class="personalArchitectureMeta">Awaiting placement texture</div>
+</div>
+</div>
+</div>
 </section>
 <section class="profileCard">
 <div class="profileHeader">
@@ -9298,6 +9466,174 @@
 				if (chartKernelHasValue(labelValue)) parts.push(String(labelValue));
 				else if (fallbackLabel) parts.push(fallbackLabel);
 				return parts.join(" · ");
+			}
+
+			function personalArchitectureFindPlacementObject(data, keyPatterns = []) {
+				const candidates = [
+					data?.chartKernel?.placements,
+					data?.chartKernel?.signPlacements,
+					data?.placements,
+					data?.natal?.placements,
+				];
+
+				for (const source of candidates) {
+					if (!source || typeof source !== "object") continue;
+					for (const [key, value] of Object.entries(source)) {
+						const keyText = String(key || "").toLowerCase();
+						if (keyPatterns.some((pattern) => pattern.test(keyText))) {
+							return value && typeof value === "object" ? value : { value };
+						}
+					}
+				}
+
+				let found = null;
+				chartKernelWalk(data?.chartKernel, (path, key, value) => {
+					if (found || !value || typeof value !== "object" || Array.isArray(value)) return;
+					const pathText = `${path || ""} ${key || ""}`.toLowerCase();
+					if (keyPatterns.some((pattern) => pattern.test(pathText))) found = value;
+				});
+				return found;
+			}
+
+			function personalArchitecturePickRole(data, roleKeys = [], fallbackRole) {
+				const roles = data?.chartKernel?.placementRoles;
+				if (roles && typeof roles === "object") {
+					for (const [key, value] of Object.entries(roles)) {
+						const keyText = String(key || "").toLowerCase();
+						if (roleKeys.some((pattern) => pattern.test(keyText)) && chartKernelHasValue(value)) {
+							if (typeof value === "string") return value;
+							if (value && typeof value === "object") {
+								return (
+									value.role ||
+									value.roleName ||
+									value.label ||
+									value.name ||
+									fallbackRole
+								);
+							}
+						}
+					}
+				}
+				return fallbackRole;
+			}
+
+			function personalArchitectureFormatPlacementMeta({
+				data,
+				placement,
+				degree,
+				roleAvailable,
+			}) {
+				const parts = [];
+				const signValue = chartKernelPickFirstValue(placement, [
+					/^sign$/,
+					/^rasi$/,
+					/^rāśi$/,
+					/^zodiac(sign)?$/,
+				]);
+				const degreeValue =
+					degree ??
+					chartKernelPickFirstValue(placement, [
+						/^longitude(deg|degree|degrees)?$/,
+						/^longitude_?deg(rees)?$/,
+						/^lon(gitude)?_?deg(rees)?$/,
+						/^deg(rees)?$/,
+					]);
+				const normalizedValue = chartKernelPickFirstValue(placement, [
+					/^normalized$/,
+					/^normalized(value)?$/,
+					/^norm$/,
+				]);
+				const degreeText = chartKernelFormatNumber(degreeValue, 2);
+				const normalizedText = chartKernelFormatNumber(normalizedValue, 4);
+
+				if (degreeText) parts.push(`${degreeText}°`);
+				if (chartKernelHasValue(signValue)) parts.push(String(signValue));
+				if (normalizedText) parts.push(`normalized ${normalizedText}`);
+				if (parts.length) return parts.join(" · ");
+				return roleAvailable ? "Role available" : "Awaiting placement texture";
+			}
+
+			function renderPersonalArchitectureBetaItem(item) {
+				return `<div class="personalArchitectureBetaItem"><div class="personalArchitectureRole">${chartKernelEscapeHtml(
+					item.role
+				)}</div><div class="personalArchitectureLabel">${chartKernelEscapeHtml(
+					item.label
+				)}</div><div class="personalArchitectureMeaning">${chartKernelEscapeHtml(
+					item.meaning
+				)}</div><div class="personalArchitectureMeta">${chartKernelEscapeHtml(
+					item.meta
+				)}</div></div>`;
+			}
+
+			function renderPersonalArchitectureBetaCard(data) {
+				const gridEl = document.getElementById("personalArchitectureBetaGrid");
+				if (!gridEl) return;
+				const chartKernel = data?.chartKernel || {};
+				const placementRoles = chartKernel?.placementRoles;
+				const roleAvailable = !!(
+					placementRoles &&
+					typeof placementRoles === "object" &&
+					Object.keys(placementRoles).length
+				);
+
+				const ascPlacement = personalArchitectureFindPlacementObject(data, [
+					/^asc(endant)?$/,
+					/interface/,
+				]);
+				const sunPlacement = personalArchitectureFindPlacementObject(data, [/^sun$/]);
+				const moonPlacement = personalArchitectureFindPlacementObject(data, [/^moon$/]);
+				const rahu = chartKernelFindNodeObject(data, "rahu");
+				const ketu = chartKernelFindNodeObject(data, "ketu");
+
+				const rows = [
+					{
+						label: "Ascendant",
+						role: personalArchitecturePickRole(data, [/^asc(endant)?$/], "Interface Kernel"),
+						meaning: "How your system meets the field.",
+						meta: personalArchitectureFormatPlacementMeta({
+							data,
+							placement: ascPlacement,
+							degree: data?.angles?.asc ?? data?.chartKernel?.geometry?.asc,
+							roleAvailable,
+						}),
+					},
+					{
+						label: "Sun",
+						role: personalArchitecturePickRole(data, [/^sun$/], "Core Voltage / CPU"),
+						meaning: "Core operating voltage.",
+						meta: personalArchitectureFormatPlacementMeta({
+							data,
+							placement: sunPlacement,
+							degree: data?._longitudesDeg?.sun ?? data?.chartKernel?.tropicalLongitudesDeg?.sun,
+							roleAvailable,
+						}),
+					},
+					{
+						label: "Moon",
+						role: personalArchitecturePickRole(data, [/^moon$/], "Emotional Processor / GPU"),
+						meaning: "Body-state, comfort, emotional rhythm, and timing texture.",
+						meta: personalArchitectureFormatPlacementMeta({
+							data,
+							placement: moonPlacement,
+							degree: data?._longitudesDeg?.moon ?? data?.chartKernel?.tropicalLongitudesDeg?.moon,
+							roleAvailable,
+						}),
+					},
+					{
+						label: "Rahu / North Node",
+						role: personalArchitecturePickRole(data, [/rahu/, /north.?node/], "Growth Vector"),
+						meaning: "Growth Vector / Directional Trajectory.",
+						meta: chartKernelBuildNodeVectorValue(rahu, "") || (roleAvailable ? "Role available" : "Awaiting placement texture"),
+					},
+					{
+						label: "Ketu / South Node",
+						role: personalArchitecturePickRole(data, [/ketu/, /south.?node/], "Release Vector"),
+						meaning: "Release Vector / Mastery Pattern.",
+						meta: chartKernelBuildNodeVectorValue(ketu, "") || (roleAvailable ? "Role available" : "Awaiting placement texture"),
+					},
+				];
+
+				gridEl.innerHTML = rows.map(renderPersonalArchitectureBetaItem).join("");
 			}
 
 			function chartKernelRenderNodeVectors(data, hasCalculatedNodes) {
@@ -17006,6 +17342,7 @@ ${bodyLine}${loadLine}`,
 
 					updateUI(data);
 					renderChartKernelDataInspection(data);
+					renderPersonalArchitectureBetaCard(data);
 
 					if (shouldAutoScroll) {
 						scrollToMobileReadSnapshot();
