@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 
+<!-- Pass 35 update: added Personal Architecture Beta card-local Deeper Read expanders inside the You section only. The Explore row now opens concise display-only guidance per placement using existing card/render context. No backend/API, payload, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share behavior, bottom nav, Landing flow, Personal Architecture title/sign/degree logic, Chart Kernel extraction, Live Field Modifier proof panel, or core public read behavior changed. -->
 <!-- Pass 34E update: hardened the diagnostics-only Live Mercury Source Proof panel so deployed builds can verify whether PASS 34D is running, whether the frontend response was scanned, and whether any safe live/current/transit Mercury sign source exists. Public Live Field Modifier still updates only when a safe runtime live Mercury sign is accepted. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, bottom padding, Landing flow, Personal Architecture PASS 33H title logic, Chart Kernel extraction, or core public read behavior changed. -->
 <!-- Pass 34D update: added deployment proof and runtime live Mercury source exposure for the Live Field Modifier only. The visible card updates only when safe live/current/transit Mercury sign data exists in the frontend response; otherwise it remains field-based. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, share behavior, Personal Architecture PASS 33H title logic, Chart Kernel extraction, or core public read behavior changed. -->
 <!-- Practice edit: upload/edit/download workflow verified. -->
@@ -3938,6 +3939,96 @@
 				font-weight: 820;
 			}
 
+			.personalArchitectureExploreButton {
+				width: 100%;
+				min-height: 0;
+				margin: 0;
+				padding: 0;
+				display: grid;
+				grid-template-columns: 58px minmax(0, 1fr);
+				gap: 8px;
+				align-items: start;
+				border: 0;
+				border-radius: 0;
+				background: transparent;
+				box-shadow: none;
+				color: inherit;
+				text-align: left;
+				cursor: pointer;
+			}
+
+			.personalArchitectureExploreButton:hover,
+			.personalArchitectureExploreButton:focus-visible {
+				filter: none;
+				outline: none;
+			}
+
+			.personalArchitectureExploreButton:focus-visible {
+				box-shadow: 0 0 0 2px rgba(103, 193, 255, 0.2);
+			}
+
+			.personalArchitectureExploreButton strong::after {
+				content: " +";
+				color: rgba(103, 193, 255, 0.82);
+				font-weight: 950;
+			}
+
+			.personalArchitectureExploreButton[aria-expanded="true"] strong::after {
+				content: " −";
+			}
+
+			.personalArchitectureDeeperRead {
+				display: none;
+				margin-top: 0;
+				padding: 10px;
+				border: 1px solid rgba(103, 193, 255, 0.14);
+				border-radius: 12px;
+				background: radial-gradient(
+						circle at 12% 0%,
+						rgba(103, 193, 255, 0.08),
+						transparent 42%
+					),
+					rgba(255, 255, 255, 0.024);
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.personalArchitectureDeeperRead.isOpen {
+				display: grid;
+				gap: 8px;
+			}
+
+			.personalArchitectureDeeperReadTitle {
+				color: var(--blue);
+				font-size: 9.5px;
+				font-weight: 950;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+			}
+
+			.personalArchitectureDeeperReadBlock {
+				display: grid;
+				gap: 3px;
+				min-width: 0;
+			}
+
+			.personalArchitectureDeeperReadBlock span {
+				color: rgba(216, 184, 76, 0.86);
+				font-size: 8.8px;
+				font-weight: 950;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+			}
+
+			.personalArchitectureDeeperReadBlock p {
+				margin: 0;
+				color: rgba(233, 239, 255, 0.88);
+				font-size: 10.9px;
+				line-height: 1.42;
+				font-weight: 720;
+				overflow-wrap: break-word;
+			}
+
 			.personalArchitectureMeaning {
 				margin-top: 5px;
 				color: rgba(217, 224, 244, 0.82);
@@ -6576,6 +6667,10 @@
 					padding: 6px 7px;
 				}
 
+				.personalArchitectureExploreButton {
+					grid-template-columns: 54px minmax(0, 1fr);
+				}
+
 				.personalArchitectureCardRow strong {
 					font-size: 10.65px;
 				}
@@ -8516,7 +8611,7 @@
 <div class="personalArchitectureCardRows">
 <div class="personalArchitectureCardRow"><span>Meaning</span><strong>This is where the day first meets your attention, body, or environment.</strong></div>
 <div class="personalArchitectureCardRow"><span>Use</span><strong>Notice what feels charged, then slow the first response.</strong></div>
-<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Deeper read coming soon</strong></div>
+<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Open Deeper Read</strong></div>
 </div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice how the field first meets your attention, body, or environment.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up in how quickly you read the room, pressure, tone, or first impression before choosing a response.</div>
@@ -8530,7 +8625,7 @@
 <div class="personalArchitectureCardRows">
 <div class="personalArchitectureCardRow"><span>Meaning</span><strong>This is where your system looks for energy, clarity, and a clean center.</strong></div>
 <div class="personalArchitectureCardRow"><span>Use</span><strong>Choose one clean priority before adding energy.</strong></div>
-<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Deeper read coming soon</strong></div>
+<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Open Deeper Read</strong></div>
 </div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice what feels central, important, or identity-linked in the read.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up in where your energy feels clear, strained, pulled, or ready to move today.</div>
@@ -8544,7 +8639,7 @@
 <div class="personalArchitectureCardRows">
 <div class="personalArchitectureCardRow"><span>Meaning</span><strong>This is where the field lands through body-state, comfort, mood, and rhythm.</strong></div>
 <div class="personalArchitectureCardRow"><span>Use</span><strong>Ground first, then clarify what your system needs.</strong></div>
-<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Deeper read coming soon</strong></div>
+<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Open Deeper Read</strong></div>
 </div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice how the field lands in body-state, mood, comfort, or emotional rhythm.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up through body-state, comfort, emotional rhythm, or the need for steadier pacing.</div>
@@ -8558,7 +8653,7 @@
 <div class="personalArchitectureCardRows">
 <div class="personalArchitectureCardRow"><span>Meaning</span><strong>This points toward the edge your system is learning to move into.</strong></div>
 <div class="personalArchitectureCardRow"><span>Use</span><strong>Take one small step toward the unfamiliar without forcing the whole path.</strong></div>
-<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Deeper read coming soon</strong></div>
+<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Open Deeper Read</strong></div>
 </div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice where the read pulls you toward a next step, new edge, or unfamiliar pattern.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up as the edge your system is being asked to move toward without forcing it.</div>
@@ -8572,7 +8667,7 @@
 <div class="personalArchitectureCardRows">
 <div class="personalArchitectureCardRow"><span>Meaning</span><strong>This shows the pattern your system may default to when pressure rises.</strong></div>
 <div class="personalArchitectureCardRow"><span>Use</span><strong>Keep the wisdom, but do not retreat into the old loop.</strong></div>
-<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Deeper read coming soon</strong></div>
+<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Open Deeper Read</strong></div>
 </div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice what old reflex, overuse, or attachment the return path may ask you to loosen.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up as what your system needs to simplify, stop over-carrying, or let become quieter today.</div>
@@ -10640,6 +10735,139 @@
 				);
 			}
 
+			function personalArchitectureNormalizeKey(value) {
+				return String(value || "")
+					.trim()
+					.toLowerCase()
+					.replace(/[^a-z0-9]+/g, "");
+			}
+
+			function personalArchitectureCleanFieldLabel(value) {
+				const clean = String(value || "").trim();
+				return clean || "today’s field";
+			}
+
+			function personalArchitectureSignTexture(signLabel) {
+				const key = personalArchitectureNormalizeKey(signLabel);
+				const textures = {
+					aries: "direct action, initiation, and clean forward motion",
+					taurus: "steadiness, body proof, value, and sustainable pacing",
+					gemini: "signal movement, language, options, and fast pattern exchange",
+					cancer: "protection, memory, belonging, and emotional safety",
+					leo: "visibility, creative center, confidence, and expressive warmth",
+					virgo: "precision, refinement, service, and practical adjustment",
+					libra: "tone, balance, fairness, and relational atmosphere",
+					scorpio: "depth, signal truth, intensity, and what is happening underneath",
+					sagittarius: "meaning, direction, wider perspective, and movement toward truth",
+					capricorn: "structure, responsibility, proof, and earned clarity",
+					aquarius: "systems, pattern distance, future signal, and clean detachment",
+					pisces: "sensitivity, imagination, dissolving edges, and subtle atmosphere",
+				};
+				return textures[key] || "the texture already visible on this card";
+			}
+
+			function getPlacementRoleDeeperRead(placementName, roleLabel, signLabel, todayFieldLabel) {
+				const placementKey = personalArchitectureNormalizeKey(placementName);
+				const role = String(roleLabel || "stable receiving component").trim() || "stable receiving component";
+				const sign = String(signLabel || "").trim();
+				const signPhrase = sign ? ` With ${sign} active on this card, it may lean toward ${personalArchitectureSignTexture(sign)}.` : "";
+				const field = personalArchitectureCleanFieldLabel(todayFieldLabel);
+				const fieldLower = String(field || "today’s field").toLowerCase();
+
+				const defaults = {
+					works: `This placement describes part of your stable receiving architecture: how your system tends to take in, organize, or respond to pressure.${signPhrase}`,
+					hits: `${field} may activate this component more strongly depending on where pressure, contact, timing, or regulation is showing up.`,
+					move: "Use this card as a checkpoint before reacting. Notice what is being activated, then choose one clean next move.",
+					watch: "Over-identifying with a temporary field state.",
+				};
+
+				const reads = {
+					ascendant: {
+						works: `Your Interface Kernel shows how the day first meets your attention, body, environment, and first response.${signPhrase}`,
+						hits: `${field} can show up as an immediate read of the room, a body cue, or a quick sense of what needs attention first.`,
+						move: "Pause before the first response. Name what is actually in front of you, then choose the cleanest entry point.",
+						watch: "Treating the first signal as the whole story before the field has settled.",
+					},
+					sun: {
+						works: `Your Core Voltage shows where your system looks for energy, clarity, purpose, and a clean center.${signPhrase}`,
+						hits: `${field} may pull on your center by asking you to spend attention, take responsibility, or decide what deserves your energy.`,
+						move: "Choose one priority, one boundary, or one grounded next step before adding more energy.",
+						watch: "Letting another person’s signal, urgency, or expectation become your whole operating system.",
+					},
+					moon: {
+						works: `Your Emotional Processor shows how the field lands through comfort, rhythm, body-state, mood, and felt safety.${signPhrase}`,
+						hits: `${field} can become louder in the body or emotional atmosphere before it becomes a clear thought.`,
+						move: "Ground first. Check what your system needs before trying to interpret or repair the whole field.",
+						watch: "Absorbing tone, pressure, or atmosphere as if it all belongs to you.",
+					},
+					rahunorthnode: {
+						works: `Your Growth Vector points toward the edge your system is learning to move into without forcing the whole path at once.${signPhrase}`,
+						hits: `${field} may make the unfamiliar edge feel more active, especially where timing, contact, choice, or pressure asks for a new response.`,
+						move: "Take one small step toward the new pattern, then let the system register that it stayed intact.",
+						watch: "Mistaking growth pressure for a command to leap too far too fast.",
+					},
+					ketusouthnode: {
+						works: `Your Release Vector shows the pattern your system may default to when pressure rises, and the wisdom that can be kept without living inside the old loop.${signPhrase}`,
+						hits: `${field} may pull up familiar exits, old regulation habits, or a retreat path that once protected the system.`,
+						move: "Keep the useful wisdom, but choose the smallest present-time response instead of repeating the old loop.",
+						watch: "Calling an old survival pattern ‘clarity’ just because it feels familiar.",
+					},
+				};
+
+				let read = reads[placementKey] || defaults;
+				if (/relational|contact|social|tone/.test(fieldLower)) {
+					read = {
+						...read,
+						hits: `${read.hits} Contact, tone, feedback, or repair pressure may feel louder than usual.`,
+					};
+				} else if (/reconstruct|repair|rebuild/.test(fieldLower)) {
+					read = {
+						...read,
+						hits: `${read.hits} Repair pressure may make this component want to fix more than the moment actually requires.`,
+					};
+				} else if (/threshold|change|cross/.test(fieldLower)) {
+					read = {
+						...read,
+						hits: `${read.hits} Timing pressure may make the next step feel urgent before it is fully clear.`,
+					};
+				}
+
+				return {
+					works: read.works || defaults.works,
+					hits: read.hits || defaults.hits,
+					move: read.move || defaults.move,
+					watch: read.watch || defaults.watch,
+				};
+			}
+
+			function buildPersonalArchitectureDeeperRead(item, context = {}) {
+				const placementName = String(item?.label || "").trim();
+				const roleLabel = personalArchitecturePublicRoleLabel(item?.role || "");
+				const signLabel =
+					String(context?.signLabel || "").trim() ||
+					deriveDisplaySignFromExistingDegree(item?.cardLocalDegree) ||
+					String(item?.sign || "").trim();
+				const todayFieldLabel = personalArchitectureCleanFieldLabel(context?.todayFieldLabel);
+				return getPlacementRoleDeeperRead(placementName, roleLabel, signLabel, todayFieldLabel);
+			}
+
+			function renderPersonalArchitectureDeeperReadPanel(read, id) {
+				const safe = read || getPlacementRoleDeeperRead("", "", "", "");
+				return `<div class="personalArchitectureDeeperRead" id="${chartKernelEscapeHtml(id)}" aria-hidden="true"><div class="personalArchitectureDeeperReadTitle">Deeper Read</div><div class="personalArchitectureDeeperReadBlock"><span>How this component works</span><p>${chartKernelEscapeHtml(safe.works)}</p></div><div class="personalArchitectureDeeperReadBlock"><span>How today’s field hits it</span><p>${chartKernelEscapeHtml(safe.hits)}</p></div><div class="personalArchitectureDeeperReadBlock"><span>Clean move</span><p>${chartKernelEscapeHtml(safe.move)}</p></div><div class="personalArchitectureDeeperReadBlock"><span>Watch for</span><p>${chartKernelEscapeHtml(safe.watch)}</p></div></div>`;
+			}
+
+			function togglePersonalArchitectureDeeperRead(id) {
+				const panel = document.getElementById(id);
+				const button = document.querySelector(`[aria-controls="${String(id).replace(/"/g, '\\"')}"]`);
+				if (!panel) return false;
+				const isOpen = panel.classList.toggle("isOpen");
+				panel.setAttribute("aria-hidden", isOpen ? "false" : "true");
+				if (button) button.setAttribute("aria-expanded", isOpen ? "true" : "false");
+				return false;
+			}
+
+			window.togglePersonalArchitectureDeeperRead = togglePersonalArchitectureDeeperRead;
+
 			function personalArchitectureFormatMetaLines(lines = []) {
 				const cleanLines = lines
 					.map((line) => String(line || "").trim())
@@ -11192,7 +11420,7 @@
 				return lines;
 			}
 
-			function renderPersonalArchitectureBetaItem(item) {
+			function renderPersonalArchitectureBetaItem(item, index = 0) {
 				const metaHtml = String(item.meta || "")
 					.split("\n")
 					.map((line) => line.trim())
@@ -11217,15 +11445,23 @@
 				const systemRole = signLookupResult && !/node/i.test(String(item.label || ""))
 					? "Stable receiving component"
 					: chartKernelEscapeHtml(item.label || "Stable receiving component");
+				const deeperReadId = `personalArchitectureDeeperRead-${index}-${personalArchitectureNormalizeKey(placementName || systemLabel || "component")}`;
+				const deeperRead = buildPersonalArchitectureDeeperRead(item, {
+					signLabel: signLookupResult,
+					todayFieldLabel: item?.todayFieldLabel || item?.currentFieldLabel || "today’s field",
+				});
+				const deeperReadPanelHtml = renderPersonalArchitectureDeeperReadPanel(deeperRead, deeperReadId);
 				return `<div class="personalArchitectureBetaItem"><div class="personalArchitectureComponentHeader"><div class="personalArchitecturePlacementTitle">${chartKernelEscapeHtml(
 					visibleTitle
 				)}</div><div class="personalArchitectureSystemRole">${systemRole}</div></div><div class="personalArchitectureCardRows"><div class="personalArchitectureCardRow"><span>Meaning</span><strong>${chartKernelEscapeHtml(
 					item.meaning
 				)}</strong></div><div class="personalArchitectureCardRow"><span>Use</span><strong>${chartKernelEscapeHtml(
 					item.use || "Notice where this part receives the field, then choose one clean response."
-				)}</strong></div><div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>${chartKernelEscapeHtml(
-					item.explore || "Deeper read coming soon"
-				)}</strong></div></div>${todayHtml}${todayMeaningHtml}<div class="personalArchitectureMeta">${
+				)}</strong></div><div class="personalArchitectureCardRow personalArchitectureExploreRow"><button type="button" class="personalArchitectureExploreButton" aria-expanded="false" aria-controls="${chartKernelEscapeHtml(
+					deeperReadId
+				)}" onclick="return togglePersonalArchitectureDeeperRead('${chartKernelEscapeHtml(
+					deeperReadId
+				)}')"><span>Explore</span><strong>Open Deeper Read</strong></button></div></div>${deeperReadPanelHtml}${todayHtml}${todayMeaningHtml}<div class="personalArchitectureMeta">${
 					metaHtml || chartKernelEscapeHtml(item.meta || "Awaiting placement texture")
 				}</div></div>`;
 			}
@@ -11363,6 +11599,7 @@
 				rows.forEach((row) => {
 					row.data = data;
 					row.chartKernel = chartKernel;
+					row.todayFieldLabel = selectedField ? publicFieldText(selectedField) : "today’s field";
 				});
 
 				gridEl.innerHTML = rows.map(renderPersonalArchitectureBetaItem).join("");
