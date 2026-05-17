@@ -76,7 +76,8 @@
 <!-- Pass 33 update: recovered existing safe sign labels in Personal Architecture Beta placement-card titles only. Titles now use Placement in Sign when the current chartKernel/front-end data already provides a clean sign label, with safe fallback to PASS 32 titles when unavailable. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share-card behavior, bottom nav, bottom padding, Landing flow, PASS 15 component note language meaning, PASS 24 helper meaning, PASS 26 framing strip meaning, PASS 27 hierarchy, PASS 28 component-card styling direction, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, PASS 31 Landing styling, PASS 32 card structure, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <!-- Pass 33B update: traced existing safe sign labels through the Personal Architecture card source, current row source object, and already-present chartKernel placement collections before binding titles. Display-title binding only; no backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share-card behavior, bottom nav, bottom padding, Landing flow, PASS 15 component note language meaning, PASS 24 helper meaning, PASS 26 framing strip meaning, PASS 27 hierarchy, PASS 28 component-card styling direction, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, PASS 31 Landing styling, PASS 32 card structure, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <!-- Pass 33C update: traced the actual Personal Architecture Beta title render path and bound the visible title helper to existing front-end sign strings across the rendered row, source/raw/data/meta, and broader chartKernel sign/placement containers. Added quiet console.debug tracing only. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share-card behavior, bottom nav, bottom padding, Landing flow, PASS 15 component note language meaning, PASS 24 helper meaning, PASS 26 framing strip meaning, PASS 27 hierarchy, PASS 28 component-card styling direction, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, PASS 31 Landing styling, PASS 32 card structure, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
-<!-- Pass 42 update: added Personal Architecture Sign Source Proof diagnostics inside Engine Details only. The proof mirrors current rendered title/sign source data and candidate sign paths without changing Personal Architecture rendering, title behavior, chartKernel extraction, engine output, Live Field Modifier, Moonstamp, dashboard, saved profiles, share output, or scoring. -->
+<!-- Pass 33D update: added runtime chartKernel shape proof and bound the exact Personal Architecture Beta visible title renderer to a final existing-sign lookup helper. Sign labels are used only when already present as safe runtime strings; no sign calculation, longitude derivation, backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, Landing flow, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
+<!-- Pass 43 update: Personal Architecture visible card title sign now derives from the same displayed Degree metadata on each card before falling back to existing sign strings. Added display-only sign source proof output. No backend/API, payload, engine, scoring, field selection, Moonstamp, dashboard, chartKernel extraction, natal placement logic, Live Field Modifier, share behavior, saved profiles, bottom nav, or Landing flow changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -1006,103 +1007,6 @@
 				word-break: normal;
 			}
 
-			.personalArchitectureSignProofList {
-				display: grid;
-				gap: 10px;
-				min-width: 0;
-				max-width: 100%;
-			}
-
-			.personalArchitectureSignProofItem {
-				display: grid;
-				gap: 8px;
-				padding: 10px;
-				border-radius: 13px;
-				border: 1px solid rgba(255, 255, 255, 0.075);
-				background: rgba(255, 255, 255, 0.03);
-				min-width: 0;
-				max-width: 100%;
-			}
-
-			.personalArchitectureSignProofRow {
-				display: grid;
-				grid-template-columns: minmax(128px, 0.36fr) minmax(0, 1fr);
-				gap: 8px;
-				align-items: start;
-				min-width: 0;
-				max-width: 100%;
-				color: var(--muted);
-				font-size: 12px;
-				line-height: 1.4;
-			}
-
-			.personalArchitectureSignProofRow span {
-				color: var(--muted2);
-				font-weight: 950;
-				letter-spacing: 0.06em;
-				text-transform: uppercase;
-				white-space: nowrap;
-			}
-
-			.personalArchitectureSignProofRow strong {
-				color: var(--text);
-				font-weight: 850;
-				min-width: 0;
-				overflow-wrap: anywhere;
-				word-break: normal;
-			}
-
-			.personalArchitectureSignProofCandidates {
-				margin-top: 2px;
-				border: 1px solid rgba(255, 255, 255, 0.075);
-				border-radius: 11px;
-				background: rgba(4, 10, 24, 0.32);
-				overflow: hidden;
-				min-width: 0;
-				max-width: 100%;
-			}
-
-			.engineDetails .personalArchitectureSignProofCandidates summary {
-				padding: 9px 10px;
-				color: var(--muted);
-				font-size: 11px;
-				font-weight: 950;
-				letter-spacing: 0.08em;
-				text-transform: uppercase;
-			}
-
-			.personalArchitectureSignProofCandidateList {
-				display: grid;
-				gap: 5px;
-				padding: 0 9px 9px;
-				min-width: 0;
-			}
-
-			.personalArchitectureSignProofCandidate {
-				display: grid;
-				grid-template-columns: minmax(0, 1fr) minmax(70px, auto);
-				gap: 8px;
-				padding: 7px 8px;
-				border-radius: 9px;
-				background: rgba(255, 255, 255, 0.03);
-				color: var(--muted);
-				font-size: 11.5px;
-				line-height: 1.35;
-				min-width: 0;
-			}
-
-			.personalArchitectureSignProofCandidate span,
-			.personalArchitectureSignProofCandidate strong {
-				min-width: 0;
-				overflow-wrap: anywhere;
-				word-break: normal;
-			}
-
-			.personalArchitectureSignProofCandidate strong {
-				color: var(--blue);
-				text-align: right;
-			}
-
 			@media (max-width: 640px) {
 				.chartKernelSummaryRow,
 				.chartKernelFieldRow,
@@ -1133,21 +1037,6 @@
 					white-space: normal;
 					overflow-wrap: anywhere;
 					word-break: normal;
-				}
-
-				.personalArchitectureSignProofRow,
-				.personalArchitectureSignProofCandidate {
-					grid-template-columns: minmax(0, 1fr);
-					gap: 4px;
-				}
-
-				.personalArchitectureSignProofRow span,
-				.personalArchitectureSignProofRow strong,
-				.personalArchitectureSignProofCandidate span,
-				.personalArchitectureSignProofCandidate strong {
-					white-space: normal;
-					text-align: left;
-					justify-self: start;
 				}
 
 				.engineDetails .chartKernelRawDetails summary {
@@ -8619,7 +8508,7 @@
 <div class="personalArchitectureCardRows">
 <div class="personalArchitectureCardRow"><span>Meaning</span><strong>This is where the day first meets your attention, body, or environment.</strong></div>
 <div class="personalArchitectureCardRow"><span>Use</span><strong>Notice what feels charged, then slow the first response.</strong></div>
-<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Open this component’s existing deeper read</strong></div>
+<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Open deeper read</strong></div>
 </div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice how the field first meets your attention, body, or environment.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up in how quickly you read the room, pressure, tone, or first impression before choosing a response.</div>
@@ -8633,7 +8522,7 @@
 <div class="personalArchitectureCardRows">
 <div class="personalArchitectureCardRow"><span>Meaning</span><strong>This is where your system looks for energy, clarity, and a clean center.</strong></div>
 <div class="personalArchitectureCardRow"><span>Use</span><strong>Choose one clean priority before adding energy.</strong></div>
-<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Open this component’s existing deeper read</strong></div>
+<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Open deeper read</strong></div>
 </div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice what feels central, important, or identity-linked in the read.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up in where your energy feels clear, strained, pulled, or ready to move today.</div>
@@ -8647,7 +8536,7 @@
 <div class="personalArchitectureCardRows">
 <div class="personalArchitectureCardRow"><span>Meaning</span><strong>This is where the field lands through body-state, comfort, mood, and rhythm.</strong></div>
 <div class="personalArchitectureCardRow"><span>Use</span><strong>Ground first, then clarify what your system needs.</strong></div>
-<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Open this component’s existing deeper read</strong></div>
+<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Open deeper read</strong></div>
 </div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice how the field lands in body-state, mood, comfort, or emotional rhythm.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up through body-state, comfort, emotional rhythm, or the need for steadier pacing.</div>
@@ -8661,7 +8550,7 @@
 <div class="personalArchitectureCardRows">
 <div class="personalArchitectureCardRow"><span>Meaning</span><strong>This points toward the edge your system is learning to move into.</strong></div>
 <div class="personalArchitectureCardRow"><span>Use</span><strong>Take one small step toward the unfamiliar without forcing the whole path.</strong></div>
-<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Open this component’s existing deeper read</strong></div>
+<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Open deeper read</strong></div>
 </div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice where the read pulls you toward a next step, new edge, or unfamiliar pattern.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up as the edge your system is being asked to move toward without forcing it.</div>
@@ -8675,7 +8564,7 @@
 <div class="personalArchitectureCardRows">
 <div class="personalArchitectureCardRow"><span>Meaning</span><strong>This shows the pattern your system may default to when pressure rises.</strong></div>
 <div class="personalArchitectureCardRow"><span>Use</span><strong>Keep the wisdom, but do not retreat into the old loop.</strong></div>
-<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Open this component’s existing deeper read</strong></div>
+<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Open deeper read</strong></div>
 </div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice what old reflex, overuse, or attachment the return path may ask you to loosen.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up as what your system needs to simplify, stop over-carrying, or let become quieter today.</div>
@@ -9108,19 +8997,18 @@
 								</div>
 </div>
 
-<details class="chartKernelInspection" id="personalArchitectureSignSourceProofPanel">
-<summary>Personal Architecture Sign Source Proof</summary>
-<div class="chartKernelInspectionBody">
-<div class="chartKernelInspectionHelper">
-										Debug-only proof for the Personal Architecture card titles. This mirrors the currently rendered sign/title source and nearby candidate sign values without changing the visible cards, chart data, engine, or output.
-									</div>
-<div class="personalArchitectureSignProofList" id="personalArchitectureSignSourceProofList">
-<div class="personalArchitectureSignProofItem">
-<div class="personalArchitectureSignProofRow"><span>Status</span><strong>Waiting for calculation</strong></div>
+<div class="liveFieldDebugCard" id="personalArchitectureSignSourceProofCard">
+<div class="liveFieldDebugHeader">
+<div>
+<h2>Personal Architecture Sign Source Proof</h2>
+<p>Display-only proof for Personal Architecture title signs. Degree-derived signs win when the card has a valid displayed Degree.</p>
+</div>
+<span class="liveFieldDebugBadge">PASS 43</span>
+</div>
+<div class="liveDebugMiniGrid" id="personalArchitectureSignSourceProof">
+<div class="liveDebugMiniItem"><span>Status</span><strong>Waiting for Personal Architecture render</strong></div>
 </div>
 </div>
-</div>
-</details>
 
 <details class="chartKernelInspection" id="chartKernelDataInspection">
 <summary>Chart Kernel Data Inspection</summary>
@@ -10095,15 +9983,8 @@
 			}
 
 
-			function personalArchitectureCleanExistingSignLabel(value) {
-				if (typeof value !== "string") return "";
-				let text = value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
-				if (!text) return "";
-
-				const placeholderPattern = /^(unknown|n\/?a|na|null|undefined|--|—|-|none|unavailable|awaiting|pending|tbd|not\s+available)$/i;
-				if (placeholderPattern.test(text)) return "";
-
-				const zodiacSigns = [
+			function personalArchitectureZodiacSigns() {
+				return [
 					"Aries",
 					"Taurus",
 					"Gemini",
@@ -10117,31 +9998,55 @@
 					"Aquarius",
 					"Pisces",
 				];
-				const signPattern = new RegExp(`\\b(${zodiacSigns.join("|")})\\b`, "i");
-				const explicitInMatch = text.match(new RegExp(`\\bin\\s+(${zodiacSigns.join("|")})\\b`, "i"));
-				const signMatch = explicitInMatch || text.match(signPattern);
-				if (!signMatch) return "";
-
-				const matched = String(signMatch[1] || "").toLowerCase();
-				const canonical = zodiacSigns.find((sign) => sign.toLowerCase() === matched);
-				return canonical || "";
 			}
 
 			function normalizeExistingZodiacSignLabel(value) {
-				return personalArchitectureCleanExistingSignLabel(value);
+				if (typeof value !== "string") return "";
+				const text = value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+				if (!text) return "";
+
+				const placeholderPattern = /^(unknown|n\/?a|na|null|undefined|--|—|-|none|unavailable|awaiting|pending|tbd|not\s+available|calculated|available)$/i;
+				if (placeholderPattern.test(text)) return "";
+
+				const exact = personalArchitectureZodiacSigns().find(
+					(sign) => sign.toLowerCase() === text.toLowerCase()
+				);
+				return exact || "";
 			}
 
-			function personalArchitectureGetSafeExistingSignLabel(...sources) {
-				const directFieldPatterns = [
+			function personalArchitectureCleanExistingSignLabel(value) {
+				return normalizeExistingZodiacSignLabel(value);
+			}
+
+			function personalArchitectureExtractExistingSignFromLabel(value) {
+				if (typeof value !== "string") return "";
+				const exact = normalizeExistingZodiacSignLabel(value);
+				if (exact) return exact;
+				const text = value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+				if (!text) return "";
+				const signs = personalArchitectureZodiacSigns();
+				const inMatch = text.match(new RegExp(`\\bin\\s+(${signs.join("|")})\\b`, "i"));
+				if (!inMatch) return "";
+				return normalizeExistingZodiacSignLabel(inMatch[1]);
+			}
+
+			function personalArchitectureSignFieldPatterns() {
+				return [
 					/^sign$/i,
 					/^sign_?name$/i,
-					/^zodiac(sign)?$/i,
+					/^zodiac$/i,
 					/^zodiac_?sign$/i,
-					/^tropical_?sign$/i,
+					/^rashi$/i,
 					/^rasi$/i,
 					/^rāśi$/i,
+					/^sign_?label$/i,
+					/^tropical_?sign$/i,
+					/^sidereal_?sign$/i,
 				];
-				const labelFieldPatterns = [
+			}
+
+			function personalArchitectureLabelFieldPatterns() {
+				return [
 					/^placement_?label$/i,
 					/^display_?label$/i,
 					/^full_?label$/i,
@@ -10149,10 +10054,15 @@
 					/^title$/i,
 					/^name$/i,
 				];
+			}
+
+			function personalArchitectureGetSafeExistingSignLabel(...sources) {
+				const directFieldPatterns = personalArchitectureSignFieldPatterns();
+				const labelFieldPatterns = personalArchitectureLabelFieldPatterns();
 
 				for (const source of sources) {
 					if (typeof source === "string") {
-						const cleanString = personalArchitectureCleanExistingSignLabel(source);
+						const cleanString = normalizeExistingZodiacSignLabel(source);
 						if (cleanString) return cleanString;
 						continue;
 					}
@@ -10162,7 +10072,7 @@
 						if (typeof value !== "string") continue;
 						const keyText = String(key || "");
 						if (directFieldPatterns.some((pattern) => pattern.test(keyText))) {
-							const clean = personalArchitectureCleanExistingSignLabel(value);
+							const clean = normalizeExistingZodiacSignLabel(value);
 							if (clean) return clean;
 						}
 					}
@@ -10171,45 +10081,31 @@
 						if (typeof value !== "string") continue;
 						const keyText = String(key || "");
 						if (!labelFieldPatterns.some((pattern) => pattern.test(keyText))) continue;
-						const clean = personalArchitectureCleanExistingSignLabel(value);
-						if (clean && (/\bin\s+/i.test(value) || clean.toLowerCase() === value.trim().toLowerCase())) {
-							return clean;
-						}
+						const clean = personalArchitectureExtractExistingSignFromLabel(value);
+						if (clean) return clean;
 					}
 				}
 
 				return "";
 			}
-			function personalArchitectureGetNestedSafeExistingSignLabel(source) {
+
+			function personalArchitectureGetNestedSafeExistingSignLabel(source, placementName = "", sourceKey = "") {
 				if (!source || typeof source !== "object") return "";
 				let found = "";
-				const directFieldPatterns = [
-					/^sign$/i,
-					/^sign_?name$/i,
-					/^zodiac(sign)?$/i,
-					/^zodiac_?sign$/i,
-					/^tropical_?sign$/i,
-					/^rasi$/i,
-					/^rāśi$/i,
-				];
-				const labelFieldPatterns = [
-					/^placement_?label$/i,
-					/^display_?label$/i,
-					/^full_?label$/i,
-					/^label$/i,
-					/^title$/i,
-					/^name$/i,
-				];
+				const directFieldPatterns = personalArchitectureSignFieldPatterns();
+				const labelFieldPatterns = personalArchitectureLabelFieldPatterns();
 
 				chartKernelWalk(source, (path, key, value) => {
 					if (found || typeof value !== "string") return;
+					const pathText = `${sourceKey || ""} ${path || ""} ${key || ""}`;
+					if (placementName && !personalArchitectureObjectMatchesPlacement({ value }, placementName, pathText)) return;
 					const keyText = String(key || "");
 					if (directFieldPatterns.some((pattern) => pattern.test(keyText))) {
-						found = personalArchitectureCleanExistingSignLabel(value);
+						found = normalizeExistingZodiacSignLabel(value);
 						return;
 					}
-					if (labelFieldPatterns.some((pattern) => pattern.test(keyText)) && /\bin\s+/i.test(value)) {
-						found = personalArchitectureCleanExistingSignLabel(value);
+					if (labelFieldPatterns.some((pattern) => pattern.test(keyText))) {
+						found = personalArchitectureExtractExistingSignFromLabel(value);
 					}
 				});
 
@@ -10228,9 +10124,9 @@
 			function personalArchitecturePlacementAliases(placementName) {
 				const key = personalArchitectureNormalizePlacementKey(placementName);
 				const aliases = {
-					ascendant: ["ascendant", "asc", "interfacekernel"],
-					sun: ["sun", "corevoltage", "cpu"],
-					moon: ["moon", "emotionalprocessor", "gpu"],
+					ascendant: ["ascendant", "asc", "rising", "interfacekernel"],
+					sun: ["sun", "sol", "corevoltage", "cpu"],
+					moon: ["moon", "luna", "emotionalprocessor", "gpu"],
 					mercury: ["mercury", "signalprocessor"],
 					venus: ["venus", "relationaltone", "harmoniccodec"],
 					mars: ["mars", "actionvector"],
@@ -10284,333 +10180,79 @@
 				return personalArchitectureGetSafeExistingSignLabel(placement);
 			}
 
-			function getExistingPlacementSignFromChartKernel(placementName, component, chartKernel) {
+			function personalArchitectureFindSignInRuntimeContainer(container, placementName, sourceLabel = "") {
+				if (!container || typeof container !== "object") return "";
+
+				if (Array.isArray(container)) {
+					for (const entry of container) {
+						if (!entry || typeof entry !== "object") continue;
+						if (!personalArchitectureObjectMatchesPlacement(entry, placementName, sourceLabel)) continue;
+						const clean = personalArchitectureGetSafeExistingSignLabel(
+							entry,
+							entry.raw,
+							entry.source,
+							entry.data,
+							entry.meta,
+							entry.sourceData
+						);
+						if (clean) return clean;
+						const nestedClean = personalArchitectureGetNestedSafeExistingSignLabel(entry, placementName, sourceLabel);
+						if (nestedClean) return nestedClean;
+					}
+					return "";
+				}
+
+				for (const [key, entry] of Object.entries(container)) {
+					const keyText = `${sourceLabel || ""} ${key || ""}`;
+					if (!personalArchitectureObjectMatchesPlacement(entry && typeof entry === "object" ? entry : { value: entry }, placementName, keyText)) continue;
+					if (typeof entry === "string") {
+						const cleanString = normalizeExistingZodiacSignLabel(entry);
+						if (cleanString) return cleanString;
+						const labelString = personalArchitectureExtractExistingSignFromLabel(entry);
+						if (labelString) return labelString;
+						continue;
+					}
+					const clean = personalArchitectureGetSafeExistingSignLabel(
+						entry,
+						entry?.raw,
+						entry?.source,
+						entry?.data,
+						entry?.meta,
+						entry?.sourceData
+					);
+					if (clean) return clean;
+					const nestedClean = personalArchitectureGetNestedSafeExistingSignLabel(entry, placementName, keyText);
+					if (nestedClean) return nestedClean;
+				}
+
+				return "";
+			}
+
+			function getExistingPlacementSignFromRuntimeData(placementName, item, chartKernel) {
 				const directSources = [
-					component,
-					component?.source,
-					component?.raw,
-					component?.data,
-					component?.meta,
-					component?.sourceData,
-					component?.source?.raw,
-					component?.source?.data,
-					component?.source?.meta,
+					item,
+					item?.component,
+					item?.role,
+					item?.source,
+					item?.raw,
+					item?.data,
+					item?.meta,
+					item?.sourceData,
+					item?.source?.raw,
+					item?.source?.data,
+					item?.source?.meta,
+					item?.source?.sourceData,
 				];
+
 				const directSign = personalArchitectureGetSafeExistingSignLabel(...directSources);
 				if (directSign) return directSign;
 
 				for (const source of directSources) {
-					const nestedSign = personalArchitectureGetNestedSafeExistingSignLabel(source);
+					const nestedSign = personalArchitectureGetNestedSafeExistingSignLabel(source, placementName);
 					if (nestedSign) return nestedSign;
 				}
 
-				const collections = [
-					chartKernel?.placementRoles,
-					chartKernel?.placements,
-					chartKernel?.planets,
-					chartKernel?.bodies,
-					chartKernel?.nodes,
-					chartKernel?.signs,
-					chartKernel?.signPlacements,
-					chartKernel?.natal,
-					chartKernel?.natal?.placements,
-					chartKernel?.natal?.planets,
-					chartKernel?.natal?.bodies,
-					chartKernel?.natalChart,
-					chartKernel?.natalChart?.placements,
-					chartKernel?.natalChart?.planets,
-					chartKernel?.natalChart?.bodies,
-					chartKernel?.chart,
-					chartKernel?.chart?.placements,
-					chartKernel?.chart?.planets,
-					chartKernel?.chart?.bodies,
-					chartKernel?.data,
-					chartKernel?.data?.placements,
-					chartKernel?.data?.planets,
-					chartKernel?.data?.bodies,
-					chartKernel?.raw,
-					chartKernel?.raw?.placements,
-					chartKernel?.raw?.planets,
-					chartKernel?.raw?.bodies,
-				];
-
-				for (const collection of collections) {
-					if (!collection || typeof collection !== "object") continue;
-
-					if (Array.isArray(collection)) {
-						for (const entry of collection) {
-							if (!entry || typeof entry !== "object") continue;
-							if (!personalArchitectureObjectMatchesPlacement(entry, placementName)) continue;
-							const clean = personalArchitectureGetSafeExistingSignLabel(
-								entry,
-								entry.raw,
-								entry.source,
-								entry.data,
-								entry.meta,
-								entry.sourceData
-							);
-							if (clean) return clean;
-							const nestedClean = personalArchitectureGetNestedSafeExistingSignLabel(entry);
-							if (nestedClean) return nestedClean;
-						}
-						continue;
-					}
-
-					for (const [key, entry] of Object.entries(collection)) {
-						if (!personalArchitectureObjectMatchesPlacement(entry, placementName, key)) continue;
-						if (typeof entry === "string") {
-							const cleanString = normalizeExistingZodiacSignLabel(entry);
-							if (cleanString) return cleanString;
-							continue;
-						}
-						const clean = personalArchitectureGetSafeExistingSignLabel(
-							entry,
-							entry?.raw,
-							entry?.source,
-							entry?.data,
-							entry?.meta,
-							entry?.sourceData
-						);
-						if (clean) return clean;
-						const nestedClean = personalArchitectureGetNestedSafeExistingSignLabel(entry);
-						if (nestedClean) return nestedClean;
-					}
-				}
-
-				let found = "";
-				chartKernelWalk(chartKernel, (path, key, value) => {
-					if (found) return;
-					if (typeof value === "string") {
-						if (!personalArchitectureObjectMatchesPlacement({ value }, placementName, `${path || ""} ${key || ""}`)) return;
-						found = normalizeExistingZodiacSignLabel(value);
-						return;
-					}
-					if (!value || typeof value !== "object" || Array.isArray(value)) return;
-					if (!personalArchitectureObjectMatchesPlacement(value, placementName, `${path || ""} ${key || ""}`)) return;
-					found =
-						personalArchitectureGetSafeExistingSignLabel(
-							value,
-							value.raw,
-							value.source,
-							value.data,
-							value.meta,
-							value.sourceData
-						) || personalArchitectureGetNestedSafeExistingSignLabel(value);
-				});
-
-				return found || "";
-			}
-
-			function personalArchitectureProofDisplayValue(value) {
-				if (!chartKernelHasValue(value)) return "none";
-				if (typeof value === "number") return Number.isFinite(value) ? String(value) : "none";
-				if (typeof value === "string") return value.trim() || "none";
-				if (Array.isArray(value)) return `[array:${value.length}]`;
-				if (typeof value === "object") return `[object:${Object.keys(value).length}]`;
-				return String(value);
-			}
-
-			function personalArchitectureProofCleanPath(path) {
-				const clean = String(path || "").replace(/^\.+|\.+$/g, "").trim();
-				return clean || "unknown";
-			}
-
-			function personalArchitectureTraceSignInSource(source, basePath) {
-				const directFieldPatterns = [
-					/^sign$/i,
-					/^sign_?name$/i,
-					/^zodiac(sign)?$/i,
-					/^zodiac_?sign$/i,
-					/^tropical_?sign$/i,
-					/^rasi$/i,
-					/^rāśi$/i,
-				];
-				const labelFieldPatterns = [
-					/^placement_?label$/i,
-					/^display_?label$/i,
-					/^full_?label$/i,
-					/^label$/i,
-					/^title$/i,
-					/^name$/i,
-				];
-
-				if (typeof source === "string") {
-					const cleanString = personalArchitectureCleanExistingSignLabel(source);
-					if (cleanString) {
-						return {
-							path: personalArchitectureProofCleanPath(basePath),
-							value: cleanString,
-							rawValue: source,
-						};
-					}
-					return null;
-				}
-				if (!source || typeof source !== "object") return null;
-
-				for (const [key, value] of Object.entries(source)) {
-					if (typeof value !== "string") continue;
-					if (!directFieldPatterns.some((pattern) => pattern.test(String(key || "")))) continue;
-					const clean = personalArchitectureCleanExistingSignLabel(value);
-					if (clean) {
-						return {
-							path: personalArchitectureProofCleanPath(`${basePath}.${key}`),
-							value: clean,
-							rawValue: value,
-						};
-					}
-				}
-
-				for (const [key, value] of Object.entries(source)) {
-					if (typeof value !== "string") continue;
-					if (!labelFieldPatterns.some((pattern) => pattern.test(String(key || "")))) continue;
-					const clean = personalArchitectureCleanExistingSignLabel(value);
-					if (clean && (/\bin\s+/i.test(value) || clean.toLowerCase() === value.trim().toLowerCase())) {
-						return {
-							path: personalArchitectureProofCleanPath(`${basePath}.${key}`),
-							value: clean,
-							rawValue: value,
-						};
-					}
-				}
-
-				return null;
-			}
-
-			function personalArchitectureTraceNestedSignInSource(source, basePath) {
-				if (!source || typeof source !== "object") return null;
-				let found = null;
-				const directFieldPatterns = [
-					/^sign$/i,
-					/^sign_?name$/i,
-					/^zodiac(sign)?$/i,
-					/^zodiac_?sign$/i,
-					/^tropical_?sign$/i,
-					/^rasi$/i,
-					/^rāśi$/i,
-				];
-				const labelFieldPatterns = [
-					/^placement_?label$/i,
-					/^display_?label$/i,
-					/^full_?label$/i,
-					/^label$/i,
-					/^title$/i,
-					/^name$/i,
-				];
-
-				chartKernelWalk(source, (path, key, value) => {
-					if (found || typeof value !== "string") return;
-					const keyText = String(key || "");
-					const fullPath = personalArchitectureProofCleanPath(`${basePath}${path ? `.${path}` : ""}`);
-					if (directFieldPatterns.some((pattern) => pattern.test(keyText))) {
-						const clean = personalArchitectureCleanExistingSignLabel(value);
-						if (clean) {
-							found = { path: fullPath, value: clean, rawValue: value };
-						}
-						return;
-					}
-					if (labelFieldPatterns.some((pattern) => pattern.test(keyText)) && /\bin\s+/i.test(value)) {
-						const clean = personalArchitectureCleanExistingSignLabel(value);
-						if (clean) {
-							found = { path: fullPath, value: clean, rawValue: value };
-						}
-					}
-				});
-
-				return found;
-			}
-
-			function personalArchitectureAddProofCandidate(candidates, candidate, winnerPath = "") {
-				if (!candidate || !candidate.value) return;
-				const path = personalArchitectureProofCleanPath(candidate.path);
-				if (candidates.some((existing) => existing.path === path && existing.value === candidate.value)) return;
-				candidates.push({
-					path,
-					value: candidate.value,
-					rawValue: candidate.rawValue,
-					isWinning: winnerPath && path === winnerPath,
-				});
-			}
-
-			function personalArchitectureTraceDegreeSource(item, data) {
-				const label = String(item?.label || "").toLowerCase();
-				const candidates = [];
-				if (label.includes("asc")) {
-					candidates.push(["data.angles.asc", data?.angles?.asc]);
-					candidates.push(["data.chartKernel.geometry.asc", data?.chartKernel?.geometry?.asc]);
-					candidates.push(["item.source.degree", item?.source?.degree]);
-					candidates.push(["item.source.longitudeDeg", item?.source?.longitudeDeg]);
-					candidates.push(["item.source.longitude", item?.source?.longitude]);
-				} else if (label.includes("sun")) {
-					candidates.push(["data._longitudesDeg.sun", data?._longitudesDeg?.sun]);
-					candidates.push(["data.chartKernel.tropicalLongitudesDeg.sun", data?.chartKernel?.tropicalLongitudesDeg?.sun]);
-					candidates.push(["item.source.degree", item?.source?.degree]);
-					candidates.push(["item.source.longitudeDeg", item?.source?.longitudeDeg]);
-					candidates.push(["item.source.longitude", item?.source?.longitude]);
-				} else if (label.includes("moon")) {
-					candidates.push(["data._longitudesDeg.moon", data?._longitudesDeg?.moon]);
-					candidates.push(["data.chartKernel.tropicalLongitudesDeg.moon", data?.chartKernel?.tropicalLongitudesDeg?.moon]);
-					candidates.push(["item.source.degree", item?.source?.degree]);
-					candidates.push(["item.source.longitudeDeg", item?.source?.longitudeDeg]);
-					candidates.push(["item.source.longitude", item?.source?.longitude]);
-				} else {
-					candidates.push(["item.source.longitudeDeg", item?.source?.longitudeDeg]);
-					candidates.push(["item.source.longitude", item?.source?.longitude]);
-					candidates.push(["item.source.degree", item?.source?.degree]);
-					candidates.push(["item.source.degrees", item?.source?.degrees]);
-				}
-
-				for (const [path, value] of candidates) {
-					if (chartKernelHasValue(value)) {
-						return {
-							path,
-							value,
-						};
-					}
-				}
-				return { path: "unknown", value: null };
-			}
-
-			function personalArchitectureBuildSignSourceProof(item) {
-				const placementName = String(item?.label || "").trim();
-				const systemLabel = personalArchitecturePublicRoleLabel(item?.role || "");
-				const chartKernel = item?.chartKernel || item?.data?.chartKernel || {};
-				const data = item?.data || {};
-				const sign = getExistingPlacementSignFromChartKernel(placementName, item, chartKernel);
-				const title = buildVisiblePersonalArchitectureTitle(placementName, systemLabel, item, chartKernel);
-				const candidates = [];
-
-				const directSources = [
-					["item", item],
-					["item.source", item?.source],
-					["item.raw", item?.raw],
-					["item.data", item?.data],
-					["item.meta", item?.meta],
-					["item.sourceData", item?.sourceData],
-					["item.source.raw", item?.source?.raw],
-					["item.source.data", item?.source?.data],
-					["item.source.meta", item?.source?.meta],
-				];
-
-				let winner = null;
-				for (const [path, source] of directSources) {
-					const candidate = personalArchitectureTraceSignInSource(source, path);
-					if (candidate) {
-						personalArchitectureAddProofCandidate(candidates, candidate);
-						if (!winner) winner = candidate;
-					}
-				}
-
-				if (!winner) {
-					for (const [path, source] of directSources) {
-						const candidate = personalArchitectureTraceNestedSignInSource(source, path);
-						if (candidate) {
-							personalArchitectureAddProofCandidate(candidates, candidate);
-							if (!winner) winner = candidate;
-						}
-					}
-				}
-
-				const collections = [
+				const runtimeCollections = [
 					["chartKernel.placementRoles", chartKernel?.placementRoles],
 					["chartKernel.placements", chartKernel?.placements],
 					["chartKernel.planets", chartKernel?.planets],
@@ -10640,163 +10282,99 @@
 					["chartKernel.raw.bodies", chartKernel?.raw?.bodies],
 				];
 
-				for (const [collectionPath, collection] of collections) {
-					if (!collection || typeof collection !== "object") continue;
-
-					if (Array.isArray(collection)) {
-						collection.forEach((entry, index) => {
-							if (!entry || typeof entry !== "object") return;
-							if (!personalArchitectureObjectMatchesPlacement(entry, placementName)) return;
-							const entryPath = `${collectionPath}[${index}]`;
-							const direct = personalArchitectureTraceSignInSource(entry, entryPath) ||
-								personalArchitectureTraceSignInSource(entry.raw, `${entryPath}.raw`) ||
-								personalArchitectureTraceSignInSource(entry.source, `${entryPath}.source`) ||
-								personalArchitectureTraceSignInSource(entry.data, `${entryPath}.data`) ||
-								personalArchitectureTraceSignInSource(entry.meta, `${entryPath}.meta`) ||
-								personalArchitectureTraceSignInSource(entry.sourceData, `${entryPath}.sourceData`);
-							if (direct) {
-								personalArchitectureAddProofCandidate(candidates, direct);
-								if (!winner) winner = direct;
-							}
-							const nested = personalArchitectureTraceNestedSignInSource(entry, entryPath);
-							if (nested) {
-								personalArchitectureAddProofCandidate(candidates, nested);
-								if (!winner) winner = nested;
-							}
-						});
-						continue;
-					}
-
-					Object.entries(collection).forEach(([key, entry]) => {
-						if (!personalArchitectureObjectMatchesPlacement(entry, placementName, key)) return;
-						const entryPath = `${collectionPath}.${key}`;
-						if (typeof entry === "string") {
-							const cleanString = normalizeExistingZodiacSignLabel(entry);
-							if (cleanString) {
-								const direct = { path: entryPath, value: cleanString, rawValue: entry };
-								personalArchitectureAddProofCandidate(candidates, direct);
-								if (!winner) winner = direct;
-							}
-							return;
-						}
-						const direct = personalArchitectureTraceSignInSource(entry, entryPath) ||
-							personalArchitectureTraceSignInSource(entry?.raw, `${entryPath}.raw`) ||
-							personalArchitectureTraceSignInSource(entry?.source, `${entryPath}.source`) ||
-							personalArchitectureTraceSignInSource(entry?.data, `${entryPath}.data`) ||
-							personalArchitectureTraceSignInSource(entry?.meta, `${entryPath}.meta`) ||
-							personalArchitectureTraceSignInSource(entry?.sourceData, `${entryPath}.sourceData`);
-						if (direct) {
-							personalArchitectureAddProofCandidate(candidates, direct);
-							if (!winner) winner = direct;
-						}
-						const nested = personalArchitectureTraceNestedSignInSource(entry, entryPath);
-						if (nested) {
-							personalArchitectureAddProofCandidate(candidates, nested);
-							if (!winner) winner = nested;
-						}
-					});
+				for (const [sourceLabel, collection] of runtimeCollections) {
+					const clean = personalArchitectureFindSignInRuntimeContainer(collection, placementName, sourceLabel);
+					if (clean) return clean;
 				}
 
-				let walkFallback = null;
+				let found = "";
 				chartKernelWalk(chartKernel, (path, key, value) => {
-					if (walkFallback) return;
+					if (found) return;
+					const pathText = `${path || ""} ${key || ""}`;
 					if (typeof value === "string") {
-						if (!personalArchitectureObjectMatchesPlacement({ value }, placementName, `${path || ""} ${key || ""}`)) return;
-						const clean = normalizeExistingZodiacSignLabel(value);
-						if (clean) {
-							walkFallback = {
-								path: personalArchitectureProofCleanPath(`chartKernel.${path}`),
-								value: clean,
-								rawValue: value,
-							};
-						}
+						if (!personalArchitectureObjectMatchesPlacement({ value }, placementName, pathText)) return;
+						found = normalizeExistingZodiacSignLabel(value) || personalArchitectureExtractExistingSignFromLabel(value);
 						return;
 					}
 					if (!value || typeof value !== "object" || Array.isArray(value)) return;
-					if (!personalArchitectureObjectMatchesPlacement(value, placementName, `${path || ""} ${key || ""}`)) return;
-					walkFallback =
-						personalArchitectureTraceSignInSource(value, `chartKernel.${path}`) ||
-						personalArchitectureTraceSignInSource(value.raw, `chartKernel.${path}.raw`) ||
-						personalArchitectureTraceSignInSource(value.source, `chartKernel.${path}.source`) ||
-						personalArchitectureTraceSignInSource(value.data, `chartKernel.${path}.data`) ||
-						personalArchitectureTraceSignInSource(value.meta, `chartKernel.${path}.meta`) ||
-						personalArchitectureTraceSignInSource(value.sourceData, `chartKernel.${path}.sourceData`) ||
-						personalArchitectureTraceNestedSignInSource(value, `chartKernel.${path}`);
+					if (!personalArchitectureObjectMatchesPlacement(value, placementName, pathText)) return;
+					found =
+						personalArchitectureGetSafeExistingSignLabel(
+							value,
+							value.raw,
+							value.source,
+							value.data,
+							value.meta,
+							value.sourceData
+						) || personalArchitectureGetNestedSafeExistingSignLabel(value, placementName, pathText);
 				});
 
-				if (walkFallback) {
-					personalArchitectureAddProofCandidate(candidates, walkFallback);
-					if (!winner) winner = walkFallback;
-				}
-
-				const degree = personalArchitectureTraceDegreeSource(item, data);
-				const winnerPath = winner?.path || "unknown";
-				candidates.forEach((candidate) => {
-					candidate.isWinning = winnerPath !== "unknown" && candidate.path === winnerPath;
-				});
-
-				return {
-					placement: placementName || "unknown",
-					displayTitle: title || "none",
-					renderedSign: sign || "none",
-					signSourcePath: winnerPath,
-					rawSignValue: personalArchitectureProofDisplayValue(winner?.rawValue ?? winner?.value),
-					degree: personalArchitectureProofDisplayValue(degree.value),
-					degreeSourcePath: degree.path || "unknown",
-					roleLabel: systemLabel || "none",
-					winningSource: winner ? `${winner.path} → ${winner.value}` : "unknown",
-					candidates,
-				};
+				return found || "";
 			}
 
-			function renderPersonalArchitectureSignSourceProof(proofs) {
-				const listEl = document.getElementById("personalArchitectureSignSourceProofList");
-				if (!listEl) return;
-				const proofRows = Array.isArray(proofs) ? proofs : [];
-				if (!proofRows.length) {
-					listEl.innerHTML = `<div class="personalArchitectureSignProofItem"><div class="personalArchitectureSignProofRow"><span>Status</span><strong>Waiting for calculation</strong></div></div>`;
-					return;
-				}
-
-				listEl.innerHTML = proofRows
-					.map((proof) => {
-						const candidates = Array.isArray(proof.candidates) && proof.candidates.length
-							? proof.candidates
-							: [{ path: "none", value: "none", rawValue: "none", isWinning: false }];
-						const candidateHtml = candidates
-							.map((candidate) => {
-								const label = candidate.isWinning
-									? `${candidate.path} (winning source)`
-									: candidate.path;
-								return `<div class="personalArchitectureSignProofCandidate"><span>${chartKernelEscapeHtml(label)}</span><strong>${chartKernelEscapeHtml(personalArchitectureProofDisplayValue(candidate.value))}</strong></div>`;
-							})
-							.join("");
-						return `<div class="personalArchitectureSignProofItem">
-<div class="personalArchitectureSignProofRow"><span>Placement</span><strong>${chartKernelEscapeHtml(proof.placement)}</strong></div>
-<div class="personalArchitectureSignProofRow"><span>Display title</span><strong>${chartKernelEscapeHtml(proof.displayTitle)}</strong></div>
-<div class="personalArchitectureSignProofRow"><span>Rendered sign</span><strong>${chartKernelEscapeHtml(proof.renderedSign)}</strong></div>
-<div class="personalArchitectureSignProofRow"><span>Sign source path</span><strong>${chartKernelEscapeHtml(proof.signSourcePath)}</strong></div>
-<div class="personalArchitectureSignProofRow"><span>Raw sign value</span><strong>${chartKernelEscapeHtml(proof.rawSignValue)}</strong></div>
-<div class="personalArchitectureSignProofRow"><span>Degree</span><strong>${chartKernelEscapeHtml(proof.degree)}</strong></div>
-<div class="personalArchitectureSignProofRow"><span>Degree source path</span><strong>${chartKernelEscapeHtml(proof.degreeSourcePath)}</strong></div>
-<div class="personalArchitectureSignProofRow"><span>Role label</span><strong>${chartKernelEscapeHtml(proof.roleLabel)}</strong></div>
-<div class="personalArchitectureSignProofRow"><span>Winning source</span><strong>${chartKernelEscapeHtml(proof.winningSource)}</strong></div>
-<details class="personalArchitectureSignProofCandidates">
-<summary>Candidate sources</summary>
-<div class="personalArchitectureSignProofCandidateList">${candidateHtml}</div>
-</details>
-</div>`;
-					})
-					.join("");
+			function getExistingPlacementSignFromChartKernel(placementName, component, chartKernel) {
+				return getExistingPlacementSignFromRuntimeData(placementName, component, chartKernel);
 			}
 
-			function buildVisiblePersonalArchitectureTitle(placementName, systemLabel, component, chartKernel) {
+			function degreeToZodiacSignDisplay(degree) {
+				const value = typeof degree === "number" ? degree : Number.parseFloat(String(degree ?? "").replace(/°/g, ""));
+				if (!Number.isFinite(value)) return "";
+				const signs = [
+					"Aries",
+					"Taurus",
+					"Gemini",
+					"Cancer",
+					"Leo",
+					"Virgo",
+					"Libra",
+					"Scorpio",
+					"Sagittarius",
+					"Capricorn",
+					"Aquarius",
+					"Pisces",
+				];
+				const normalized = ((value % 360) + 360) % 360;
+				return signs[Math.floor(normalized / 30)] || "";
+			}
+
+			function personalArchitectureGetDisplayedDegree(item) {
+				const directCandidates = [
+					item?.displayedDegree,
+					item?.degree,
+					item?.longitude,
+					item?.longitudeDeg,
+					item?.longitudeDegrees,
+					item?.source?.displayedDegree,
+					item?.source?.degree,
+					item?.source?.longitude,
+					item?.source?.longitudeDeg,
+					item?.source?.longitudeDegrees,
+				];
+				for (const candidate of directCandidates) {
+					const numeric = typeof candidate === "number" ? candidate : Number.parseFloat(String(candidate ?? "").replace(/°/g, ""));
+					if (Number.isFinite(numeric)) return numeric;
+				}
+				const metaText = String(item?.meta || "");
+				const match = metaText.match(/(?:^|\n)\s*Degree:\s*(-?\d+(?:\.\d+)?)\s*°?/i);
+				if (!match) return null;
+				const parsed = Number.parseFloat(match[1]);
+				return Number.isFinite(parsed) ? parsed : null;
+			}
+
+			function personalArchitectureGetDisplayedDegreeDerivedSign(item) {
+				const degree = personalArchitectureGetDisplayedDegree(item);
+				return degreeToZodiacSignDisplay(degree);
+			}
+
+			function buildVisiblePersonalArchitectureTitle(placementName, systemLabel, item, chartKernel) {
 				const placement = String(placementName || "").trim();
 				const role = personalArchitecturePublicRoleLabel(systemLabel || "");
-				const sign = getExistingPlacementSignFromChartKernel(placement, component, chartKernel);
-				const placementTitle = sign ? `${placement} in ${sign}` : placement;
-				if (placementTitle && role) return `${placementTitle} — ${role}`;
-				return role || placementTitle || "Stable receiving component";
+				const degreeDerivedSign = personalArchitectureGetDisplayedDegreeDerivedSign(item);
+				const fallbackSign = getExistingPlacementSignFromRuntimeData(placement, item, chartKernel);
+				const sign = degreeDerivedSign || fallbackSign;
+				if (placement && role) return sign ? `${placement} in ${sign} — ${role}` : `${placement} — ${role}`;
+				if (placement) return sign ? `${placement} in ${sign}` : placement;
+				return role || "Stable receiving component";
 			}
 
 			function personalArchitectureBuildPlacementTitle(item) {
@@ -11355,6 +10933,36 @@
 				return lines;
 			}
 
+			function renderPersonalArchitectureSignSourceProof(rows = []) {
+				const proofEl = document.getElementById("personalArchitectureSignSourceProof");
+				if (!proofEl) return;
+				const renderedRows = rows
+					.map((item) => {
+						const placement = String(item?.label || "Placement").trim();
+						const displayedDegree = personalArchitectureGetDisplayedDegree(item);
+						const displayedDegreeText = Number.isFinite(displayedDegree) ? chartKernelFormatNumber(displayedDegree, 2) : "";
+						const displayedDegreeDerivedSign = degreeToZodiacSignDisplay(displayedDegree);
+						const itemSign = normalizeExistingZodiacSignLabel(item?.sign) || personalArchitectureExtractExistingSignFromLabel(item?.sign);
+						const sourceSign = personalArchitectureGetSafeExistingSignLabel(item?.source, item?.source?.raw, item?.source?.data, item?.source?.meta);
+						const fallbackSign = getExistingPlacementSignFromRuntimeData(placement, item, item?.chartKernel || item?.data?.chartKernel);
+						const winningSource = displayedDegreeDerivedSign ? "displayedDegreeDerivedSign" : fallbackSign ? "existingSignFallback" : "none";
+						const winningValue = displayedDegreeDerivedSign || fallbackSign || "No safe sign";
+						const candidateLines = [
+							`item.sign: ${itemSign || "—"}`,
+							`source.sign: ${sourceSign || "—"}`,
+							`fallback existing sign: ${fallbackSign || "—"}`,
+							`displayedDegree: ${displayedDegreeText ? `${displayedDegreeText}°` : "—"}`,
+							`displayedDegreeDerivedSign: ${displayedDegreeDerivedSign || "—"}`,
+							`winning source: ${winningSource}`,
+						];
+						return `<div class="liveDebugMiniItem"><span>${chartKernelEscapeHtml(placement)}</span><strong>${chartKernelEscapeHtml(
+							`Winning source: ${winningSource} → ${winningValue} | ${candidateLines.join(" | ")}`
+						)}</strong></div>`;
+					})
+					.join("");
+				proofEl.innerHTML = renderedRows || '<div class="liveDebugMiniItem"><span>Status</span><strong>No Personal Architecture rows rendered</strong></div>';
+			}
+
 			function renderPersonalArchitectureBetaItem(item) {
 				const metaHtml = String(item.meta || "")
 					.split("\n")
@@ -11374,33 +10982,48 @@
 				const placementName = String(item?.label || "").trim();
 				const systemLabel = personalArchitecturePublicRoleLabel(item?.role || "");
 				const chartKernel = item?.chartKernel || item?.data?.chartKernel || {};
-				const sign = getExistingPlacementSignFromChartKernel(placementName, item, chartKernel);
-				const title = buildVisiblePersonalArchitectureTitle(placementName, systemLabel, item, chartKernel);
+				const displayedDegreeDerivedSign = personalArchitectureGetDisplayedDegreeDerivedSign(item);
+				const fallbackSignLookupResult = getExistingPlacementSignFromRuntimeData(placementName, item, chartKernel);
+				const signLookupResult = displayedDegreeDerivedSign || fallbackSignLookupResult;
+				const visibleTitle = buildVisiblePersonalArchitectureTitle(placementName, systemLabel, item, chartKernel);
+				const component = item?.component;
+				const role = item?.role;
+				const source = item?.source;
+				const raw = item?.raw || item?.source?.raw;
+				const data = item?.data || item?.source?.data;
+				const meta = item?.meta || item?.source?.meta;
+				const sourceData = item?.sourceData || item?.source?.sourceData;
 				if (typeof console !== "undefined" && typeof console.debug === "function") {
-					console.debug("PA title trace", {
+					console.debug("PASS 33D PA VISIBLE TITLE RENDER", {
 						placementName,
 						systemLabel,
-						component: item,
-						source: item?.source,
-						raw: item?.raw || item?.source?.raw,
-						data: item?.data || item?.source?.data,
-						meta: item?.meta || item?.source?.meta,
+						visibleTitle,
+						item,
+						component,
+						role,
+						source,
+						raw,
+						data,
+						meta,
+						sourceData,
+						chartKernel,
 						chartKernelKeys: chartKernel && typeof chartKernel === "object" ? Object.keys(chartKernel) : [],
-						sign,
-						title,
+						signLookupResult,
+						displayedDegreeDerivedSign,
+						fallbackSignLookupResult,
 					});
 				}
-				const systemRole = sign && !/node/i.test(String(item.label || ""))
+				const systemRole = signLookupResult && !/node/i.test(String(item.label || ""))
 					? "Stable receiving component"
 					: chartKernelEscapeHtml(item.label || "Stable receiving component");
 				return `<div class="personalArchitectureBetaItem"><div class="personalArchitectureComponentHeader"><div class="personalArchitecturePlacementTitle">${chartKernelEscapeHtml(
-					title
+					visibleTitle
 				)}</div><div class="personalArchitectureSystemRole">${systemRole}</div></div><div class="personalArchitectureCardRows"><div class="personalArchitectureCardRow"><span>Meaning</span><strong>${chartKernelEscapeHtml(
 					item.meaning
 				)}</strong></div><div class="personalArchitectureCardRow"><span>Use</span><strong>${chartKernelEscapeHtml(
 					item.use || "Notice where this part receives the field, then choose one clean response."
 				)}</strong></div><div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>${chartKernelEscapeHtml(
-					item.explore || "Open this component’s existing deeper read"
+					item.explore || "Open deeper read"
 				)}</strong></div></div>${todayHtml}${todayMeaningHtml}<div class="personalArchitectureMeta">${
 					metaHtml || chartKernelEscapeHtml(item.meta || "Awaiting placement texture")
 				}</div></div>`;
@@ -11459,6 +11082,7 @@
 						role: personalArchitecturePickRole(data, [/^asc(endant)?$/], "Interface Kernel"),
 						source: ascPlacement,
 						sign: personalArchitectureGetPlacementSign(ascPlacement),
+						displayedDegree: data?.angles?.asc ?? data?.chartKernel?.geometry?.asc,
 						meaning: "This is where the day first meets your attention, body, or environment.",
 						use: "Notice what feels charged, then slow the first response.",
 						today: dailyComponentLines.interface,
@@ -11475,6 +11099,7 @@
 						role: personalArchitecturePickRole(data, [/^sun$/], "Core Voltage"),
 						source: sunPlacement,
 						sign: personalArchitectureGetPlacementSign(sunPlacement),
+						displayedDegree: data?._longitudesDeg?.sun ?? data?.chartKernel?.tropicalLongitudesDeg?.sun,
 						meaning: "This is where your system looks for energy, clarity, and a clean center.",
 						use: "Choose one clean priority before adding energy.",
 						today: dailyComponentLines.core,
@@ -11491,6 +11116,7 @@
 						role: personalArchitecturePickRole(data, [/^moon$/], "Emotional Processor"),
 						source: moonPlacement,
 						sign: personalArchitectureGetPlacementSign(moonPlacement),
+						displayedDegree: data?._longitudesDeg?.moon ?? data?.chartKernel?.tropicalLongitudesDeg?.moon,
 						meaning: "This is where the field lands through body-state, comfort, mood, and rhythm.",
 						use: "Ground first, then clarify what your system needs.",
 						today: dailyComponentLines.emotional,
@@ -11507,6 +11133,7 @@
 						role: personalArchitecturePickRole(data, [/rahu/, /north.?node/], "Growth Vector"),
 						source: rahu,
 						sign: personalArchitectureGetPlacementSign(rahu),
+						displayedDegree: chartKernelPickFirstValue(rahu, [/^longitude(deg|degree|degrees)?$/, /^longitude_?deg(rees)?$/, /^lon(gitude)?_?deg(rees)?$/, /^deg(rees)?$/]),
 						meaning: "This points toward the edge your system is learning to move into.",
 						use: "Take one small step toward the unfamiliar without forcing the whole path.",
 						today: dailyComponentLines.growth,
@@ -11518,6 +11145,7 @@
 						role: personalArchitecturePickRole(data, [/ketu/, /south.?node/], "Release Vector"),
 						source: ketu,
 						sign: personalArchitectureGetPlacementSign(ketu),
+						displayedDegree: chartKernelPickFirstValue(ketu, [/^longitude(deg|degree|degrees)?$/, /^longitude_?deg(rees)?$/, /^lon(gitude)?_?deg(rees)?$/, /^deg(rees)?$/]),
 						meaning: "This shows the pattern your system may default to when pressure rises.",
 						use: "Keep the wisdom, but do not retreat into the old loop.",
 						today: dailyComponentLines.release,
@@ -11531,10 +11159,7 @@
 					row.chartKernel = chartKernel;
 				});
 
-				const signSourceProof = rows.map((row) => personalArchitectureBuildSignSourceProof(row));
-				window.lastPersonalArchitectureSignSourceProof = signSourceProof;
-				renderPersonalArchitectureSignSourceProof(signSourceProof);
-
+				renderPersonalArchitectureSignSourceProof(rows);
 				gridEl.innerHTML = rows.map(renderPersonalArchitectureBetaItem).join("");
 			}
 
@@ -19072,6 +18697,24 @@ ${bodyLine}${loadLine}`,
 				const inputResolved = data?.inputResolved || {};
 				const ephemeris = data?.ephemeris || {};
 				const moonstamp = getMoonstamp(data);
+				const chartKernel = data?.chartKernel || {};
+				if (typeof console !== "undefined" && typeof console.debug === "function") {
+					console.debug("PASS 33D CHART KERNEL RUNTIME SHAPE", {
+						chartKernel,
+						chartKernelKeys: chartKernel && typeof chartKernel === "object" ? Object.keys(chartKernel) : [],
+						placementRoles: chartKernel && chartKernel.placementRoles,
+						placements: chartKernel && chartKernel.placements,
+						planets: chartKernel && chartKernel.planets,
+						bodies: chartKernel && chartKernel.bodies,
+						signs: chartKernel && chartKernel.signs,
+						signPlacements: chartKernel && chartKernel.signPlacements,
+						natal: chartKernel && chartKernel.natal,
+						natalChart: chartKernel && chartKernel.natalChart,
+						chart: chartKernel && chartKernel.chart,
+						data: chartKernel && chartKernel.data,
+						raw: chartKernel && chartKernel.raw,
+					});
+				}
 
 				const capacity = safeNum(state.capacity);
 				const strain = safeNum(state.strain);
