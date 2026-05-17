@@ -36,6 +36,7 @@
 <!-- Pass 3A update: added Chart Kernel Data Inspection inside Engine Details only. Existing /api/chart_inputs response is inspected defensively for future chart-kernel support; no API payload, backend, engine, scoring, routing, Moonstamp, dashboard, saved profiles, share export, or public result behavior changed. -->
 <!-- Pass 3B update: refined Chart Kernel Data Inspection wording for hybrid support only. Core field mechanics remain tropical; sidereal Lahiri is framed only as lunar/node micro-texture for inspection. No API payload, backend, engine, scoring, routing, Moonstamp, dashboard, saved profiles, share export, diagnostics behavior, or public result behavior changed. -->
 <!-- Pass 3D-B update: cleaned Chart Kernel Data Inspection labels/detection so placeholder support is separated from real calculated astrology data. Front-end diagnostics wording only; no backend/API, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, or calibration behavior changed. -->
+<!-- Pass 4B update: added compact calculated Rahu/Ketu node vector display inside Chart Kernel Data Inspection only. Front-end diagnostics display only; no backend/API, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, or public result behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -8345,6 +8346,12 @@
 </div>
 </div>
 </div>
+<div id="chartKernelNodeVectorSection" style="display: none;">
+<div class="liveDebugLabel">
+											Calculated Node Vectors
+										</div>
+<div class="chartKernelFieldGrid" id="chartKernelNodeVectorGrid"></div>
+</div>
 <div>
 <div class="liveDebugLabel">
 											Raw Debug Preview
@@ -9112,6 +9119,104 @@
 				)}</strong></div>`;
 			}
 
+			function renderChartKernelNodeVectorRow(label, value) {
+				return `<div class="chartKernelFieldRow"><span>${chartKernelEscapeHtml(
+					label
+				)}</span><strong>${chartKernelEscapeHtml(value)}</strong></div>`;
+			}
+
+			function chartKernelPickFirstValue(source, keyPatterns = []) {
+				if (!source || typeof source !== "object") return null;
+				const entries = Object.entries(source);
+				for (const [key, value] of entries) {
+					const keyText = String(key || "").toLowerCase();
+					if (keyPatterns.some((pattern) => pattern.test(keyText)) && chartKernelHasValue(value)) {
+						return value;
+					}
+				}
+				return null;
+			}
+
+			function chartKernelFormatNumber(value, digits) {
+				const numeric = typeof value === "number" ? value : parseFloat(value);
+				return Number.isFinite(numeric) ? numeric.toFixed(digits) : null;
+			}
+
+			function chartKernelFindNodeObject(data, nodeKey) {
+				const chartKernel = data?.chartKernel;
+				const directCandidates = [
+					chartKernel?.nodes?.[nodeKey],
+					data?.nodes?.[nodeKey],
+					chartKernel?.[nodeKey],
+					data?.[nodeKey],
+				];
+				const directMatch = directCandidates.find(
+					(candidate) => candidate && typeof candidate === "object" && !Array.isArray(candidate)
+				);
+				if (directMatch) return directMatch;
+
+				const nodePattern =
+					nodeKey === "rahu"
+						? /(rahu|north.?node)/i
+						: /(ketu|south.?node)/i;
+				let found = null;
+				chartKernelWalk(data, (path, key, value) => {
+					if (found || !value || typeof value !== "object" || Array.isArray(value)) return;
+					const pathText = `${path || ""} ${key || ""}`;
+					if (nodePattern.test(pathText)) found = value;
+				});
+				return found;
+			}
+
+			function chartKernelBuildNodeVectorValue(node, fallbackLabel) {
+				if (!node || typeof node !== "object") return "";
+				const parts = [];
+				const longitudeValue = chartKernelPickFirstValue(node, [
+					/^longitude(deg|degree|degrees)?$/,
+					/^longitude_?deg(rees)?$/,
+					/^lon(gitude)?_?deg(rees)?$/,
+					/^deg(rees)?$/,
+				]);
+				const normalizedValue = chartKernelPickFirstValue(node, [
+					/^normalized$/,
+					/^normalized(value)?$/,
+					/^norm$/,
+				]);
+				const labelValue = chartKernelPickFirstValue(node, [
+					/^role(label)?$/,
+					/^vector(label)?$/,
+					/^label$/,
+					/^name$/,
+				]);
+				const longitude = chartKernelFormatNumber(longitudeValue, 2);
+				const normalized = chartKernelFormatNumber(normalizedValue, 4);
+				if (longitude) parts.push(`${longitude}°`);
+				if (normalized) parts.push(`normalized ${normalized}`);
+				if (chartKernelHasValue(labelValue)) parts.push(String(labelValue));
+				else if (fallbackLabel) parts.push(fallbackLabel);
+				return parts.join(" · ");
+			}
+
+			function chartKernelRenderNodeVectors(data, hasCalculatedNodes) {
+				const sectionEl = document.getElementById("chartKernelNodeVectorSection");
+				const gridEl = document.getElementById("chartKernelNodeVectorGrid");
+				if (!sectionEl || !gridEl) return;
+				const rahu = chartKernelFindNodeObject(data, "rahu");
+				const ketu = chartKernelFindNodeObject(data, "ketu");
+				const rahuValue = chartKernelBuildNodeVectorValue(rahu, "Growth Vector");
+				const ketuValue = chartKernelBuildNodeVectorValue(ketu, "Release Vector");
+				const rows = [];
+				if (rahuValue) rows.push(renderChartKernelNodeVectorRow("Rahu / North Node", rahuValue));
+				if (ketuValue) rows.push(renderChartKernelNodeVectorRow("Ketu / South Node", ketuValue));
+				if (!hasCalculatedNodes || !rows.length) {
+					sectionEl.style.display = "none";
+					gridEl.innerHTML = "";
+					return;
+				}
+				gridEl.innerHTML = rows.join("");
+				sectionEl.style.display = "block";
+			}
+
 			function chartKernelWalk(value, visitor, path = "", depth = 0, seen = new WeakSet()) {
 				if (!value || typeof value !== "object" || depth > 6) return;
 				if (seen.has(value)) return;
@@ -9416,6 +9521,8 @@
 						)
 					)
 					.join("");
+
+				chartKernelRenderNodeVectors(data, rahuKetuCalculatedNodeDataReturned);
 
 				const preview = buildChartKernelRawPreview(data);
 				if (!chartKernelHasValue(preview)) {
