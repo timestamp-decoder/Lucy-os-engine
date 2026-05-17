@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 
+<!-- Pass 35B update: fixed Personal Architecture Beta Explore / Deeper Read toggle row mobile layout only. The Explore row now uses a full-width tappable layout so “Open Deeper Read” does not squeeze into one-letter-per-line wrapping. No backend/API, payload, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share behavior, bottom nav, Landing flow, Personal Architecture title/sign/degree logic, Chart Kernel extraction, Live Field Modifier proof panel, PASS 35 Deeper Read copy generation, or core public read behavior changed. -->
 <!-- Pass 35 update: added Personal Architecture Beta card-local Deeper Read expanders inside the You section only. The Explore row now opens concise display-only guidance per placement using existing card/render context. No backend/API, payload, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share behavior, bottom nav, Landing flow, Personal Architecture title/sign/degree logic, Chart Kernel extraction, Live Field Modifier proof panel, or core public read behavior changed. -->
 <!-- Pass 34E update: hardened the diagnostics-only Live Mercury Source Proof panel so deployed builds can verify whether PASS 34D is running, whether the frontend response was scanned, and whether any safe live/current/transit Mercury sign source exists. Public Live Field Modifier still updates only when a safe runtime live Mercury sign is accepted. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, bottom padding, Landing flow, Personal Architecture PASS 33H title logic, Chart Kernel extraction, or core public read behavior changed. -->
 <!-- Pass 34D update: added deployment proof and runtime live Mercury source exposure for the Live Field Modifier only. The visible card updates only when safe live/current/transit Mercury sign data exists in the frontend response; otherwise it remains field-based. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, share behavior, Personal Architecture PASS 33H title logic, Chart Kernel extraction, or core public read behavior changed. -->
@@ -3926,6 +3927,10 @@
 			}
 
 			.personalArchitectureExploreRow {
+				display: grid;
+				grid-template-columns: minmax(0, 1fr);
+				gap: 0;
+				padding: 0;
 				border-color: rgba(103, 193, 255, 0.055);
 				background: rgba(103, 193, 255, 0.018);
 			}
@@ -3941,20 +3946,34 @@
 
 			.personalArchitectureExploreButton {
 				width: 100%;
-				min-height: 0;
+				min-width: 0;
+				min-height: 34px;
 				margin: 0;
-				padding: 0;
-				display: grid;
-				grid-template-columns: 58px minmax(0, 1fr);
-				gap: 8px;
-				align-items: start;
+				padding: 6px 7px;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				gap: 10px;
 				border: 0;
-				border-radius: 0;
+				border-radius: 9px;
 				background: transparent;
 				box-shadow: none;
 				color: inherit;
 				text-align: left;
 				cursor: pointer;
+			}
+
+			.personalArchitectureExploreButton span {
+				flex: 0 0 auto;
+			}
+
+			.personalArchitectureExploreButton strong {
+				flex: 1 1 auto;
+				min-width: 0;
+				text-align: right;
+				white-space: normal;
+				overflow-wrap: normal;
+				word-break: keep-all;
 			}
 
 			.personalArchitectureExploreButton:hover,
@@ -6668,7 +6687,12 @@
 				}
 
 				.personalArchitectureExploreButton {
-					grid-template-columns: 54px minmax(0, 1fr);
+					min-height: 36px;
+					padding: 7px 8px;
+				}
+
+				.personalArchitectureExploreButton strong {
+					font-size: 10.9px;
 				}
 
 				.personalArchitectureCardRow strong {
@@ -6751,6 +6775,21 @@
 				.shareIntroChips {
 					justify-content: flex-start;
 					min-width: 0;
+				}
+			}
+
+			@media (max-width: 420px) {
+				.personalArchitectureExploreButton {
+					display: grid;
+					grid-template-columns: minmax(0, 1fr);
+					justify-content: stretch;
+					align-items: start;
+					gap: 4px;
+				}
+
+				.personalArchitectureExploreButton strong {
+					text-align: left;
+					white-space: normal;
 				}
 			}
 
