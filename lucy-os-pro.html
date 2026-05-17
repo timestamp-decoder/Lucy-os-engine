@@ -52,7 +52,9 @@
 <!-- Pass 13 update: added compact Personal Architecture daily component detail lines only. Uses existing current-field/support/load values for display language; no backend/API, scoring, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, or core public read behavior changed. -->
 <!-- Pass 14 update: added compact Personal Architecture field-context micro-line only. Uses existing selected current-field values for display context; no backend/API, scoring, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, bottom padding, or core public read behavior changed. -->
 <!-- Pass 15 update: refined compact Personal Architecture component Today notes only. Uses existing current-field/support/load display values; no backend/API, scoring, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, bottom padding, or core public read behavior changed. -->
+<!-- Personal Architecture field-context overflow fix update: hardened the existing field-context micro-line wrapping so the current field label stays intact on mobile. CSS/markup safety only; no backend/API, scoring, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, bottom padding, PASS 15 component note language, or core public read behavior changed. -->
 <!-- Personal Architecture field-context overflow fix: wrapped the field-context label defensively so mobile does not split field names mid-word. CSS/markup safety only; no backend/API, scoring, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, bottom padding, PASS 15 component note language, or core public read behavior changed. -->
+<!-- Pass 16 update: added one compact Personal Landing micro-line to the visual share card only. No copied share text, backend/API, scoring, Moonstamp, dashboard, saved profiles, share export behavior beyond the visual share-card micro-line, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel data extraction, diagnostics, bottom nav behavior, bottom padding, Personal Architecture Beta content, PASS 15 component note language, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -3697,10 +3699,12 @@
 
 			.personalArchitectureFieldContext {
 				margin: -3px 0 12px;
-				display: inline-flex;
+				display: inline-grid;
+				grid-template-columns: minmax(0, auto) auto;
 				align-items: center;
-				flex-wrap: wrap;
-				gap: 2px 4px;
+				column-gap: 6px;
+				row-gap: 2px;
+				width: fit-content;
 				max-width: 100%;
 				padding: 7px 10px;
 				border: 1px solid rgba(216, 184, 76, 0.16);
@@ -3710,8 +3714,7 @@
 				font-size: 11px;
 				line-height: 1.35;
 				font-weight: 850;
-				overflow-wrap: break-word;
-				word-break: normal;
+				overflow: hidden;
 			}
 
 			.personalArchitectureFieldLead {
@@ -5134,6 +5137,37 @@
 				overflow-wrap: break-word;
 			}
 
+			.shareCardPersonalLanding {
+				min-width: 0;
+				max-width: 100%;
+				padding: 10px 12px;
+				border: 1px solid rgba(103, 193, 255, 0.14);
+				border-radius: 14px;
+				background: rgba(103, 193, 255, 0.045);
+				overflow: hidden;
+			}
+
+			.shareCardPersonalLandingText {
+				color: #d9e0f4;
+				font-size: 12.5px;
+				line-height: 1.45;
+				font-weight: 820;
+				overflow-wrap: break-word;
+				word-break: normal;
+			}
+
+			.shareCardPersonalLandingText strong {
+				color: var(--text);
+				font-weight: 950;
+			}
+
+			.shareCardPersonalLandingText .harmonicName {
+				display: inline-block;
+				max-width: 100%;
+				white-space: nowrap;
+				vertical-align: baseline;
+			}
+
 			.shareCardCoreGrid {
 				display: grid;
 				gap: 10px;
@@ -6263,17 +6297,22 @@
 				}
 
 				.personalArchitectureFieldContext {
-					display: flex;
-					align-items: flex-start;
+					display: grid;
+					grid-template-columns: minmax(0, 1fr);
+					align-items: start;
+					justify-items: start;
+					width: 100%;
 					border-radius: 14px;
 				}
 
 				.personalArchitectureFieldLead {
-					flex: 1 1 100%;
+					display: block;
+					width: 100%;
 				}
 
 				.personalArchitectureFieldLabel {
-					display: inline-block;
+					display: block;
+					justify-self: start;
 					max-width: 100%;
 				}
 
@@ -8359,6 +8398,11 @@
 												main field.
 											</div>
 </div>
+</div>
+<div class="shareCardPersonalLanding">
+<div class="shareCardPersonalLandingText" id="shareCardPersonalLandingLine">
+														Personal Landing: Today’s field may register through your interface, center, and body-state first.
+													</div>
 </div>
 <div class="shareCardCoreRule">
 <div class="shareCardSection">
@@ -15507,6 +15551,14 @@ ${bodyLine}${loadLine}`,
 				setText(
 					"shareCardFieldDirectionText",
 					fieldDirectionText || "Waiting for field direction."
+				);
+
+				const sharePersonalLandingField = field ? fieldLabel(field) : "";
+				setHTML(
+					"shareCardPersonalLandingLine",
+					sharePersonalLandingField
+						? `Personal Landing: Today’s ${sharePersonalLandingField} field may register through your interface, center, and body-state first.`
+						: "Personal Landing: Today’s field may register through your interface, center, and body-state first."
 				);
 
 				updateShareFieldUndertoneUI(fieldUndertone);
