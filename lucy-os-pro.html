@@ -69,6 +69,7 @@
 <!-- Pass 27 update: polished Personal Architecture Beta scan hierarchy only. Consolidated repeated helper lines into the existing framing strip, placed the current-field micro-line directly before the component cards, and lightly tightened helper spacing. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, PASS 15 component note language, PASS 24 wording/helpers, PASS 25 mini-block styling, PASS 26 framing strip meaning, or core public read behavior changed. -->
 <!-- Pass 28 update: polished Personal Architecture Beta component-card scan hierarchy only. CSS/layout tuning makes the Today line read as the main practical line, keeps the PASS 24 detail as lighter support, and quiets degree/metadata emphasis. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, in-app Today’s Read, PASS 15 component note language, PASS 24 wording/helpers, PASS 26 framing strip meaning, PASS 27 top hierarchy, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, or core public read behavior changed. -->
 <!-- Pass 29 update: added compact Activated Architecture Today layer inside Landing / Personal Chart Translation only. Display-only helper uses existing Chart Kernel/current-field/Moonstamp/live-driver values defensively and hides when useful chart/kernel data is missing. No backend/API, payload, engine, scoring, Moonstamp logic, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Personal Architecture Beta content, PASS 15 component note language, PASS 24 wording/helpers, PASS 26 framing strip, PASS 27 top hierarchy, PASS 28 component-card styling, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, or core public read behavior changed. -->
+<!-- Pass 29B update: moved the existing Activated Architecture Today card into the visible Landing stack between Landing Note and Plain Read, and hardened the display-only Ascendant / Interface Kernel fallback when safe chart-kernel Ascendant data exists. No backend/API, payload, engine, scoring, Moonstamp logic, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Personal Architecture Beta content, PASS 15 component note language, PASS 24 wording/helpers, PASS 26 framing strip, PASS 27 top hierarchy, PASS 28 component-card styling, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -7994,6 +7995,11 @@
 <span>Landing note</span>
 <p>Relational field means contact is the channel. Your landing may be connection, caution, distance, or withdrawal.</p>
 </div>
+<div class="activatedArchitectureCard" id="activatedArchitectureCard" aria-live="polite">
+<div class="activatedArchitectureLabel">Activated architecture today</div>
+<div class="activatedArchitectureTitle" id="activatedArchitectureTitle">—</div>
+<div class="activatedArchitectureText" id="activatedArchitectureText">—</div>
+</div>
 </section>
 <section class="plainReadCard" id="plainReadCard">
 <div class="plainReadKicker">Plain Read</div>
@@ -8026,11 +8032,6 @@
 </section>
 <section class="personalTranslationCard" id="personalTranslationCard">
 <div class="personalTranslationKicker">Personal Chart Translation</div>
-<div class="activatedArchitectureCard" id="activatedArchitectureCard" aria-live="polite">
-<div class="activatedArchitectureLabel">Activated architecture today</div>
-<div class="activatedArchitectureTitle" id="activatedArchitectureTitle">—</div>
-<div class="activatedArchitectureText" id="activatedArchitectureText">—</div>
-</div>
 <div class="personalTranslationGrid">
 <div class="personalTranslationItem">
 <div class="personalTranslationLabel">Baseline Pattern</div>
@@ -9878,6 +9879,32 @@
 				});
 			}
 
+			function activatedArchitectureHasAscendantData(data) {
+				const chartKernel = data?.chartKernel || {};
+				const directCandidates = [
+					data?.angles?.asc,
+					data?.angles?.ascendant,
+					data?.asc,
+					data?.ascendant,
+					chartKernel?.geometry?.asc,
+					chartKernel?.geometry?.ascendant,
+					chartKernel?.angles?.asc,
+					chartKernel?.angles?.ascendant,
+					chartKernel?.asc,
+					chartKernel?.ascendant,
+					chartKernel?.interfaceKernel,
+				];
+				if (directCandidates.some((value) => chartKernelHasValue(value))) return true;
+
+				let found = false;
+				chartKernelWalk(chartKernel, (path, key, value) => {
+					if (found || !chartKernelHasValue(value)) return;
+					const pathText = `${path || ""} ${key || ""}`.toLowerCase();
+					if (/\b(ascendant|asc|interface\s*kernel)\b/.test(pathText)) found = true;
+				});
+				return found;
+			}
+
 			function activatedArchitectureComponentAvailable(data, componentKey) {
 				if (!activatedArchitectureHasUsefulKernelData(data)) return false;
 				const longitude = data?._longitudesDeg || {};
@@ -9885,9 +9912,8 @@
 				if (componentKey === "interface") {
 					return !!(
 						personalArchitectureFindPlacementObject(data, [/^asc(endant)?$/, /interface/]) ||
-						chartKernelHasValue(data?.angles?.asc) ||
-						chartKernelHasValue(data?.chartKernel?.geometry?.asc) ||
-						activatedArchitectureHasRole(data, [/^asc(endant)?$/])
+						activatedArchitectureHasAscendantData(data) ||
+						activatedArchitectureHasRole(data, [/^asc(endant)?$/, /interface/])
 					);
 				}
 				if (componentKey === "core") {
@@ -9994,7 +10020,9 @@
 				}
 				candidates.push("interface");
 
-				const componentKey = candidates.find((key) => activatedArchitectureComponentAvailable(data, key));
+				const componentKey =
+					candidates.find((key) => activatedArchitectureComponentAvailable(data, key)) ||
+					(activatedArchitectureComponentAvailable(data, "interface") ? "interface" : null);
 				if (!componentKey) return null;
 
 				const componentMap = {
