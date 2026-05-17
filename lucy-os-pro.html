@@ -62,6 +62,7 @@
 <!-- Pass 21 update: lightly polished visual share-card footer spacing only after the CTA footer addition. No copied share text, backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, visual share-card section list, visual title personalization, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, in-app read content, Personal Architecture Beta content, PASS 15 component note language, or core public read behavior changed. -->
 <!-- Pass 22 update: added optional Profile Name personalization to the visual share-card title only. No copied share text, backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name input/save/load behavior, visual share-card section list, visual share-card compression, footer CTA, footer spacing, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, in-app read content, Personal Architecture Beta content, PASS 15 component note language, or core public read behavior changed. -->
 <!-- Pass 22B update: fixed the real exported visual share-card title hook so optional Profile Name renders on the visible/exported card title. Visual share-card title personalization only; copied share text, Profile Name input/save/load behavior, saved profiles, backend/API, engine, scoring, Moonstamp, dashboard, field selection, calibration, visual card sections/compression/footer, Chart Kernel, diagnostics, bottom nav, and in-app read behavior unchanged. -->
+<!-- Pass 23 update: compressed the visual share-card footer CTA styling only so the temporary TimestampDecoder.com line reads softer and stays more compact. Copied share text, visual title personalization, engine/API, scoring, Moonstamp, dashboard, saved profiles, Chart Kernel, diagnostics, bottom nav, and in-app read behavior unchanged. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -5290,8 +5291,8 @@
 
 			.shareFooter {
 				display: grid;
-				gap: 5px;
-				padding-top: 8px;
+				gap: 3px;
+				padding-top: 7px;
 				color: var(--muted);
 				font-size: 10.5px;
 				font-weight: 900;
@@ -5299,6 +5300,17 @@
 				letter-spacing: 0.13em;
 				text-transform: uppercase;
 				overflow-wrap: break-word;
+			}
+
+			.shareFooterCta {
+				color: var(--muted2);
+				font-size: 8.7px;
+				font-weight: 850;
+				line-height: 1.18;
+				letter-spacing: 0.055em;
+				max-width: 100%;
+				overflow-wrap: normal;
+				word-break: normal;
 			}
 
 			.shareActions {
@@ -8416,8 +8428,8 @@
 										</div>
 </div>
 <div class="shareFooter">
-<div>Personal field guidance · Lucy.OS Pro</div>
-<div>Run your own field read · TimestampDecoder.com</div>
+<div class="shareFooterIdentity">Personal field guidance · Lucy.OS Pro</div>
+<div class="shareFooterCta">Run your own field read · TimestampDecoder.com</div>
 									</div>
 </div>
 </div>
