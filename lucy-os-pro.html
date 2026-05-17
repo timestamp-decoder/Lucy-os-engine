@@ -43,6 +43,7 @@
 <!-- Pass 5A update: refined Personal Architecture Beta public wording and data-line formatting only. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, or core read behavior changed. -->
 <!-- Pass 5B update: removed redundant role-label repeat from Personal Architecture Beta node data stacks and added a small display-only helper note. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, or core read behavior changed. -->
 <!-- Pass 6 update: polished Personal Architecture Beta intro, public component labels, and display-only bridge/caution copy only. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, or core public read behavior changed. -->
+<!-- Pass 7 update: added a compact Personal Architecture meaning bridge explaining Daily Field, Architecture, and Support relationship only. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -3643,6 +3644,24 @@
 				letter-spacing: 0.08em;
 				text-transform: uppercase;
 				white-space: nowrap;
+			}
+
+			.personalArchitectureMeaningBridge {
+				margin: -2px 0 12px;
+				padding: 10px 12px;
+				border: 1px solid rgba(103, 193, 255, 0.14);
+				border-radius: 14px;
+				background: rgba(103, 193, 255, 0.055);
+				color: #d9e0f4;
+				font-size: 12px;
+				line-height: 1.45;
+				font-weight: 800;
+				overflow-wrap: break-word;
+			}
+
+			.personalArchitectureMeaningBridge strong {
+				color: var(--text);
+				font-weight: 950;
 			}
 
 			.personalArchitectureBetaGrid {
@@ -7970,6 +7989,7 @@
 </div>
 <div class="personalArchitectureBetaBadge">Display Only</div>
 </div>
+<div class="personalArchitectureMeaningBridge"><strong>Today’s field</strong> shows what is moving. <strong>Your architecture</strong> shows where it lands. <strong>Support</strong> shows how to return to coherence.</div>
 <div class="personalArchitectureBetaGrid" id="personalArchitectureBetaGrid">
 <div class="personalArchitectureBetaItem">
 <div class="personalArchitectureRole">Interface Kernel</div>
