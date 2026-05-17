@@ -28,6 +28,26 @@ FLAGS = swe.FLG_SWIEPH | swe.FLG_SPEED
 HOUSE_SYSTEM = b"P"
 SYNODIC_MONTH_DAYS = 29.53
 
+ZODIAC_SIGNS = [
+    "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
+    "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
+]
+
+MERCURY_SIGNAL_PROCESSOR_BY_SIGN = {
+    "Aries": "Initiating Signal Processor",
+    "Taurus": "Grounded Signal Processor",
+    "Gemini": "Fast Signal Processor",
+    "Cancer": "Protective Signal Processor",
+    "Leo": "Expressive Signal Processor",
+    "Virgo": "Precise Signal Processor",
+    "Libra": "Relational Signal Processor",
+    "Scorpio": "Deep Signal Processor",
+    "Sagittarius": "Expansive Signal Processor",
+    "Capricorn": "Structured Signal Processor",
+    "Aquarius": "Pattern Signal Processor",
+    "Pisces": "Diffused Signal Processor",
+}
+
 GOOGLE_GEOCODE_API_KEY = os.getenv("GOOGLE_GEOCODE_API_KEY", "")
 GOOGLE_TIMEZONE_API_KEY = os.getenv("GOOGLE_TIMEZONE_API_KEY", "")
 
@@ -38,6 +58,18 @@ def normalize_longitude(lon: float) -> float:
 
 def normalize_degrees(deg: float) -> float:
     return float(deg % 360.0)
+
+
+def zodiac_sign_from_longitude(deg: float) -> str:
+    lon = normalize_degrees(float(deg))
+    index = int(lon // 30) % 12
+    return ZODIAC_SIGNS[index]
+
+
+def sidereal_lahiri_longitude_from_tropical(tropical_deg: float, jd_ut: float) -> float:
+    swe.set_sid_mode(getattr(swe, "SIDM_LAHIRI", 1), 0, 0)
+    ayanamsa = float(swe.get_ayanamsa_ut(float(jd_ut)))
+    return normalize_degrees(float(tropical_deg) - ayanamsa)
 
 
 def normalize_tob_with_ampm(tob: str, ampm: str | None = None) -> str:
@@ -419,6 +451,51 @@ def compute_transit_inputs(now_utc: datetime | None = None):
     return result
 
 
+def build_live_field_modifier(transit: dict) -> dict:
+    transit_longitudes_deg = transit.get("_longitudesDeg", {}) or {}
+    transit_meta = transit.get("_meta", {}) or {}
+
+    mercury_tropical_deg = transit_longitudes_deg.get("mercury")
+    jd_ut = transit_meta.get("jd_ut")
+
+    if mercury_tropical_deg is None or jd_ut is None:
+        return {
+            "source": "Swiss Ephemeris",
+            "planet": "mercury",
+            "role": "Signal Processor",
+            "available": False,
+            "displayZodiacMode": "sidereal-lahiri",
+            "displayTitle": None,
+            "note": "Live transit Mercury display modifier unavailable because longitude or Julian day was missing.",
+        }
+
+    tropical_sign = zodiac_sign_from_longitude(mercury_tropical_deg)
+    sidereal_lahiri_deg = sidereal_lahiri_longitude_from_tropical(
+        mercury_tropical_deg,
+        jd_ut,
+    )
+    sidereal_lahiri_sign = zodiac_sign_from_longitude(sidereal_lahiri_deg)
+
+    signal_label = MERCURY_SIGNAL_PROCESSOR_BY_SIGN.get(
+        sidereal_lahiri_sign,
+        "Signal Processor",
+    )
+
+    return {
+        "source": "Swiss Ephemeris",
+        "planet": "mercury",
+        "role": "Signal Processor",
+        "available": True,
+        "tropicalLongitudeDeg": round(float(mercury_tropical_deg), 6),
+        "tropicalSign": tropical_sign,
+        "siderealLahiriLongitudeDeg": round(float(sidereal_lahiri_deg), 6),
+        "siderealLahiriSign": sidereal_lahiri_sign,
+        "displayZodiacMode": "sidereal-lahiri",
+        "displayTitle": f"Mercury in {sidereal_lahiri_sign} — {signal_label}",
+        "note": "Display-only live transit modifier. Does not affect scoring or field selection.",
+    }
+
+
 def calculate_lunar_phase_fraction(sun_lon_deg: float, moon_lon_deg: float) -> float:
     phase_angle = normalize_degrees(moon_lon_deg - sun_lon_deg)
     return phase_angle / 360.0
@@ -727,6 +804,7 @@ def build_lucy_response(chart: dict) -> dict:
     natal_strain = natal_effective_load / natal_capacity if natal_capacity > 0 else 0.0
 
     transit = compute_transit_inputs()
+    live_field_modifier = build_live_field_modifier(transit)
     moonstamp = build_moonstamp_modifier_from_transit(transit)
     moonstamp_plus6 = build_projected_moonstamp_modifier(6)
     moonstamp_plus24 = build_projected_moonstamp_modifier(24)
@@ -990,6 +1068,7 @@ def build_lucy_response(chart: dict) -> dict:
             "neptune": transit_longitudes_deg.get("neptune"),
             "pluto": transit_longitudes_deg.get("pluto"),
         },
+        "liveFieldModifier": live_field_modifier,
         "timing": {
             "timingPressure": timing_pressure,
             "timingMode": timing_mode,
@@ -1069,6 +1148,7 @@ def build_lucy_response(chart: dict) -> dict:
         "houses": chart.get("houses", []),
         "_longitudesDeg": chart.get("_longitudesDeg", {}),
         "transitLongitudesDeg": transit_longitudes_deg,
+        "liveFieldModifier": live_field_modifier,
         "dailyFieldBackendDebug": daily_field_backend_debug,
         "chartKernel": build_chart_kernel_inspection(chart),
         "debugEcho": {
