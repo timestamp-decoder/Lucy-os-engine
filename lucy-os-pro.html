@@ -71,6 +71,7 @@
 <!-- Pass 29 update: added compact Activated Architecture Today layer inside Landing / Personal Chart Translation only. Display-only helper uses existing Chart Kernel/current-field/Moonstamp/live-driver values defensively and hides when useful chart/kernel data is missing. No backend/API, payload, engine, scoring, Moonstamp logic, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Personal Architecture Beta content, PASS 15 component note language, PASS 24 wording/helpers, PASS 26 framing strip, PASS 27 top hierarchy, PASS 28 component-card styling, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, or core public read behavior changed. -->
 <!-- Pass 29B update: moved the existing Activated Architecture Today card into the visible Landing stack between Landing Note and Plain Read, and hardened the display-only Ascendant / Interface Kernel fallback when safe chart-kernel Ascendant data exists. No backend/API, payload, engine, scoring, Moonstamp logic, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Personal Architecture Beta content, PASS 15 component note language, PASS 24 wording/helpers, PASS 26 framing strip, PASS 27 top hierarchy, PASS 28 component-card styling, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, or core public read behavior changed. -->
 <!-- Pass 30 update: polished Activated Architecture Today copy and density only. Shortened the landing-bridge body copy, added compact Release Vector fallback language when already available, and lightly tightened only the activated-architecture card styling. No backend/API, payload, engine, scoring, Moonstamp logic, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Personal Architecture Beta content, PASS 15 component note language, PASS 24 wording/helpers, PASS 26 framing strip, PASS 27 top hierarchy, PASS 28 component-card styling, PASS 29B placement/order, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, or core public read behavior changed. -->
+<!-- Pass 31 update: polished Landing / Personal Chart Translation flow readability only. Lightly refined spacing, hierarchy, and scan weight so Landing Note introduces the read, Activated Architecture feels like a compact bridge, Plain Read stays primary, One Good Move is easier to find, and Do Not Overdo reads quieter. No backend/API, payload, engine, scoring, Moonstamp logic, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, bottom nav, bottom padding, Personal Architecture Beta content, PASS 15 component note language, PASS 24 wording/helpers, PASS 26 framing strip, PASS 27 top hierarchy, PASS 28 component-card styling, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -5868,7 +5869,7 @@
 			}
 
 			.personalLandingCard {
-				padding: 18px 20px;
+				padding: 17px 18px;
 				border: 1px solid rgba(103, 193, 255, 0.22);
 				background: radial-gradient(
 						circle at 12% 0%,
@@ -6187,7 +6188,7 @@
 			}
 
 			.personalLandingText {
-				margin-top: 8px;
+				margin-top: 7px;
 				color: #d9e0f4;
 				font-size: 13px;
 				line-height: 1.55;
@@ -6196,7 +6197,7 @@
 			}
 
 			.personalLandingLine {
-				margin-top: 10px;
+				margin-top: 9px;
 				color: var(--gold);
 				font-size: 12px;
 				font-weight: 950;
@@ -6206,10 +6207,10 @@
 
 			.landingClarifier {
 				margin-top: 10px;
-				padding: 10px 11px;
+				padding: 9px 10px;
 				border-radius: 13px;
-				border: 1px solid rgba(103, 193, 255, 0.14);
-				background: rgba(103, 193, 255, 0.045);
+				border: 1px solid rgba(103, 193, 255, 0.12);
+				background: rgba(103, 193, 255, 0.038);
 			}
 
 			.landingClarifier span {
@@ -6232,8 +6233,8 @@
 			}
 
 			.plainReadCard {
-				padding: 20px;
-				border: 1px solid rgba(111, 224, 211, 0.22);
+				padding: 21px 20px;
+				border: 1px solid rgba(111, 224, 211, 0.28);
 				background: radial-gradient(
 						circle at 10% 0%,
 						rgba(111, 224, 211, 0.1),
@@ -6257,7 +6258,7 @@
 
 			.plainReadText {
 				color: var(--text);
-				font-size: 18px;
+				font-size: 18.5px;
 				line-height: 1.55;
 				font-weight: 820;
 				letter-spacing: -0.01em;
@@ -6267,8 +6268,8 @@
 			.plainReadGrid {
 				display: grid;
 				grid-template-columns: repeat(3, minmax(0, 1fr));
-				gap: 10px;
-				margin-top: 14px;
+				gap: 9px;
+				margin-top: 13px;
 				min-width: 0;
 			}
 
@@ -6279,6 +6280,26 @@
 				padding: 12px 13px;
 				background: rgba(255, 255, 255, 0.035);
 				min-width: 0;
+			}
+
+			.plainReadGrid .plainReadItem:first-child {
+				border-color: rgba(111, 224, 211, 0.18);
+				background: radial-gradient(
+						circle at 10% 0%,
+						rgba(111, 224, 211, 0.085),
+						transparent 34%
+					),
+					rgba(255, 255, 255, 0.04);
+			}
+
+			.plainReadGrid .plainReadItem:nth-child(2) {
+				border-color: rgba(255, 255, 255, 0.065);
+				background: rgba(255, 255, 255, 0.026);
+			}
+
+			.plainReadGrid .plainReadItem:nth-child(2) .plainReadLabel,
+			.plainReadGrid .plainReadItem:nth-child(2) .plainReadValue {
+				color: var(--muted);
 			}
 
 			.plainReadLabel,
@@ -6347,10 +6368,10 @@
 
 			.activatedArchitectureCard {
 				display: none;
-				margin: 0 0 12px;
-				padding: 10px 12px;
-				border-radius: 15px;
-				border: 1px solid rgba(216, 184, 76, 0.18);
+				margin: 9px 0 0;
+				padding: 9px 11px;
+				border-radius: 14px;
+				border: 1px solid rgba(216, 184, 76, 0.15);
 				background: radial-gradient(
 						circle at 10% 0%,
 						rgba(216, 184, 76, 0.095),
@@ -6375,17 +6396,17 @@
 
 			.activatedArchitectureTitle {
 				color: var(--text);
-				font-size: 14px;
+				font-size: 13.6px;
 				line-height: 1.25;
 				font-weight: 950;
 				overflow-wrap: anywhere;
 			}
 
 			.activatedArchitectureText {
-				margin-top: 5px;
-				color: #d9e0f4;
-				font-size: 12px;
-				line-height: 1.42;
+				margin-top: 4px;
+				color: #cfd8ee;
+				font-size: 11.8px;
+				line-height: 1.4;
 				font-weight: 740;
 				overflow-wrap: break-word;
 			}
@@ -6597,6 +6618,54 @@
 
 				.premiumCard {
 					padding: 16px;
+				}
+
+				.personalLandingCard {
+					padding: 15px 14px;
+					border-radius: 16px;
+				}
+
+				.personalLandingTitle {
+					font-size: 20px;
+				}
+
+				.personalLandingText {
+					font-size: 12.4px;
+					line-height: 1.48;
+				}
+
+				.landingClarifier {
+					padding: 8px 9px;
+				}
+
+				.activatedArchitectureCard {
+					margin-top: 8px;
+					padding: 8px 9px;
+				}
+
+				.activatedArchitectureText {
+					font-size: 11.5px;
+					line-height: 1.38;
+				}
+
+				.plainReadCard {
+					padding: 16px 14px;
+					border-radius: 16px;
+				}
+
+				.plainReadText {
+					font-size: 16.5px;
+					line-height: 1.5;
+				}
+
+				.plainReadGrid {
+					gap: 8px;
+					margin-top: 12px;
+				}
+
+				.plainReadItem {
+					padding: 10px 11px;
+					border-radius: 13px;
 				}
 
 				.cardContent {
