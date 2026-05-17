@@ -70,6 +70,7 @@
 <!-- Pass 28 update: polished Personal Architecture Beta component-card scan hierarchy only. CSS/layout tuning makes the Today line read as the main practical line, keeps the PASS 24 detail as lighter support, and quiets degree/metadata emphasis. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, in-app Today’s Read, PASS 15 component note language, PASS 24 wording/helpers, PASS 26 framing strip meaning, PASS 27 top hierarchy, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, or core public read behavior changed. -->
 <!-- Pass 29 update: added compact Activated Architecture Today layer inside Landing / Personal Chart Translation only. Display-only helper uses existing Chart Kernel/current-field/Moonstamp/live-driver values defensively and hides when useful chart/kernel data is missing. No backend/API, payload, engine, scoring, Moonstamp logic, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Personal Architecture Beta content, PASS 15 component note language, PASS 24 wording/helpers, PASS 26 framing strip, PASS 27 top hierarchy, PASS 28 component-card styling, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, or core public read behavior changed. -->
 <!-- Pass 29B update: moved the existing Activated Architecture Today card into the visible Landing stack between Landing Note and Plain Read, and hardened the display-only Ascendant / Interface Kernel fallback when safe chart-kernel Ascendant data exists. No backend/API, payload, engine, scoring, Moonstamp logic, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Personal Architecture Beta content, PASS 15 component note language, PASS 24 wording/helpers, PASS 26 framing strip, PASS 27 top hierarchy, PASS 28 component-card styling, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, or core public read behavior changed. -->
+<!-- Pass 30 update: polished Activated Architecture Today copy and density only. Shortened the landing-bridge body copy, added compact Release Vector fallback language when already available, and lightly tightened only the activated-architecture card styling. No backend/API, payload, engine, scoring, Moonstamp logic, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Personal Architecture Beta content, PASS 15 component note language, PASS 24 wording/helpers, PASS 26 framing strip, PASS 27 top hierarchy, PASS 28 component-card styling, PASS 29B placement/order, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -6347,7 +6348,7 @@
 			.activatedArchitectureCard {
 				display: none;
 				margin: 0 0 12px;
-				padding: 12px 13px;
+				padding: 10px 12px;
 				border-radius: 15px;
 				border: 1px solid rgba(216, 184, 76, 0.18);
 				background: radial-gradient(
@@ -6369,7 +6370,7 @@
 				font-weight: 950;
 				letter-spacing: 0.12em;
 				text-transform: uppercase;
-				margin-bottom: 6px;
+				margin-bottom: 5px;
 			}
 
 			.activatedArchitectureTitle {
@@ -6381,11 +6382,11 @@
 			}
 
 			.activatedArchitectureText {
-				margin-top: 6px;
+				margin-top: 5px;
 				color: #d9e0f4;
-				font-size: 12.3px;
-				line-height: 1.48;
-				font-weight: 750;
+				font-size: 12px;
+				line-height: 1.42;
+				font-weight: 740;
 				overflow-wrap: break-word;
 			}
 
@@ -10018,6 +10019,9 @@
 				if (fieldBase === "Threshold" && activatedArchitectureComponentAvailable(data, "growth")) {
 					candidates.push("growth");
 				}
+				if (/ketu|south.?node|release|simplif|detach|drop/.test(driverText)) {
+					candidates.push("release");
+				}
 				candidates.push("interface");
 
 				const componentKey =
@@ -10031,46 +10035,57 @@
 							personalArchitecturePickRole(data, [/^asc(endant)?$/], "Interface Kernel")
 						),
 						label: "Ascendant",
-						text: "Today’s field may register through your Interface Kernel first, so notice the environment, pace, and first contact before reacting.",
+						text: "Today may register through environment, pace, and first contact first. Notice the setting before reacting.",
 					},
 					core: {
 						role: personalArchitecturePublicRoleLabel(
 							personalArchitecturePickRole(data, [/^sun$/], "Core Voltage")
 						),
 						label: "Sun",
-						text: "Today’s field may activate your Core Voltage first, so keep the center clear before giving energy to the signal.",
+						text: "Today may register through your center, energy, and sense of direction first. Choose the cleanest next move before pushing harder.",
 					},
 					emotional: {
 						role: personalArchitecturePublicRoleLabel(
 							personalArchitecturePickRole(data, [/^moon$/], "Emotional Processor")
 						),
 						label: "Moon",
-						text: "Today’s field may land through your Emotional Processor first, so body-state and stability cues matter before forcing clarity.",
+						text: "Today may register through body-state, comfort, and stability cues first. Let your system feel safe before forcing clarity.",
 					},
 					signal: {
 						role: personalArchitecturePublicRoleLabel(
 							personalArchitecturePickRole(data, [/^mercury$/], "Signal Processor")
 						),
 						label: "Mercury",
-						text: "Today’s field may land through your Signal Processor first, so clarify one thing directly before expanding the meaning.",
+						text: "Today may register through language, timing, or signal clarity first. Name one clean thing before expanding the meaning.",
 					},
 					relational: {
 						role: personalArchitecturePublicRoleLabel(
 							personalArchitecturePickRole(data, [/^venus$/], "Relational Tone")
 						),
 						label: "Venus",
-						text: "Today’s field may register through your Relational Tone first, so track tone, contact, and proportion before responding.",
+						text: "Today may register through tone, contact, and relational proportion first. Check the signal before responding.",
 					},
 					growth: {
 						role: personalArchitecturePublicRoleLabel(
 							personalArchitecturePickRole(data, [/rahu/, /north.?node/], "Growth Vector")
 						),
-						label: "Rahu / North Node",
-						text: "Today’s field may activate your Growth Vector, so choose one stretch point without turning the whole day into a leap.",
+						label: "Rahu",
+						text: "Today may activate the edge that wants growth, reach, or movement. Take the next step without forcing the whole path.",
+					},
+					release: {
+						role: personalArchitecturePublicRoleLabel(
+							personalArchitecturePickRole(data, [/ketu/, /south.?node/], "Release Vector")
+						),
+						label: "Ketu",
+						text: "Today may activate what needs release, simplification, or less attachment. Let the unnecessary pressure drop first.",
 					},
 				};
 
-				return componentMap[componentKey] || null;
+				return componentMap[componentKey] || {
+					role: "Personal Architecture",
+					label: "Landing Point",
+					text: "Today may register through this part of your architecture first. Notice the landing point before reacting.",
+				};
 			}
 
 			function renderActivatedArchitectureToday(data, harmonics) {
