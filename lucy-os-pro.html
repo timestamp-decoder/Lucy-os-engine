@@ -57,6 +57,7 @@
 <!-- Pass 16 update: added one compact Personal Landing micro-line to the visual share card only. No copied share text, backend/API, scoring, Moonstamp, dashboard, saved profiles, share export behavior beyond the visual share-card micro-line, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel data extraction, diagnostics, bottom nav behavior, bottom padding, Personal Architecture Beta content, PASS 15 component note language, or core public read behavior changed. -->
 <!-- Pass 16B update: added the matching compact Personal Landing micro-line to copied share text only. Visual share card line, backend/API, scoring, Moonstamp, dashboard, saved profiles, calibration behavior, Chart Kernel data extraction, diagnostics, bottom nav behavior, bottom padding, Personal Architecture Beta content, PASS 15 component note language, and core public read behavior unchanged. -->
 <!-- Pass 17 optional profile name update: added an optional front-end Name / Profile Name input for saved-profile labels and future share personalization foundation. Saved profiles now store/restore the optional name defensively and use it as the friendly dropdown label when present. No backend/API payload, engine, scoring, field selection, Moonstamp, dashboard, share text, visual share card, share export behavior, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, Personal Architecture Beta content, PASS 15 component note language, PASS 16 visual line, PASS 16B copied-share line, or core public read behavior changed. -->
+<!-- Pass 19 visual share card compression update: compressed the visual share card into a poster-style summary only. Copied share text, in-app read content, backend/API, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, Profile Name behavior, Chart Kernel extraction, diagnostics, bottom nav, Personal Architecture Beta, and share export mechanics are unchanged beyond the visual card text/section list. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -8363,12 +8364,6 @@
 <div class="shareCardInner">
 <div class="shareCardTop">
 <span>Lucy.OS Pro</span>
-<span>Personal Field Guidance</span>
-</div>
-<div class="shareCardChips">
-<span class="shareCardChip gold" id="shareCardBaselineChip">Root: —</span>
-<span class="shareCardChip field" id="shareCardFieldChip">Field: —</span>
-<span class="shareCardChip violet" id="shareCardStateChip">State: —</span>
 </div>
 <div class="shareCardSection">
 <div class="shareCardLabel">
@@ -8382,7 +8377,7 @@
 <div class="shareCardFieldDirection" id="shareCardFieldDirectionBlock">
 <div class="shareCardSection">
 <div class="shareCardLabel">
-												Current Field Direction
+												Field Direction
 											</div>
 <div class="shareCardFieldTitle" id="shareCardFieldDirectionTitle">
 												—
@@ -8392,167 +8387,26 @@
 											</div>
 </div>
 </div>
-<div class="shareCardFieldUndertone" id="shareCardFieldUndertoneBlock">
-<div class="shareCardSection">
-<div class="shareCardLabel">
-												Field Undertone
-											</div>
-<div class="shareCardFieldTitle" id="shareCardFieldUndertoneTitle">
-												No strong undertone
-											</div>
-<div class="shareCardFieldText" id="shareCardFieldUndertoneText">
-												No secondary field is close
-												enough to change the read.
-											</div>
-<div class="shareCardFieldHelp">
-												Close second-place field. Adds
-												texture, does not replace the
-												main field.
-											</div>
-</div>
-</div>
 <div class="shareCardPersonalLanding">
 <div class="shareCardPersonalLandingText" id="shareCardPersonalLandingLine">
-														Personal Landing: Today’s field may register through your interface, center, and body-state first.
-													</div>
-</div>
-<div class="shareCardCoreRule">
-<div class="shareCardSection">
-<div class="shareCardLabel">
-												Core Rule
-											</div>
-<div class="shareCardCoreGrid">
-<div class="shareCardCoreItem">
-<div class="shareCardCoreTitle">
-														Use your gift:
-													</div>
-<div class="shareCardCoreText" id="shareCardCoreGift">
-														—
-													</div>
-</div>
-<div class="shareCardCoreItem">
-<div class="shareCardCoreTitle">
-														Watch the distortion:
-													</div>
-<div class="shareCardCoreText" id="shareCardCoreDistortion">
-														—
-													</div>
-</div>
-<div class="shareCardCoreItem">
-<div class="shareCardCoreTitle">
-														Make the move:
-													</div>
-<div class="shareCardCoreText" id="shareCardCoreMove">
-														—
-													</div>
-</div>
-</div>
-</div>
-</div>
-<div class="shareCardMoonstamp" id="shareCardMoonstampBlock">
-<div class="shareCardSection">
-<div class="shareCardLabel">
-												Moonstamp Modifier
-											</div>
-<div class="shareCardRead" id="shareCardMoonstampModifier">
-												The lunar field adds timing
-												texture to today’s read.
-											</div>
-</div>
-</div>
-<div class="shareCardSection">
-<div class="shareCardLabel">
-											Today’s Read
-										</div>
-<div class="shareCardRead" id="shareCardTodayRead">
-											Waiting for daily read.
+											Personal Landing: Today’s field may register through your interface, center, and body-state first.
 										</div>
 </div>
-<div class="shareCardRealLife">
 <div class="shareCardSection">
 <div class="shareCardLabel">
-												In Real Life, This Means
-											</div>
-<div class="shareCardRead" id="shareCardRealLife">
-												Waiting for plain-life
-												translation.
-											</div>
-</div>
-</div>
-<div class="shareCardRegulationSupport" id="shareCardRegulationBlock">
-<div class="shareCardSection">
-<div class="shareCardLabel">
-												Regulation Supports
-											</div>
-<div class="shareCardCoreGrid">
-<div class="shareCardCoreItem">
-<div class="shareCardCoreTitle">
-														State:
-													</div>
-<div class="shareCardCoreText" id="shareCardRegulationState">
-														—
-													</div>
-</div>
-<div class="shareCardCoreItem">
-<div class="shareCardCoreTitle">
-														Best Support:
-													</div>
-<div class="shareCardCoreText" id="shareCardRegulationQuality">
-														—
-													</div>
-</div>
-<div class="shareCardCoreItem">
-<div class="shareCardCoreTitle">
-														Try First:
-													</div>
-<div class="shareCardCoreText" id="shareCardRegulationTry">
-														—
-													</div>
-</div>
-<div class="shareCardCoreItem">
-<div class="shareCardCoreTitle">
-														Avoid:
-													</div>
-<div class="shareCardCoreText" id="shareCardRegulationMusic">
-														—
-													</div>
-</div>
-</div>
-</div>
-</div>
-<div class="shareCardMiniGrid">
-<div class="shareCardMini">
-<div class="shareCardLabel">
-												Motion Style
-											</div>
-<div class="shareCardRead" id="shareCardMotionStyle">
-												—
-											</div>
-</div>
-<div class="shareCardMini">
-<div class="shareCardLabel">
-												Today’s Driver
-											</div>
-<div class="shareCardRead" id="shareCardDriverNote">
-												Waiting for driver note.
-											</div>
-</div>
-<div class="shareCardMini">
-<div class="shareCardLabel">
-												One Good Move
-											</div>
+											One Good Move
+										</div>
 <div class="shareCardRead" id="shareCardGoodMove">
-												—
-											</div>
+											—
+										</div>
 </div>
-<div class="shareCardMini">
+<div class="shareCardSection">
 <div class="shareCardLabel">
-												Return to yourself by
-											</div>
+											Return Path
+										</div>
 <div class="shareCardRead" id="shareCardReturn">
-												—
-											</div>
-</div>
+											—
+										</div>
 </div>
 <div class="shareFooter">
 										Personal field guidance · Lucy.OS Pro
@@ -12210,6 +12064,14 @@
 				return clean || fallback;
 			}
 
+			function getVisualShareShortSentence(value, fallback = "") {
+				const clean = cleanShareSentence(value, fallback);
+				if (!clean) return fallback;
+
+				const match = clean.match(/^(.+?[.!?])(?:\s+|$)/);
+				return match ? match[1].trim() : clean;
+			}
+
 			function isShareDuplicate(a, b) {
 				const left = normalizeShareText(a);
 				const right = normalizeShareText(b);
@@ -15620,7 +15482,10 @@ ${bodyLine}${loadLine}`,
 				);
 				setText(
 					"shareCardFieldDirectionText",
-					fieldDirectionText || "Waiting for field direction."
+					getVisualShareShortSentence(
+						fieldDirectionText,
+						"Stay centered before reading or repairing the field."
+					)
 				);
 
 				const sharePersonalLandingField = field ? fieldLabel(field) : "";
@@ -15673,7 +15538,13 @@ ${bodyLine}${loadLine}`,
 				);
 				setText("shareCardDriverNote", driverNote);
 				setText("shareCardGoodMove", shareGoodMove);
-				setText("shareCardReturn", returnText);
+				setText(
+					"shareCardReturn",
+					getVisualShareShortSentence(
+						returnText,
+						"Return to your own center before trying to repair the field."
+					)
+				);
 
 				updateRegulationSupportsUI(regulationSupports);
 
