@@ -38,6 +38,7 @@
 <!-- Pass 3D-B update: cleaned Chart Kernel Data Inspection labels/detection so placeholder support is separated from real calculated astrology data. Front-end diagnostics wording only; no backend/API, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, or calibration behavior changed. -->
 <!-- Pass 4B update: added compact calculated Rahu/Ketu node vector display inside Chart Kernel Data Inspection only. Front-end diagnostics display only; no backend/API, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, or public result behavior changed. -->
 <!-- Pass 4B-B update: fixed narrow-screen Engine Details diagnostic row wrapping only. Diagnostic labels/values now stack and wrap cleanly on mobile. No backend/API, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, or public result behavior changed. -->
+<!-- Pass 4C update: cleaned Chart Kernel Raw Debug Preview display inside Engine Details only. Raw preview remains available with the same backend preview content, now in a smaller controlled scroll area with a debugging-only helper line. No backend/API, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, or public result behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -907,11 +908,45 @@
 				color: #ff9c9c !important;
 			}
 
+			.chartKernelRawDetails {
+				border: 1px solid rgba(255, 255, 255, 0.075);
+				border-radius: 13px;
+				background: rgba(255, 255, 255, 0.024);
+				overflow: hidden;
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.engineDetails .chartKernelRawDetails summary {
+				padding: 11px 12px;
+				color: var(--muted);
+				font-size: 11px;
+				font-weight: 950;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+			}
+
+			.chartKernelRawDetailsBody {
+				display: grid;
+				gap: 8px;
+				padding: 0 10px 10px;
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.chartKernelRawHelper {
+				color: var(--muted2);
+				font-size: 11px;
+				line-height: 1.4;
+				font-weight: 800;
+				overflow-wrap: break-word;
+			}
+
 			.chartKernelRawPreview {
 				width: 100%;
 				max-width: 100%;
-				min-height: 120px;
-				max-height: 340px;
+				min-height: 96px;
+				max-height: 300px;
 				margin: 0;
 				padding: 12px;
 				overflow: auto;
@@ -923,6 +958,7 @@
 				line-height: 1.45;
 				white-space: pre-wrap;
 				overflow-wrap: anywhere;
+				word-break: normal;
 			}
 
 			@media (max-width: 640px) {
@@ -953,6 +989,31 @@
 					justify-self: start;
 					text-align: left;
 					white-space: normal;
+					overflow-wrap: anywhere;
+					word-break: normal;
+				}
+
+				.engineDetails .chartKernelRawDetails summary {
+					padding: 10px 11px;
+					font-size: 10px;
+				}
+
+				.chartKernelRawDetailsBody {
+					padding: 0 9px 9px;
+				}
+
+				.chartKernelRawHelper {
+					font-size: 10.5px;
+					line-height: 1.4;
+				}
+
+				.chartKernelRawPreview {
+					max-height: 220px;
+					min-height: 90px;
+					font-size: 10px;
+					line-height: 1.45;
+					overflow: auto;
+					white-space: pre-wrap;
 					overflow-wrap: anywhere;
 					word-break: normal;
 				}
@@ -8390,7 +8451,15 @@
 <div class="liveDebugLabel">
 											Raw Debug Preview
 										</div>
+<details class="chartKernelRawDetails">
+<summary>Open raw backend preview</summary>
+<div class="chartKernelRawDetailsBody">
+<div class="chartKernelRawHelper">
+												Raw backend preview for debugging only. This does not affect the public read.
+											</div>
 <pre class="chartKernelRawPreview" id="chartKernelRawPreview">No hybrid Chart Kernel inspection data found in the current API response.</pre>
+</div>
+</details>
 </div>
 </div>
 </details>
