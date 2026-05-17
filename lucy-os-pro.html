@@ -40,6 +40,7 @@
 <!-- Pass 4B-B update: fixed narrow-screen Engine Details diagnostic row wrapping only. Diagnostic labels/values now stack and wrap cleanly on mobile. No backend/API, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, or public result behavior changed. -->
 <!-- Pass 4C update: cleaned Chart Kernel Raw Debug Preview display inside Engine Details only. Raw preview remains available with the same backend preview content, now in a smaller controlled scroll area with a debugging-only helper line. No backend/API, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, or public result behavior changed. -->
 <!-- Pass 4D update: added Personal Architecture Beta card inside the You destination only. Public display layer uses existing chartKernel placementRoles, existing tropical degree/sign data where already available, and calculated Rahu/Ketu node vectors where already returned. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, raw diagnostics, or core read behavior changed. -->
+<!-- Pass 5A update: refined Personal Architecture Beta public wording and data-line formatting only. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, or core read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -3697,6 +3698,17 @@
 				line-height: 1.38;
 				font-weight: 850;
 				overflow-wrap: anywhere;
+			}
+
+			.personalArchitectureMetaLine {
+				display: block;
+				min-width: 0;
+				max-width: 100%;
+				overflow-wrap: anywhere;
+			}
+
+			.personalArchitectureMetaLine + .personalArchitectureMetaLine {
+				margin-top: 3px;
 			}
 
 			.chipRow {
@@ -7943,39 +7955,39 @@
 <div class="personalArchitectureBetaHeader">
 <div>
 <h3>Personal Architecture — Beta</h3>
-<p>These are system-component labels from your chart kernel. They describe how Lucy.OS organizes the personal landing layer, not fixed personality traits.</p>
+<p>These labels show how Lucy.OS organizes your personal landing layer. They are system components, not fixed personality traits.</p>
 </div>
-<div class="personalArchitectureBetaBadge">Display only</div>
+<div class="personalArchitectureBetaBadge">Display Only</div>
 </div>
 <div class="personalArchitectureBetaGrid" id="personalArchitectureBetaGrid">
 <div class="personalArchitectureBetaItem">
 <div class="personalArchitectureRole">Interface Kernel</div>
 <div class="personalArchitectureLabel">Ascendant</div>
-<div class="personalArchitectureMeaning">How your system meets the field.</div>
+<div class="personalArchitectureMeaning">How your system meets the field and receives pressure first.</div>
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
 </div>
 <div class="personalArchitectureBetaItem">
 <div class="personalArchitectureRole">Core Voltage / CPU</div>
 <div class="personalArchitectureLabel">Sun</div>
-<div class="personalArchitectureMeaning">Core operating voltage.</div>
+<div class="personalArchitectureMeaning">Your core operating signal: the steady center Lucy.OS uses for personal orientation.</div>
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
 </div>
 <div class="personalArchitectureBetaItem">
 <div class="personalArchitectureRole">Emotional Processor / GPU</div>
 <div class="personalArchitectureLabel">Moon</div>
-<div class="personalArchitectureMeaning">Body-state, comfort, emotional rhythm, and timing texture.</div>
+<div class="personalArchitectureMeaning">How your system reads body-state, comfort, timing, and emotional rhythm.</div>
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
 </div>
 <div class="personalArchitectureBetaItem">
-<div class="personalArchitectureRole">Growth Vector</div>
+<div class="personalArchitectureRole">Growth Vector / Directional Trajectory</div>
 <div class="personalArchitectureLabel">Rahu / North Node</div>
-<div class="personalArchitectureMeaning">Growth Vector / Directional Trajectory.</div>
+<div class="personalArchitectureMeaning">The forward-moving vector: where the system stretches, learns, and develops new range.</div>
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
 </div>
 <div class="personalArchitectureBetaItem">
-<div class="personalArchitectureRole">Release Vector</div>
+<div class="personalArchitectureRole">Release Vector / Mastery Pattern</div>
 <div class="personalArchitectureLabel">Ketu / South Node</div>
-<div class="personalArchitectureMeaning">Release Vector / Mastery Pattern.</div>
+<div class="personalArchitectureMeaning">The release vector: where the system simplifies, sheds excess, or draws from established pattern.</div>
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
 </div>
 </div>
@@ -9517,13 +9529,20 @@
 				return fallbackRole;
 			}
 
+			function personalArchitectureFormatMetaLines(lines = []) {
+				const cleanLines = lines
+					.map((line) => String(line || "").trim())
+					.filter(Boolean);
+				return cleanLines.length ? cleanLines.join("\n") : "";
+			}
+
 			function personalArchitectureFormatPlacementMeta({
 				data,
 				placement,
 				degree,
 				roleAvailable,
 			}) {
-				const parts = [];
+				const lines = [];
 				const signValue = chartKernelPickFirstValue(placement, [
 					/^sign$/,
 					/^rasi$/,
@@ -9546,23 +9565,60 @@
 				const degreeText = chartKernelFormatNumber(degreeValue, 2);
 				const normalizedText = chartKernelFormatNumber(normalizedValue, 4);
 
-				if (degreeText) parts.push(`${degreeText}°`);
-				if (chartKernelHasValue(signValue)) parts.push(String(signValue));
-				if (normalizedText) parts.push(`normalized ${normalizedText}`);
-				if (parts.length) return parts.join(" · ");
-				return roleAvailable ? "Role available" : "Awaiting placement texture";
+				if (degreeText) lines.push(`Degree: ${degreeText}°`);
+				if (chartKernelHasValue(signValue)) lines.push(`Sign: ${String(signValue)}`);
+				if (normalizedText) lines.push(`Normalized: ${normalizedText}`);
+				return personalArchitectureFormatMetaLines(lines) || (roleAvailable ? "Role available" : "Awaiting placement texture");
+			}
+
+			function personalArchitectureFormatNodeMeta(node, fallbackLabel) {
+				if (!node || typeof node !== "object") return "";
+				const longitudeValue = chartKernelPickFirstValue(node, [
+					/^longitude(deg|degree|degrees)?$/,
+					/^longitude_?deg(rees)?$/,
+					/^lon(gitude)?_?deg(rees)?$/,
+					/^deg(rees)?$/,
+				]);
+				const normalizedValue = chartKernelPickFirstValue(node, [
+					/^normalized$/,
+					/^normalized(value)?$/,
+					/^norm$/,
+				]);
+				const labelValue = chartKernelPickFirstValue(node, [
+					/^role(label)?$/,
+					/^vector(label)?$/,
+					/^label$/,
+					/^name$/,
+				]);
+				const degreeText = chartKernelFormatNumber(longitudeValue, 2);
+				const normalizedText = chartKernelFormatNumber(normalizedValue, 4);
+				const lines = [];
+				if (degreeText) lines.push(`Degree: ${degreeText}°`);
+				if (normalizedText) lines.push(`Normalized: ${normalizedText}`);
+				if (chartKernelHasValue(labelValue)) lines.push(String(labelValue));
+				else if (fallbackLabel) lines.push(fallbackLabel);
+				return personalArchitectureFormatMetaLines(lines);
 			}
 
 			function renderPersonalArchitectureBetaItem(item) {
+				const metaHtml = String(item.meta || "")
+					.split("\n")
+					.map((line) => line.trim())
+					.filter(Boolean)
+					.map(
+						(line) =>
+							`<span class="personalArchitectureMetaLine">${chartKernelEscapeHtml(line)}</span>`
+					)
+					.join("");
 				return `<div class="personalArchitectureBetaItem"><div class="personalArchitectureRole">${chartKernelEscapeHtml(
 					item.role
 				)}</div><div class="personalArchitectureLabel">${chartKernelEscapeHtml(
 					item.label
 				)}</div><div class="personalArchitectureMeaning">${chartKernelEscapeHtml(
 					item.meaning
-				)}</div><div class="personalArchitectureMeta">${chartKernelEscapeHtml(
-					item.meta
-				)}</div></div>`;
+				)}</div><div class="personalArchitectureMeta">${
+					metaHtml || chartKernelEscapeHtml(item.meta || "Awaiting placement texture")
+				}</div></div>`;
 			}
 
 			function renderPersonalArchitectureBetaCard(data) {
@@ -9589,7 +9645,7 @@
 					{
 						label: "Ascendant",
 						role: personalArchitecturePickRole(data, [/^asc(endant)?$/], "Interface Kernel"),
-						meaning: "How your system meets the field.",
+						meaning: "How your system meets the field and receives pressure first.",
 						meta: personalArchitectureFormatPlacementMeta({
 							data,
 							placement: ascPlacement,
@@ -9600,7 +9656,7 @@
 					{
 						label: "Sun",
 						role: personalArchitecturePickRole(data, [/^sun$/], "Core Voltage / CPU"),
-						meaning: "Core operating voltage.",
+						meaning: "Your core operating signal: the steady center Lucy.OS uses for personal orientation.",
 						meta: personalArchitectureFormatPlacementMeta({
 							data,
 							placement: sunPlacement,
@@ -9611,7 +9667,7 @@
 					{
 						label: "Moon",
 						role: personalArchitecturePickRole(data, [/^moon$/], "Emotional Processor / GPU"),
-						meaning: "Body-state, comfort, emotional rhythm, and timing texture.",
+						meaning: "How your system reads body-state, comfort, timing, and emotional rhythm.",
 						meta: personalArchitectureFormatPlacementMeta({
 							data,
 							placement: moonPlacement,
@@ -9621,15 +9677,15 @@
 					},
 					{
 						label: "Rahu / North Node",
-						role: personalArchitecturePickRole(data, [/rahu/, /north.?node/], "Growth Vector"),
-						meaning: "Growth Vector / Directional Trajectory.",
-						meta: chartKernelBuildNodeVectorValue(rahu, "") || (roleAvailable ? "Role available" : "Awaiting placement texture"),
+						role: personalArchitecturePickRole(data, [/rahu/, /north.?node/], "Growth Vector / Directional Trajectory"),
+						meaning: "The forward-moving vector: where the system stretches, learns, and develops new range.",
+						meta: personalArchitectureFormatNodeMeta(rahu, "") || (roleAvailable ? "Role available" : "Awaiting placement texture"),
 					},
 					{
 						label: "Ketu / South Node",
-						role: personalArchitecturePickRole(data, [/ketu/, /south.?node/], "Release Vector"),
-						meaning: "Release Vector / Mastery Pattern.",
-						meta: chartKernelBuildNodeVectorValue(ketu, "") || (roleAvailable ? "Role available" : "Awaiting placement texture"),
+						role: personalArchitecturePickRole(data, [/ketu/, /south.?node/], "Release Vector / Mastery Pattern"),
+						meaning: "The release vector: where the system simplifies, sheds excess, or draws from established pattern.",
+						meta: personalArchitectureFormatNodeMeta(ketu, "") || (roleAvailable ? "Role available" : "Awaiting placement texture"),
 					},
 				];
 
