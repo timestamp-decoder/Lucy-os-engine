@@ -61,6 +61,7 @@
 <!-- Pass 20 update: added temporary TimestampDecoder.com CTA footer line to visual share card and copied share text only. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, visual share-card section list, visual title personalization, share export mechanics beyond footer text, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, in-app read content, Personal Architecture Beta content, PASS 15 component note language, or core public read behavior changed. -->
 <!-- Pass 21 update: lightly polished visual share-card footer spacing only after the CTA footer addition. No copied share text, backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, visual share-card section list, visual title personalization, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, in-app read content, Personal Architecture Beta content, PASS 15 component note language, or core public read behavior changed. -->
 <!-- Pass 22 update: added optional Profile Name personalization to the visual share-card title only. No copied share text, backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name input/save/load behavior, visual share-card section list, visual share-card compression, footer CTA, footer spacing, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, in-app read content, Personal Architecture Beta content, PASS 15 component note language, or core public read behavior changed. -->
+<!-- Pass 22B update: fixed the real exported visual share-card title hook so optional Profile Name renders on the visible/exported card title. Visual share-card title personalization only; copied share text, Profile Name input/save/load behavior, saved profiles, backend/API, engine, scoring, Moonstamp, dashboard, field selection, calibration, visual card sections/compression/footer, Chart Kernel, diagnostics, bottom nav, and in-app read behavior unchanged. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -12431,6 +12432,8 @@
 				if (locationInput)
 					locationInput.value = profile.locationText || "";
 
+				updateVisualShareCardTitle();
+
 				setText(
 					"profileSaveStatus",
 					"Profile loaded. Press Calculate to run this chart."
@@ -15390,17 +15393,24 @@ ${bodyLine}${loadLine}`,
 			}
 
 			function getCurrentProfileNameForShare() {
-				return (
+				return normalizeProfileName(
 					document.getElementById("profileNameInput")?.value || ""
-				).trim();
+				);
+			}
+
+			function getVisualShareCardTitle() {
+				const profileName = getCurrentProfileNameForShare();
+				return profileName ? `Lucy.OS Pro for ${profileName}` : "Lucy.OS Pro";
 			}
 
 			function updateVisualShareCardTitle() {
-				const profileName = getCurrentProfileNameForShare();
-				setText(
-					"shareCardTitle",
-					profileName ? `Lucy.OS Pro for ${profileName}` : "Lucy.OS Pro"
-				);
+				const title = getVisualShareCardTitle();
+				const titleEl =
+					document.querySelector("#lucyShareCard #shareCardTitle") ||
+					document.querySelector("#lucyShareCard .shareCardTop span:first-child") ||
+					document.getElementById("shareCardTitle");
+
+				if (titleEl) titleEl.textContent = title;
 			}
 
 			function updateShareUI({
@@ -18264,7 +18274,14 @@ ${bodyLine}${loadLine}`,
 				.addEventListener("click", deleteSelectedProfile);
 
 			const defaultProfileNameInput = document.getElementById("profileNameInput");
-			if (defaultProfileNameInput) defaultProfileNameInput.value = "";
+			if (defaultProfileNameInput) {
+				defaultProfileNameInput.value = "";
+				defaultProfileNameInput.addEventListener(
+					"input",
+					updateVisualShareCardTitle
+				);
+			}
+			updateVisualShareCardTitle();
 			document.getElementById("dob").value = "1980-11-21";
 			document.getElementById("tob").value = "6:20";
 			document.getElementById("ampm").value = "AM";
