@@ -55,6 +55,7 @@
 <!-- Personal Architecture field-context overflow fix update: hardened the existing field-context micro-line wrapping so the current field label stays intact on mobile. CSS/markup safety only; no backend/API, scoring, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, bottom padding, PASS 15 component note language, or core public read behavior changed. -->
 <!-- Personal Architecture field-context overflow fix: wrapped the field-context label defensively so mobile does not split field names mid-word. CSS/markup safety only; no backend/API, scoring, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, bottom padding, PASS 15 component note language, or core public read behavior changed. -->
 <!-- Pass 16 update: added one compact Personal Landing micro-line to the visual share card only. No copied share text, backend/API, scoring, Moonstamp, dashboard, saved profiles, share export behavior beyond the visual share-card micro-line, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel data extraction, diagnostics, bottom nav behavior, bottom padding, Personal Architecture Beta content, PASS 15 component note language, or core public read behavior changed. -->
+<!-- Pass 16B update: added the matching compact Personal Landing micro-line to copied share text only. Visual share card line, backend/API, scoring, Moonstamp, dashboard, saved profiles, calibration behavior, Chart Kernel data extraction, diagnostics, bottom nav behavior, bottom padding, Personal Architecture Beta content, PASS 15 component note language, and core public read behavior unchanged. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -15652,6 +15653,13 @@ ${bodyLine}${loadLine}`,
 					shareCoreMove,
 					shareGoodMove
 				);
+				const sharePersonalLandingField = publicFieldText(
+					latestSharePayload.field
+				);
+				const sharePersonalLandingLine =
+					sharePersonalLandingField && sharePersonalLandingField !== "—"
+						? `Personal Landing: Today’s ${sharePersonalLandingField} field may register through your interface, center, and body-state first.`
+						: "Personal Landing: Today’s field may register through your interface, center, and body-state first.";
 
 				const lines = [
 					"Lucy.OS Pro",
@@ -15668,6 +15676,8 @@ ${bodyLine}${loadLine}`,
 						latestSharePayload.fieldDirectionText,
 						"Waiting for field direction."
 					),
+					"",
+					sharePersonalLandingLine,
 					"",
 					"Core Rule:",
 					`Use your gift: ${cleanShareSentence(
