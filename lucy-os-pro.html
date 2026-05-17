@@ -64,6 +64,7 @@
 <!-- Pass 22B update: fixed the real exported visual share-card title hook so optional Profile Name renders on the visible/exported card title. Visual share-card title personalization only; copied share text, Profile Name input/save/load behavior, saved profiles, backend/API, engine, scoring, Moonstamp, dashboard, field selection, calibration, visual card sections/compression/footer, Chart Kernel, diagnostics, bottom nav, and in-app read behavior unchanged. -->
 <!-- Pass 23 update: compressed the visual share-card footer CTA styling only so the temporary TimestampDecoder.com line reads softer and stays more compact. Copied share text, visual title personalization, engine/API, scoring, Moonstamp, dashboard, saved profiles, Chart Kernel, diagnostics, bottom nav, and in-app read behavior unchanged. -->
 <!-- Pass 24 update: added compact Personal Architecture Beta “What this means today” detail lines only. Uses existing current-field/support/load display values defensively; no backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, PASS 15 component note language, or core public read behavior changed. -->
+<!-- Pass 25 update: lightly tightened Personal Architecture Beta “What this means today” mini-block density only. CSS/layout polish only; PASS 24 wording/helpers, PASS 15 component note language, backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, and core public read behavior unchanged. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -3814,26 +3815,26 @@
 			}
 
 			.personalArchitectureTodayMeaning {
-				margin-top: 6px;
-				padding: 7px 8px;
-				border: 1px solid rgba(103, 193, 255, 0.105);
-				border-radius: 10px;
-				background: rgba(103, 193, 255, 0.035);
-				color: rgba(217, 224, 244, 0.92);
-				font-size: 10.65px;
-				line-height: 1.34;
-				font-weight: 740;
+				margin-top: 5px;
+				padding: 5px 7px;
+				border: 1px solid rgba(103, 193, 255, 0.075);
+				border-radius: 9px;
+				background: rgba(103, 193, 255, 0.022);
+				color: rgba(217, 224, 244, 0.9);
+				font-size: 10.45px;
+				line-height: 1.3;
+				font-weight: 720;
 				overflow-wrap: break-word;
 			}
 
 			.personalArchitectureTodayMeaning strong {
 				display: block;
-				margin-bottom: 3px;
-				color: var(--blue);
-				font-size: 9.2px;
-				line-height: 1.2;
+				margin-bottom: 2px;
+				color: rgba(103, 193, 255, 0.88);
+				font-size: 8.9px;
+				line-height: 1.15;
 				font-weight: 950;
-				letter-spacing: 0.08em;
+				letter-spacing: 0.075em;
 				text-transform: uppercase;
 			}
 
@@ -6348,6 +6349,18 @@
 
 				.personalArchitectureBetaItem {
 					padding: 9px 10px 8px;
+				}
+
+				.personalArchitectureTodayMeaning {
+					margin-top: 5px;
+					padding: 5px 7px;
+					font-size: 10.35px;
+					line-height: 1.28;
+				}
+
+				.personalArchitectureTodayMeaning strong {
+					margin-bottom: 2px;
+					font-size: 8.75px;
 				}
 
 				.personalArchitectureFieldContext {
