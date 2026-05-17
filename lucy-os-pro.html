@@ -72,6 +72,7 @@
 <!-- Pass 29B update: moved the existing Activated Architecture Today card into the visible Landing stack between Landing Note and Plain Read, and hardened the display-only Ascendant / Interface Kernel fallback when safe chart-kernel Ascendant data exists. No backend/API, payload, engine, scoring, Moonstamp logic, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Personal Architecture Beta content, PASS 15 component note language, PASS 24 wording/helpers, PASS 26 framing strip, PASS 27 top hierarchy, PASS 28 component-card styling, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, or core public read behavior changed. -->
 <!-- Pass 30 update: polished Activated Architecture Today copy and density only. Shortened the landing-bridge body copy, added compact Release Vector fallback language when already available, and lightly tightened only the activated-architecture card styling. No backend/API, payload, engine, scoring, Moonstamp logic, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Personal Architecture Beta content, PASS 15 component note language, PASS 24 wording/helpers, PASS 26 framing strip, PASS 27 top hierarchy, PASS 28 component-card styling, PASS 29B placement/order, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, or core public read behavior changed. -->
 <!-- Pass 31 update: polished Landing / Personal Chart Translation flow readability only. Lightly refined spacing, hierarchy, and scan weight so Landing Note introduces the read, Activated Architecture feels like a compact bridge, Plain Read stays primary, One Good Move is easier to find, and Do Not Overdo reads quieter. No backend/API, payload, engine, scoring, Moonstamp logic, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, bottom nav, bottom padding, Personal Architecture Beta content, PASS 15 component note language, PASS 24 wording/helpers, PASS 26 framing strip, PASS 27 top hierarchy, PASS 28 component-card styling, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
+<!-- Pass 32 update: upgraded Personal Architecture Beta placement-card structure only. Cards now read as placement-forward product cards with Meaning, Use, Explore rows, quiet metadata, and existing Today / What this means today detail preserved. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share-card behavior, bottom nav, bottom padding, Landing flow, PASS 15 component note language meaning, PASS 24 helper meaning, PASS 26 framing strip meaning, PASS 27 hierarchy, PASS 28 component-card styling direction, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, PASS 31 Landing styling, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -3807,8 +3808,8 @@
 
 			.personalArchitectureBetaGrid {
 				display: grid;
-				grid-template-columns: repeat(5, minmax(0, 1fr));
-				gap: 7px;
+				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+				gap: 8px;
 				min-width: 0;
 				max-width: 100%;
 			}
@@ -3816,17 +3817,44 @@
 			.personalArchitectureBetaItem {
 				display: grid;
 				align-content: start;
+				gap: 8px;
 				min-width: 0;
 				max-width: 100%;
-				padding: 10px 10px 9px;
+				padding: 11px;
 				border: 1px solid rgba(255, 255, 255, 0.075);
 				border-radius: 13px;
 				background: linear-gradient(
 					180deg,
-					rgba(255, 255, 255, 0.036),
+					rgba(255, 255, 255, 0.038),
 					rgba(255, 255, 255, 0.024)
 				);
 				overflow: hidden;
+			}
+
+			.personalArchitectureComponentHeader {
+				display: grid;
+				gap: 3px;
+				min-width: 0;
+				padding-bottom: 7px;
+				border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+			}
+
+			.personalArchitecturePlacementTitle {
+				color: var(--text);
+				font-size: 13.5px;
+				font-weight: 950;
+				line-height: 1.22;
+				overflow-wrap: anywhere;
+			}
+
+			.personalArchitectureSystemRole {
+				color: rgba(216, 184, 76, 0.9);
+				font-size: 9.4px;
+				font-weight: 950;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				line-height: 1.18;
+				overflow-wrap: anywhere;
 			}
 
 			.personalArchitectureRole {
@@ -3848,6 +3876,55 @@
 				overflow-wrap: anywhere;
 			}
 
+			.personalArchitectureCardRows {
+				display: grid;
+				gap: 5px;
+				min-width: 0;
+			}
+
+			.personalArchitectureCardRow {
+				display: grid;
+				grid-template-columns: 58px minmax(0, 1fr);
+				gap: 8px;
+				align-items: start;
+				padding: 6px 7px;
+				border: 1px solid rgba(255, 255, 255, 0.055);
+				border-radius: 9px;
+				background: rgba(255, 255, 255, 0.022);
+				min-width: 0;
+			}
+
+			.personalArchitectureCardRow span {
+				color: rgba(216, 184, 76, 0.82);
+				font-size: 8.7px;
+				font-weight: 950;
+				letter-spacing: 0.07em;
+				text-transform: uppercase;
+				line-height: 1.25;
+			}
+
+			.personalArchitectureCardRow strong {
+				color: rgba(233, 239, 255, 0.9);
+				font-size: 10.75px;
+				line-height: 1.34;
+				font-weight: 760;
+				overflow-wrap: break-word;
+			}
+
+			.personalArchitectureExploreRow {
+				border-color: rgba(103, 193, 255, 0.055);
+				background: rgba(103, 193, 255, 0.018);
+			}
+
+			.personalArchitectureExploreRow span {
+				color: rgba(103, 193, 255, 0.72);
+			}
+
+			.personalArchitectureExploreRow strong {
+				color: rgba(170, 183, 214, 0.82);
+				font-weight: 820;
+			}
+
 			.personalArchitectureMeaning {
 				margin-top: 5px;
 				color: rgba(217, 224, 244, 0.82);
@@ -3858,7 +3935,7 @@
 			}
 
 			.personalArchitectureToday {
-				margin-top: 7px;
+				margin-top: 0;
 				padding: 7px 8px;
 				border: 1px solid rgba(216, 184, 76, 0.12);
 				border-radius: 10px;
@@ -3876,7 +3953,7 @@
 			}
 
 			.personalArchitectureTodayMeaning {
-				margin-top: 5px;
+				margin-top: -3px;
 				padding: 5px 7px;
 				border: 1px solid rgba(103, 193, 255, 0.055);
 				border-radius: 9px;
@@ -3900,13 +3977,13 @@
 			}
 
 			.personalArchitectureMeta {
-				margin-top: 5px;
+				margin-top: -2px;
 				padding-top: 4px;
 				border-top: 1px solid rgba(255, 255, 255, 0.038);
-				color: rgba(127, 143, 184, 0.72);
-				font-size: 9.65px;
+				color: rgba(127, 143, 184, 0.68);
+				font-size: 9.45px;
 				line-height: 1.28;
-				font-weight: 780;
+				font-weight: 760;
 				overflow-wrap: anywhere;
 			}
 
@@ -6477,17 +6554,28 @@
 					padding: 10px 11px 9px;
 				}
 
+				.personalArchitecturePlacementTitle {
+					font-size: 13.2px;
+				}
+
+				.personalArchitectureCardRow {
+					grid-template-columns: 54px minmax(0, 1fr);
+					padding: 6px 7px;
+				}
+
+				.personalArchitectureCardRow strong {
+					font-size: 10.65px;
+				}
+
 				.personalArchitectureMeaning {
 					font-size: 10.8px;
 				}
 
 				.personalArchitectureToday {
-					margin-top: 7px;
 					padding: 7px 8px;
 				}
 
 				.personalArchitectureTodayMeaning {
-					margin-top: 5px;
 					padding: 5px 7px;
 					font-size: 10.2px;
 					line-height: 1.28;
@@ -8408,41 +8496,71 @@
 <div class="personalArchitectureFieldContext" id="personalArchitectureFieldContext">Today’s component notes are tuned to the current field when available.</div>
 <div class="personalArchitectureBetaGrid" id="personalArchitectureBetaGrid">
 <div class="personalArchitectureBetaItem">
-<div class="personalArchitectureRole">Interface Kernel</div>
-<div class="personalArchitectureLabel">Ascendant</div>
-<div class="personalArchitectureMeaning">How the field first meets your system.</div>
+<div class="personalArchitectureComponentHeader">
+<div class="personalArchitecturePlacementTitle">Ascendant — Interface Kernel</div>
+<div class="personalArchitectureSystemRole">Ascendant</div>
+</div>
+<div class="personalArchitectureCardRows">
+<div class="personalArchitectureCardRow"><span>Meaning</span><strong>This is where the day first meets your attention, body, or environment.</strong></div>
+<div class="personalArchitectureCardRow"><span>Use</span><strong>Notice what feels charged, then slow the first response.</strong></div>
+<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Deeper read coming soon</strong></div>
+</div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice how the field first meets your attention, body, or environment.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up in how quickly you read the room, pressure, tone, or first impression before choosing a response.</div>
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
 </div>
 <div class="personalArchitectureBetaItem">
-<div class="personalArchitectureRole">Core Voltage</div>
-<div class="personalArchitectureLabel">Sun</div>
-<div class="personalArchitectureMeaning">The core signal your system organizes around.</div>
+<div class="personalArchitectureComponentHeader">
+<div class="personalArchitecturePlacementTitle">Sun — Core Voltage</div>
+<div class="personalArchitectureSystemRole">Sun</div>
+</div>
+<div class="personalArchitectureCardRows">
+<div class="personalArchitectureCardRow"><span>Meaning</span><strong>This is where your system looks for energy, clarity, and a clean center.</strong></div>
+<div class="personalArchitectureCardRow"><span>Use</span><strong>Choose one clean priority before adding energy.</strong></div>
+<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Deeper read coming soon</strong></div>
+</div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice what feels central, important, or identity-linked in the read.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up in where your energy feels clear, strained, pulled, or ready to move today.</div>
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
 </div>
 <div class="personalArchitectureBetaItem">
-<div class="personalArchitectureRole">Emotional Processor</div>
-<div class="personalArchitectureLabel">Moon</div>
-<div class="personalArchitectureMeaning">How your body and emotions process the field.</div>
+<div class="personalArchitectureComponentHeader">
+<div class="personalArchitecturePlacementTitle">Moon — Emotional Processor</div>
+<div class="personalArchitectureSystemRole">Moon</div>
+</div>
+<div class="personalArchitectureCardRows">
+<div class="personalArchitectureCardRow"><span>Meaning</span><strong>This is where the field lands through body-state, comfort, mood, and rhythm.</strong></div>
+<div class="personalArchitectureCardRow"><span>Use</span><strong>Ground first, then clarify what your system needs.</strong></div>
+<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Deeper read coming soon</strong></div>
+</div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice how the field lands in body-state, mood, comfort, or emotional rhythm.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up through body-state, comfort, emotional rhythm, or the need for steadier pacing.</div>
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
 </div>
 <div class="personalArchitectureBetaItem">
-<div class="personalArchitectureRole">Growth Vector</div>
-<div class="personalArchitectureLabel">Rahu / North Node</div>
-<div class="personalArchitectureMeaning">Where the system is being pulled forward.</div>
+<div class="personalArchitectureComponentHeader">
+<div class="personalArchitecturePlacementTitle">Rahu / North Node — Growth Vector</div>
+<div class="personalArchitectureSystemRole">Rahu / North Node</div>
+</div>
+<div class="personalArchitectureCardRows">
+<div class="personalArchitectureCardRow"><span>Meaning</span><strong>This points toward the edge your system is learning to move into.</strong></div>
+<div class="personalArchitectureCardRow"><span>Use</span><strong>Take one small step toward the unfamiliar without forcing the whole path.</strong></div>
+<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Deeper read coming soon</strong></div>
+</div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice where the read pulls you toward a next step, new edge, or unfamiliar pattern.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up as the edge your system is being asked to move toward without forcing it.</div>
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
 </div>
 <div class="personalArchitectureBetaItem">
-<div class="personalArchitectureRole">Release Vector</div>
-<div class="personalArchitectureLabel">Ketu / South Node</div>
-<div class="personalArchitectureMeaning">What the system may need to release or stop overusing.</div>
+<div class="personalArchitectureComponentHeader">
+<div class="personalArchitecturePlacementTitle">Ketu / South Node — Release Vector</div>
+<div class="personalArchitectureSystemRole">Ketu / South Node</div>
+</div>
+<div class="personalArchitectureCardRows">
+<div class="personalArchitectureCardRow"><span>Meaning</span><strong>This shows the pattern your system may default to when pressure rises.</strong></div>
+<div class="personalArchitectureCardRow"><span>Use</span><strong>Keep the wisdom, but do not retreat into the old loop.</strong></div>
+<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Deeper read coming soon</strong></div>
+</div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice what old reflex, overuse, or attachment the return path may ask you to loosen.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up as what your system needs to simplify, stop over-carrying, or let become quieter today.</div>
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
@@ -9846,6 +9964,26 @@
 				return fallbackRole;
 			}
 
+
+			function personalArchitectureGetPlacementSign(placement) {
+				const signValue = chartKernelPickFirstValue(placement, [
+					/^sign$/,
+					/^rasi$/,
+					/^rāśi$/,
+					/^zodiac(sign)?$/,
+				]);
+				return chartKernelHasValue(signValue) ? String(signValue).trim() : "";
+			}
+
+			function personalArchitectureBuildPlacementTitle(item) {
+				const placement = String(item?.label || "").trim();
+				const role = personalArchitecturePublicRoleLabel(item?.role || "");
+				const sign = String(item?.sign || "").trim();
+				const placementTitle = sign && !/node/i.test(placement) ? `${placement} in ${sign}` : placement;
+				if (placementTitle && role) return `${placementTitle} — ${role}`;
+				return role || placementTitle || "Stable receiving component";
+			}
+
 			function personalArchitectureFormatMetaLines(lines = []) {
 				const cleanLines = lines
 					.map((line) => String(line || "").trim())
@@ -10409,13 +10547,19 @@
 				const todayMeaningHtml = item.todayMeaning
 					? `<div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>${chartKernelEscapeHtml(item.todayMeaning)}</div>`
 					: "";
-				return `<div class="personalArchitectureBetaItem"><div class="personalArchitectureRole">${chartKernelEscapeHtml(
-					personalArchitecturePublicRoleLabel(item.role)
-				)}</div><div class="personalArchitectureLabel">${chartKernelEscapeHtml(
-					item.label
-				)}</div><div class="personalArchitectureMeaning">${chartKernelEscapeHtml(
+				const title = personalArchitectureBuildPlacementTitle(item);
+				const systemRole = item.sign && !/node/i.test(String(item.label || ""))
+					? "Stable receiving component"
+					: chartKernelEscapeHtml(item.label || "Stable receiving component");
+				return `<div class="personalArchitectureBetaItem"><div class="personalArchitectureComponentHeader"><div class="personalArchitecturePlacementTitle">${chartKernelEscapeHtml(
+					title
+				)}</div><div class="personalArchitectureSystemRole">${systemRole}</div></div><div class="personalArchitectureCardRows"><div class="personalArchitectureCardRow"><span>Meaning</span><strong>${chartKernelEscapeHtml(
 					item.meaning
-				)}</div>${todayHtml}${todayMeaningHtml}<div class="personalArchitectureMeta">${
+				)}</strong></div><div class="personalArchitectureCardRow"><span>Use</span><strong>${chartKernelEscapeHtml(
+					item.use || "Notice where this part receives the field, then choose one clean response."
+				)}</strong></div><div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>${chartKernelEscapeHtml(
+					item.explore || "Deeper read coming soon"
+				)}</strong></div></div>${todayHtml}${todayMeaningHtml}<div class="personalArchitectureMeta">${
 					metaHtml || chartKernelEscapeHtml(item.meta || "Awaiting placement texture")
 				}</div></div>`;
 			}
@@ -10471,7 +10615,9 @@
 					{
 						label: "Ascendant",
 						role: personalArchitecturePickRole(data, [/^asc(endant)?$/], "Interface Kernel"),
-						meaning: "How the field first meets your system.",
+						sign: personalArchitectureGetPlacementSign(ascPlacement),
+						meaning: "This is where the day first meets your attention, body, or environment.",
+						use: "Notice what feels charged, then slow the first response.",
 						today: dailyComponentLines.interface,
 						todayMeaning: todayMeaningLines.interface,
 						meta: personalArchitectureFormatPlacementMeta({
@@ -10484,7 +10630,9 @@
 					{
 						label: "Sun",
 						role: personalArchitecturePickRole(data, [/^sun$/], "Core Voltage"),
-						meaning: "The core signal your system organizes around.",
+						sign: personalArchitectureGetPlacementSign(sunPlacement),
+						meaning: "This is where your system looks for energy, clarity, and a clean center.",
+						use: "Choose one clean priority before adding energy.",
 						today: dailyComponentLines.core,
 						todayMeaning: todayMeaningLines.core,
 						meta: personalArchitectureFormatPlacementMeta({
@@ -10497,7 +10645,9 @@
 					{
 						label: "Moon",
 						role: personalArchitecturePickRole(data, [/^moon$/], "Emotional Processor"),
-						meaning: "How your body and emotions process the field.",
+						sign: personalArchitectureGetPlacementSign(moonPlacement),
+						meaning: "This is where the field lands through body-state, comfort, mood, and rhythm.",
+						use: "Ground first, then clarify what your system needs.",
 						today: dailyComponentLines.emotional,
 						todayMeaning: todayMeaningLines.emotional,
 						meta: personalArchitectureFormatPlacementMeta({
@@ -10510,7 +10660,9 @@
 					{
 						label: "Rahu / North Node",
 						role: personalArchitecturePickRole(data, [/rahu/, /north.?node/], "Growth Vector"),
-						meaning: "Where the system is being pulled forward.",
+						sign: personalArchitectureGetPlacementSign(rahu),
+						meaning: "This points toward the edge your system is learning to move into.",
+						use: "Take one small step toward the unfamiliar without forcing the whole path.",
 						today: dailyComponentLines.growth,
 						todayMeaning: todayMeaningLines.growth,
 						meta: personalArchitectureFormatNodeMeta(rahu, "") || (roleAvailable ? "Role available" : "Awaiting placement texture"),
@@ -10518,7 +10670,9 @@
 					{
 						label: "Ketu / South Node",
 						role: personalArchitecturePickRole(data, [/ketu/, /south.?node/], "Release Vector"),
-						meaning: "What the system may need to release or stop overusing.",
+						sign: personalArchitectureGetPlacementSign(ketu),
+						meaning: "This shows the pattern your system may default to when pressure rises.",
+						use: "Keep the wisdom, but do not retreat into the old loop.",
 						today: dailyComponentLines.release,
 						todayMeaning: todayMeaningLines.release,
 						meta: personalArchitectureFormatNodeMeta(ketu, "") || (roleAvailable ? "Role available" : "Awaiting placement texture"),
