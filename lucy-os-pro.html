@@ -42,6 +42,7 @@
 <!-- Pass 4D update: added Personal Architecture Beta card inside the You destination only. Public display layer uses existing chartKernel placementRoles, existing tropical degree/sign data where already available, and calculated Rahu/Ketu node vectors where already returned. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, raw diagnostics, or core read behavior changed. -->
 <!-- Pass 5A update: refined Personal Architecture Beta public wording and data-line formatting only. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, or core read behavior changed. -->
 <!-- Pass 5B update: removed redundant role-label repeat from Personal Architecture Beta node data stacks and added a small display-only helper note. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, or core read behavior changed. -->
+<!-- Pass 6 update: polished Personal Architecture Beta intro, public component labels, and display-only bridge/caution copy only. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -7965,7 +7966,7 @@
 <div class="personalArchitectureBetaHeader">
 <div>
 <h3>Personal Architecture — Beta</h3>
-<p>These labels show how Lucy.OS organizes your personal landing layer. They are system components, not fixed personality traits.</p>
+<p>This shows the personal landing architecture behind today’s read. The field is shared; these components describe how it enters your system.</p>
 </div>
 <div class="personalArchitectureBetaBadge">Display Only</div>
 </div>
@@ -7977,31 +7978,31 @@
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
 </div>
 <div class="personalArchitectureBetaItem">
-<div class="personalArchitectureRole">Core Voltage / CPU</div>
+<div class="personalArchitectureRole">Core Voltage</div>
 <div class="personalArchitectureLabel">Sun</div>
 <div class="personalArchitectureMeaning">Your core operating signal: the steady center Lucy.OS uses for personal orientation.</div>
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
 </div>
 <div class="personalArchitectureBetaItem">
-<div class="personalArchitectureRole">Emotional Processor / GPU</div>
+<div class="personalArchitectureRole">Emotional Processor</div>
 <div class="personalArchitectureLabel">Moon</div>
 <div class="personalArchitectureMeaning">How your system reads body-state, comfort, timing, and emotional rhythm.</div>
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
 </div>
 <div class="personalArchitectureBetaItem">
-<div class="personalArchitectureRole">Growth Vector / Directional Trajectory</div>
+<div class="personalArchitectureRole">Growth Vector</div>
 <div class="personalArchitectureLabel">Rahu / North Node</div>
 <div class="personalArchitectureMeaning">The forward-moving vector: where the system stretches, learns, and develops new range.</div>
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
 </div>
 <div class="personalArchitectureBetaItem">
-<div class="personalArchitectureRole">Release Vector / Mastery Pattern</div>
+<div class="personalArchitectureRole">Release Vector</div>
 <div class="personalArchitectureLabel">Ketu / South Node</div>
 <div class="personalArchitectureMeaning">The release vector: where the system simplifies, sheds excess, or draws from established pattern.</div>
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
 </div>
 </div>
-<p class="personalArchitectureBetaHelper">These values are display-only and do not change today’s field calculation.</p>
+<p class="personalArchitectureBetaHelper">Display-only: these values help explain the read but do not change today’s field calculation. Labels are not predictions or fixed personality traits.</p>
 </div>
 </section>
 <section class="profileCard">
@@ -9603,6 +9604,17 @@
 				return personalArchitectureFormatMetaLines(lines);
 			}
 
+			function personalArchitecturePublicRoleLabel(role) {
+				const text = String(role || "").trim();
+				const publicRoleMap = {
+					"Core Voltage / CPU": "Core Voltage",
+					"Emotional Processor / GPU": "Emotional Processor",
+					"Growth Vector / Directional Trajectory": "Growth Vector",
+					"Release Vector / Mastery Pattern": "Release Vector",
+				};
+				return publicRoleMap[text] || text;
+			}
+
 			function renderPersonalArchitectureBetaItem(item) {
 				const metaHtml = String(item.meta || "")
 					.split("\n")
@@ -9614,7 +9626,7 @@
 					)
 					.join("");
 				return `<div class="personalArchitectureBetaItem"><div class="personalArchitectureRole">${chartKernelEscapeHtml(
-					item.role
+					personalArchitecturePublicRoleLabel(item.role)
 				)}</div><div class="personalArchitectureLabel">${chartKernelEscapeHtml(
 					item.label
 				)}</div><div class="personalArchitectureMeaning">${chartKernelEscapeHtml(
@@ -9658,7 +9670,7 @@
 					},
 					{
 						label: "Sun",
-						role: personalArchitecturePickRole(data, [/^sun$/], "Core Voltage / CPU"),
+						role: personalArchitecturePickRole(data, [/^sun$/], "Core Voltage"),
 						meaning: "Your core operating signal: the steady center Lucy.OS uses for personal orientation.",
 						meta: personalArchitectureFormatPlacementMeta({
 							data,
@@ -9669,7 +9681,7 @@
 					},
 					{
 						label: "Moon",
-						role: personalArchitecturePickRole(data, [/^moon$/], "Emotional Processor / GPU"),
+						role: personalArchitecturePickRole(data, [/^moon$/], "Emotional Processor"),
 						meaning: "How your system reads body-state, comfort, timing, and emotional rhythm.",
 						meta: personalArchitectureFormatPlacementMeta({
 							data,
@@ -9680,13 +9692,13 @@
 					},
 					{
 						label: "Rahu / North Node",
-						role: personalArchitecturePickRole(data, [/rahu/, /north.?node/], "Growth Vector / Directional Trajectory"),
+						role: personalArchitecturePickRole(data, [/rahu/, /north.?node/], "Growth Vector"),
 						meaning: "The forward-moving vector: where the system stretches, learns, and develops new range.",
 						meta: personalArchitectureFormatNodeMeta(rahu, "") || (roleAvailable ? "Role available" : "Awaiting placement texture"),
 					},
 					{
 						label: "Ketu / South Node",
-						role: personalArchitecturePickRole(data, [/ketu/, /south.?node/], "Release Vector / Mastery Pattern"),
+						role: personalArchitecturePickRole(data, [/ketu/, /south.?node/], "Release Vector"),
 						meaning: "The release vector: where the system simplifies, sheds excess, or draws from established pattern.",
 						meta: personalArchitectureFormatNodeMeta(ketu, "") || (roleAvailable ? "Role available" : "Awaiting placement texture"),
 					},
