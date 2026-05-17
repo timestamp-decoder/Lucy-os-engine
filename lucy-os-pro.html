@@ -73,6 +73,7 @@
 <!-- Pass 30 update: polished Activated Architecture Today copy and density only. Shortened the landing-bridge body copy, added compact Release Vector fallback language when already available, and lightly tightened only the activated-architecture card styling. No backend/API, payload, engine, scoring, Moonstamp logic, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Personal Architecture Beta content, PASS 15 component note language, PASS 24 wording/helpers, PASS 26 framing strip, PASS 27 top hierarchy, PASS 28 component-card styling, PASS 29B placement/order, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, or core public read behavior changed. -->
 <!-- Pass 31 update: polished Landing / Personal Chart Translation flow readability only. Lightly refined spacing, hierarchy, and scan weight so Landing Note introduces the read, Activated Architecture feels like a compact bridge, Plain Read stays primary, One Good Move is easier to find, and Do Not Overdo reads quieter. No backend/API, payload, engine, scoring, Moonstamp logic, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, bottom nav, bottom padding, Personal Architecture Beta content, PASS 15 component note language, PASS 24 wording/helpers, PASS 26 framing strip, PASS 27 top hierarchy, PASS 28 component-card styling, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <!-- Pass 32 update: upgraded Personal Architecture Beta placement-card structure only. Cards now read as placement-forward product cards with Meaning, Use, Explore rows, quiet metadata, and existing Today / What this means today detail preserved. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share-card behavior, bottom nav, bottom padding, Landing flow, PASS 15 component note language meaning, PASS 24 helper meaning, PASS 26 framing strip meaning, PASS 27 hierarchy, PASS 28 component-card styling direction, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, PASS 31 Landing styling, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
+<!-- Pass 33 update: recovered existing safe sign labels in Personal Architecture Beta placement-card titles only. Titles now use Placement in Sign when the current chartKernel/front-end data already provides a clean sign label, with safe fallback to PASS 32 titles when unavailable. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share-card behavior, bottom nav, bottom padding, Landing flow, PASS 15 component note language meaning, PASS 24 helper meaning, PASS 26 framing strip meaning, PASS 27 hierarchy, PASS 28 component-card styling direction, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, PASS 31 Landing styling, PASS 32 card structure, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -9965,21 +9966,91 @@
 			}
 
 
+			function personalArchitectureCleanExistingSignLabel(value) {
+				if (typeof value !== "string") return "";
+				let text = value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+				if (!text) return "";
+
+				const placeholderPattern = /^(unknown|n\/?a|na|null|undefined|--|—|-|none|unavailable|awaiting|pending|tbd|not\s+available)$/i;
+				if (placeholderPattern.test(text)) return "";
+
+				const zodiacSigns = [
+					"Aries",
+					"Taurus",
+					"Gemini",
+					"Cancer",
+					"Leo",
+					"Virgo",
+					"Libra",
+					"Scorpio",
+					"Sagittarius",
+					"Capricorn",
+					"Aquarius",
+					"Pisces",
+				];
+				const signPattern = new RegExp(`\\b(${zodiacSigns.join("|")})\\b`, "i");
+				const explicitInMatch = text.match(new RegExp(`\\bin\\s+(${zodiacSigns.join("|")})\\b`, "i"));
+				const signMatch = explicitInMatch || text.match(signPattern);
+				if (!signMatch) return "";
+
+				const matched = String(signMatch[1] || "").toLowerCase();
+				const canonical = zodiacSigns.find((sign) => sign.toLowerCase() === matched);
+				return canonical || "";
+			}
+
+			function personalArchitectureGetSafeExistingSignLabel(...sources) {
+				const directFieldPatterns = [
+					/^sign$/i,
+					/^sign_?name$/i,
+					/^zodiac(sign)?$/i,
+					/^zodiac_?sign$/i,
+					/^tropical_?sign$/i,
+					/^rasi$/i,
+					/^rāśi$/i,
+				];
+				const labelFieldPatterns = [
+					/^placement_?label$/i,
+					/^display_?label$/i,
+					/^full_?label$/i,
+					/^label$/i,
+					/^title$/i,
+					/^name$/i,
+				];
+
+				for (const source of sources) {
+					if (!source || typeof source !== "object") continue;
+
+					for (const [key, value] of Object.entries(source)) {
+						if (typeof value !== "string") continue;
+						const keyText = String(key || "");
+						if (directFieldPatterns.some((pattern) => pattern.test(keyText))) {
+							const clean = personalArchitectureCleanExistingSignLabel(value);
+							if (clean) return clean;
+						}
+					}
+
+					for (const [key, value] of Object.entries(source)) {
+						if (typeof value !== "string") continue;
+						const keyText = String(key || "");
+						if (!labelFieldPatterns.some((pattern) => pattern.test(keyText))) continue;
+						if (!/\bin\s+/i.test(value)) continue;
+						const clean = personalArchitectureCleanExistingSignLabel(value);
+						if (clean) return clean;
+					}
+				}
+
+				return "";
+			}
+
 			function personalArchitectureGetPlacementSign(placement) {
-				const signValue = chartKernelPickFirstValue(placement, [
-					/^sign$/,
-					/^rasi$/,
-					/^rāśi$/,
-					/^zodiac(sign)?$/,
-				]);
-				return chartKernelHasValue(signValue) ? String(signValue).trim() : "";
+				return personalArchitectureGetSafeExistingSignLabel(placement);
 			}
 
 			function personalArchitectureBuildPlacementTitle(item) {
 				const placement = String(item?.label || "").trim();
 				const role = personalArchitecturePublicRoleLabel(item?.role || "");
-				const sign = String(item?.sign || "").trim();
-				const placementTitle = sign && !/node/i.test(placement) ? `${placement} in ${sign}` : placement;
+				const sign = personalArchitectureGetSafeExistingSignLabel(item, item?.raw, item?.source, item?.data);
+				const placementTitle = sign ? `${placement} in ${sign}` : placement;
 				if (placementTitle && role) return `${placementTitle} — ${role}`;
 				return role || placementTitle || "Stable receiving component";
 			}
@@ -10615,6 +10686,7 @@
 					{
 						label: "Ascendant",
 						role: personalArchitecturePickRole(data, [/^asc(endant)?$/], "Interface Kernel"),
+						source: ascPlacement,
 						sign: personalArchitectureGetPlacementSign(ascPlacement),
 						meaning: "This is where the day first meets your attention, body, or environment.",
 						use: "Notice what feels charged, then slow the first response.",
@@ -10630,6 +10702,7 @@
 					{
 						label: "Sun",
 						role: personalArchitecturePickRole(data, [/^sun$/], "Core Voltage"),
+						source: sunPlacement,
 						sign: personalArchitectureGetPlacementSign(sunPlacement),
 						meaning: "This is where your system looks for energy, clarity, and a clean center.",
 						use: "Choose one clean priority before adding energy.",
@@ -10645,6 +10718,7 @@
 					{
 						label: "Moon",
 						role: personalArchitecturePickRole(data, [/^moon$/], "Emotional Processor"),
+						source: moonPlacement,
 						sign: personalArchitectureGetPlacementSign(moonPlacement),
 						meaning: "This is where the field lands through body-state, comfort, mood, and rhythm.",
 						use: "Ground first, then clarify what your system needs.",
@@ -10660,6 +10734,7 @@
 					{
 						label: "Rahu / North Node",
 						role: personalArchitecturePickRole(data, [/rahu/, /north.?node/], "Growth Vector"),
+						source: rahu,
 						sign: personalArchitectureGetPlacementSign(rahu),
 						meaning: "This points toward the edge your system is learning to move into.",
 						use: "Take one small step toward the unfamiliar without forcing the whole path.",
@@ -10670,6 +10745,7 @@
 					{
 						label: "Ketu / South Node",
 						role: personalArchitecturePickRole(data, [/ketu/, /south.?node/], "Release Vector"),
+						source: ketu,
 						sign: personalArchitectureGetPlacementSign(ketu),
 						meaning: "This shows the pattern your system may default to when pressure rises.",
 						use: "Keep the wisdom, but do not retreat into the old loop.",
