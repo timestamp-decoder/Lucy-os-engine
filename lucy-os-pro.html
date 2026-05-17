@@ -82,6 +82,7 @@
 <!-- Pass 33G update: validated Personal Architecture Beta title sign labels against each rendered placement's own existing degree when available. Conflicting safeSign values are rejected and the degree-derived display sign wins. Display-title validation only; no backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, Landing flow, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <!-- Pass 33H update: made each Personal Architecture Beta title use the card-local degree source before any safeSign value. The same existing degree value used for the visible Degree metadata row now derives the title sign, and safeSign is ignored whenever that card-local degree exists. Display-title binding only; no backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, bottom padding, Landing flow, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <!-- Pass 34 update: added display-only Live Field Modifier planet-sign title support for existing safe runtime live Mercury data. Mercury in Taurus displays as Grounded Signal Processor, Mercury in Gemini displays as Fast Signal Processor, and missing live Mercury sign data preserves the existing field-theme title. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, bottom padding, Landing flow, Personal Architecture PASS 33H title logic, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
+<!-- Pass 34B update: bound the display-only live Mercury planet-sign title and Current Signal Weather eyebrow to the exact visible Live Field Modifier card render path. If no safe runtime live Mercury sign exists, the card remains field-based. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, bottom padding, Landing flow, Personal Architecture PASS 33H title logic, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -8077,7 +8078,7 @@
 									</div>
 <div class="fieldModifierRows">
 <div class="fieldModifierRow">
-<span>Active Field</span>
+<span id="liveFieldModifierEyebrow">Active Field</span>
 <strong id="liveFieldModifierTitle">Live field pending</strong>
 </div>
 <div class="fieldModifierRow">
@@ -16816,7 +16817,31 @@ ${bodyLine}${loadLine}`,
 					setText("moonstampModifierMeta", practicalInstruction);
 				}
 
-				setText("liveFieldModifierTitle", liveFieldRead.title);
+				const existingFieldBasedTitle = liveFieldRead?.title || "Today’s field is active";
+				const mercuryLookup = liveFieldModifierFindRuntimeMercurySign(data);
+				const mercurySign = normalizeExistingZodiacSignLabel(mercuryLookup.sign);
+				const liveMercuryTitle = mercurySign
+					? `Mercury in ${mercurySign} — ${getMercuryModifierLabel(mercurySign)}`
+					: "";
+				const liveModifierEyebrow = liveMercuryTitle
+					? "Current Signal Weather"
+					: "Active Field";
+				const liveModifierVisibleTitle = liveMercuryTitle || existingFieldBasedTitle;
+				const sourceUsed = liveMercuryTitle
+					? mercuryLookup.source
+					: (liveFieldRead?.sourceUsed || "field-title fallback");
+
+				console.debug("PASS 34B LIVE FIELD MODIFIER VISIBLE RENDER PROOF", {
+					mercurySign,
+					liveMercuryTitle,
+					liveModifierEyebrow,
+					liveModifierVisibleTitle,
+					sourceUsed,
+					existingFieldBasedTitle,
+				});
+
+				setText("liveFieldModifierEyebrow", liveModifierEyebrow);
+				setText("liveFieldModifierTitle", liveModifierVisibleTitle);
 				setText("liveFieldModifierAdds", liveFieldRead.adds);
 				setText("liveFieldModifierWatch", liveFieldRead.watch);
 				setText("liveFieldModifierBestUse", liveFieldRead.best);
