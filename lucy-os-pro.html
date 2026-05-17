@@ -41,6 +41,7 @@
 <!-- Pass 4C update: cleaned Chart Kernel Raw Debug Preview display inside Engine Details only. Raw preview remains available with the same backend preview content, now in a smaller controlled scroll area with a debugging-only helper line. No backend/API, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, or public result behavior changed. -->
 <!-- Pass 4D update: added Personal Architecture Beta card inside the You destination only. Public display layer uses existing chartKernel placementRoles, existing tropical degree/sign data where already available, and calculated Rahu/Ketu node vectors where already returned. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, raw diagnostics, or core read behavior changed. -->
 <!-- Pass 5A update: refined Personal Architecture Beta public wording and data-line formatting only. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, or core read behavior changed. -->
+<!-- Pass 5B update: removed redundant role-label repeat from Personal Architecture Beta node data stacks and added a small display-only helper note. No backend/API, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, or core read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -3709,6 +3710,15 @@
 
 			.personalArchitectureMetaLine + .personalArchitectureMetaLine {
 				margin-top: 3px;
+			}
+
+			.personalArchitectureBetaHelper {
+				margin: 10px 0 0;
+				color: var(--muted2);
+				font-size: 10.5px;
+				line-height: 1.4;
+				font-weight: 800;
+				overflow-wrap: break-word;
 			}
 
 			.chipRow {
@@ -7991,6 +8001,7 @@
 <div class="personalArchitectureMeta">Awaiting placement texture</div>
 </div>
 </div>
+<p class="personalArchitectureBetaHelper">These values are display-only and do not change today’s field calculation.</p>
 </div>
 </section>
 <section class="profileCard">
@@ -9584,19 +9595,11 @@
 					/^normalized(value)?$/,
 					/^norm$/,
 				]);
-				const labelValue = chartKernelPickFirstValue(node, [
-					/^role(label)?$/,
-					/^vector(label)?$/,
-					/^label$/,
-					/^name$/,
-				]);
 				const degreeText = chartKernelFormatNumber(longitudeValue, 2);
 				const normalizedText = chartKernelFormatNumber(normalizedValue, 4);
 				const lines = [];
 				if (degreeText) lines.push(`Degree: ${degreeText}°`);
 				if (normalizedText) lines.push(`Normalized: ${normalizedText}`);
-				if (chartKernelHasValue(labelValue)) lines.push(String(labelValue));
-				else if (fallbackLabel) lines.push(fallbackLabel);
 				return personalArchitectureFormatMetaLines(lines);
 			}
 
