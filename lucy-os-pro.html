@@ -58,6 +58,7 @@
 <!-- Pass 16B update: added the matching compact Personal Landing micro-line to copied share text only. Visual share card line, backend/API, scoring, Moonstamp, dashboard, saved profiles, calibration behavior, Chart Kernel data extraction, diagnostics, bottom nav behavior, bottom padding, Personal Architecture Beta content, PASS 15 component note language, and core public read behavior unchanged. -->
 <!-- Pass 17 optional profile name update: added an optional front-end Name / Profile Name input for saved-profile labels and future share personalization foundation. Saved profiles now store/restore the optional name defensively and use it as the friendly dropdown label when present. No backend/API payload, engine, scoring, field selection, Moonstamp, dashboard, share text, visual share card, share export behavior, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, Personal Architecture Beta content, PASS 15 component note language, PASS 16 visual line, PASS 16B copied-share line, or core public read behavior changed. -->
 <!-- Pass 19 visual share card compression update: compressed the visual share card into a poster-style summary only. Copied share text, in-app read content, backend/API, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, Profile Name behavior, Chart Kernel extraction, diagnostics, bottom nav, Personal Architecture Beta, and share export mechanics are unchanged beyond the visual card text/section list. -->
+<!-- Pass 20 update: added temporary TimestampDecoder.com CTA footer line to visual share card and copied share text only. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, visual share-card section list, visual title personalization, share export mechanics beyond footer text, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, in-app read content, Personal Architecture Beta content, PASS 15 component note language, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -8409,7 +8410,8 @@
 										</div>
 </div>
 <div class="shareFooter">
-										Personal field guidance · Lucy.OS Pro
+<div>Personal field guidance · Lucy.OS Pro</div>
+<div>Run your own field read · TimestampDecoder.com</div>
 									</div>
 </div>
 </div>
@@ -15694,7 +15696,8 @@ ${bodyLine}${loadLine}`,
 						"Return to your own center first."
 					),
 					"",
-					"Personal field guidance · Lucy.OS Pro"
+					"Personal field guidance · Lucy.OS Pro",
+					"Run your own field read · TimestampDecoder.com"
 				);
 
 				return lines.join("\n");
