@@ -516,6 +516,77 @@ def build_projected_moonstamp_modifier(hours_ahead: int) -> dict:
     return projected
 
 
+def build_chart_kernel_inspection(chart: dict) -> dict:
+    angles = chart.get("angles", {}) or {}
+    houses = chart.get("houses", []) or []
+    tropical_longitudes_deg = chart.get("_longitudesDeg", {}) or {}
+
+    ascendant_deg = angles.get("asc")
+    mc_deg = angles.get("mc")
+
+    return {
+        "version": "v1-inspection",
+        "status": "inspection-only",
+        "architecture": {
+            "engineType": "field-engine",
+            "coreGeometry": "tropical",
+            "signGeometry": "tropical",
+            "siderealUse": "not-active-yet",
+            "siderealIntendedUse": "future lunar/node micro-texture only",
+            "placementMeaning": "system-component-not-personality-trait",
+        },
+        "geometry": {
+            "zodiacMode": "tropical",
+            "houseSystem": "Placidus",
+            "ascendantDeg": ascendant_deg,
+            "mcDeg": mc_deg,
+            "houses": houses,
+        },
+        "tropicalLongitudesDeg": tropical_longitudes_deg,
+        "placementRoles": {
+            "ascendant": "Interface Kernel",
+            "sun": "Core Voltage / CPU",
+            "moon": "Emotional Processor / GPU",
+            "mercury": "Signal Processor",
+            "venus": "Relational Tone / Harmonic Codec",
+            "mars": "Action Vector",
+            "jupiter": "Meaning Amplifier",
+            "saturn": "Structure Governor",
+            "rahu": "Growth Vector / Directional Trajectory",
+            "ketu": "Release Vector / Mastery Pattern",
+        },
+        "availableNow": {
+            "tropicalPlanets": True,
+            "ascendant": ascendant_deg is not None,
+            "mc": mc_deg is not None,
+            "houses": len(houses) > 0,
+            "rahu": False,
+            "ketu": False,
+            "siderealLahiri": False,
+            "nakshatras": False,
+        },
+        "nodes": {
+            "available": False,
+            "rahu": None,
+            "ketu": None,
+            "note": "Rahu/Ketu are not calculated yet. Future implementation should add node calculation additively.",
+        },
+        "siderealLahiri": {
+            "available": False,
+            "ayanamsa": None,
+            "nakshatraSupport": False,
+            "note": "Sidereal Lahiri is not active yet. Future use is limited to lunar/node micro-texture.",
+        },
+        "safety": {
+            "publicInterpretationAdded": False,
+            "scoringChanged": False,
+            "fieldSelectionChanged": False,
+            "moonstampChanged": False,
+            "existingPayloadChanged": False,
+        },
+    }
+
+
 def fmt_value(n: float) -> str:
     try:
         return f"{float(n):.2f}"
@@ -933,6 +1004,7 @@ def build_lucy_response(chart: dict) -> dict:
         "_longitudesDeg": chart.get("_longitudesDeg", {}),
         "transitLongitudesDeg": transit_longitudes_deg,
         "dailyFieldBackendDebug": daily_field_backend_debug,
+        "chartKernel": build_chart_kernel_inspection(chart),
         "debugEcho": {
             "ascNorm": asc_norm,
             "mcNorm": mc_norm,
