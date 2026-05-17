@@ -79,6 +79,7 @@
 <!-- Pass 44 update: canonical baseline recovery and regression lock. Restored display-only Live Field Modifier contract binding, degree-derived Personal Architecture title signs, Personal Architecture Sign Source Proof diagnostics, and Deeper Read expander preservation. No backend/API, payload, engine, scoring, field selection, normalized transit values, Moonstamp, chartKernel extraction, natal placement logic, saved profiles, share behavior, bottom nav, or Landing flow changed. -->
 <!-- Pass 45 update: rebuilt Personal Architecture Deeper Read panel shape only. Current PASS 44 Deeper Read content remains sourced from the current baseline and now renders as a separate four-section panel below the Explore row. No backend/API, payload, engine, scoring, field selection, normalized transit values, Moonstamp, chartKernel extraction, natal placement logic, saved profiles, share behavior, bottom nav, Landing flow, Live Field Modifier, interaction copy, title-sign derivation, proof panel, Today rows, Meaning/Use rows, degree rows, metadata rows, or Explore rows changed. -->
 <!-- Pass 46 update: personalized share title text only. Copied share text and visual share-card title now use the optional Profile Name when present, with fallback Daily Field Read title when blank. No backend/API, payload, engine, scoring, field selection, normalized transit values, Moonstamp, chartKernel extraction, natal placement logic, saved profiles, Profile Name save/load/dropdown behavior, share export mechanics, bottom nav, Landing flow, Live Field Modifier, interaction copy, Personal Architecture title-sign derivation, proof panel, or Deeper Read behavior changed. -->
+<!-- Pass 47 update: copied share text Moonstamp de-duplication only. Removes a leading duplicate Moonstamp title prefix from the copied-share Moonstamp body while preserving in-app Moonstamp display, visual share card/export body, share mechanics, Profile Name share titles, engine/API, scoring, field selection, chartKernel, saved profiles, Live Field Modifier, interaction copy, proof panel, and Deeper Read behavior. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -17048,21 +17049,23 @@ ${bodyLine}${loadLine}`,
 				];
 
 				if (latestSharePayload.moonstampModifier?.hasMoonstamp) {
-					lines.push(
-						"",
-						"Moonstamp Modifier:",
-						cleanShareSentence(
-							latestSharePayload.moonstampModifier.title,
-							"Lunar timing modifier"
-						)
+					const moonTitle = cleanShareSentence(
+						latestSharePayload.moonstampModifier.title,
+						"Lunar timing modifier"
 					);
+					lines.push("", "Moonstamp Modifier:", moonTitle);
 
 					const moonText = cleanShareSentence(
 						latestSharePayload.moonstampModifier.shareLine ||
 							latestSharePayload.moonstampModifier.text,
 						"The lunar field adds timing texture to today’s read."
 					);
-					if (moonText) lines.push(moonText);
+					const moonDuplicatePrefix = `${moonTitle}:`;
+					const cleanedMoonText =
+						moonTitle && moonText.startsWith(moonDuplicatePrefix)
+							? moonText.slice(moonDuplicatePrefix.length).trim()
+							: moonText;
+					if (cleanedMoonText) lines.push(cleanedMoonText);
 				}
 
 				lines.push(
