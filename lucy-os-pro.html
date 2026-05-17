@@ -68,6 +68,7 @@
 <!-- Pass 26 update: added compact Personal Architecture Beta framing strip only. Static display/copy bridge clarifies stable receiving architecture versus daily moving field. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, PASS 15 component note language, PASS 24 wording/helpers, PASS 25 mini-block styling, or core public read behavior changed. -->
 <!-- Pass 27 update: polished Personal Architecture Beta scan hierarchy only. Consolidated repeated helper lines into the existing framing strip, placed the current-field micro-line directly before the component cards, and lightly tightened helper spacing. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, PASS 15 component note language, PASS 24 wording/helpers, PASS 25 mini-block styling, PASS 26 framing strip meaning, or core public read behavior changed. -->
 <!-- Pass 28 update: polished Personal Architecture Beta component-card scan hierarchy only. CSS/layout tuning makes the Today line read as the main practical line, keeps the PASS 24 detail as lighter support, and quiets degree/metadata emphasis. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, in-app Today’s Read, PASS 15 component note language, PASS 24 wording/helpers, PASS 26 framing strip meaning, PASS 27 top hierarchy, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, or core public read behavior changed. -->
+<!-- Pass 29 update: added compact Activated Architecture Today layer inside Landing / Personal Chart Translation only. Display-only helper uses existing Chart Kernel/current-field/Moonstamp/live-driver values defensively and hides when useful chart/kernel data is missing. No backend/API, payload, engine, scoring, Moonstamp logic, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, Personal Architecture Beta content, PASS 15 component note language, PASS 24 wording/helpers, PASS 26 framing strip, PASS 27 top hierarchy, PASS 28 component-card styling, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -6342,6 +6343,51 @@
 				color: #cab1ff;
 			}
 
+			.activatedArchitectureCard {
+				display: none;
+				margin: 0 0 12px;
+				padding: 12px 13px;
+				border-radius: 15px;
+				border: 1px solid rgba(216, 184, 76, 0.18);
+				background: radial-gradient(
+						circle at 10% 0%,
+						rgba(216, 184, 76, 0.095),
+						transparent 36%
+					),
+					rgba(255, 255, 255, 0.032);
+				min-width: 0;
+			}
+
+			.activatedArchitectureCard.active {
+				display: block;
+			}
+
+			.activatedArchitectureLabel {
+				color: var(--gold);
+				font-size: 9.5px;
+				font-weight: 950;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				margin-bottom: 6px;
+			}
+
+			.activatedArchitectureTitle {
+				color: var(--text);
+				font-size: 14px;
+				line-height: 1.25;
+				font-weight: 950;
+				overflow-wrap: anywhere;
+			}
+
+			.activatedArchitectureText {
+				margin-top: 6px;
+				color: #d9e0f4;
+				font-size: 12.3px;
+				line-height: 1.48;
+				font-weight: 750;
+				overflow-wrap: break-word;
+			}
+
 			.personalTranslationGrid {
 				display: grid;
 				grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -7980,6 +8026,11 @@
 </section>
 <section class="personalTranslationCard" id="personalTranslationCard">
 <div class="personalTranslationKicker">Personal Chart Translation</div>
+<div class="activatedArchitectureCard" id="activatedArchitectureCard" aria-live="polite">
+<div class="activatedArchitectureLabel">Activated architecture today</div>
+<div class="activatedArchitectureTitle" id="activatedArchitectureTitle">—</div>
+<div class="activatedArchitectureText" id="activatedArchitectureText">—</div>
+</div>
 <div class="personalTranslationGrid">
 <div class="personalTranslationItem">
 <div class="personalTranslationLabel">Baseline Pattern</div>
@@ -9796,6 +9847,219 @@
 					"Release Vector / Mastery Pattern": "Release Vector",
 				};
 				return publicRoleMap[text] || text;
+			}
+
+			function activatedArchitectureHasUsefulKernelData(data) {
+				const chartKernel = data?.chartKernel;
+				const hasChartKernelObject =
+					chartKernel &&
+					typeof chartKernel === "object" &&
+					Object.keys(chartKernel).length > 0;
+				const hasAngles = chartKernelHasValue(data?.angles?.asc) || chartKernelHasValue(data?.chartKernel?.geometry?.asc);
+				const hasLongitudes = !!(
+					data?._longitudesDeg &&
+					typeof data._longitudesDeg === "object" &&
+					Object.keys(data._longitudesDeg).length
+				);
+				const hasKernelLongitudes = !!(
+					data?.chartKernel?.tropicalLongitudesDeg &&
+					typeof data.chartKernel.tropicalLongitudesDeg === "object" &&
+					Object.keys(data.chartKernel.tropicalLongitudesDeg).length
+				);
+				return !!(hasChartKernelObject || hasAngles || hasLongitudes || hasKernelLongitudes);
+			}
+
+			function activatedArchitectureHasRole(data, roleKeys = []) {
+				const roles = data?.chartKernel?.placementRoles;
+				if (!roles || typeof roles !== "object") return false;
+				return Object.entries(roles).some(([key, value]) => {
+					const keyText = String(key || "").toLowerCase();
+					return roleKeys.some((pattern) => pattern.test(keyText)) && chartKernelHasValue(value);
+				});
+			}
+
+			function activatedArchitectureComponentAvailable(data, componentKey) {
+				if (!activatedArchitectureHasUsefulKernelData(data)) return false;
+				const longitude = data?._longitudesDeg || {};
+				const kernelLongitude = data?.chartKernel?.tropicalLongitudesDeg || {};
+				if (componentKey === "interface") {
+					return !!(
+						personalArchitectureFindPlacementObject(data, [/^asc(endant)?$/, /interface/]) ||
+						chartKernelHasValue(data?.angles?.asc) ||
+						chartKernelHasValue(data?.chartKernel?.geometry?.asc) ||
+						activatedArchitectureHasRole(data, [/^asc(endant)?$/])
+					);
+				}
+				if (componentKey === "core") {
+					return !!(
+						personalArchitectureFindPlacementObject(data, [/^sun$/]) ||
+						chartKernelHasValue(longitude.sun) ||
+						chartKernelHasValue(kernelLongitude.sun) ||
+						activatedArchitectureHasRole(data, [/^sun$/])
+					);
+				}
+				if (componentKey === "emotional") {
+					return !!(
+						personalArchitectureFindPlacementObject(data, [/^moon$/]) ||
+						chartKernelHasValue(longitude.moon) ||
+						chartKernelHasValue(kernelLongitude.moon) ||
+						activatedArchitectureHasRole(data, [/^moon$/])
+					);
+				}
+				if (componentKey === "signal") {
+					return !!(
+						personalArchitectureFindPlacementObject(data, [/^mercury$/]) ||
+						chartKernelHasValue(longitude.mercury) ||
+						chartKernelHasValue(kernelLongitude.mercury) ||
+						activatedArchitectureHasRole(data, [/^mercury$/])
+					);
+				}
+				if (componentKey === "relational") {
+					return !!(
+						personalArchitectureFindPlacementObject(data, [/^venus$/]) ||
+						chartKernelHasValue(longitude.venus) ||
+						chartKernelHasValue(kernelLongitude.venus) ||
+						activatedArchitectureHasRole(data, [/^venus$/])
+					);
+				}
+				if (componentKey === "growth") {
+					return !!(
+						chartKernelFindNodeObject(data, "rahu") ||
+						activatedArchitectureHasRole(data, [/rahu/, /north.?node/])
+					);
+				}
+				if (componentKey === "release") {
+					return !!(
+						chartKernelFindNodeObject(data, "ketu") ||
+						activatedArchitectureHasRole(data, [/ketu/, /south.?node/])
+					);
+				}
+				return false;
+			}
+
+			function activatedArchitectureDriverText(data, harmonics, moonstamp) {
+				const debug = harmonics?.dailyFieldDebug || {};
+				const topDrivers = [
+					...(Array.isArray(data?.telemetry?.topDrivers) ? data.telemetry.topDrivers : []),
+					...(Array.isArray(data?.telemetry?.topRegulators) ? data.telemetry.topRegulators : []),
+					...(Array.isArray(debug?.topDrivers) ? debug.topDrivers : []),
+					...(Array.isArray(debug?.topRegulators) ? debug.topRegulators : []),
+				];
+				return [
+					primaryDriverName(data),
+					data?.liveFieldModifier?.title,
+					data?.liveFieldModifier?.text,
+					data?.liveFieldModifier?.driver,
+					debug?.selectedField,
+					harmonics?.todayField,
+					moonstamp?.state,
+					moonstamp?.phase,
+					...topDrivers.map((driver) => {
+						if (typeof driver === "string") return driver;
+						if (driver && typeof driver === "object") {
+							return [driver.name, driver.label, driver.driver, driver.planet, driver.body, driver.tag]
+								.filter(Boolean)
+								.join(" ");
+						}
+						return "";
+					}),
+				]
+					.filter(Boolean)
+					.join(" ")
+					.toLowerCase();
+			}
+
+			function buildActivatedArchitectureToday(data, harmonics) {
+				if (!activatedArchitectureHasUsefulKernelData(data)) return null;
+				const moonstamp = getMoonstamp(data);
+				const driverText = activatedArchitectureDriverText(data, harmonics, moonstamp);
+				const selectedField = harmonics?.todayField || harmonics?.dailyFieldDebug?.selectedField || "";
+				const fieldBase = getHarmonicBaseName(selectedField);
+				const candidates = [];
+
+				if (moonstamp?.state || moonstamp?.phase || driverText.includes("moon") || driverText.includes("lunar")) {
+					candidates.push("emotional");
+				}
+				if (/mercury|signal|communication|language|clarif|subtext|timing/.test(driverText)) {
+					candidates.push("signal");
+				}
+				if (/sun|core|identity|voltage|center/.test(driverText)) {
+					candidates.push("core");
+				}
+				if ((fieldBase === "Relational" || /venus|contact|relational|connection|tone/.test(driverText))) {
+					candidates.push("relational");
+				}
+				if (fieldBase === "Threshold" && activatedArchitectureComponentAvailable(data, "growth")) {
+					candidates.push("growth");
+				}
+				candidates.push("interface");
+
+				const componentKey = candidates.find((key) => activatedArchitectureComponentAvailable(data, key));
+				if (!componentKey) return null;
+
+				const componentMap = {
+					interface: {
+						role: personalArchitecturePublicRoleLabel(
+							personalArchitecturePickRole(data, [/^asc(endant)?$/], "Interface Kernel")
+						),
+						label: "Ascendant",
+						text: "Today’s field may register through your Interface Kernel first, so notice the environment, pace, and first contact before reacting.",
+					},
+					core: {
+						role: personalArchitecturePublicRoleLabel(
+							personalArchitecturePickRole(data, [/^sun$/], "Core Voltage")
+						),
+						label: "Sun",
+						text: "Today’s field may activate your Core Voltage first, so keep the center clear before giving energy to the signal.",
+					},
+					emotional: {
+						role: personalArchitecturePublicRoleLabel(
+							personalArchitecturePickRole(data, [/^moon$/], "Emotional Processor")
+						),
+						label: "Moon",
+						text: "Today’s field may land through your Emotional Processor first, so body-state and stability cues matter before forcing clarity.",
+					},
+					signal: {
+						role: personalArchitecturePublicRoleLabel(
+							personalArchitecturePickRole(data, [/^mercury$/], "Signal Processor")
+						),
+						label: "Mercury",
+						text: "Today’s field may land through your Signal Processor first, so clarify one thing directly before expanding the meaning.",
+					},
+					relational: {
+						role: personalArchitecturePublicRoleLabel(
+							personalArchitecturePickRole(data, [/^venus$/], "Relational Tone")
+						),
+						label: "Venus",
+						text: "Today’s field may register through your Relational Tone first, so track tone, contact, and proportion before responding.",
+					},
+					growth: {
+						role: personalArchitecturePublicRoleLabel(
+							personalArchitecturePickRole(data, [/rahu/, /north.?node/], "Growth Vector")
+						),
+						label: "Rahu / North Node",
+						text: "Today’s field may activate your Growth Vector, so choose one stretch point without turning the whole day into a leap.",
+					},
+				};
+
+				return componentMap[componentKey] || null;
+			}
+
+			function renderActivatedArchitectureToday(data, harmonics) {
+				const cardEl = document.getElementById("activatedArchitectureCard");
+				const titleEl = document.getElementById("activatedArchitectureTitle");
+				const textEl = document.getElementById("activatedArchitectureText");
+				if (!cardEl || !titleEl || !textEl) return;
+				const activated = buildActivatedArchitectureToday(data, harmonics);
+				if (!activated) {
+					cardEl.classList.remove("active");
+					titleEl.textContent = "—";
+					textEl.textContent = "—";
+					return;
+				}
+				titleEl.textContent = `${activated.role} — ${activated.label}`;
+				textEl.textContent = activated.text;
+				cardEl.classList.add("active");
 			}
 
 			function personalArchitectureGetDailyComponentLines(field, support, loadState) {
@@ -17734,6 +17998,7 @@ ${bodyLine}${loadLine}`,
 				updateLiveFieldDashboardUI(data, harmonics);
 				updateFieldCompass(data);
 				updateLiveFieldDebugUI(harmonics.dailyFieldDebug);
+				renderActivatedArchitectureToday(data, harmonics);
 
 				const distortionState =
 					DISTORTION_STATES[harmonics.distortionStateKey] ||
