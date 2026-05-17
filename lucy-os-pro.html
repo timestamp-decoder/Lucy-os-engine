@@ -78,6 +78,7 @@
 <!-- Pass 33C update: traced the actual Personal Architecture Beta title render path and bound the visible title helper to existing front-end sign strings across the rendered row, source/raw/data/meta, and broader chartKernel sign/placement containers. Added quiet console.debug tracing only. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share-card behavior, bottom nav, bottom padding, Landing flow, PASS 15 component note language meaning, PASS 24 helper meaning, PASS 26 framing strip meaning, PASS 27 hierarchy, PASS 28 component-card styling direction, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, PASS 31 Landing styling, PASS 32 card structure, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <!-- Pass 33D update: added runtime chartKernel shape proof and bound the exact Personal Architecture Beta visible title renderer to a final existing-sign lookup helper. Sign labels are used only when already present as safe runtime strings; no sign calculation, longitude derivation, backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, Landing flow, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <!-- Pass 33E update: added display-only Personal Architecture title sign fallback from already-present runtime placement degrees when no safe sign string exists. Safe sign strings remain first; degree fallback is title readability only. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, Landing flow, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
+<!-- Pass 33F update: restricted Personal Architecture Beta title sign lookup to placement-scoped sources only, so broad/global sign containers cannot bleed one sign across every card. Existing runtime degree fallback remains display-only for unscoped or missing signs. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, Landing flow, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -10215,88 +10216,135 @@
 				return "";
 			}
 
-			function getExistingPlacementSignFromRuntimeData(placementName, item, chartKernel) {
+			function personalArchitecturePlacementKeyMatchesAlias(key, placementName) {
+				const normalizedKey = personalArchitectureNormalizePlacementKey(key);
+				if (!normalizedKey) return false;
+				const aliases = personalArchitecturePlacementAliases(placementName)
+					.map((alias) => personalArchitectureNormalizePlacementKey(alias))
+					.filter(Boolean);
+				return aliases.some((alias) => {
+					return normalizedKey === alias || normalizedKey.includes(alias) || alias.includes(normalizedKey);
+				});
+			}
+
+			function personalArchitectureGetSignFromScopedPlacementSource(source, placementName, sourceLabel = "") {
+				if (typeof source === "string") {
+					const cleanString = normalizeExistingZodiacSignLabel(source);
+					if (cleanString) return { sign: cleanString, source: sourceLabel || "placement-scoped string" };
+					const labelString = personalArchitectureExtractExistingSignFromLabel(source);
+					if (labelString) return { sign: labelString, source: sourceLabel || "placement-scoped label" };
+					return { sign: "", source: "" };
+				}
+
+				if (!source || typeof source !== "object") return { sign: "", source: "" };
+
 				const directSources = [
-					item,
-					item?.component,
-					item?.role,
-					item?.source,
-					item?.raw,
-					item?.data,
-					item?.meta,
-					item?.sourceData,
-					item?.source?.raw,
-					item?.source?.data,
-					item?.source?.meta,
-					item?.source?.sourceData,
+					source,
+					source.component,
+					source.role,
+					source.source,
+					source.raw,
+					source.data,
+					source.meta,
+					source.sourceData,
+					source.source?.raw,
+					source.source?.data,
+					source.source?.meta,
+					source.source?.sourceData,
 				];
 
 				const directSign = personalArchitectureGetSafeExistingSignLabel(...directSources);
-				if (directSign) return directSign;
+				if (directSign) return { sign: directSign, source: sourceLabel || "placement-scoped object" };
 
-				for (const source of directSources) {
-					const nestedSign = personalArchitectureGetNestedSafeExistingSignLabel(source, placementName);
-					if (nestedSign) return nestedSign;
+				for (const scopedSource of directSources) {
+					if (!scopedSource || typeof scopedSource !== "object") continue;
+					const nestedSign = personalArchitectureGetNestedSafeExistingSignLabel(scopedSource, placementName, sourceLabel);
+					if (nestedSign) return { sign: nestedSign, source: sourceLabel || "placement-scoped nested object" };
 				}
 
-				const runtimeCollections = [
+				return { sign: "", source: "" };
+			}
+
+			function personalArchitectureFindPlacementScopedEntryInContainer(container, placementName, sourceLabel = "") {
+				if (!container || typeof container !== "object") return { entry: null, source: "" };
+
+				if (Array.isArray(container)) {
+					for (let index = 0; index < container.length; index += 1) {
+						const entry = container[index];
+						if (!entry || typeof entry !== "object") continue;
+						if (!personalArchitectureObjectMatchesPlacement(entry, placementName, sourceLabel)) continue;
+						return { entry, source: `${sourceLabel}[${index}]` };
+					}
+					return { entry: null, source: "" };
+				}
+
+				for (const [key, entry] of Object.entries(container)) {
+					if (!personalArchitecturePlacementKeyMatchesAlias(key, placementName)) continue;
+					return { entry, source: `${sourceLabel}.${key}` };
+				}
+
+				return { entry: null, source: "" };
+			}
+
+			function getExistingPlacementSignRuntimeLookup(placementName, item, chartKernel) {
+				// PASS 33F scope rule:
+				// Safe sign strings are display-only and allowed only when they are attached
+				// to the same placement being rendered. Broad/global sign fields are ignored
+				// so they cannot bleed one sign across every Personal Architecture card.
+				const placement = String(placementName || "").trim();
+				if (!placement) return { sign: "", source: "" };
+
+				const itemLookup = personalArchitectureGetSignFromScopedPlacementSource(
+					item,
+					placement,
+					"current Personal Architecture item"
+				);
+				if (itemLookup.sign) return itemLookup;
+
+				const itemScopedSources = [
+					["item.component", item?.component],
+					["item.role", item?.role],
+					["item.source", item?.source],
+					["item.raw", item?.raw],
+					["item.data", item?.data],
+					["item.meta", item?.meta],
+					["item.sourceData", item?.sourceData],
+				];
+
+				for (const [sourceLabel, source] of itemScopedSources) {
+					const lookup = personalArchitectureGetSignFromScopedPlacementSource(source, placement, sourceLabel);
+					if (lookup.sign) return lookup;
+				}
+
+				const placementScopedCollections = [
 					["chartKernel.placementRoles", chartKernel?.placementRoles],
 					["chartKernel.placements", chartKernel?.placements],
 					["chartKernel.planets", chartKernel?.planets],
 					["chartKernel.bodies", chartKernel?.bodies],
 					["chartKernel.nodes", chartKernel?.nodes],
-					["chartKernel.signs", chartKernel?.signs],
-					["chartKernel.signPlacements", chartKernel?.signPlacements],
 					["chartKernel.natal", chartKernel?.natal],
-					["chartKernel.natal.placements", chartKernel?.natal?.placements],
-					["chartKernel.natal.planets", chartKernel?.natal?.planets],
-					["chartKernel.natal.bodies", chartKernel?.natal?.bodies],
 					["chartKernel.natalChart", chartKernel?.natalChart],
-					["chartKernel.natalChart.placements", chartKernel?.natalChart?.placements],
-					["chartKernel.natalChart.planets", chartKernel?.natalChart?.planets],
-					["chartKernel.natalChart.bodies", chartKernel?.natalChart?.bodies],
 					["chartKernel.chart", chartKernel?.chart],
-					["chartKernel.chart.placements", chartKernel?.chart?.placements],
-					["chartKernel.chart.planets", chartKernel?.chart?.planets],
-					["chartKernel.chart.bodies", chartKernel?.chart?.bodies],
 					["chartKernel.data", chartKernel?.data],
-					["chartKernel.data.placements", chartKernel?.data?.placements],
-					["chartKernel.data.planets", chartKernel?.data?.planets],
-					["chartKernel.data.bodies", chartKernel?.data?.bodies],
 					["chartKernel.raw", chartKernel?.raw],
-					["chartKernel.raw.placements", chartKernel?.raw?.placements],
-					["chartKernel.raw.planets", chartKernel?.raw?.planets],
-					["chartKernel.raw.bodies", chartKernel?.raw?.bodies],
 				];
 
-				for (const [sourceLabel, collection] of runtimeCollections) {
-					const clean = personalArchitectureFindSignInRuntimeContainer(collection, placementName, sourceLabel);
-					if (clean) return clean;
+				for (const [sourceLabel, collection] of placementScopedCollections) {
+					const scopedEntry = personalArchitectureFindPlacementScopedEntryInContainer(collection, placement, sourceLabel);
+					if (!scopedEntry.entry) continue;
+					const lookup = personalArchitectureGetSignFromScopedPlacementSource(
+						scopedEntry.entry,
+						placement,
+						scopedEntry.source
+					);
+					if (lookup.sign) return lookup;
 				}
 
-				let found = "";
-				chartKernelWalk(chartKernel, (path, key, value) => {
-					if (found) return;
-					const pathText = `${path || ""} ${key || ""}`;
-					if (typeof value === "string") {
-						if (!personalArchitectureObjectMatchesPlacement({ value }, placementName, pathText)) return;
-						found = normalizeExistingZodiacSignLabel(value) || personalArchitectureExtractExistingSignFromLabel(value);
-						return;
-					}
-					if (!value || typeof value !== "object" || Array.isArray(value)) return;
-					if (!personalArchitectureObjectMatchesPlacement(value, placementName, pathText)) return;
-					found =
-						personalArchitectureGetSafeExistingSignLabel(
-							value,
-							value.raw,
-							value.source,
-							value.data,
-							value.meta,
-							value.sourceData
-						) || personalArchitectureGetNestedSafeExistingSignLabel(value, placementName, pathText);
-				});
+				return { sign: "", source: "" };
+			}
 
-				return found || "";
+			function getExistingPlacementSignFromRuntimeData(placementName, item, chartKernel) {
+				return getExistingPlacementSignRuntimeLookup(placementName, item, chartKernel).sign || "";
 			}
 
 			function getExistingPlacementSignFromChartKernel(placementName, component, chartKernel) {
@@ -10471,7 +10519,7 @@
 			}
 
 			function deriveDisplaySignFromExistingDegree(degree) {
-				// PASS 33E note:
+				// PASS 33F note:
 				// This fallback is title-readability only.
 				// It derives a visible sign label from an already-present runtime degree
 				// when no safe sign string exists.
@@ -10500,7 +10548,8 @@
 			function buildVisiblePersonalArchitectureTitle(placementName, systemLabel, item, chartKernel) {
 				const placement = String(placementName || "").trim();
 				const role = personalArchitecturePublicRoleLabel(systemLabel || "");
-				const safeSign = getExistingPlacementSignFromRuntimeData(placement, item, chartKernel);
+				const safeSignLookup = getExistingPlacementSignRuntimeLookup(placement, item, chartKernel);
+				const safeSign = safeSignLookup.sign || "";
 				const fallbackDegree = safeSign ? "" : getExistingPlacementDegreeFromRuntimeData(placement, item, chartKernel);
 				const fallbackSign = safeSign ? "" : deriveDisplaySignFromExistingDegree(fallbackDegree);
 				const sign = safeSign || fallbackSign;
@@ -11084,7 +11133,9 @@
 				const placementName = String(item?.label || "").trim();
 				const systemLabel = personalArchitecturePublicRoleLabel(item?.role || "");
 				const chartKernel = item?.chartKernel || item?.data?.chartKernel || {};
-				const safeSign = getExistingPlacementSignFromRuntimeData(placementName, item, chartKernel);
+				const safeSignLookup = getExistingPlacementSignRuntimeLookup(placementName, item, chartKernel);
+				const safeSign = safeSignLookup.sign || "";
+				const safeSignSource = safeSignLookup.source || "";
 				const fallbackDegree = safeSign ? "" : getExistingPlacementDegreeFromRuntimeData(placementName, item, chartKernel);
 				const fallbackSign = safeSign ? "" : deriveDisplaySignFromExistingDegree(fallbackDegree);
 				const signLookupResult = safeSign || fallbackSign;
@@ -11097,12 +11148,14 @@
 				const meta = item?.meta || item?.source?.meta;
 				const sourceData = item?.sourceData || item?.source?.sourceData;
 				if (typeof console !== "undefined" && typeof console.debug === "function") {
-					console.debug("PASS 33E PA VISIBLE TITLE RENDER", {
+					console.debug("PASS 33F PA SIGN SCOPE PROOF", {
 						placementName,
 						systemLabel,
 						safeSign,
+						safeSignSource,
 						fallbackDegree,
 						fallbackSign,
+						finalSign: safeSign || fallbackSign,
 						visibleTitle,
 						item,
 						component,
