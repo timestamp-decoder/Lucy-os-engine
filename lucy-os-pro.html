@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 
+<!-- Pass 34D update: added deployment proof and runtime live Mercury source exposure for the Live Field Modifier only. The visible card updates only when safe live/current/transit Mercury sign data exists in the frontend response; otherwise it remains field-based. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, share behavior, Personal Architecture PASS 33H title logic, Chart Kernel extraction, or core public read behavior changed. -->
 <!-- Practice edit: upload/edit/download workflow verified. -->
 <!-- Pass 1 update: added top clarity, plain read, system read, and personal landing display layer. Engine, API, scoring, Moonstamp, saved profiles, share export, and calibration tests unchanged. -->
 <!-- Pass 2 update: polished top read snapshot and Regulation Supports language/display density only. Engine, API, scoring, Moonstamp, saved profiles, share export, dashboard logic, and calibration tests unchanged. -->
@@ -9003,6 +9004,21 @@
 								</div>
 </div>
 
+<details class="chartKernelInspection" id="liveMercurySourceProofBlock">
+<summary>Live Mercury Source Proof</summary>
+<div class="chartKernelInspectionBody">
+<div class="chartKernelInspectionHelper">
+										PASS 34D diagnostics-only proof for the Live Field Modifier runtime source. This does not change the public read.
+									</div>
+<div class="chartKernelSummaryGrid">
+<div class="chartKernelSummaryRow"><span>PASS 34D running</span><strong id="liveMercuryProofRunning">yes</strong></div>
+<div class="chartKernelSummaryRow"><span>Mercury source</span><strong id="liveMercuryProofSource">none</strong></div>
+<div class="chartKernelSummaryRow"><span>Mercury sign</span><strong id="liveMercuryProofSign">none</strong></div>
+<div class="chartKernelSummaryRow"><span>Fallback</span><strong id="liveMercuryProofFallback">awaiting scan</strong></div>
+</div>
+</div>
+</details>
+
 <details class="chartKernelInspection" id="chartKernelDataInspection">
 <summary>Chart Kernel Data Inspection</summary>
 <div class="chartKernelInspectionBody">
@@ -9293,6 +9309,7 @@
 </div>
 <script>
 			const API_URL = "/api/chart_inputs";
+			console.debug("PASS 34D LOADED — LIVE MERCURY SOURCE EXPOSURE ACTIVE");
 			const SAVED_PROFILES_KEY = "lucyOSProSavedProfiles";
 
 			const HARMONICS = {
@@ -16664,9 +16681,233 @@
 				return { sign: "", source: "" };
 			}
 
+			function pass34DCreateMercuryScanResult(overrides = {}) {
+				return {
+					mercurySign: overrides.mercurySign || "",
+					sourceUsed: overrides.sourceUsed || "",
+					candidatePaths: Array.isArray(overrides.candidatePaths) ? overrides.candidatePaths : [],
+					rejectedPaths: Array.isArray(overrides.rejectedPaths) ? overrides.rejectedPaths : [],
+					fallbackReason: overrides.fallbackReason || "",
+				};
+			}
+
+			function pass34DPathHasToken(pathLabel = "", tokens = []) {
+				const path = String(pathLabel || "").toLowerCase();
+				return tokens.some((token) => path.includes(String(token).toLowerCase()));
+			}
+
+			function pass34DPathIsRejected(pathLabel = "") {
+				const path = String(pathLabel || "").toLowerCase();
+				return /natal|birth|radix|personalarchitecture|personal architecture|chartkernel\.placement|chart kernel placement|placementroles|placements|ascendant|degree|longitude/.test(path);
+			}
+
+			function pass34DPathIsClearlyLive(pathLabel = "") {
+				return pass34DPathHasToken(pathLabel, [
+					"live",
+					"current",
+					"transit",
+					"transits",
+					"today",
+					"sky",
+					"field",
+					"drivers",
+					"active",
+					"modifier",
+				]);
+			}
+
+			function pass34DPathIsScannable(pathLabel = "") {
+				return pass34DPathHasToken(pathLabel, [
+					"live",
+					"current",
+					"transit",
+					"transits",
+					"planets",
+					"planet",
+					"sky",
+					"field",
+					"today",
+					"drivers",
+					"active",
+					"modifier",
+					"mercury",
+					"sign",
+				]);
+			}
+
+			function pass34DHasDegreeOrLongitudeOnly(value) {
+				if (!value || typeof value !== "object") return false;
+				const keys = Object.keys(value).map((key) => String(key || "").toLowerCase());
+				const hasDegree = keys.some((key) => /degree|degrees|longitude|long|lon|lng/.test(key));
+				const hasSign = keys.some((key) => /sign|zodiac|rasi|rashi/.test(key));
+				return hasDegree && !hasSign;
+			}
+
+			function pass34DExtractCleanSignString(value) {
+				if (typeof value !== "string") return "";
+				const text = value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+				if (!text) return "";
+				return normalizeExistingZodiacSignLabel(text) || liveFieldModifierExtractMercurySignFromString(text);
+			}
+
+			function pass34DExtractObjectSign(value, pathLabel = "") {
+				if (!value || typeof value !== "object") return "";
+				const signKeys = [
+					"sign",
+					"signName",
+					"zodiacSign",
+					"zodiac",
+					"rasi",
+					"rashi",
+					"currentSign",
+					"transitSign",
+					"liveSign",
+				];
+				for (const key of signKeys) {
+					if (Object.prototype.hasOwnProperty.call(value, key)) {
+						const sign = pass34DExtractCleanSignString(value[key]);
+						if (sign) return sign;
+					}
+				}
+				const labelSign = [
+					value.title,
+					value.label,
+					value.name,
+					value.displayLabel,
+					value.fullLabel,
+					value.description,
+					value.text,
+				]
+					.map(pass34DExtractCleanSignString)
+					.find(Boolean);
+				return labelSign || "";
+			}
+
+			function scanSafeRuntimeLiveMercurySource(runtimeResponse) {
+				const result = pass34DCreateMercuryScanResult({
+					fallbackReason: "no safe runtime live Mercury sign found",
+				});
+				const seen = new WeakSet();
+				const maxDepth = 8;
+
+				function reject(path, reason) {
+					const entry = `${path || "data"}: ${reason}`;
+					if (!result.rejectedPaths.includes(entry)) result.rejectedPaths.push(entry);
+				}
+
+				function accept(path, sign) {
+					const cleanSign = normalizeExistingZodiacSignLabel(sign);
+					if (!cleanSign || result.mercurySign) return;
+					result.mercurySign = cleanSign;
+					result.sourceUsed = path || "runtime response";
+					result.fallbackReason = "";
+					const entry = `${result.sourceUsed}: Mercury in ${cleanSign}`;
+					if (!result.candidatePaths.includes(entry)) result.candidatePaths.push(entry);
+				}
+
+				function inspectMercuryValue(value, path) {
+					if (result.mercurySign) return;
+					if (pass34DPathIsRejected(path)) {
+						reject(path, "rejected natal/personal architecture/chart kernel placement or degree/longitude path");
+						return;
+					}
+					if (!pass34DPathIsClearlyLive(path)) {
+						reject(path, "Mercury path is not clearly live/current/transit/today/sky/field");
+						return;
+					}
+					if (typeof value === "string") {
+						const sign = pass34DExtractCleanSignString(value);
+						if (sign) accept(path, sign);
+						else reject(path, "Mercury string found but no clean sign string");
+						return;
+					}
+					if (!value || typeof value !== "object") {
+						reject(path, "Mercury value found but it is not a sign-bearing object/string");
+						return;
+					}
+					if (pass34DHasDegreeOrLongitudeOnly(value)) {
+						reject(path, "degree/longitude present but sign derivation is not allowed");
+						return;
+					}
+					const sign = pass34DExtractObjectSign(value, path);
+					if (sign) accept(path, sign);
+					else reject(path, "Mercury object found but no clean sign string");
+				}
+
+				function walk(value, path = "data", depth = 0) {
+					if (result.mercurySign || depth > maxDepth || value == null) return;
+					if (typeof value === "string") {
+						if (/\bmercury\b/i.test(value)) inspectMercuryValue(value, path);
+						return;
+					}
+					if (typeof value !== "object") return;
+					if (seen.has(value)) return;
+					seen.add(value);
+
+					if (pass34DPathIsRejected(path)) {
+						if (/mercury/i.test(path)) reject(path, "rejected natal/personal architecture/chart kernel placement or degree/longitude path");
+						return;
+					}
+
+					if (/mercury/i.test(path)) inspectMercuryValue(value, path);
+					if (result.mercurySign) return;
+
+					if (Array.isArray(value)) {
+						value.forEach((entry, index) => {
+							if (!result.mercurySign) walk(entry, `${path}[${index}]`, depth + 1);
+						});
+						return;
+					}
+
+					for (const [key, child] of Object.entries(value)) {
+						if (result.mercurySign) break;
+						const childPath = `${path}.${String(key || "")}`;
+						if (/mercury/i.test(String(key || ""))) {
+							inspectMercuryValue(child, childPath);
+							if (result.mercurySign) break;
+						}
+						if (pass34DPathIsRejected(childPath)) {
+							if (/mercury/i.test(childPath)) reject(childPath, "rejected natal/personal architecture/chart kernel placement or degree/longitude path");
+							continue;
+						}
+						if (pass34DPathIsScannable(childPath)) {
+							walk(child, childPath, depth + 1);
+						}
+					}
+				}
+
+				walk(runtimeResponse, "data", 0);
+				return result;
+			}
+
+			function getPass34DLiveMercuryScan(data) {
+				if (data && data.__pass34DLiveMercurySourceScan) return data.__pass34DLiveMercurySourceScan;
+				if (window.lastPass34DLiveMercurySourceScan) return window.lastPass34DLiveMercurySourceScan;
+				return scanSafeRuntimeLiveMercurySource(data);
+			}
+
+			function logPass34DLiveMercurySourceScan(scan) {
+				const safeScan = pass34DCreateMercuryScanResult(scan || {});
+				console.debug("PASS 34D LIVE MERCURY SOURCE SCAN", {
+					mercurySign: safeScan.mercurySign,
+					sourceUsed: safeScan.sourceUsed,
+					candidatePaths: safeScan.candidatePaths,
+					rejectedPaths: safeScan.rejectedPaths,
+					fallbackReason: safeScan.fallbackReason,
+				});
+			}
+
+			function renderLiveMercurySourceProof(scan) {
+				const safeScan = pass34DCreateMercuryScanResult(scan || {});
+				setText("liveMercuryProofRunning", "yes");
+				setText("liveMercuryProofSource", safeScan.sourceUsed || "none");
+				setText("liveMercuryProofSign", safeScan.mercurySign || "none");
+				setText("liveMercuryProofFallback", safeScan.fallbackReason || "none");
+			}
+
 			function buildLiveFieldModifierMercuryContext(data) {
-				const mercuryLookup = liveFieldModifierFindRuntimeMercurySign(data);
-				const mercurySign = normalizeExistingZodiacSignLabel(mercuryLookup.sign);
+				const mercuryScan = getPass34DLiveMercuryScan(data);
+				const mercurySign = normalizeExistingZodiacSignLabel(mercuryScan.mercurySign || "");
 				const liveMercuryTitle = mercurySign
 					? `Mercury in ${mercurySign} — ${getMercuryModifierLabel(mercurySign)}`
 					: "";
@@ -16674,8 +16915,10 @@
 				return {
 					mercurySign,
 					liveMercuryTitle,
-					sourceUsed: mercurySign ? mercuryLookup.source : "",
-					fallbackReason: mercurySign ? "" : "no safe runtime live Mercury sign found",
+					sourceUsed: mercurySign ? mercuryScan.sourceUsed : "",
+					candidatePaths: mercuryScan.candidatePaths || [],
+					rejectedPaths: mercuryScan.rejectedPaths || [],
+					fallbackReason: mercurySign ? "" : (mercuryScan.fallbackReason || "no safe runtime live Mercury sign found"),
 				};
 			}
 
@@ -16884,7 +17127,7 @@ ${bodyLine}${loadLine}`,
 				const eyebrowAfter = eyebrowEl ? String(eyebrowEl.textContent || "").trim() : "";
 				const titleAfter = titleEl ? String(titleEl.textContent || "").trim() : "";
 
-				console.debug("PASS 34C LIVE FIELD MODIFIER FINAL DOM PROOF", {
+				console.debug("PASS 34D LIVE FIELD MODIFIER DOM RESULT", {
 					mercurySign,
 					liveMercuryTitle,
 					cardFound,
@@ -19188,6 +19431,7 @@ ${bodyLine}${loadLine}`,
 				const regulatorAverage = (saturn + venus + mercury) / 3;
 
 				const harmonics = updateHarmonicUI(data);
+				renderLiveMercurySourceProof(getPass34DLiveMercuryScan(data));
 				applyLiveFieldModifierVisibleTitlePatch(buildLiveFieldModifierMercuryContext(data));
 				updateLiveFieldDashboardUI(data, harmonics);
 				updateFieldCompass(data);
@@ -19440,6 +19684,19 @@ ${bodyLine}${loadLine}`,
 							data?.error || `API error ${response.status}`
 						);
 					}
+
+					const pass34DLiveMercurySourceScan = scanSafeRuntimeLiveMercurySource(data);
+					window.lastPass34DLiveMercurySourceScan = pass34DLiveMercurySourceScan;
+					try {
+						Object.defineProperty(data, "__pass34DLiveMercurySourceScan", {
+							value: pass34DLiveMercurySourceScan,
+							configurable: true,
+							enumerable: false,
+						});
+					} catch (scanAttachErr) {
+						console.debug("PASS 34D scan cache attach skipped", scanAttachErr);
+					}
+					logPass34DLiveMercurySourceScan(pass34DLiveMercurySourceScan);
 
 					updateUI(data);
 					renderChartKernelDataInspection(data);
