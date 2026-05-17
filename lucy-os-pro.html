@@ -37,6 +37,7 @@
 <!-- Pass 3B update: refined Chart Kernel Data Inspection wording for hybrid support only. Core field mechanics remain tropical; sidereal Lahiri is framed only as lunar/node micro-texture for inspection. No API payload, backend, engine, scoring, routing, Moonstamp, dashboard, saved profiles, share export, diagnostics behavior, or public result behavior changed. -->
 <!-- Pass 3D-B update: cleaned Chart Kernel Data Inspection labels/detection so placeholder support is separated from real calculated astrology data. Front-end diagnostics wording only; no backend/API, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, or calibration behavior changed. -->
 <!-- Pass 4B update: added compact calculated Rahu/Ketu node vector display inside Chart Kernel Data Inspection only. Front-end diagnostics display only; no backend/API, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, or public result behavior changed. -->
+<!-- Pass 4B-B update: fixed narrow-screen Engine Details diagnostic row wrapping only. Diagnostic labels/values now stack and wrap cleanly on mobile. No backend/API, engine, scoring, field selection, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, or public result behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -922,6 +923,39 @@
 				line-height: 1.45;
 				white-space: pre-wrap;
 				overflow-wrap: anywhere;
+			}
+
+			@media (max-width: 640px) {
+				.chartKernelSummaryRow,
+				.chartKernelFieldRow,
+				.liveDebugMiniItem {
+					grid-template-columns: minmax(0, 1fr);
+					gap: 5px;
+					align-items: start;
+				}
+
+				.chartKernelSummaryRow span,
+				.chartKernelFieldRow span,
+				.liveDebugMiniItem span {
+					min-width: 0;
+					max-width: 100%;
+					text-align: left;
+					white-space: normal;
+					overflow-wrap: break-word;
+					word-break: normal;
+				}
+
+				.chartKernelSummaryRow strong,
+				.chartKernelFieldRow strong,
+				.liveDebugMiniItem strong {
+					min-width: 0;
+					max-width: 100%;
+					justify-self: start;
+					text-align: left;
+					white-space: normal;
+					overflow-wrap: anywhere;
+					word-break: normal;
+				}
 			}
 
 
