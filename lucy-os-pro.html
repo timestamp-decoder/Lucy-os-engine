@@ -74,7 +74,8 @@
 <!-- Pass 31 update: polished Landing / Personal Chart Translation flow readability only. Lightly refined spacing, hierarchy, and scan weight so Landing Note introduces the read, Activated Architecture feels like a compact bridge, Plain Read stays primary, One Good Move is easier to find, and Do Not Overdo reads quieter. No backend/API, payload, engine, scoring, Moonstamp logic, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share card, bottom nav, bottom padding, Personal Architecture Beta content, PASS 15 component note language, PASS 24 wording/helpers, PASS 26 framing strip, PASS 27 top hierarchy, PASS 28 component-card styling, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <!-- Pass 32 update: upgraded Personal Architecture Beta placement-card structure only. Cards now read as placement-forward product cards with Meaning, Use, Explore rows, quiet metadata, and existing Today / What this means today detail preserved. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share-card behavior, bottom nav, bottom padding, Landing flow, PASS 15 component note language meaning, PASS 24 helper meaning, PASS 26 framing strip meaning, PASS 27 hierarchy, PASS 28 component-card styling direction, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, PASS 31 Landing styling, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <!-- Pass 33 update: recovered existing safe sign labels in Personal Architecture Beta placement-card titles only. Titles now use Placement in Sign when the current chartKernel/front-end data already provides a clean sign label, with safe fallback to PASS 32 titles when unavailable. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share-card behavior, bottom nav, bottom padding, Landing flow, PASS 15 component note language meaning, PASS 24 helper meaning, PASS 26 framing strip meaning, PASS 27 hierarchy, PASS 28 component-card styling direction, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, PASS 31 Landing styling, PASS 32 card structure, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
-<!-- Pass 40 update: restored Personal Architecture Beta Deeper Read expanders only. Replaced the static Explore placeholder with display-only accessible expanders while preserving PASS 39B-style title/sign binding, Degree metadata, Today lines, What This Means Today blocks, Meaning/Use rows, Live Field Modifier behavior, and locked app systems. -->
+<!-- Pass 33B update: traced existing safe sign labels through the Personal Architecture card source, current row source object, and already-present chartKernel placement collections before binding titles. Display-title binding only; no backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share-card behavior, bottom nav, bottom padding, Landing flow, PASS 15 component note language meaning, PASS 24 helper meaning, PASS 26 framing strip meaning, PASS 27 hierarchy, PASS 28 component-card styling direction, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, PASS 31 Landing styling, PASS 32 card structure, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
+<!-- Pass 41 recovery update: restored Live Field Modifier displayTitle binding, sign-aware Personal Architecture card titles, stable receiving component eyebrow, and Deeper Read expanders. Display-only recovery; no backend/API, payload, engine, scoring, field selection, normalized transit values, Moonstamp, Chart Kernel extraction, natal placement logic, saved profiles, share behavior, bottom nav, Landing flow, diagnostics, degree metadata, Today lines, Meaning/Use rows, or support behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -3927,45 +3928,51 @@
 				font-weight: 820;
 			}
 
+
 			.personalArchitectureDeeperRead {
-				display: grid;
-				gap: 6px;
 				min-width: 0;
 				max-width: 100%;
 			}
 
 			.personalArchitectureDeeperRead summary {
-				cursor: pointer;
 				list-style: none;
+				cursor: pointer;
+				display: inline-flex;
+				align-items: center;
+				width: auto;
+				max-width: 100%;
+				color: rgba(170, 183, 214, 0.9);
+				font-size: 10.75px;
+				line-height: 1.34;
+				font-weight: 850;
+				white-space: nowrap;
+				word-break: keep-all;
 			}
 
 			.personalArchitectureDeeperRead summary::-webkit-details-marker {
 				display: none;
 			}
 
-			.personalArchitectureDeeperRead summary strong {
-				white-space: nowrap;
-			}
-
-			.personalArchitectureDeeperRead summary strong::after {
+			.personalArchitectureDeeperRead summary::after {
 				content: " +";
-				color: rgba(103, 193, 255, 0.7);
+				color: rgba(103, 193, 255, 0.78);
+				font-weight: 950;
 			}
 
-			.personalArchitectureDeeperRead[open] summary strong::after {
+			.personalArchitectureDeeperRead[open] summary::after {
 				content: " -";
 			}
 
 			.personalArchitectureDeeperReadBody {
-				padding: 8px 9px;
-				border: 1px solid rgba(103, 193, 255, 0.075);
-				border-radius: 10px;
-				background: rgba(103, 193, 255, 0.018);
-				color: rgba(217, 224, 244, 0.8);
-				font-size: 10.65px;
-				line-height: 1.42;
-				font-weight: 710;
+				margin-top: 7px;
+				padding-top: 7px;
+				border-top: 1px solid rgba(255, 255, 255, 0.07);
+				color: rgba(217, 224, 244, 0.88);
+				font-size: 11px;
+				line-height: 1.45;
+				font-weight: 720;
 				overflow-wrap: break-word;
+				word-break: normal;
 			}
 
 			.personalArchitectureMeaning {
@@ -8111,7 +8118,7 @@
 									</div>
 <div class="fieldModifierRows">
 <div class="fieldModifierRow">
-<span>Active Field</span>
+<span id="liveFieldModifierMode">Active Field</span>
 <strong id="liveFieldModifierTitle">Live field pending</strong>
 </div>
 <div class="fieldModifierRow">
@@ -8541,12 +8548,12 @@
 <div class="personalArchitectureBetaItem">
 <div class="personalArchitectureComponentHeader">
 <div class="personalArchitecturePlacementTitle">Ascendant — Interface Kernel</div>
-<div class="personalArchitectureSystemRole">Ascendant</div>
+<div class="personalArchitectureSystemRole">STABLE RECEIVING COMPONENT</div>
 </div>
 <div class="personalArchitectureCardRows">
 <div class="personalArchitectureCardRow"><span>Meaning</span><strong>This is where the day first meets your attention, body, or environment.</strong></div>
 <div class="personalArchitectureCardRow"><span>Use</span><strong>Notice what feels charged, then slow the first response.</strong></div>
-<details class="personalArchitectureDeeperRead"><summary class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Open Deeper Read</strong></summary><div class="personalArchitectureDeeperReadBody">Your interface is the first layer through which the field meets you. This describes how pressure, timing, and contact initially enter your system before they become a conscious choice.</div></details>
+<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><details class="personalArchitectureDeeperRead"><summary>Open Deeper Read</summary><div class="personalArchitectureDeeperReadBody">Calculate to open the placement-specific deeper read.</div></details></div>
 </div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice how the field first meets your attention, body, or environment.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up in how quickly you read the room, pressure, tone, or first impression before choosing a response.</div>
@@ -8555,12 +8562,12 @@
 <div class="personalArchitectureBetaItem">
 <div class="personalArchitectureComponentHeader">
 <div class="personalArchitecturePlacementTitle">Sun — Core Voltage</div>
-<div class="personalArchitectureSystemRole">Sun</div>
+<div class="personalArchitectureSystemRole">STABLE RECEIVING COMPONENT</div>
 </div>
 <div class="personalArchitectureCardRows">
 <div class="personalArchitectureCardRow"><span>Meaning</span><strong>This is where your system looks for energy, clarity, and a clean center.</strong></div>
 <div class="personalArchitectureCardRow"><span>Use</span><strong>Choose one clean priority before adding energy.</strong></div>
-<details class="personalArchitectureDeeperRead"><summary class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Open Deeper Read</strong></summary><div class="personalArchitectureDeeperReadBody">Your core voltage describes where your system looks for energy, clarity, and a clean center. When this layer is activated, the day may ask you to protect your focus before distributing energy outward.</div></details>
+<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><details class="personalArchitectureDeeperRead"><summary>Open Deeper Read</summary><div class="personalArchitectureDeeperReadBody">Calculate to open the placement-specific deeper read.</div></details></div>
 </div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice what feels central, important, or identity-linked in the read.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up in where your energy feels clear, strained, pulled, or ready to move today.</div>
@@ -8569,12 +8576,12 @@
 <div class="personalArchitectureBetaItem">
 <div class="personalArchitectureComponentHeader">
 <div class="personalArchitecturePlacementTitle">Moon — Emotional Processor</div>
-<div class="personalArchitectureSystemRole">Moon</div>
+<div class="personalArchitectureSystemRole">STABLE RECEIVING COMPONENT</div>
 </div>
 <div class="personalArchitectureCardRows">
 <div class="personalArchitectureCardRow"><span>Meaning</span><strong>This is where the field lands through body-state, comfort, mood, and rhythm.</strong></div>
 <div class="personalArchitectureCardRow"><span>Use</span><strong>Ground first, then clarify what your system needs.</strong></div>
-<details class="personalArchitectureDeeperRead"><summary class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Open Deeper Read</strong></summary><div class="personalArchitectureDeeperReadBody">Your emotional processor describes how the field lands through body-state, mood, comfort, rhythm, and inner pacing. When this layer is activated, regulation often starts with the body before the mind catches up.</div></details>
+<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><details class="personalArchitectureDeeperRead"><summary>Open Deeper Read</summary><div class="personalArchitectureDeeperReadBody">Calculate to open the placement-specific deeper read.</div></details></div>
 </div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice how the field lands in body-state, mood, comfort, or emotional rhythm.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up through body-state, comfort, emotional rhythm, or the need for steadier pacing.</div>
@@ -8583,12 +8590,12 @@
 <div class="personalArchitectureBetaItem">
 <div class="personalArchitectureComponentHeader">
 <div class="personalArchitecturePlacementTitle">Rahu / North Node — Growth Vector</div>
-<div class="personalArchitectureSystemRole">Rahu / North Node</div>
+<div class="personalArchitectureSystemRole">STABLE RECEIVING COMPONENT</div>
 </div>
 <div class="personalArchitectureCardRows">
 <div class="personalArchitectureCardRow"><span>Meaning</span><strong>This points toward the edge your system is learning to move into.</strong></div>
 <div class="personalArchitectureCardRow"><span>Use</span><strong>Take one small step toward the unfamiliar without forcing the whole path.</strong></div>
-<details class="personalArchitectureDeeperRead"><summary class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Open Deeper Read</strong></summary><div class="personalArchitectureDeeperReadBody">Your growth vector describes the edge your system is learning to move toward. When this layer is activated, the field may pull attention toward unfamiliar growth, new behavior, or a future-facing direction.</div></details>
+<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><details class="personalArchitectureDeeperRead"><summary>Open Deeper Read</summary><div class="personalArchitectureDeeperReadBody">Calculate to open the placement-specific deeper read.</div></details></div>
 </div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice where the read pulls you toward a next step, new edge, or unfamiliar pattern.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up as the edge your system is being asked to move toward without forcing it.</div>
@@ -8597,12 +8604,12 @@
 <div class="personalArchitectureBetaItem">
 <div class="personalArchitectureComponentHeader">
 <div class="personalArchitecturePlacementTitle">Ketu / South Node — Release Vector</div>
-<div class="personalArchitectureSystemRole">Ketu / South Node</div>
+<div class="personalArchitectureSystemRole">STABLE RECEIVING COMPONENT</div>
 </div>
 <div class="personalArchitectureCardRows">
 <div class="personalArchitectureCardRow"><span>Meaning</span><strong>This shows the pattern your system may default to when pressure rises.</strong></div>
 <div class="personalArchitectureCardRow"><span>Use</span><strong>Keep the wisdom, but do not retreat into the old loop.</strong></div>
-<details class="personalArchitectureDeeperRead"><summary class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>Open Deeper Read</strong></summary><div class="personalArchitectureDeeperReadBody">Your release vector describes what your system already knows, carries, or may need to loosen. When this layer is activated, the field may ask you to stop overusing an old pathway and return only with what is useful.</div></details>
+<div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><details class="personalArchitectureDeeperRead"><summary>Open Deeper Read</summary><div class="personalArchitectureDeeperReadBody">Calculate to open the placement-specific deeper read.</div></details></div>
 </div>
 <div class="personalArchitectureToday"><strong>Today:</strong> Notice what old reflex, overuse, or attachment the return path may ask you to loosen.</div>
 <div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>This may show up as what your system needs to simplify, stop over-carrying, or let become quieter today.</div>
@@ -10060,6 +10067,11 @@
 				];
 
 				for (const source of sources) {
+					if (typeof source === "string") {
+						const cleanString = personalArchitectureCleanExistingSignLabel(source);
+						if (cleanString) return cleanString;
+						continue;
+					}
 					if (!source || typeof source !== "object") continue;
 
 					for (const [key, value] of Object.entries(source)) {
@@ -10075,23 +10087,250 @@
 						if (typeof value !== "string") continue;
 						const keyText = String(key || "");
 						if (!labelFieldPatterns.some((pattern) => pattern.test(keyText))) continue;
-						if (!/\bin\s+/i.test(value)) continue;
 						const clean = personalArchitectureCleanExistingSignLabel(value);
-						if (clean) return clean;
+						if (clean && (/\bin\s+/i.test(value) || clean.toLowerCase() === value.trim().toLowerCase())) {
+							return clean;
+						}
 					}
 				}
 
 				return "";
+			}
+			function personalArchitectureGetNestedSafeExistingSignLabel(source) {
+				if (!source || typeof source !== "object") return "";
+				let found = "";
+				const directFieldPatterns = [
+					/^sign$/i,
+					/^sign_?name$/i,
+					/^zodiac(sign)?$/i,
+					/^zodiac_?sign$/i,
+					/^tropical_?sign$/i,
+					/^rasi$/i,
+					/^rāśi$/i,
+				];
+				const labelFieldPatterns = [
+					/^placement_?label$/i,
+					/^display_?label$/i,
+					/^full_?label$/i,
+					/^label$/i,
+					/^title$/i,
+					/^name$/i,
+				];
+
+				chartKernelWalk(source, (path, key, value) => {
+					if (found || typeof value !== "string") return;
+					const keyText = String(key || "");
+					if (directFieldPatterns.some((pattern) => pattern.test(keyText))) {
+						found = personalArchitectureCleanExistingSignLabel(value);
+						return;
+					}
+					if (labelFieldPatterns.some((pattern) => pattern.test(keyText)) && /\bin\s+/i.test(value)) {
+						found = personalArchitectureCleanExistingSignLabel(value);
+					}
+				});
+
+				return found;
+			}
+
+
+			function personalArchitectureNormalizePlacementKey(value) {
+				return String(value || "")
+					.toLowerCase()
+					.replace(/north\s*node/g, "rahu")
+					.replace(/south\s*node/g, "ketu")
+					.replace(/[^a-z0-9]+/g, "");
+			}
+
+			function personalArchitecturePlacementAliases(placementName) {
+				const key = personalArchitectureNormalizePlacementKey(placementName);
+				const aliases = {
+					ascendant: ["ascendant", "asc", "interfacekernel"],
+					sun: ["sun", "corevoltage", "cpu"],
+					moon: ["moon", "emotionalprocessor", "gpu"],
+					mercury: ["mercury", "signalprocessor"],
+					venus: ["venus", "relationaltone", "harmoniccodec"],
+					mars: ["mars", "actionvector"],
+					jupiter: ["jupiter", "meaningamplifier"],
+					saturn: ["saturn", "structuregovernor"],
+					rahunorthnode: ["rahu", "northnode", "growthvector"],
+					ketusouthnode: ["ketu", "southnode", "releasevector"],
+					rahu: ["rahu", "northnode", "growthvector"],
+					ketu: ["ketu", "southnode", "releasevector"],
+				};
+				return aliases[key] || [key].filter(Boolean);
+			}
+
+			function personalArchitectureObjectMatchesPlacement(source, placementName, sourceKey = "") {
+				const aliases = personalArchitecturePlacementAliases(placementName);
+				if (!aliases.length) return false;
+
+				const candidateParts = [sourceKey];
+				if (source && typeof source === "object") {
+					[
+						"key",
+						"id",
+						"body",
+						"bodyName",
+						"planet",
+						"planetName",
+						"placement",
+						"placementName",
+						"name",
+						"label",
+						"title",
+						"role",
+						"roleName",
+						"component",
+						"componentName",
+						"vector",
+						"node",
+					].forEach((field) => {
+						if (typeof source[field] === "string") candidateParts.push(source[field]);
+					});
+				}
+
+				const candidateText = personalArchitectureNormalizePlacementKey(candidateParts.join(" "));
+				return aliases.some((alias) => {
+					const normalizedAlias = personalArchitectureNormalizePlacementKey(alias);
+					return !!normalizedAlias && candidateText.includes(normalizedAlias);
+				});
 			}
 
 			function personalArchitectureGetPlacementSign(placement) {
 				return personalArchitectureGetSafeExistingSignLabel(placement);
 			}
 
+
+			function personalArchitectureSignFromDegreeValue(value) {
+				const numeric = typeof value === "number" ? value : parseFloat(value);
+				if (!Number.isFinite(numeric)) return "";
+				const signs = [
+					"Aries",
+					"Taurus",
+					"Gemini",
+					"Cancer",
+					"Leo",
+					"Virgo",
+					"Libra",
+					"Scorpio",
+					"Sagittarius",
+					"Capricorn",
+					"Aquarius",
+					"Pisces",
+				];
+				const normalized = ((numeric % 360) + 360) % 360;
+				return signs[Math.floor(normalized / 30)] || "";
+			}
+
+			function personalArchitectureResolveItemSign(item) {
+				const directSign = personalArchitectureGetSafeExistingSignLabel(
+					item?.sign,
+					item?.source,
+					item,
+					item?.source?.raw,
+					item?.source?.source,
+					item?.source?.data,
+					item?.source?.meta
+				);
+				if (directSign) return directSign;
+
+				const chartKernelSign = getExistingPlacementSignFromChartKernel(
+					String(item?.label || "").trim(),
+					item?.source || item,
+					item?.chartKernel || item?.data?.chartKernel
+				);
+				if (chartKernelSign) return chartKernelSign;
+
+				return personalArchitectureSignFromDegreeValue(item?.degree);
+			}
+
+			function getExistingPlacementSignFromChartKernel(placementName, component, chartKernel) {
+				const directSign = personalArchitectureGetSafeExistingSignLabel(
+					component,
+					component?.raw,
+					component?.source,
+					component?.data,
+					component?.meta
+				);
+				if (directSign) return directSign;
+				const nestedComponentSign = personalArchitectureGetNestedSafeExistingSignLabel(component);
+				if (nestedComponentSign) return nestedComponentSign;
+
+				const collections = [
+					chartKernel?.placementRoles,
+					chartKernel?.placements,
+					chartKernel?.signPlacements,
+					chartKernel?.planets,
+					chartKernel?.bodies,
+					chartKernel?.nodes,
+					chartKernel?.natal?.placements,
+					chartKernel?.natal?.planets,
+					chartKernel?.natal?.bodies,
+				];
+
+				for (const collection of collections) {
+					if (!collection || typeof collection !== "object") continue;
+
+					if (Array.isArray(collection)) {
+						for (const entry of collection) {
+							if (!entry || typeof entry !== "object") continue;
+							if (!personalArchitectureObjectMatchesPlacement(entry, placementName)) continue;
+							const clean = personalArchitectureGetSafeExistingSignLabel(
+								entry,
+								entry.raw,
+								entry.source,
+								entry.data,
+								entry.meta
+							);
+							if (clean) return clean;
+							const nestedClean = personalArchitectureGetNestedSafeExistingSignLabel(entry);
+							if (nestedClean) return nestedClean;
+						}
+						continue;
+					}
+
+					for (const [key, entry] of Object.entries(collection)) {
+						if (!personalArchitectureObjectMatchesPlacement(entry, placementName, key)) continue;
+						if (typeof entry === "string") {
+							const cleanString = personalArchitectureGetSafeExistingSignLabel({ label: entry });
+							if (cleanString) return cleanString;
+							continue;
+						}
+						const clean = personalArchitectureGetSafeExistingSignLabel(
+							entry,
+							entry?.raw,
+							entry?.source,
+							entry?.data,
+							entry?.meta
+						);
+						if (clean) return clean;
+						const nestedClean = personalArchitectureGetNestedSafeExistingSignLabel(entry);
+						if (nestedClean) return nestedClean;
+					}
+				}
+
+				let found = "";
+				chartKernelWalk(chartKernel, (path, key, value) => {
+					if (found || !value || typeof value !== "object" || Array.isArray(value)) return;
+					if (!personalArchitectureObjectMatchesPlacement(value, placementName, `${path || ""} ${key || ""}`)) return;
+					found =
+						personalArchitectureGetSafeExistingSignLabel(
+							value,
+							value.raw,
+							value.source,
+							value.data,
+							value.meta
+						) || personalArchitectureGetNestedSafeExistingSignLabel(value);
+				});
+
+				if (found) return found;
+				return "";
+			}
+
 			function personalArchitectureBuildPlacementTitle(item) {
 				const placement = String(item?.label || "").trim();
 				const role = personalArchitecturePublicRoleLabel(item?.role || "");
-				const sign = personalArchitectureGetSafeExistingSignLabel(item, item?.raw, item?.source, item?.data);
+				const sign = personalArchitectureResolveItemSign(item);
 				const placementTitle = sign ? `${placement} in ${sign}` : placement;
 				if (placementTitle && role) return `${placementTitle} — ${role}`;
 				return role || placementTitle || "Stable receiving component";
@@ -10644,24 +10883,26 @@
 				return lines;
 			}
 
-			function personalArchitectureGetDeeperRead(item) {
-				const key = `${item?.label || ""} ${item?.role || ""}`.toLowerCase();
-				if (/ascendant|interface/.test(key)) {
-					return "Your interface is the first layer through which the field meets you. This describes how pressure, timing, and contact initially enter your system before they become a conscious choice.";
+			function personalArchitectureBuildDeeperRead(item) {
+				const role = personalArchitecturePublicRoleLabel(item?.role || "");
+				const label = String(item?.label || "").trim();
+				const roleKey = `${label} ${role}`.toLowerCase();
+				if (/sun|core voltage/.test(roleKey)) {
+					return "Core Voltage shows where the field reaches your central energy first. Use it to choose the cleanest priority, protect the center from unnecessary pressure, and move only from the part of the signal that feels clear enough to hold.";
 				}
-				if (/sun|core voltage/.test(key)) {
-					return "Your core voltage describes where your system looks for energy, clarity, and a clean center. When this layer is activated, the day may ask you to protect your focus before distributing energy outward.";
+				if (/moon|emotional processor/.test(roleKey)) {
+					return "Emotional Processor shows where the field lands through body-state, comfort, mood, rhythm, and safety needs. Ground the body first, then name what the signal is asking for without making every feeling into a final conclusion.";
 				}
-				if (/moon|emotional processor/.test(key)) {
-					return "Your emotional processor describes how the field lands through body-state, mood, comfort, rhythm, and inner pacing. When this layer is activated, regulation often starts with the body before the mind catches up.";
+				if (/ascendant|interface kernel/.test(roleKey)) {
+					return "Interface Kernel shows where the day first touches your environment, attention, pace, and first response. Read the room, the body, and the setting before acting; the first contact point is information, not the whole story.";
 				}
-				if (/rahu|north node|growth vector/.test(key)) {
-					return "Your growth vector describes the edge your system is learning to move toward. When this layer is activated, the field may pull attention toward unfamiliar growth, new behavior, or a future-facing direction.";
+				if (/rahu|north node|growth vector/.test(roleKey)) {
+					return "Growth Vector shows the edge your system is learning to enter. Let it point toward one unfamiliar but useful step. The move should stretch the pattern without forcing the whole future open at once.";
 				}
-				if (/ketu|south node|release vector/.test(key)) {
-					return "Your release vector describes what your system already knows, carries, or may need to loosen. When this layer is activated, the field may ask you to stop overusing an old pathway and return only with what is useful.";
+				if (/ketu|south node|release vector/.test(roleKey)) {
+					return "Release Vector shows the pattern your system may overuse when pressure rises. Keep the wisdom, but loosen the reflex. Let the familiar pattern become support instead of the place you disappear into.";
 				}
-				return "This layer shows how one stable part of your architecture receives the day’s field before it turns into a choice, reaction, or support need.";
+				return "This component shows one stable receiving channel in your architecture. Use it to notice where the field lands first, then choose a response that is proportional, grounded, and clean.";
 			}
 
 			function renderPersonalArchitectureBetaItem(item) {
@@ -10681,20 +10922,16 @@
 					? `<div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>${chartKernelEscapeHtml(item.todayMeaning)}</div>`
 					: "";
 				const title = personalArchitectureBuildPlacementTitle(item);
-				const systemRole = item.sign && !/node/i.test(String(item.label || ""))
-					? "Stable receiving component"
-					: chartKernelEscapeHtml(item.label || "Stable receiving component");
+				const systemRole = "STABLE RECEIVING COMPONENT";
+				const deeperRead = item.explore || personalArchitectureBuildDeeperRead(item);
+				const deeperReadHtml = `<details class="personalArchitectureDeeperRead"><summary>Open Deeper Read</summary><div class="personalArchitectureDeeperReadBody">${chartKernelEscapeHtml(deeperRead)}</div></details>`;
 				return `<div class="personalArchitectureBetaItem"><div class="personalArchitectureComponentHeader"><div class="personalArchitecturePlacementTitle">${chartKernelEscapeHtml(
 					title
 				)}</div><div class="personalArchitectureSystemRole">${systemRole}</div></div><div class="personalArchitectureCardRows"><div class="personalArchitectureCardRow"><span>Meaning</span><strong>${chartKernelEscapeHtml(
 					item.meaning
 				)}</strong></div><div class="personalArchitectureCardRow"><span>Use</span><strong>${chartKernelEscapeHtml(
 					item.use || "Notice where this part receives the field, then choose one clean response."
-				)}</strong></div><details class="personalArchitectureDeeperRead"><summary class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span><strong>${chartKernelEscapeHtml(
-					item.explore || "Open Deeper Read"
-				)}</strong></summary><div class="personalArchitectureDeeperReadBody">${chartKernelEscapeHtml(
-					personalArchitectureGetDeeperRead(item)
-				)}</div></details></div>${todayHtml}${todayMeaningHtml}<div class="personalArchitectureMeta">${
+				)}</strong></div><div class="personalArchitectureCardRow personalArchitectureExploreRow"><span>Explore</span>${deeperReadHtml}</div></div>${todayHtml}${todayMeaningHtml}<div class="personalArchitectureMeta">${
 					metaHtml || chartKernelEscapeHtml(item.meta || "Awaiting placement texture")
 				}</div></div>`;
 			}
@@ -10752,6 +10989,7 @@
 						role: personalArchitecturePickRole(data, [/^asc(endant)?$/], "Interface Kernel"),
 						source: ascPlacement,
 						sign: personalArchitectureGetPlacementSign(ascPlacement),
+						degree: data?.angles?.asc ?? data?.chartKernel?.geometry?.asc,
 						meaning: "This is where the day first meets your attention, body, or environment.",
 						use: "Notice what feels charged, then slow the first response.",
 						today: dailyComponentLines.interface,
@@ -10768,6 +11006,7 @@
 						role: personalArchitecturePickRole(data, [/^sun$/], "Core Voltage"),
 						source: sunPlacement,
 						sign: personalArchitectureGetPlacementSign(sunPlacement),
+						degree: data?._longitudesDeg?.sun ?? data?.chartKernel?.tropicalLongitudesDeg?.sun,
 						meaning: "This is where your system looks for energy, clarity, and a clean center.",
 						use: "Choose one clean priority before adding energy.",
 						today: dailyComponentLines.core,
@@ -10784,6 +11023,7 @@
 						role: personalArchitecturePickRole(data, [/^moon$/], "Emotional Processor"),
 						source: moonPlacement,
 						sign: personalArchitectureGetPlacementSign(moonPlacement),
+						degree: data?._longitudesDeg?.moon ?? data?.chartKernel?.tropicalLongitudesDeg?.moon,
 						meaning: "This is where the field lands through body-state, comfort, mood, and rhythm.",
 						use: "Ground first, then clarify what your system needs.",
 						today: dailyComponentLines.emotional,
@@ -10800,6 +11040,7 @@
 						role: personalArchitecturePickRole(data, [/rahu/, /north.?node/], "Growth Vector"),
 						source: rahu,
 						sign: personalArchitectureGetPlacementSign(rahu),
+						degree: chartKernelPickFirstValue(rahu, [/^longitude(deg|degree|degrees)?$/, /^longitude_?deg(rees)?$/, /^lon(gitude)?_?deg(rees)?$/, /^deg(rees)?$/]),
 						meaning: "This points toward the edge your system is learning to move into.",
 						use: "Take one small step toward the unfamiliar without forcing the whole path.",
 						today: dailyComponentLines.growth,
@@ -10811,6 +11052,7 @@
 						role: personalArchitecturePickRole(data, [/ketu/, /south.?node/], "Release Vector"),
 						source: ketu,
 						sign: personalArchitectureGetPlacementSign(ketu),
+						degree: chartKernelPickFirstValue(ketu, [/^longitude(deg|degree|degrees)?$/, /^longitude_?deg(rees)?$/, /^lon(gitude)?_?deg(rees)?$/, /^deg(rees)?$/]),
 						meaning: "This shows the pattern your system may default to when pressure rises.",
 						use: "Keep the wisdom, but do not retreat into the old loop.",
 						today: dailyComponentLines.release,
@@ -10818,6 +11060,11 @@
 						meta: personalArchitectureFormatNodeMeta(ketu, "") || (roleAvailable ? "Role available" : "Awaiting placement texture"),
 					},
 				];
+
+				rows.forEach((row) => {
+					row.data = data;
+					row.chartKernel = chartKernel;
+				});
 
 				gridEl.innerHTML = rows.map(renderPersonalArchitectureBetaItem).join("");
 			}
@@ -16011,6 +16258,14 @@
 				return "Use the lunar layer for pace: adjust input, timing, and scope without changing the main read.";
 			}
 
+			function liveFieldModifierSafeDisplayTitle(data) {
+				const title = data?.liveFieldModifier?.displayTitle;
+				if (typeof title !== "string") return "";
+				const clean = title.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+				if (!clean || /^(unknown|n\/?a|na|null|undefined|--|—|-|none|unavailable|awaiting|pending|tbd|not\s+available)$/i.test(clean)) return "";
+				return clean;
+			}
+
 			function buildLiveFieldModifierRead(data, harmonics, guidance, fieldDirection) {
 				const field = harmonics?.todayField || "Regulated";
 				const fieldName = getPublicFieldLabel(field);
@@ -16019,6 +16274,7 @@
 				const directionTitle = fieldDirection?.title || "Today’s field is active";
 				const directionText = fieldDirection?.text || "The active field adds context to the practical read.";
 				const bestUse = guidance?.move || "Choose one clean next move and keep it proportional.";
+				const displayTitle = liveFieldModifierSafeDisplayTitle(data);
 
 				const reads = {
 					Relational: {
@@ -16072,7 +16328,9 @@
 				const loadNote = loadBand && loadBand !== "—" ? ` Current load reads ${loadBand.toLowerCase()}, so scale the move to capacity.` : "";
 
 				return {
-					title: `${fieldName} field is active`,
+					title: displayTitle || `${fieldName} field is active`,
+					mode: displayTitle ? "Current Signal Weather" : "Active Field",
+					displayTitle,
 					adds: read.adds || directionText,
 					watch: `${read.watch}${loadNote}`,
 					best: read.best || bestUse,
@@ -16097,6 +16355,10 @@
 					: "timing-based, pacing-oriented, context-setting";
 				const fieldAdjectives = fieldAdjectiveText(field);
 				const cleanMove = guidance?.move || liveFieldRead?.best || "Choose one clean next move and keep it proportional.";
+				const liveFieldDisplayTitle = liveFieldRead?.displayTitle || liveFieldModifierSafeDisplayTitle(data);
+				const liveFieldLine = liveFieldDisplayTitle
+					? `The Live Field Modifier is ${liveFieldDisplayTitle}.`
+					: `The Live Field layer is ${fieldName}: ${fieldAdjectives}.`;
 
 				let pattern = `${moonState} timing is modifying a ${fieldName} field.`;
 				let bodyLine = "The timing layer sets the pace; the live field shows where the pressure is moving.";
@@ -16129,7 +16391,7 @@
 					pattern,
 					text: `The Moonstamp layer is ${moonState}: ${moonAdjectives}.
 
-The Live Field layer is ${fieldName}: ${fieldAdjectives}.
+${liveFieldLine}
 
 ${bodyLine}${loadLine}`,
 					move: `Clean move: ${cleanMove}`,
@@ -16166,6 +16428,7 @@ ${bodyLine}${loadLine}`,
 					setText("moonstampModifierMeta", practicalInstruction);
 				}
 
+				setText("liveFieldModifierMode", liveFieldRead.mode || "Active Field");
 				setText("liveFieldModifierTitle", liveFieldRead.title);
 				setText("liveFieldModifierAdds", liveFieldRead.adds);
 				setText("liveFieldModifierWatch", liveFieldRead.watch);
