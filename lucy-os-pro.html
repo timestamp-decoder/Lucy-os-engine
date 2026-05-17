@@ -56,6 +56,7 @@
 <!-- Personal Architecture field-context overflow fix: wrapped the field-context label defensively so mobile does not split field names mid-word. CSS/markup safety only; no backend/API, scoring, Moonstamp, dashboard, saved profiles, share export, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel extraction, diagnostics, bottom nav behavior, bottom padding, PASS 15 component note language, or core public read behavior changed. -->
 <!-- Pass 16 update: added one compact Personal Landing micro-line to the visual share card only. No copied share text, backend/API, scoring, Moonstamp, dashboard, saved profiles, share export behavior beyond the visual share-card micro-line, calibration behavior, Sidereal Lahiri, ayanamsa, nakshatra, Chart Kernel data extraction, diagnostics, bottom nav behavior, bottom padding, Personal Architecture Beta content, PASS 15 component note language, or core public read behavior changed. -->
 <!-- Pass 16B update: added the matching compact Personal Landing micro-line to copied share text only. Visual share card line, backend/API, scoring, Moonstamp, dashboard, saved profiles, calibration behavior, Chart Kernel data extraction, diagnostics, bottom nav behavior, bottom padding, Personal Architecture Beta content, PASS 15 component note language, and core public read behavior unchanged. -->
+<!-- Pass 17 optional profile name update: added an optional front-end Name / Profile Name input for saved-profile labels and future share personalization foundation. Saved profiles now store/restore the optional name defensively and use it as the friendly dropdown label when present. No backend/API payload, engine, scoring, field selection, Moonstamp, dashboard, share text, visual share card, share export behavior, Chart Kernel extraction, diagnostics, bottom nav, bottom padding, Personal Architecture Beta content, PASS 15 component note language, PASS 16 visual line, PASS 16B copied-share line, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -596,6 +597,13 @@
 
 			.profileSaveHelper {
 				margin-top: 9px;
+				color: var(--muted2);
+				font-size: 11px;
+				line-height: 1.4;
+			}
+
+			.profileNameHelper {
+				margin: -1px 0 10px;
 				color: var(--muted2);
 				font-size: 11px;
 				line-height: 1.4;
@@ -7041,6 +7049,11 @@
 <div class="grid">
 <div class="panel inputPanel" id="inputSection">
 <h2>Inputs</h2>
+<label for="profileNameInput">Name / Profile Name</label>
+<input id="profileNameInput" name="profileName" placeholder="Optional — for saved profiles and share text" type="text"/>
+<div class="profileNameHelper">
+						Optional. Used for saved-profile labels and future personalized share text.
+					</div>
 <label>Date of Birth</label>
 <input id="dob" type="date"/>
 <div class="row2">
@@ -7061,8 +7074,6 @@
 <button id="calcBtn">Calculate</button>
 <div class="savedProfiles">
 <h3>Saved Profiles</h3>
-<label>Profile Name</label>
-<input id="profileName" placeholder="Profile name" type="text"/>
 <button id="saveProfileBtn" type="button">
 							Save Current Profile
 						</button>
@@ -12359,14 +12370,56 @@
 				}
 			}
 
+			function normalizeProfileName(value) {
+				return String(value || "").trim().replace(/\s+/g, " ");
+			}
+
+			function getSavedProfileName(profile) {
+				if (!profile) return "";
+				if (Object.prototype.hasOwnProperty.call(profile, "profileName")) {
+					return normalizeProfileName(profile.profileName);
+				}
+				return normalizeProfileName(profile.name || "");
+			}
+
+			function buildSavedProfileFallbackLabel(profile) {
+				const dob = String(profile?.dob || "").trim();
+				const locationText = String(profile?.locationText || "").trim();
+				const fallbackParts = [dob, locationText].filter(Boolean);
+				return fallbackParts.length
+					? fallbackParts.join(" · ")
+					: "Saved Profile";
+			}
+
+			function getSavedProfileLabel(profile) {
+				const safeName = getSavedProfileName(profile);
+				return safeName || buildSavedProfileFallbackLabel(profile);
+			}
+
+			function getSavedProfileKey(profile, index) {
+				return String(
+					profile?.id ||
+					profile?.name ||
+					`${profile?.dob || "profile"}-${profile?.locationText || "saved"}-${index}`
+				);
+			}
+
+			function createSavedProfileId() {
+				return `lucy-profile-${Date.now()}-${Math.random()
+					.toString(36)
+					.slice(2, 8)}`;
+			}
+
 			function renderSavedProfiles() {
 				const select = document.getElementById("savedProfilesSelect");
 				if (!select) return;
 
 				const profiles = getSavedProfiles()
-					.slice()
+					.map((profile, index) => ({ profile, index }))
 					.sort((a, b) =>
-						String(a.name || "").localeCompare(String(b.name || ""))
+						getSavedProfileLabel(a.profile).localeCompare(
+							getSavedProfileLabel(b.profile)
+						)
 					);
 
 				const currentValue = select.value;
@@ -12380,35 +12433,34 @@
 					: "No saved profiles yet";
 				select.appendChild(placeholder);
 
-				profiles.forEach((profile) => {
+				profiles.forEach(({ profile, index }) => {
 					const option = document.createElement("option");
-					option.value = profile.name;
-					option.textContent = profile.name;
+					option.value = getSavedProfileKey(profile, index);
+					option.textContent = getSavedProfileLabel(profile);
 					select.appendChild(option);
 				});
 
 				if (
 					currentValue &&
-					profiles.some((profile) => profile.name === currentValue)
+					profiles.some(
+						({ profile, index }) =>
+							getSavedProfileKey(profile, index) === currentValue
+					)
 				) {
 					select.value = currentValue;
 				}
 			}
 
 			function saveCurrentProfile() {
-				const name =
-					document.getElementById("profileName")?.value.trim() || "";
+				const profileName = normalizeProfileName(
+					document.getElementById("profileNameInput")?.value || ""
+				);
 				const dob = document.getElementById("dob")?.value || "";
 				const tobRaw =
 					document.getElementById("tob")?.value.trim() || "";
 				const ampm = document.getElementById("ampm")?.value || "AM";
 				const locationText =
 					document.getElementById("location")?.value.trim() || "";
-
-				if (!name) {
-					setText("profileSaveStatus", "Enter a profile name first.");
-					return;
-				}
 
 				if (!dob || !locationText) {
 					setText(
@@ -12419,20 +12471,34 @@
 				}
 
 				const profiles = getSavedProfiles();
+				const existingIndex = profiles.findIndex((profile) => {
+					const existingProfileName = getSavedProfileName(profile);
+					if (profileName && existingProfileName) {
+						return (
+							existingProfileName.toLowerCase() ===
+							profileName.toLowerCase()
+						);
+					}
+					return (
+						String(profile?.dob || "") === dob &&
+						String(profile?.tobRaw || "") === tobRaw &&
+						String(profile?.ampm || "AM") === ampm &&
+						String(profile?.locationText || "") === locationText
+					);
+				});
+
+				const existingProfile = existingIndex >= 0 ? profiles[existingIndex] : null;
 				const nextProfile = {
-					name,
+					...(existingProfile || {}),
+					id: existingProfile?.id || createSavedProfileId(),
+					name: profileName || existingProfile?.name || "",
+					profileName,
 					dob,
 					tobRaw,
 					ampm,
 					locationText,
 					savedAt: new Date().toISOString(),
 				};
-
-				const existingIndex = profiles.findIndex(
-					(profile) =>
-						String(profile.name || "").toLowerCase() ===
-						name.toLowerCase()
-				);
 
 				if (existingIndex >= 0) {
 					profiles[existingIndex] = nextProfile;
@@ -12444,7 +12510,7 @@
 				renderSavedProfiles();
 
 				const select = document.getElementById("savedProfilesSelect");
-				if (select) select.value = name;
+				if (select) select.value = nextProfile.id;
 
 				setText(
 					"profileSaveStatus",
@@ -12454,40 +12520,42 @@
 				);
 			}
 
-			function loadSelectedProfile() {
+			function getSelectedSavedProfile() {
 				const select = document.getElementById("savedProfilesSelect");
-				const selectedName = select?.value || "";
-
-				if (!selectedName) {
-					setText(
-						"profileSaveStatus",
-						"Select a saved profile to load."
-					);
-					return;
-				}
+				const selectedKey = select?.value || "";
+				if (!selectedKey) return null;
 
 				const profiles = getSavedProfiles();
-				const profile = profiles.find(
-					(item) => item.name === selectedName
-				);
+				const found = profiles
+					.map((profile, index) => ({ profile, index }))
+					.find(
+						({ profile, index }) =>
+							getSavedProfileKey(profile, index) === selectedKey
+					);
+
+				return found?.profile || null;
+			}
+
+			function loadSelectedProfile() {
+				const profile = getSelectedSavedProfile();
 
 				if (!profile) {
 					setText(
 						"profileSaveStatus",
-						"Saved profile was not found."
+						"Select a saved profile to load."
 					);
 					renderSavedProfiles();
 					return;
 				}
 
-				const profileNameInput = document.getElementById("profileName");
+				const profileNameInput = document.getElementById("profileNameInput");
 				const dobInput = document.getElementById("dob");
 				const tobInput = document.getElementById("tob");
 				const ampmInput = document.getElementById("ampm");
 				const locationInput = document.getElementById("location");
 
 				if (profileNameInput)
-					profileNameInput.value = profile.name || "";
+					profileNameInput.value = getSavedProfileName(profile);
 				if (dobInput) dobInput.value = profile.dob || "";
 				if (tobInput) tobInput.value = profile.tobRaw || "";
 				if (ampmInput) ampmInput.value = profile.ampm || "AM";
@@ -12502,9 +12570,9 @@
 
 			function deleteSelectedProfile() {
 				const select = document.getElementById("savedProfilesSelect");
-				const selectedName = select?.value || "";
+				const selectedKey = select?.value || "";
 
-				if (!selectedName) {
+				if (!selectedKey) {
 					setText(
 						"profileSaveStatus",
 						"Select a saved profile to delete."
@@ -12514,7 +12582,8 @@
 
 				const profiles = getSavedProfiles();
 				const nextProfiles = profiles.filter(
-					(profile) => profile.name !== selectedName
+					(profile, index) =>
+						getSavedProfileKey(profile, index) !== selectedKey
 				);
 
 				setSavedProfiles(nextProfiles);
@@ -18291,6 +18360,8 @@ ${bodyLine}${loadLine}`,
 				.getElementById("deleteProfileBtn")
 				.addEventListener("click", deleteSelectedProfile);
 
+			const defaultProfileNameInput = document.getElementById("profileNameInput");
+			if (defaultProfileNameInput) defaultProfileNameInput.value = "";
 			document.getElementById("dob").value = "1980-11-21";
 			document.getElementById("tob").value = "6:20";
 			document.getElementById("ampm").value = "AM";
