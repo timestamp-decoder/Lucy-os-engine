@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 
+<!-- Pass 34E update: hardened the diagnostics-only Live Mercury Source Proof panel so deployed builds can verify whether PASS 34D is running, whether the frontend response was scanned, and whether any safe live/current/transit Mercury sign source exists. Public Live Field Modifier still updates only when a safe runtime live Mercury sign is accepted. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, bottom padding, Landing flow, Personal Architecture PASS 33H title logic, Chart Kernel extraction, or core public read behavior changed. -->
 <!-- Pass 34D update: added deployment proof and runtime live Mercury source exposure for the Live Field Modifier only. The visible card updates only when safe live/current/transit Mercury sign data exists in the frontend response; otherwise it remains field-based. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, share behavior, Personal Architecture PASS 33H title logic, Chart Kernel extraction, or core public read behavior changed. -->
 <!-- Practice edit: upload/edit/download workflow verified. -->
 <!-- Pass 1 update: added top clarity, plain read, system read, and personal landing display layer. Engine, API, scoring, Moonstamp, saved profiles, share export, and calibration tests unchanged. -->
@@ -9011,11 +9012,27 @@
 										PASS 34D diagnostics-only proof for the Live Field Modifier runtime source. This does not change the public read.
 									</div>
 <div class="chartKernelSummaryGrid">
-<div class="chartKernelSummaryRow"><span>PASS 34D running</span><strong id="liveMercuryProofRunning">yes</strong></div>
+<div class="chartKernelSummaryRow"><span>PASS 34D running</span><strong id="liveMercuryProofRunning">no</strong></div>
+<div class="chartKernelSummaryRow"><span>Frontend response scanned</span><strong id="liveMercuryProofScanned">no</strong></div>
 <div class="chartKernelSummaryRow"><span>Mercury source</span><strong id="liveMercuryProofSource">none</strong></div>
 <div class="chartKernelSummaryRow"><span>Mercury sign</span><strong id="liveMercuryProofSign">none</strong></div>
 <div class="chartKernelSummaryRow"><span>Fallback</span><strong id="liveMercuryProofFallback">awaiting scan</strong></div>
+<div class="chartKernelSummaryRow"><span>Candidate paths</span><strong id="liveMercuryProofCandidateCount">0</strong></div>
+<div class="chartKernelSummaryRow"><span>Rejected paths</span><strong id="liveMercuryProofRejectedCount">0</strong></div>
 </div>
+<details class="chartKernelRawDetails" id="liveMercuryProofRawDetails">
+<summary>Raw proof paths</summary>
+<div class="chartKernelRawDetailsBody">
+<div class="chartKernelRawHelper">Candidate Paths</div>
+<div class="chartKernelSummaryGrid" id="liveMercuryProofCandidatePaths">
+<div class="chartKernelSummaryRow"><span>none</span><strong>—</strong></div>
+</div>
+<div class="chartKernelRawHelper">Rejected Paths</div>
+<div class="chartKernelSummaryGrid" id="liveMercuryProofRejectedPaths">
+<div class="chartKernelSummaryRow"><span>none</span><strong>—</strong></div>
+</div>
+</div>
+</details>
 </div>
 </details>
 
@@ -16683,6 +16700,8 @@
 
 			function pass34DCreateMercuryScanResult(overrides = {}) {
 				return {
+					running: overrides.running === false ? false : !!overrides.running,
+					scanned: !!overrides.scanned,
 					mercurySign: overrides.mercurySign || "",
 					sourceUsed: overrides.sourceUsed || "",
 					candidatePaths: Array.isArray(overrides.candidatePaths) ? overrides.candidatePaths : [],
@@ -16785,6 +16804,8 @@
 
 			function scanSafeRuntimeLiveMercurySource(runtimeResponse) {
 				const result = pass34DCreateMercuryScanResult({
+					running: true,
+					scanned: true,
 					fallbackReason: "no safe runtime live Mercury sign found",
 				});
 				const seen = new WeakSet();
@@ -16886,6 +16907,25 @@
 				return scanSafeRuntimeLiveMercurySource(data);
 			}
 
+			function buildPass34ELiveMercuryProofState(scan, scannedOverride) {
+				const safeScan = pass34DCreateMercuryScanResult(scan || {});
+				return {
+					running: true,
+					scanned: typeof scannedOverride === "boolean" ? scannedOverride : !!(scan || safeScan.scanned),
+					mercurySign: normalizeExistingZodiacSignLabel(safeScan.mercurySign || "") || "",
+					sourceUsed: safeScan.sourceUsed || "",
+					candidatePaths: Array.isArray(safeScan.candidatePaths) ? safeScan.candidatePaths.slice() : [],
+					rejectedPaths: Array.isArray(safeScan.rejectedPaths) ? safeScan.rejectedPaths.slice() : [],
+					fallbackReason: safeScan.fallbackReason || "",
+				};
+			}
+
+			function publishPass34ELiveMercuryProofState(scan, scannedOverride) {
+				window.__lucyPass34DLiveMercuryProof = buildPass34ELiveMercuryProofState(scan, scannedOverride);
+				console.debug("PASS 34E LIVE MERCURY PROOF STATE", window.__lucyPass34DLiveMercuryProof);
+				return window.__lucyPass34DLiveMercuryProof;
+			}
+
 			function logPass34DLiveMercurySourceScan(scan) {
 				const safeScan = pass34DCreateMercuryScanResult(scan || {});
 				console.debug("PASS 34D LIVE MERCURY SOURCE SCAN", {
@@ -16897,12 +16937,45 @@
 				});
 			}
 
+			function renderLiveMercuryProofPathList(targetId, entries, limit) {
+				const target = document.getElementById(targetId);
+				if (!target) return;
+				target.innerHTML = "";
+				const safeEntries = Array.isArray(entries) ? entries.slice(0, limit) : [];
+				if (!safeEntries.length) {
+					const row = document.createElement("div");
+					row.className = "chartKernelSummaryRow";
+					const label = document.createElement("span");
+					label.textContent = "none";
+					const value = document.createElement("strong");
+					value.textContent = "—";
+					row.append(label, value);
+					target.append(row);
+					return;
+				}
+				safeEntries.forEach((entry, index) => {
+					const row = document.createElement("div");
+					row.className = "chartKernelSummaryRow";
+					const label = document.createElement("span");
+					label.textContent = String(entry || "none");
+					const value = document.createElement("strong");
+					value.textContent = `#${index + 1}`;
+					row.append(label, value);
+					target.append(row);
+				});
+			}
+
 			function renderLiveMercurySourceProof(scan) {
-				const safeScan = pass34DCreateMercuryScanResult(scan || {});
-				setText("liveMercuryProofRunning", "yes");
-				setText("liveMercuryProofSource", safeScan.sourceUsed || "none");
-				setText("liveMercuryProofSign", safeScan.mercurySign || "none");
-				setText("liveMercuryProofFallback", safeScan.fallbackReason || "none");
+				const proofState = publishPass34ELiveMercuryProofState(scan, !!scan);
+				setText("liveMercuryProofRunning", proofState.running ? "yes" : "no");
+				setText("liveMercuryProofScanned", proofState.scanned ? "yes" : "no");
+				setText("liveMercuryProofSource", proofState.sourceUsed || "none");
+				setText("liveMercuryProofSign", proofState.mercurySign || "none");
+				setText("liveMercuryProofFallback", proofState.fallbackReason || "none");
+				setText("liveMercuryProofCandidateCount", String(proofState.candidatePaths.length));
+				setText("liveMercuryProofRejectedCount", String(proofState.rejectedPaths.length));
+				renderLiveMercuryProofPathList("liveMercuryProofCandidatePaths", proofState.candidatePaths, 8);
+				renderLiveMercuryProofPathList("liveMercuryProofRejectedPaths", proofState.rejectedPaths, 12);
 			}
 
 			function buildLiveFieldModifierMercuryContext(data) {
@@ -19697,6 +19770,7 @@ ${bodyLine}${loadLine}`,
 						console.debug("PASS 34D scan cache attach skipped", scanAttachErr);
 					}
 					logPass34DLiveMercurySourceScan(pass34DLiveMercurySourceScan);
+					renderLiveMercurySourceProof(pass34DLiveMercurySourceScan);
 
 					updateUI(data);
 					renderChartKernelDataInspection(data);
