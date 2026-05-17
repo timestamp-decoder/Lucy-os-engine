@@ -77,6 +77,7 @@
 <!-- Pass 33B update: traced existing safe sign labels through the Personal Architecture card source, current row source object, and already-present chartKernel placement collections before binding titles. Display-title binding only; no backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share-card behavior, bottom nav, bottom padding, Landing flow, PASS 15 component note language meaning, PASS 24 helper meaning, PASS 26 framing strip meaning, PASS 27 hierarchy, PASS 28 component-card styling direction, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, PASS 31 Landing styling, PASS 32 card structure, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <!-- Pass 33C update: traced the actual Personal Architecture Beta title render path and bound the visible title helper to existing front-end sign strings across the rendered row, source/raw/data/meta, and broader chartKernel sign/placement containers. Added quiet console.debug tracing only. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share-card behavior, bottom nav, bottom padding, Landing flow, PASS 15 component note language meaning, PASS 24 helper meaning, PASS 26 framing strip meaning, PASS 27 hierarchy, PASS 28 component-card styling direction, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, PASS 31 Landing styling, PASS 32 card structure, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <!-- Pass 33D update: added runtime chartKernel shape proof and bound the exact Personal Architecture Beta visible title renderer to a final existing-sign lookup helper. Sign labels are used only when already present as safe runtime strings; no sign calculation, longitude derivation, backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, Landing flow, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
+<!-- Pass 33E update: added display-only Personal Architecture title sign fallback from already-present runtime placement degrees when no safe sign string exists. Safe sign strings remain first; degree fallback is title readability only. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, share behavior, bottom nav, Landing flow, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -10302,10 +10303,207 @@
 				return getExistingPlacementSignFromRuntimeData(placementName, component, chartKernel);
 			}
 
+			function personalArchitectureDegreeFieldPatterns() {
+				return [
+					/^degree$/i,
+					/^degrees$/i,
+					/^longitude$/i,
+					/^lon$/i,
+					/^ecliptic_?longitude$/i,
+					/^tropical_?longitude$/i,
+					/^sidereal_?longitude$/i,
+					/^zodiac_?degree$/i,
+					/^absolute_?degree$/i,
+					/^position$/i,
+					/^value$/i,
+				];
+			}
+
+			function normalizeExistingPlacementDegreeValue(value) {
+				if (typeof value === "number") return Number.isFinite(value) ? value : null;
+				if (typeof value !== "string") return null;
+				const clean = value.trim();
+				if (!/^[+-]?(?:\d+(?:\.\d+)?|\.\d+)$/.test(clean)) return null;
+				const parsed = Number(clean);
+				return Number.isFinite(parsed) ? parsed : null;
+			}
+
+			function normalizeZodiacDegree360(degree) {
+				const numeric = normalizeExistingPlacementDegreeValue(degree);
+				if (numeric === null) return null;
+				return ((numeric % 360) + 360) % 360;
+			}
+
+			function personalArchitectureGetExistingDegreeFromSource(source, placementName = "", sourceKey = "") {
+				if (!source || typeof source !== "object") return null;
+				const degreeFieldPatterns = personalArchitectureDegreeFieldPatterns();
+				const sourceMatchesPlacement = placementName
+					? personalArchitectureObjectMatchesPlacement(source, placementName, sourceKey)
+					: true;
+
+				for (const [key, value] of Object.entries(source)) {
+					const keyText = String(key || "");
+					if (!degreeFieldPatterns.some((pattern) => pattern.test(keyText))) continue;
+					const numeric = normalizeExistingPlacementDegreeValue(value);
+					if (numeric !== null) return numeric;
+				}
+
+				let found = null;
+				chartKernelWalk(source, (path, key, value) => {
+					if (found !== null) return;
+					const keyText = String(key || "");
+					if (!degreeFieldPatterns.some((pattern) => pattern.test(keyText))) return;
+					const pathText = `${sourceKey || ""} ${path || ""} ${keyText}`;
+					if (placementName && !sourceMatchesPlacement && !personalArchitectureObjectMatchesPlacement({ value }, placementName, pathText)) return;
+					const numeric = normalizeExistingPlacementDegreeValue(value);
+					if (numeric !== null) found = numeric;
+				});
+
+				return found;
+			}
+
+			function personalArchitectureFindDegreeInRuntimeContainer(container, placementName, sourceLabel = "") {
+				if (!container || typeof container !== "object") return null;
+
+				if (Array.isArray(container)) {
+					for (const entry of container) {
+						if (!entry || typeof entry !== "object") continue;
+						if (!personalArchitectureObjectMatchesPlacement(entry, placementName, sourceLabel)) continue;
+						const numeric = personalArchitectureGetExistingDegreeFromSource(entry, placementName, sourceLabel);
+						if (numeric !== null) return numeric;
+					}
+					return null;
+				}
+
+				for (const [key, entry] of Object.entries(container)) {
+					const keyText = `${sourceLabel || ""} ${key || ""}`;
+					if (!personalArchitectureObjectMatchesPlacement(entry && typeof entry === "object" ? entry : { value: entry }, placementName, keyText)) continue;
+					const numeric = normalizeExistingPlacementDegreeValue(entry);
+					if (numeric !== null) return numeric;
+					if (entry && typeof entry === "object") {
+						const nestedNumeric = personalArchitectureGetExistingDegreeFromSource(entry, placementName, keyText);
+						if (nestedNumeric !== null) return nestedNumeric;
+					}
+				}
+
+				return null;
+			}
+
+			function getExistingPlacementDegreeFromRuntimeData(placementName, item, chartKernel) {
+				// Search only existing runtime fields.
+				// Do not call API.
+				// Do not compute longitude.
+				// Do not change data.
+				const directSources = [
+					item,
+					item?.component,
+					item?.role,
+					item?.source,
+					item?.raw,
+					item?.data,
+					item?.meta,
+					item?.sourceData,
+					item?.source?.raw,
+					item?.source?.data,
+					item?.source?.meta,
+					item?.source?.sourceData,
+				];
+
+				for (const source of directSources) {
+					const numeric = personalArchitectureGetExistingDegreeFromSource(source, placementName);
+					if (numeric !== null) return numeric;
+				}
+
+				const runtimeCollections = [
+					["chartKernel.placementRoles", chartKernel?.placementRoles],
+					["chartKernel.placements", chartKernel?.placements],
+					["chartKernel.planets", chartKernel?.planets],
+					["chartKernel.bodies", chartKernel?.bodies],
+					["chartKernel.nodes", chartKernel?.nodes],
+					["chartKernel.signs", chartKernel?.signs],
+					["chartKernel.signPlacements", chartKernel?.signPlacements],
+					["chartKernel.natal", chartKernel?.natal],
+					["chartKernel.natal.placements", chartKernel?.natal?.placements],
+					["chartKernel.natal.planets", chartKernel?.natal?.planets],
+					["chartKernel.natal.bodies", chartKernel?.natal?.bodies],
+					["chartKernel.natalChart", chartKernel?.natalChart],
+					["chartKernel.natalChart.placements", chartKernel?.natalChart?.placements],
+					["chartKernel.natalChart.planets", chartKernel?.natalChart?.planets],
+					["chartKernel.natalChart.bodies", chartKernel?.natalChart?.bodies],
+					["chartKernel.chart", chartKernel?.chart],
+					["chartKernel.chart.placements", chartKernel?.chart?.placements],
+					["chartKernel.chart.planets", chartKernel?.chart?.planets],
+					["chartKernel.chart.bodies", chartKernel?.chart?.bodies],
+					["chartKernel.data", chartKernel?.data],
+					["chartKernel.data.placements", chartKernel?.data?.placements],
+					["chartKernel.data.planets", chartKernel?.data?.planets],
+					["chartKernel.data.bodies", chartKernel?.data?.bodies],
+					["chartKernel.raw", chartKernel?.raw],
+					["chartKernel.raw.placements", chartKernel?.raw?.placements],
+					["chartKernel.raw.planets", chartKernel?.raw?.planets],
+					["chartKernel.raw.bodies", chartKernel?.raw?.bodies],
+				];
+
+				for (const [sourceLabel, collection] of runtimeCollections) {
+					const numeric = personalArchitectureFindDegreeInRuntimeContainer(collection, placementName, sourceLabel);
+					if (numeric !== null) return numeric;
+				}
+
+				let found = null;
+				chartKernelWalk(chartKernel, (path, key, value) => {
+					if (found !== null) return;
+					const pathText = `${path || ""} ${key || ""}`;
+					const degreeFieldPatterns = personalArchitectureDegreeFieldPatterns();
+					const keyText = String(key || "");
+					if (degreeFieldPatterns.some((pattern) => pattern.test(keyText))) {
+						if (!personalArchitectureObjectMatchesPlacement({ value }, placementName, pathText)) return;
+						const numeric = normalizeExistingPlacementDegreeValue(value);
+						if (numeric !== null) found = numeric;
+						return;
+					}
+					if (!value || typeof value !== "object" || Array.isArray(value)) return;
+					if (!personalArchitectureObjectMatchesPlacement(value, placementName, pathText)) return;
+					const numeric = personalArchitectureGetExistingDegreeFromSource(value, placementName, pathText);
+					if (numeric !== null) found = numeric;
+				});
+
+				return found;
+			}
+
+			function deriveDisplaySignFromExistingDegree(degree) {
+				// PASS 33E note:
+				// This fallback is title-readability only.
+				// It derives a visible sign label from an already-present runtime degree
+				// when no safe sign string exists.
+				// It does not affect chartKernel data, scoring, field selection, Moonstamp,
+				// dashboard, diagnostics, API payload, saved profiles, or share behavior.
+				const normalizedDegree = normalizeZodiacDegree360(degree);
+				if (normalizedDegree === null) return "";
+				const signs = [
+					"Aries",
+					"Taurus",
+					"Gemini",
+					"Cancer",
+					"Leo",
+					"Virgo",
+					"Libra",
+					"Scorpio",
+					"Sagittarius",
+					"Capricorn",
+					"Aquarius",
+					"Pisces",
+				];
+				const index = Math.floor(normalizedDegree / 30);
+				return signs[index] || "";
+			}
+
 			function buildVisiblePersonalArchitectureTitle(placementName, systemLabel, item, chartKernel) {
 				const placement = String(placementName || "").trim();
 				const role = personalArchitecturePublicRoleLabel(systemLabel || "");
-				const sign = getExistingPlacementSignFromRuntimeData(placement, item, chartKernel);
+				const safeSign = getExistingPlacementSignFromRuntimeData(placement, item, chartKernel);
+				const fallbackDegree = safeSign ? "" : getExistingPlacementDegreeFromRuntimeData(placement, item, chartKernel);
+				const fallbackSign = safeSign ? "" : deriveDisplaySignFromExistingDegree(fallbackDegree);
+				const sign = safeSign || fallbackSign;
 				if (placement && role) return sign ? `${placement} in ${sign} — ${role}` : `${placement} — ${role}`;
 				if (placement) return sign ? `${placement} in ${sign}` : placement;
 				return role || "Stable receiving component";
@@ -10886,7 +11084,10 @@
 				const placementName = String(item?.label || "").trim();
 				const systemLabel = personalArchitecturePublicRoleLabel(item?.role || "");
 				const chartKernel = item?.chartKernel || item?.data?.chartKernel || {};
-				const signLookupResult = getExistingPlacementSignFromRuntimeData(placementName, item, chartKernel);
+				const safeSign = getExistingPlacementSignFromRuntimeData(placementName, item, chartKernel);
+				const fallbackDegree = safeSign ? "" : getExistingPlacementDegreeFromRuntimeData(placementName, item, chartKernel);
+				const fallbackSign = safeSign ? "" : deriveDisplaySignFromExistingDegree(fallbackDegree);
+				const signLookupResult = safeSign || fallbackSign;
 				const visibleTitle = buildVisiblePersonalArchitectureTitle(placementName, systemLabel, item, chartKernel);
 				const component = item?.component;
 				const role = item?.role;
@@ -10896,9 +11097,12 @@
 				const meta = item?.meta || item?.source?.meta;
 				const sourceData = item?.sourceData || item?.source?.sourceData;
 				if (typeof console !== "undefined" && typeof console.debug === "function") {
-					console.debug("PASS 33D PA VISIBLE TITLE RENDER", {
+					console.debug("PASS 33E PA VISIBLE TITLE RENDER", {
 						placementName,
 						systemLabel,
+						safeSign,
+						fallbackDegree,
+						fallbackSign,
 						visibleTitle,
 						item,
 						component,
