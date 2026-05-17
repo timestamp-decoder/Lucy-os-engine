@@ -75,6 +75,7 @@
 <!-- Pass 32 update: upgraded Personal Architecture Beta placement-card structure only. Cards now read as placement-forward product cards with Meaning, Use, Explore rows, quiet metadata, and existing Today / What this means today detail preserved. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share-card behavior, bottom nav, bottom padding, Landing flow, PASS 15 component note language meaning, PASS 24 helper meaning, PASS 26 framing strip meaning, PASS 27 hierarchy, PASS 28 component-card styling direction, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, PASS 31 Landing styling, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <!-- Pass 33 update: recovered existing safe sign labels in Personal Architecture Beta placement-card titles only. Titles now use Placement in Sign when the current chartKernel/front-end data already provides a clean sign label, with safe fallback to PASS 32 titles when unavailable. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share-card behavior, bottom nav, bottom padding, Landing flow, PASS 15 component note language meaning, PASS 24 helper meaning, PASS 26 framing strip meaning, PASS 27 hierarchy, PASS 28 component-card styling direction, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, PASS 31 Landing styling, PASS 32 card structure, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <!-- Pass 33B update: traced existing safe sign labels through the Personal Architecture card source, current row source object, and already-present chartKernel placement collections before binding titles. Display-title binding only; no backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share-card behavior, bottom nav, bottom padding, Landing flow, PASS 15 component note language meaning, PASS 24 helper meaning, PASS 26 framing strip meaning, PASS 27 hierarchy, PASS 28 component-card styling direction, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, PASS 31 Landing styling, PASS 32 card structure, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
+<!-- Pass 33C update: traced the actual Personal Architecture Beta title render path and bound the visible title helper to existing front-end sign strings across the rendered row, source/raw/data/meta, and broader chartKernel sign/placement containers. Added quiet console.debug tracing only. No backend/API, payload, engine, scoring, Moonstamp, dashboard, field selection, calibration, saved profiles, Profile Name behavior, copied share text, visual share-card behavior, bottom nav, bottom padding, Landing flow, PASS 15 component note language meaning, PASS 24 helper meaning, PASS 26 framing strip meaning, PASS 27 hierarchy, PASS 28 component-card styling direction, PASS 29B placement/order, PASS 30 activated-architecture body copy meaning, PASS 31 Landing styling, PASS 32 card structure, Chart Kernel extraction, diagnostics, or core public read behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -9999,6 +10000,10 @@
 				return canonical || "";
 			}
 
+			function normalizeExistingZodiacSignLabel(value) {
+				return personalArchitectureCleanExistingSignLabel(value);
+			}
+
 			function personalArchitectureGetSafeExistingSignLabel(...sources) {
 				const directFieldPatterns = [
 					/^sign$/i,
@@ -10153,27 +10158,53 @@
 			}
 
 			function getExistingPlacementSignFromChartKernel(placementName, component, chartKernel) {
-				const directSign = personalArchitectureGetSafeExistingSignLabel(
+				const directSources = [
 					component,
-					component?.raw,
 					component?.source,
+					component?.raw,
 					component?.data,
-					component?.meta
-				);
+					component?.meta,
+					component?.sourceData,
+					component?.source?.raw,
+					component?.source?.data,
+					component?.source?.meta,
+				];
+				const directSign = personalArchitectureGetSafeExistingSignLabel(...directSources);
 				if (directSign) return directSign;
-				const nestedComponentSign = personalArchitectureGetNestedSafeExistingSignLabel(component);
-				if (nestedComponentSign) return nestedComponentSign;
+
+				for (const source of directSources) {
+					const nestedSign = personalArchitectureGetNestedSafeExistingSignLabel(source);
+					if (nestedSign) return nestedSign;
+				}
 
 				const collections = [
 					chartKernel?.placementRoles,
 					chartKernel?.placements,
-					chartKernel?.signPlacements,
 					chartKernel?.planets,
 					chartKernel?.bodies,
 					chartKernel?.nodes,
+					chartKernel?.signs,
+					chartKernel?.signPlacements,
+					chartKernel?.natal,
 					chartKernel?.natal?.placements,
 					chartKernel?.natal?.planets,
 					chartKernel?.natal?.bodies,
+					chartKernel?.natalChart,
+					chartKernel?.natalChart?.placements,
+					chartKernel?.natalChart?.planets,
+					chartKernel?.natalChart?.bodies,
+					chartKernel?.chart,
+					chartKernel?.chart?.placements,
+					chartKernel?.chart?.planets,
+					chartKernel?.chart?.bodies,
+					chartKernel?.data,
+					chartKernel?.data?.placements,
+					chartKernel?.data?.planets,
+					chartKernel?.data?.bodies,
+					chartKernel?.raw,
+					chartKernel?.raw?.placements,
+					chartKernel?.raw?.planets,
+					chartKernel?.raw?.bodies,
 				];
 
 				for (const collection of collections) {
@@ -10188,7 +10219,8 @@
 								entry.raw,
 								entry.source,
 								entry.data,
-								entry.meta
+								entry.meta,
+								entry.sourceData
 							);
 							if (clean) return clean;
 							const nestedClean = personalArchitectureGetNestedSafeExistingSignLabel(entry);
@@ -10200,7 +10232,7 @@
 					for (const [key, entry] of Object.entries(collection)) {
 						if (!personalArchitectureObjectMatchesPlacement(entry, placementName, key)) continue;
 						if (typeof entry === "string") {
-							const cleanString = personalArchitectureGetSafeExistingSignLabel({ label: entry });
+							const cleanString = normalizeExistingZodiacSignLabel(entry);
 							if (cleanString) return cleanString;
 							continue;
 						}
@@ -10209,7 +10241,8 @@
 							entry?.raw,
 							entry?.source,
 							entry?.data,
-							entry?.meta
+							entry?.meta,
+							entry?.sourceData
 						);
 						if (clean) return clean;
 						const nestedClean = personalArchitectureGetNestedSafeExistingSignLabel(entry);
@@ -10219,7 +10252,13 @@
 
 				let found = "";
 				chartKernelWalk(chartKernel, (path, key, value) => {
-					if (found || !value || typeof value !== "object" || Array.isArray(value)) return;
+					if (found) return;
+					if (typeof value === "string") {
+						if (!personalArchitectureObjectMatchesPlacement({ value }, placementName, `${path || ""} ${key || ""}`)) return;
+						found = normalizeExistingZodiacSignLabel(value);
+						return;
+					}
+					if (!value || typeof value !== "object" || Array.isArray(value)) return;
 					if (!personalArchitectureObjectMatchesPlacement(value, placementName, `${path || ""} ${key || ""}`)) return;
 					found =
 						personalArchitectureGetSafeExistingSignLabel(
@@ -10227,25 +10266,30 @@
 							value.raw,
 							value.source,
 							value.data,
-							value.meta
+							value.meta,
+							value.sourceData
 						) || personalArchitectureGetNestedSafeExistingSignLabel(value);
 				});
 
-				if (found) return found;
-				return "";
+				return found || "";
 			}
 
-			function personalArchitectureBuildPlacementTitle(item) {
-				const placement = String(item?.label || "").trim();
-				const role = personalArchitecturePublicRoleLabel(item?.role || "");
-				const sign = getExistingPlacementSignFromChartKernel(
-					placement,
-					item?.source || item,
-					item?.chartKernel || item?.data?.chartKernel
-				);
+			function buildVisiblePersonalArchitectureTitle(placementName, systemLabel, component, chartKernel) {
+				const placement = String(placementName || "").trim();
+				const role = personalArchitecturePublicRoleLabel(systemLabel || "");
+				const sign = getExistingPlacementSignFromChartKernel(placement, component, chartKernel);
 				const placementTitle = sign ? `${placement} in ${sign}` : placement;
 				if (placementTitle && role) return `${placementTitle} — ${role}`;
 				return role || placementTitle || "Stable receiving component";
+			}
+
+			function personalArchitectureBuildPlacementTitle(item) {
+				return buildVisiblePersonalArchitectureTitle(
+					item?.label,
+					item?.role,
+					item,
+					item?.chartKernel || item?.data?.chartKernel
+				);
 			}
 
 			function personalArchitectureFormatMetaLines(lines = []) {
@@ -10811,8 +10855,26 @@
 				const todayMeaningHtml = item.todayMeaning
 					? `<div class="personalArchitectureTodayMeaning"><strong>What this means today</strong>${chartKernelEscapeHtml(item.todayMeaning)}</div>`
 					: "";
-				const title = personalArchitectureBuildPlacementTitle(item);
-				const systemRole = item.sign && !/node/i.test(String(item.label || ""))
+				const placementName = String(item?.label || "").trim();
+				const systemLabel = personalArchitecturePublicRoleLabel(item?.role || "");
+				const chartKernel = item?.chartKernel || item?.data?.chartKernel || {};
+				const sign = getExistingPlacementSignFromChartKernel(placementName, item, chartKernel);
+				const title = buildVisiblePersonalArchitectureTitle(placementName, systemLabel, item, chartKernel);
+				if (typeof console !== "undefined" && typeof console.debug === "function") {
+					console.debug("PA title trace", {
+						placementName,
+						systemLabel,
+						component: item,
+						source: item?.source,
+						raw: item?.raw || item?.source?.raw,
+						data: item?.data || item?.source?.data,
+						meta: item?.meta || item?.source?.meta,
+						chartKernelKeys: chartKernel && typeof chartKernel === "object" ? Object.keys(chartKernel) : [],
+						sign,
+						title,
+					});
+				}
+				const systemRole = sign && !/node/i.test(String(item.label || ""))
 					? "Stable receiving component"
 					: chartKernelEscapeHtml(item.label || "Stable receiving component");
 				return `<div class="personalArchitectureBetaItem"><div class="personalArchitectureComponentHeader"><div class="personalArchitecturePlacementTitle">${chartKernelEscapeHtml(
