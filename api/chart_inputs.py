@@ -1,6 +1,5 @@
 from http.server import BaseHTTPRequestHandler
 import json
-import math
 import os
 import re
 from datetime import datetime, timedelta, timezone
@@ -72,122 +71,6 @@ def parse_time_flexible(time_str: str) -> datetime:
             continue
 
     raise ValueError("Time of birth must look like 6:20 AM, 10:55 PM, or 18:20")
-
-
-def parse_bool(value) -> bool:
-    if isinstance(value, bool):
-        return value
-
-    if isinstance(value, (int, float)):
-        return bool(value)
-
-    if isinstance(value, str):
-        return value.strip().lower() in ("1", "true", "yes", "y", "on")
-
-    return False
-
-
-def resolve_requested_transit_utc(
-    transit_date: str,
-    transit_time: str,
-    timezone_name: str | None = None,
-    utc_offset_hours: float | None = None,
-) -> dict:
-    if not transit_date:
-        raise ValueError("transitDate is required when forecastDiagnostic is true")
-
-    if not transit_time:
-        raise ValueError("transitTime is required when forecastDiagnostic is true")
-
-    date_part = datetime.strptime(str(transit_date).strip(), "%Y-%m-%d")
-    time_part = parse_time_flexible(str(transit_time).strip())
-
-    local_naive = datetime(
-        date_part.year,
-        date_part.month,
-        date_part.day,
-        time_part.hour,
-        time_part.minute,
-        0,
-        0,
-    )
-
-    timezone_used = timezone_name or "UTC"
-
-    if timezone_name and timezone_name != "Manual/Override":
-        try:
-            local_dt = local_naive.replace(tzinfo=ZoneInfo(timezone_name))
-        except Exception:
-            if utc_offset_hours is None:
-                local_dt = local_naive.replace(tzinfo=timezone.utc)
-                timezone_used = "UTC"
-            else:
-                local_dt = local_naive.replace(
-                    tzinfo=timezone(timedelta(hours=float(utc_offset_hours)))
-                )
-                timezone_used = f"UTC offset {float(utc_offset_hours):g}"
-    elif utc_offset_hours is not None:
-        local_dt = local_naive.replace(
-            tzinfo=timezone(timedelta(hours=float(utc_offset_hours)))
-        )
-        timezone_used = f"UTC offset {float(utc_offset_hours):g}"
-    else:
-        local_dt = local_naive.replace(tzinfo=timezone.utc)
-        timezone_used = "UTC"
-
-    utc_dt = local_dt.astimezone(timezone.utc)
-
-    return {
-        "requested_local_datetime": local_dt.isoformat(),
-        "transit_utc_datetime": utc_dt,
-        "timezone_used": timezone_used,
-    }
-
-
-def build_forecast_diagnostic(
-    requested_date: str,
-    requested_time: str,
-    transit_chart: dict,
-    transit_response: dict,
-) -> dict:
-    proof_planets = ["sun", "moon", "mercury", "venus", "mars", "saturn", "pluto"]
-
-    longitudes_deg = transit_chart.get("_longitudesDeg", {}) or {}
-    normalized_transits = {
-        name: round(float(transit_chart.get(name, 0.0)), 9)
-        for name in proof_planets
-    }
-
-    transit_longitudes_deg = {
-        name: round(float(longitudes_deg.get(name, 0.0)), 6)
-        for name in proof_planets
-    }
-
-    sun_deg = float(longitudes_deg.get("sun", 0.0))
-    moon_deg = float(longitudes_deg.get("moon", 0.0))
-    moon_sun_angle = float((moon_deg - sun_deg) % 360.0)
-    phase_fraction = moon_sun_angle / 360.0
-    illumination_estimate = (1.0 - math.cos(math.radians(moon_sun_angle))) / 2.0
-
-    meta = transit_chart.get("_meta", {}) or {}
-    telemetry = transit_response.get("telemetry", {}) or {}
-
-    return {
-        "enabled": True,
-        "requestedTransitDate": requested_date,
-        "requestedTransitTime": requested_time,
-        "transitUtcDatetime": meta.get("utc_datetime"),
-        "transitJulianDay": meta.get("jd_ut"),
-        "serverNowUsed": bool(meta.get("server_now_used", False)),
-        "transitLongitudesDeg": transit_longitudes_deg,
-        "normalizedTransits": normalized_transits,
-        "moonSunAngle": round(moon_sun_angle, 6),
-        "phaseFraction": round(phase_fraction, 9),
-        "illuminationEstimate": round(illumination_estimate, 9),
-        "primaryDriver": telemetry.get("primaryDriver"),
-        "topDrivers": telemetry.get("topDrivers", []),
-        "topRegulator": telemetry.get("topRegulator"),
-    }
 
 
 def http_get_json(url: str) -> dict:
@@ -361,6 +244,35 @@ def to_julian_day_utc(utc_dt: datetime) -> float:
     return jd_ut
 
 
+def parse_forecast_datetime_utc(transit_date: str, transit_time: str | None = None) -> datetime:
+    date_text = str(transit_date or "").strip()
+    time_text = str(transit_time or "12:00").strip() or "12:00"
+
+    if not date_text:
+        raise ValueError("transitDate is required when forecastDiagnostic is true")
+
+    try:
+        date_part = datetime.strptime(date_text, "%Y-%m-%d")
+    except ValueError:
+        raise ValueError("transitDate must use YYYY-MM-DD format")
+
+    try:
+        time_part = datetime.strptime(time_text, "%H:%M")
+    except ValueError:
+        raise ValueError("transitTime must use HH:MM 24-hour format")
+
+    return datetime(
+        date_part.year,
+        date_part.month,
+        date_part.day,
+        time_part.hour,
+        time_part.minute,
+        0,
+        0,
+        tzinfo=timezone.utc,
+    )
+
+
 def compute_angles_and_houses(jd_ut: float, lat: float, lon: float):
     cusps, ascmc = swe.houses(jd_ut, lat, lon, HOUSE_SYSTEM)
 
@@ -434,12 +346,11 @@ def compute_chart_inputs(
     return result
 
 
-def compute_transit_inputs(now_utc: datetime | None = None):
-    server_now_used = now_utc is None
-
+def compute_transit_inputs(now_utc=None, forecast_diagnostic=False):
     if now_utc is None:
         now_utc = datetime.now(timezone.utc)
-    elif now_utc.tzinfo is None:
+
+    if now_utc.tzinfo is None:
         now_utc = now_utc.replace(tzinfo=timezone.utc)
     else:
         now_utc = now_utc.astimezone(timezone.utc)
@@ -464,7 +375,7 @@ def compute_transit_inputs(now_utc: datetime | None = None):
         "mode": "transit",
         "utc_datetime": now_utc.isoformat(),
         "jd_ut": round(jd_ut, 6),
-        "server_now_used": server_now_used,
+        "forecast_diagnostic": bool(forecast_diagnostic),
     }
 
     return result
@@ -764,39 +675,36 @@ class handler(BaseHTTPRequestHandler):
 
             mode = str(payload.get("mode", "natal")).strip().lower()
 
-            forecast_diagnostic_enabled = parse_bool(payload.get("forecastDiagnostic", False))
-
             if mode == "transit":
-                if forecast_diagnostic_enabled:
-                    requested_date = str(payload.get("transitDate", "")).strip()
-                    requested_time = str(payload.get("transitTime", "")).strip()
+                forecast_diagnostic = bool(payload.get("forecastDiagnostic", False))
 
-                    requested_transit = resolve_requested_transit_utc(
-                        transit_date=requested_date,
-                        transit_time=requested_time,
-                        timezone_name=str(payload.get("transitTimezone", "") or "UTC").strip(),
-                        utc_offset_hours=None,
+                if forecast_diagnostic:
+                    transit_date = str(payload.get("transitDate", "")).strip()
+                    transit_time = str(payload.get("transitTime", "12:00")).strip() or "12:00"
+
+                    requested_utc = parse_forecast_datetime_utc(
+                        transit_date=transit_date,
+                        transit_time=transit_time,
                     )
 
                     chart = compute_transit_inputs(
-                        requested_transit["transit_utc_datetime"]
-                    )
-                    response = build_lucy_response(chart)
-                    response["forecastDiagnostic"] = build_forecast_diagnostic(
-                        requested_date=requested_date,
-                        requested_time=requested_time,
-                        transit_chart=chart,
-                        transit_response=response,
-                    )
-                    response["forecastDiagnostic"]["requestedLocalDatetime"] = (
-                        requested_transit["requested_local_datetime"]
-                    )
-                    response["forecastDiagnostic"]["timezoneUsed"] = (
-                        requested_transit["timezone_used"]
+                        now_utc=requested_utc,
+                        forecast_diagnostic=True,
                     )
                 else:
                     chart = compute_transit_inputs()
-                    response = build_lucy_response(chart)
+
+                response = build_lucy_response(chart)
+
+                if forecast_diagnostic:
+                    response["forecastDiagnostic"] = {
+                        "enabled": True,
+                        "requestedTransitDate": transit_date,
+                        "requestedTransitTime": transit_time,
+                        "usedUtcDatetime": chart.get("_meta", {}).get("utc_datetime"),
+                        "jdUt": chart.get("_meta", {}).get("jd_ut"),
+                        "note": "Forecast diagnostic uses the same Lucy.OS response engine with a requested transit timestamp."
+                    }
 
                 self._write_json(200, response)
                 return
@@ -855,37 +763,6 @@ class handler(BaseHTTPRequestHandler):
             )
 
             response = build_lucy_response(chart)
-
-            if forecast_diagnostic_enabled:
-                requested_date = str(payload.get("transitDate", "")).strip()
-                requested_time = str(payload.get("transitTime", "")).strip()
-                natal_meta = chart.get("_meta", {}) or {}
-
-                requested_transit = resolve_requested_transit_utc(
-                    transit_date=requested_date,
-                    transit_time=requested_time,
-                    timezone_name=natal_meta.get("timezone_name"),
-                    utc_offset_hours=natal_meta.get("utc_offset_at_birth"),
-                )
-
-                transit_chart = compute_transit_inputs(
-                    requested_transit["transit_utc_datetime"]
-                )
-                transit_response = build_lucy_response(transit_chart)
-
-                response["forecastDiagnostic"] = build_forecast_diagnostic(
-                    requested_date=requested_date,
-                    requested_time=requested_time,
-                    transit_chart=transit_chart,
-                    transit_response=transit_response,
-                )
-                response["forecastDiagnostic"]["requestedLocalDatetime"] = (
-                    requested_transit["requested_local_datetime"]
-                )
-                response["forecastDiagnostic"]["timezoneUsed"] = (
-                    requested_transit["timezone_used"]
-                )
-
             self._write_json(200, response)
 
         except ValueError as e:
