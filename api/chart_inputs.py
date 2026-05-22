@@ -111,6 +111,31 @@ def parse_time_flexible(time_str: str) -> datetime:
     raise ValueError("Time of birth must look like 6:20 AM, 10:55 PM, or 18:20")
 
 
+def parse_forecast_datetime_utc(transit_date: str, transit_time: str | None = None) -> datetime:
+    """Parse backend-only forecast diagnostic date/time as UTC.
+
+    This is intentionally diagnostic-only for now. The requested time is treated
+    as UTC so the backend can prove future transit calculation without adding
+    UI timezone complexity yet.
+    """
+    transit_date = str(transit_date or "").strip()
+    transit_time = str(transit_time or "12:00").strip() or "12:00"
+
+    if not transit_date:
+        raise ValueError("transitDate is required when forecastDiagnostic is true")
+
+    raw_value = f"{transit_date} {transit_time}"
+
+    try:
+        parsed = datetime.strptime(raw_value, "%Y-%m-%d %H:%M")
+    except ValueError:
+        raise ValueError(
+            "Invalid forecast diagnostic date/time. Use transitDate YYYY-MM-DD and transitTime HH:MM."
+        )
+
+    return parsed.replace(tzinfo=timezone.utc)
+
+
 def http_get_json(url: str) -> dict:
     req = Request(
         url,
@@ -647,8 +672,16 @@ def build_moonstamp_modifier_from_transit(transit: dict) -> dict:
     }
 
 
-def build_projected_moonstamp_modifier(hours_ahead: int) -> dict:
-    projected_utc = datetime.now(timezone.utc) + timedelta(hours=hours_ahead)
+def build_projected_moonstamp_modifier(hours_ahead: int, base_utc: datetime | None = None) -> dict:
+    if base_utc is None:
+        base_utc = datetime.now(timezone.utc)
+
+    if base_utc.tzinfo is None:
+        base_utc = base_utc.replace(tzinfo=timezone.utc)
+    else:
+        base_utc = base_utc.astimezone(timezone.utc)
+
+    projected_utc = base_utc + timedelta(hours=hours_ahead)
     projected_transit = compute_transit_inputs(projected_utc)
     projected = build_moonstamp_modifier_from_transit(projected_transit)
     projected["projectionHours"] = hours_ahead
@@ -747,7 +780,7 @@ def infer_mode(strain: float) -> str:
     return "Regulated Baseline"
 
 
-def build_lucy_response(chart: dict) -> dict:
+def build_lucy_response(chart: dict, transit_override: dict | None = None) -> dict:
     server_calculation_timestamp = datetime.now(timezone.utc).isoformat()
 
     sun = float(chart.get("sun", 0.0))
@@ -803,11 +836,23 @@ def build_lucy_response(chart: dict) -> dict:
     natal_effective_load *= (0.96 + (asc_norm * 0.20))
     natal_strain = natal_effective_load / natal_capacity if natal_capacity > 0 else 0.0
 
-    transit = compute_transit_inputs()
+    transit = transit_override if transit_override is not None else compute_transit_inputs()
+    transit_meta = transit.get("_meta", {}) or {}
+    transit_longitudes_deg = transit.get("_longitudesDeg", {}) or {}
+
     live_field_modifier = build_live_field_modifier(transit)
     moonstamp = build_moonstamp_modifier_from_transit(transit)
-    moonstamp_plus6 = build_projected_moonstamp_modifier(6)
-    moonstamp_plus24 = build_projected_moonstamp_modifier(24)
+
+    transit_base_utc = None
+    try:
+        transit_base_utc_raw = transit_meta.get("utc_datetime")
+        if transit_base_utc_raw:
+            transit_base_utc = datetime.fromisoformat(str(transit_base_utc_raw))
+    except Exception:
+        transit_base_utc = None
+
+    moonstamp_plus6 = build_projected_moonstamp_modifier(6, transit_base_utc)
+    moonstamp_plus24 = build_projected_moonstamp_modifier(24, transit_base_utc)
 
     t_moon = float(transit.get("moon", 0.0))
     t_mercury = float(transit.get("mercury", 0.0))
@@ -818,9 +863,6 @@ def build_lucy_response(chart: dict) -> dict:
     t_uranus = float(transit.get("uranus", 0.0))
     t_neptune = float(transit.get("neptune", 0.0))
     t_pluto = float(transit.get("pluto", 0.0))
-
-    transit_meta = transit.get("_meta", {}) or {}
-    transit_longitudes_deg = transit.get("_longitudesDeg", {}) or {}
 
     transit_load = (
         t_moon * 0.18 +
@@ -1204,13 +1246,36 @@ class handler(BaseHTTPRequestHandler):
             mode = str(payload.get("mode", "natal")).strip().lower()
 
             if mode == "transit":
-                chart = compute_transit_inputs()
+                forecast_diagnostic = bool(payload.get("forecastDiagnostic", False))
+                transit_date = None
+                transit_time = None
+
+                if forecast_diagnostic:
+                    transit_date = str(payload.get("transitDate", "")).strip()
+                    transit_time = str(payload.get("transitTime", "12:00")).strip() or "12:00"
+                    requested_utc = parse_forecast_datetime_utc(transit_date, transit_time)
+                    chart = compute_transit_inputs(requested_utc)
+                else:
+                    chart = compute_transit_inputs()
+
                 response = {
                     "ok": True,
                     "transitOnly": True,
                     "chart": chart,
                     "moonstamp": build_moonstamp_modifier_from_transit(chart),
                 }
+
+                if forecast_diagnostic:
+                    forecast_meta = chart.get("_meta", {}) or {}
+                    response["forecastDiagnostic"] = {
+                        "enabled": True,
+                        "requestedTransitDate": transit_date,
+                        "requestedTransitTime": transit_time,
+                        "usedUtcDatetime": forecast_meta.get("utc_datetime"),
+                        "jdUt": forecast_meta.get("jd_ut"),
+                        "note": "Raw transit diagnostic uses the requested transit timestamp. Use natal payload + forecastDiagnostic for full Pro/Lite response testing.",
+                    }
+
                 self._write_json(200, response)
                 return
 
@@ -1267,7 +1332,33 @@ class handler(BaseHTTPRequestHandler):
                 location=location,
             )
 
-            response = build_lucy_response(chart)
+            forecast_diagnostic = bool(payload.get("forecastDiagnostic", False))
+            forecast_transit = None
+            forecast_requested_date = None
+            forecast_requested_time = None
+
+            if forecast_diagnostic:
+                forecast_requested_date = str(payload.get("transitDate", "")).strip()
+                forecast_requested_time = str(payload.get("transitTime", "12:00")).strip() or "12:00"
+                requested_utc = parse_forecast_datetime_utc(
+                    forecast_requested_date,
+                    forecast_requested_time,
+                )
+                forecast_transit = compute_transit_inputs(requested_utc)
+
+            response = build_lucy_response(chart, transit_override=forecast_transit)
+
+            if forecast_diagnostic:
+                forecast_meta = (forecast_transit or {}).get("_meta", {}) or {}
+                response["forecastDiagnostic"] = {
+                    "enabled": True,
+                    "requestedTransitDate": forecast_requested_date,
+                    "requestedTransitTime": forecast_requested_time,
+                    "usedUtcDatetime": forecast_meta.get("utc_datetime"),
+                    "jdUt": forecast_meta.get("jd_ut"),
+                    "note": "Forecast diagnostic uses the same Lucy.OS Pro/Lite response engine with a requested transit timestamp.",
+                }
+
             self._write_json(200, response)
 
         except ValueError as e:
