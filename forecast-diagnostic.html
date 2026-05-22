@@ -142,6 +142,60 @@
       gap: 10px;
     }
 
+    .preset-box {
+      margin-top: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.20);
+      background: rgba(8, 13, 28, 0.58);
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .preset-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .preset-title {
+      font-size: 12px;
+      color: var(--gold);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .preset-note {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .preset-btn {
+      border: 1px solid rgba(120, 231, 255, 0.26);
+      border-radius: 12px;
+      padding: 9px 10px;
+      cursor: pointer;
+      color: var(--accent);
+      background: rgba(120, 231, 255, 0.07);
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .preset-btn:hover {
+      border-color: rgba(248, 217, 138, 0.50);
+      color: var(--gold);
+      background: rgba(248, 217, 138, 0.08);
+    }
+
     .btn {
       width: 100%;
       margin-top: 16px;
@@ -348,6 +402,18 @@
       .forecast-summary-grid {
         grid-template-columns: 1fr;
       }
+
+      .preset-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .preset-head {
+        display: block;
+      }
+
+      .preset-note {
+        margin-top: 5px;
+      }
     }
   </style>
 </head>
@@ -394,6 +460,24 @@
 
         <label for="transitTime">Forecast Transit Time UTC</label>
         <input id="transitTime" value="12:00" placeholder="HH:MM" />
+
+        <div class="preset-box">
+          <div class="preset-head">
+            <div class="preset-title">Quick Test Dates</div>
+            <div class="preset-note">Select a preset, then run the diagnostic.</div>
+          </div>
+
+          <div class="preset-grid">
+            <button type="button" class="preset-btn" data-preset="today">Today UTC</button>
+            <button type="button" class="preset-btn" data-preset="plus7">+7 Days</button>
+            <button type="button" class="preset-btn" data-preset="plus30">+30 Days</button>
+            <button type="button" class="preset-btn" data-date="2026-01-01" data-time="12:00">2026 New Year</button>
+            <button type="button" class="preset-btn" data-date="2026-03-21" data-time="12:00">2026 Equinox</button>
+            <button type="button" class="preset-btn" data-date="2026-06-01" data-time="12:00">2026 Midyear</button>
+            <button type="button" class="preset-btn" data-date="2026-09-22" data-time="12:00">2026 Fall Gate</button>
+            <button type="button" class="preset-btn" data-date="2026-12-31" data-time="12:00">2026 Year End</button>
+          </div>
+        </div>
 
         <button class="btn" id="runBtn">Run Forecast Diagnostic</button>
         <button class="btn secondary" id="copyBtn">Copy Last JSON Response</button>
@@ -570,6 +654,60 @@
       el.textContent = message;
     }
 
+    function pad2(value) {
+      return String(value).padStart(2, "0");
+    }
+
+    function formatUtcDate(date) {
+      return [
+        date.getUTCFullYear(),
+        pad2(date.getUTCMonth() + 1),
+        pad2(date.getUTCDate())
+      ].join("-");
+    }
+
+    function formatUtcTime(date) {
+      return [
+        pad2(date.getUTCHours()),
+        pad2(date.getUTCMinutes())
+      ].join(":");
+    }
+
+    function setForecastInputs(dateValue, timeValue) {
+      $("transitDate").value = dateValue;
+      $("transitTime").value = timeValue || "12:00";
+      setStatus("Preset selected. Run the diagnostic to test this timestamp.", "");
+    }
+
+    function applyPreset(button) {
+      const preset = button.getAttribute("data-preset");
+      const fixedDate = button.getAttribute("data-date");
+      const fixedTime = button.getAttribute("data-time") || "12:00";
+
+      if (fixedDate) {
+        setForecastInputs(fixedDate, fixedTime);
+        return;
+      }
+
+      const now = new Date();
+
+      if (preset === "today") {
+        setForecastInputs(formatUtcDate(now), formatUtcTime(now));
+        return;
+      }
+
+      if (preset === "plus7") {
+        const future = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+        setForecastInputs(formatUtcDate(future), "12:00");
+        return;
+      }
+
+      if (preset === "plus30") {
+        const future = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+        setForecastInputs(formatUtcDate(future), "12:00");
+      }
+    }
+
     function getPayload() {
       return {
         dob: $("dob").value.trim(),
@@ -723,6 +861,10 @@
         setStatus("Could not copy response: " + error.message, "bad");
       }
     }
+
+    document.querySelectorAll(".preset-btn").forEach((button) => {
+      button.addEventListener("click", () => applyPreset(button));
+    });
 
     $("runBtn").addEventListener("click", runDiagnostic);
     $("copyBtn").addEventListener("click", copyLastResponse);
