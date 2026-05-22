@@ -171,6 +171,32 @@
     button,.upgradeButton{background:linear-gradient(180deg,#A88CFF 0%,#8F6BFF 100%);border-color:#8F6BFF;color:#FFFFFF;}
     input:focus,select:focus{outline:2px solid rgba(168,140,255,.45);border-color:#A88CFF;}
 
+
+    /* Restrained brand anchor pass — visual / HTML / CSS only. */
+    .lucyBrandAnchor{display:inline-flex;align-items:center;gap:10px;margin:0 auto 10px;padding:7px 11px;border:1px solid #E5E5E5;border-radius:999px;background:#FFFFFF;color:#6E6E6E;font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 8px 22px rgba(0,0,0,.06);}
+    .lucyGlyph{position:relative;display:inline-block;width:32px;height:32px;flex:0 0 32px;border:1.4px solid #CFCFCF;border-radius:999px;background:#FFFFFF;box-shadow:inset 0 0 0 1px rgba(168,140,255,.08);}
+    .lucyGlyph::before{content:"";position:absolute;left:50%;top:50%;width:5px;height:5px;transform:translate(-50%,-50%);border-radius:999px;background:#8F6BFF;box-shadow:0 0 0 4px rgba(168,140,255,.10);}
+    .lucyGlyph::after{content:"";position:absolute;left:6px;right:6px;top:14px;height:1.5px;border-radius:999px;background:linear-gradient(90deg,transparent 0%,#A88CFF 18%,#8F6BFF 54%,transparent 100%);transform:rotate(-18deg);opacity:.92;}
+    .lucyGlyph.small{width:25px;height:25px;flex-basis:25px;}
+    .lucyGlyph.small::before{width:4px;height:4px;box-shadow:0 0 0 3px rgba(168,140,255,.10);}
+    .lucyGlyph.small::after{left:5px;right:5px;top:11px;height:1.25px;}
+    .heroHook{display:inline-block;margin:12px 0 0;padding:8px 12px;border:1px solid rgba(168,140,255,.26);border-radius:999px;background:#FFFFFF;color:#1A1A1A!important;font-size:13px!important;font-weight:900;letter-spacing:.01em;box-shadow:inset 0 1px 0 rgba(255,255,255,.88);}
+    .lucy-lite-banner{height:auto;min-height:156px;padding:18px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#FFFFFF 0%,#FAFAFA 100%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 12px 28px rgba(0,0,0,.08)!important;}
+    .lucy-lite-banner::before{background:linear-gradient(90deg,rgba(26,26,26,.035) 1px,transparent 1px),linear-gradient(180deg,rgba(26,26,26,.025) 1px,transparent 1px);background-size:34px 34px;opacity:.24;}
+    .fieldSchematic{position:relative;width:min(620px,100%);display:grid;gap:10px;z-index:2;}
+    .fieldSchematic::before{content:"";position:absolute;left:28px;top:24px;bottom:24px;width:2px;border-radius:999px;background:linear-gradient(180deg,#A88CFF 0%,#8F6BFF 48%,rgba(168,140,255,.18) 100%);box-shadow:0 0 0 4px rgba(168,140,255,.08);}
+    .fieldSchematicRow{position:relative;display:flex;align-items:center;gap:14px;min-height:42px;padding:10px 14px 10px 60px;border:1px solid #E5E5E5;border-radius:14px;background:#FFFFFF;color:#1A1A1A;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 8px 18px rgba(0,0,0,.05);}
+    .fieldSchematicRow::before{content:"";position:absolute;left:22px;top:50%;width:14px;height:14px;transform:translateY(-50%);border-radius:999px;background:#FFFFFF;border:2px solid #A88CFF;box-shadow:0 0 0 4px rgba(168,140,255,.10);}
+    .fieldSchematicLabel{font-size:12px;font-weight:950;letter-spacing:.12em;text-transform:uppercase;color:#8F6BFF;min-width:92px;}
+    .fieldSchematicText{font-size:12px;line-height:1.35;color:#6E6E6E;font-weight:750;}
+    .shareBrandLockup{display:flex;align-items:center;gap:10px;min-width:0;}
+    .shareBrandText{display:grid;gap:2px;min-width:0;}
+    .shareBrandName{color:#8F6BFF;font-size:12px;font-weight:950;letter-spacing:.14em;text-transform:uppercase;}
+    .shareBrandSite{color:#6E6E6E;font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;}
+    .shareBrandTagline{color:#1A1A1A;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;text-align:right;}
+    .shareFooter strong{color:#8F6BFF;font-weight:950;}
+    @media (max-width:720px){.lucyBrandAnchor{margin-bottom:9px;font-size:10px;}.lucyGlyph{width:28px;height:28px;flex-basis:28px;}.heroHook{font-size:12px!important;border-radius:14px;}.lucy-lite-banner{min-height:168px;padding:14px;}.fieldSchematic::before{left:22px;}.fieldSchematicRow{padding-left:50px;}.fieldSchematicRow::before{left:16px;}.fieldSchematicLabel{min-width:78px;font-size:11px;}.fieldSchematicText{font-size:11px;}.shareBrandTagline{text-align:left;}.shareCardTop{align-items:flex-start;}}
+
   </style>
 </head>
 
@@ -180,12 +206,18 @@
 
     <div class="hero">
       <div class="heroGlow" id="heroGlow"></div>
+      <div class="lucyBrandAnchor" aria-label="Lucy.OS Lite brand mark"><span class="lucyGlyph" aria-hidden="true"></span><span>Lucy.OS Lite</span></div>
       <h1>Lucy.OS Lite</h1>
       <p>A simple daily field read inside the live timing field.</p>
+      <p class="heroHook">Your body has system weather.</p>
     </div>
 
-    <div class="lucy-lite-banner" aria-hidden="true">
-      <img src="lucy-lite-field-banner.png" alt="Lucy.OS Lite field interface visual" onerror="this.style.display='none';" />
+    <div class="lucy-lite-banner" role="img" aria-label="Lucy.OS Lite field interface schematic: Field to Landing to One Move">
+      <div class="fieldSchematic" aria-hidden="true">
+        <div class="fieldSchematicRow"><span class="fieldSchematicLabel">Field</span><span class="fieldSchematicText">Today’s active timing pressure.</span></div>
+        <div class="fieldSchematicRow"><span class="fieldSchematicLabel">Landing</span><span class="fieldSchematicText">How the field meets your pattern.</span></div>
+        <div class="fieldSchematicRow"><span class="fieldSchematicLabel">One Move</span><span class="fieldSchematicText">The cleanest practical return path.</span></div>
+      </div>
     </div>
 
     <div class="grid">
@@ -291,7 +323,10 @@
           <div class="shareExportFrame">
             <div id="lucyShareCard" class="shareCard">
               <div class="shareCardInner">
-                <div class="shareCardTop"><span>Lucy.OS Lite</span><span>Field · Landing · One Move</span></div>
+                <div class="shareCardTop">
+                  <div class="shareBrandLockup"><span class="lucyGlyph small" aria-hidden="true"></span><span class="shareBrandText"><span class="shareBrandName">Lucy.OS Lite</span><span class="shareBrandSite">TimestampDecoder.com</span></span></div>
+                  <span class="shareBrandTagline">Same field. Different landing. Cleaner move.</span>
+                </div>
                 <div class="shareCardChips">
                   <span class="shareCardChip gold" id="shareCardBaselineChip" data-tone-target="true">Pattern: —</span>
                   <span class="shareCardChip field" id="shareCardFieldChip" data-tone-target="true">Field: —</span>
@@ -317,7 +352,7 @@
                     <div class="shareCardRead" id="shareCardGoodMove">—</div>
                   </div>
                 </div>
-                <div class="shareFooter">Simple daily field read · Lucy.OS Lite</div>
+                <div class="shareFooter"><strong>TimestampDecoder.com</strong> · Same field. Different landing. Cleaner move.</div>
               </div>
             </div>
             <div class="shareActions"><button id="saveShareCardBtn" type="button">Save Share Card</button><button id="copyShareTextBtn" type="button">Copy Share Text</button></div>
