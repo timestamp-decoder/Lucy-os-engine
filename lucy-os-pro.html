@@ -80,6 +80,7 @@
 <!-- Pass 45 update: rebuilt Personal Architecture Deeper Read panel shape only. Current PASS 44 Deeper Read content remains sourced from the current baseline and now renders as a separate four-section panel below the Explore row. No backend/API, payload, engine, scoring, field selection, normalized transit values, Moonstamp, chartKernel extraction, natal placement logic, saved profiles, share behavior, bottom nav, Landing flow, Live Field Modifier, interaction copy, title-sign derivation, proof panel, Today rows, Meaning/Use rows, degree rows, metadata rows, or Explore rows changed. -->
 <!-- Pass 46 update: personalized share title text only. Copied share text and visual share-card title now use the optional Profile Name when present, with fallback Daily Field Read title when blank. No backend/API, payload, engine, scoring, field selection, normalized transit values, Moonstamp, chartKernel extraction, natal placement logic, saved profiles, Profile Name save/load/dropdown behavior, share export mechanics, bottom nav, Landing flow, Live Field Modifier, interaction copy, Personal Architecture title-sign derivation, proof panel, or Deeper Read behavior changed. -->
 <!-- Pass 47 update: copied share text Moonstamp de-duplication only. Removes a leading duplicate Moonstamp title prefix from the copied-share Moonstamp body while preserving in-app Moonstamp display, visual share card/export body, share mechanics, Profile Name share titles, engine/API, scoring, field selection, chartKernel, saved profiles, Live Field Modifier, interaction copy, proof panel, and Deeper Read behavior. -->
+<!-- Forecast Preview dev-only update: added isolated Pro forecastDiagnostic panel using current input values and /api/chart_inputs. Normal Pro calculate/updateUI flow, backend/API contract, scoring, Pro engine, Lite, saved profiles, share behavior, and existing result rendering unchanged. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -563,6 +564,216 @@
 			button:disabled {
 				opacity: 0.72;
 				cursor: wait;
+			}
+
+
+			/* DEV ONLY · Forecast Preview panel. Isolated from normal Pro calculation. */
+			.devForecastPanel {
+				margin-top: 14px;
+				border: 1px solid rgba(241, 184, 75, 0.24);
+				border-radius: 16px;
+				padding: 14px;
+				background: radial-gradient(
+						circle at 12% 0%,
+						rgba(241, 184, 75, 0.11),
+						transparent 36%
+					),
+					rgba(255, 255, 255, 0.026);
+				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.018);
+				min-width: 0;
+				max-width: 100%;
+				overflow: hidden;
+			}
+
+			.devForecastHeader {
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-start;
+				gap: 10px;
+				margin-bottom: 10px;
+			}
+
+			.devForecastTitle {
+				margin: 0;
+				color: var(--amber);
+				font-size: 12px;
+				font-weight: 950;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				line-height: 1.25;
+			}
+
+			.devForecastBadge {
+				display: inline-flex;
+				align-items: center;
+				min-height: 24px;
+				padding: 5px 8px;
+				border-radius: 999px;
+				border: 1px solid rgba(241, 184, 75, 0.26);
+				background: rgba(241, 184, 75, 0.09);
+				color: #ffd88a;
+				font-size: 10px;
+				font-weight: 950;
+				white-space: nowrap;
+			}
+
+			.devForecastHelper {
+				margin: 0 0 10px;
+				color: var(--muted);
+				font-size: 11px;
+				line-height: 1.45;
+				font-weight: 750;
+			}
+
+			.devForecastPresetGrid {
+				display: grid;
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				gap: 7px;
+				margin-top: 10px;
+			}
+
+			.devForecastPresetGrid button,
+			#runForecastPreviewBtn {
+				margin-top: 0;
+				padding: 10px 9px;
+				font-size: 11px;
+				font-weight: 900;
+			}
+
+			.devForecastPresetGrid button {
+				background: linear-gradient(
+					180deg,
+					rgba(255, 255, 255, 0.085),
+					rgba(255, 255, 255, 0.04)
+				);
+				border: 1px solid rgba(241, 184, 75, 0.16);
+				color: #f4e5bc;
+			}
+
+			#runForecastPreviewBtn {
+				margin-top: 12px;
+				background: linear-gradient(180deg, #9b6b18, #d39b29);
+				color: #081126;
+			}
+
+			.devForecastStatus {
+				min-height: 18px;
+				margin-top: 9px;
+				color: var(--muted);
+				font-size: 11px;
+				font-weight: 850;
+				line-height: 1.4;
+				overflow-wrap: break-word;
+			}
+
+			.devForecastResult {
+				display: none;
+				margin-top: 12px;
+				padding: 12px;
+				border: 1px solid rgba(255, 255, 255, 0.085);
+				border-radius: 14px;
+				background: rgba(4, 10, 24, 0.42);
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.devForecastResult.isVisible {
+				display: block;
+			}
+
+			.devForecastResultGrid {
+				display: grid;
+				gap: 7px;
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.devForecastRow {
+				display: grid;
+				grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr);
+				gap: 8px;
+				align-items: start;
+				padding: 7px 8px;
+				border-radius: 10px;
+				border: 1px solid rgba(255, 255, 255, 0.065);
+				background: rgba(255, 255, 255, 0.027);
+				font-size: 11.5px;
+				line-height: 1.35;
+				min-width: 0;
+			}
+
+			.devForecastRow span {
+				color: var(--muted);
+				font-weight: 900;
+				overflow-wrap: anywhere;
+			}
+
+			.devForecastRow strong {
+				color: var(--text);
+				font-weight: 850;
+				overflow-wrap: anywhere;
+			}
+
+			.devForecastRawDetails {
+				margin-top: 10px;
+				border: 1px solid rgba(255, 255, 255, 0.075);
+				border-radius: 12px;
+				background: rgba(255, 255, 255, 0.02);
+				overflow: hidden;
+			}
+
+			.devForecastRawDetails summary {
+				cursor: pointer;
+				list-style: none;
+				padding: 10px 11px;
+				color: var(--muted);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+			}
+
+			.devForecastRawDetails summary::-webkit-details-marker {
+				display: none;
+			}
+
+			.devForecastRawDetails summary::after {
+				content: " +";
+				color: var(--muted2);
+			}
+
+			.devForecastRawDetails[open] summary::after {
+				content: " -";
+			}
+
+			.devForecastRawJson {
+				max-height: 220px;
+				margin: 0 10px 10px;
+				padding: 10px;
+				overflow: auto;
+				border: 1px solid rgba(255, 255, 255, 0.07);
+				border-radius: 10px;
+				background: rgba(4, 10, 24, 0.72);
+				color: #d9e0f4;
+				font-size: 10px;
+				line-height: 1.45;
+				white-space: pre-wrap;
+				overflow-wrap: anywhere;
+			}
+
+			@media (max-width: 640px) {
+				.devForecastHeader,
+				.devForecastRow {
+					grid-template-columns: minmax(0, 1fr);
+				}
+
+				.devForecastHeader {
+					display: grid;
+				}
+
+				.devForecastBadge {
+					justify-self: start;
+				}
 			}
 
 			.savedProfiles {
@@ -7547,6 +7758,54 @@
 						</div>
 <div class="profileSaveStatus" id="profileSaveStatus"></div>
 </div>
+
+<div class="devForecastPanel" id="devForecastPanel">
+<div class="devForecastHeader">
+<div>
+<div class="devForecastTitle">DEV ONLY · Forecast Preview</div>
+<p class="devForecastHelper">Uses the current Pro inputs and sends a separate forecastDiagnostic request. It does not overwrite the normal Pro result.</p>
+</div>
+<span class="devForecastBadge">Preview Branch</span>
+</div>
+<div class="row2">
+<div>
+<label for="forecastDateInput">Forecast Date</label>
+<input id="forecastDateInput" type="date"/>
+</div>
+<div>
+<label for="forecastTimeUtcInput">Forecast Time UTC</label>
+<input id="forecastTimeUtcInput" type="time" value="12:00"/>
+</div>
+</div>
+<div class="devForecastPresetGrid">
+<button class="devForecastPresetBtn" data-days="7" type="button">+7 Days</button>
+<button class="devForecastPresetBtn" data-days="30" type="button">+30 Days</button>
+<button class="devForecastPresetBtn" data-months="3" type="button">+3 Months</button>
+<button class="devForecastPresetBtn" data-months="6" type="button">+6 Months</button>
+<button class="devForecastPresetBtn" data-years="1" type="button">+1 Year</button>
+<button class="devForecastPresetBtn" data-years="2" type="button">+2 Years</button>
+<button class="devForecastPresetBtn" data-years="5" type="button">+5 Years</button>
+</div>
+<button id="runForecastPreviewBtn" type="button">Run Forecast Preview</button>
+<div class="devForecastStatus" id="forecastPreviewStatus">Waiting for forecast preview.</div>
+<div class="devForecastResult" id="forecastPreviewResultCard" aria-live="polite">
+<div class="devForecastResultGrid">
+<div class="devForecastRow"><span>HTTP Status</span><strong id="forecastHttpStatus">—</strong></div>
+<div class="devForecastRow"><span>Used UTC</span><strong id="forecastUsedUtc">—</strong></div>
+<div class="devForecastRow"><span>Field State / Mode</span><strong id="forecastFieldStateMode">—</strong></div>
+<div class="devForecastRow"><span>Primary Driver</span><strong id="forecastPrimaryDriver">—</strong></div>
+<div class="devForecastRow"><span>Top Regulator</span><strong id="forecastTopRegulator">—</strong></div>
+<div class="devForecastRow"><span>Moonstamp</span><strong id="forecastMoonstampSummary">—</strong></div>
+<div class="devForecastRow"><span>Live Field Modifier</span><strong id="forecastLiveFieldModifier">—</strong></div>
+<div class="devForecastRow"><span>Forecast Text</span><strong id="forecastTextSummary">—</strong></div>
+</div>
+<details class="devForecastRawDetails">
+<summary>Raw forecastDiagnostic JSON</summary>
+<pre class="devForecastRawJson" id="forecastRawJson">—</pre>
+</details>
+</div>
+</div>
+
 <div class="tiny">
 						Birth location resolves timezone, angles, and houses for
 						accurate chart input.
@@ -19139,6 +19398,274 @@ ${bodyLine}${loadLine}`,
 				}
 			}
 
+
+			function formatForecastDateInput(date) {
+				const y = date.getUTCFullYear();
+				const m = String(date.getUTCMonth() + 1).padStart(2, "0");
+				const d = String(date.getUTCDate()).padStart(2, "0");
+				return `${y}-${m}-${d}`;
+			}
+
+			function getForecastBaseDate() {
+				const input = document.getElementById("forecastDateInput");
+				const current = input?.value;
+				if (current) {
+					const parsed = new Date(`${current}T12:00:00Z`);
+					if (!Number.isNaN(parsed.getTime())) return parsed;
+				}
+				const now = new Date();
+				return new Date(
+					Date.UTC(
+						now.getUTCFullYear(),
+						now.getUTCMonth(),
+						now.getUTCDate(),
+						12,
+						0,
+						0
+					)
+				);
+			}
+
+			function setForecastPresetDate(offset = {}) {
+				const next = getForecastBaseDate();
+				if (offset.days) next.setUTCDate(next.getUTCDate() + Number(offset.days));
+				if (offset.months) next.setUTCMonth(next.getUTCMonth() + Number(offset.months));
+				if (offset.years) next.setUTCFullYear(next.getUTCFullYear() + Number(offset.years));
+
+				const dateInput = document.getElementById("forecastDateInput");
+				const timeInput = document.getElementById("forecastTimeUtcInput");
+				if (dateInput) dateInput.value = formatForecastDateInput(next);
+				if (timeInput && !timeInput.value) timeInput.value = "12:00";
+				setText("forecastPreviewStatus", "Preset loaded. Run Forecast Preview when ready.");
+			}
+
+			function safeForecastValue(...values) {
+				for (const value of values) {
+					if (value === null || value === undefined) continue;
+					if (typeof value === "string" && !value.trim()) continue;
+					if (Array.isArray(value) && !value.length) continue;
+					return value;
+				}
+				return "—";
+			}
+
+			function forecastString(value) {
+				const safe = safeForecastValue(value);
+				if (safe === "—") return "—";
+				if (typeof safe === "number") return Number.isFinite(safe) ? String(safe) : "—";
+				if (typeof safe === "string") return safe;
+				if (typeof safe === "object") {
+					return safeForecastValue(
+						safe.displayTitle,
+						safe.title,
+						safe.label,
+						safe.name,
+						safe.field,
+						safe.mode,
+						JSON.stringify(safe)
+					);
+				}
+				return String(safe);
+			}
+
+			function forecastPercentLike(value) {
+				const safe = safeForecastValue(value);
+				if (safe === "—") return "—";
+				if (typeof safe === "number") {
+					if (!Number.isFinite(safe)) return "—";
+					return safe <= 1 ? `${Math.round(safe * 100)}%` : `${Math.round(safe)}%`;
+				}
+				return forecastString(safe);
+			}
+
+			function buildForecastMoonstampSummary(data) {
+				const fd = data?.forecastDiagnostic || {};
+				const moon = safeForecastValue(
+					fd.moonstamp,
+					fd.moonstampData,
+					data?.moonstamp,
+					data?.moonstampData,
+					data?.moonStamp
+				);
+				if (moon === "—") return "—";
+
+				const state = forecastString(
+					moon.state || moon.moonstampState || moon.label || moon.name
+				);
+				const phase = forecastString(moon.phase || moon.phaseName || moon.moonPhase);
+				const illumination = forecastPercentLike(
+					moon.illumination ?? moon.illuminationPct ?? moon.illuminationPercent
+				);
+				const moonAge = forecastString(
+					moon.moonAge ?? moon.age ?? moon.ageDays ?? moon.phaseAge
+				);
+
+				const parts = [];
+				if (state !== "—") parts.push(state);
+				if (phase !== "—") parts.push(phase);
+				if (illumination !== "—") parts.push(`Illumination: ${illumination}`);
+				if (moonAge !== "—") parts.push(`Moon age: ${moonAge}`);
+				return parts.length ? parts.join(" · ") : "—";
+			}
+
+			function setForecastResultText(id, value) {
+				const el = document.getElementById(id);
+				if (el) el.textContent = forecastString(value);
+			}
+
+			function renderForecastPreviewResult(data, httpStatus) {
+				const fd = data?.forecastDiagnostic || {};
+				const fieldState = forecastString(
+					fd.fieldState ||
+						fd.state ||
+						data?.state?.label ||
+						data?.state?.mode ||
+						data?.fieldState
+				);
+				const fieldMode = forecastString(
+					fd.fieldMode || fd.mode || data?.mode || data?.fieldMode
+				);
+				const stateMode =
+					fieldState !== "—" && fieldMode !== "—"
+						? `${fieldState} / ${fieldMode}`
+						: safeForecastValue(fieldState, fieldMode);
+
+				setForecastResultText("forecastHttpStatus", httpStatus || "—");
+				setForecastResultText(
+					"forecastUsedUtc",
+					fd.usedTransitUTC ||
+						fd.usedTransitUtc ||
+						fd.usedUTC ||
+						fd.usedUtc ||
+						fd.transitUTC ||
+						fd.transitUtc ||
+						data?.usedTransitUTC ||
+						data?.usedTransitUtc ||
+						data?.transitUTC ||
+						data?.transitUtc
+				);
+				setForecastResultText("forecastFieldStateMode", stateMode);
+				setForecastResultText(
+					"forecastPrimaryDriver",
+					fd.primaryDriver ||
+						fd.fieldToneDriver ||
+						fd.topDriver ||
+						data?.primaryDriver ||
+						data?.fieldToneDriver ||
+						data?.topDriver ||
+						data?.liveFieldModifier?.driver ||
+						data?.liveFieldModifier?.planet
+				);
+				setForecastResultText(
+					"forecastTopRegulator",
+					fd.topRegulator ||
+						fd.regulator ||
+						data?.topRegulator ||
+						data?.regulator ||
+						data?.regulationSupport ||
+						data?.support?.topRegulator
+				);
+				setForecastResultText("forecastMoonstampSummary", buildForecastMoonstampSummary(data));
+				setForecastResultText(
+					"forecastLiveFieldModifier",
+					fd.liveFieldModifier?.displayTitle ||
+						fd.liveFieldModifier?.title ||
+						fd.liveFieldModifier ||
+						data?.liveFieldModifier?.displayTitle ||
+						data?.liveFieldModifier?.title ||
+						data?.liveFieldModifier
+				);
+				setForecastResultText(
+					"forecastTextSummary",
+					fd.forecastText ||
+						fd.text ||
+						fd.summary ||
+						fd.read ||
+						data?.forecastText ||
+						data?.forecastSummary ||
+						data?.summary
+				);
+
+				const raw = document.getElementById("forecastRawJson");
+				if (raw) raw.textContent = JSON.stringify(fd || {}, null, 2);
+
+				const card = document.getElementById("forecastPreviewResultCard");
+				if (card) card.classList.add("isVisible");
+			}
+
+			async function runForecastPreview() {
+				const dob = document.getElementById("dob").value;
+				const tobRaw = document.getElementById("tob").value.trim();
+				const ampm = document.getElementById("ampm").value;
+				const location = document.getElementById("location").value.trim();
+				const transitDate = document.getElementById("forecastDateInput")?.value || "";
+				const transitTime = document.getElementById("forecastTimeUtcInput")?.value || "12:00";
+
+				if (!dob || !tobRaw || !ampm || !location || !transitDate) {
+					setText(
+						"forecastPreviewStatus",
+						"Missing input. Add DOB, birth time, AM/PM, birth location, and forecast date."
+					);
+					const statusEl = document.getElementById("forecastPreviewStatus");
+					if (statusEl) statusEl.className = "devForecastStatus err";
+					return;
+				}
+
+				const payload = {
+					dob,
+					tobRaw,
+					ampm,
+					locationText: location,
+					forecastDiagnostic: true,
+					transitDate,
+					transitTime,
+				};
+
+				const btn = document.getElementById("runForecastPreviewBtn");
+				const statusEl = document.getElementById("forecastPreviewStatus");
+				try {
+					if (btn) {
+						btn.disabled = true;
+						btn.textContent = "Running Forecast...";
+					}
+					if (statusEl) statusEl.className = "devForecastStatus";
+					setText("forecastPreviewStatus", "Running forecast preview...");
+
+					const response = await fetch(API_URL, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify(payload),
+					});
+
+					let data = {};
+					try {
+						data = await response.json();
+					} catch (jsonErr) {
+						data = { forecastDiagnostic: { error: "Non-JSON response" } };
+					}
+
+					renderForecastPreviewResult(data, response.status);
+
+					if (!response.ok) {
+						throw new Error(data?.error || `Forecast API error ${response.status}`);
+					}
+
+					setText("forecastPreviewStatus", "Forecast preview complete. Normal Pro result was not changed.");
+					if (statusEl) statusEl.className = "devForecastStatus ok";
+				} catch (err) {
+					console.error(err);
+					setText("forecastPreviewStatus", `Forecast preview error • ${err.message}`);
+					if (statusEl) statusEl.className = "devForecastStatus err";
+				} finally {
+					if (btn) {
+						btn.disabled = false;
+						btn.textContent = "Run Forecast Preview";
+					}
+				}
+			}
+
 			function randomHarmonicTestData() {
 				const r = () => Math.random();
 
@@ -19638,6 +20165,21 @@ ${bodyLine}${loadLine}`,
 				.addEventListener("click", () =>
 					calculate({ shouldAutoScroll: true })
 				);
+
+			const runForecastPreviewBtn = document.getElementById("runForecastPreviewBtn");
+			if (runForecastPreviewBtn) {
+				runForecastPreviewBtn.addEventListener("click", runForecastPreview);
+			}
+			document.querySelectorAll(".devForecastPresetBtn").forEach((button) => {
+				button.addEventListener("click", () => {
+					setForecastPresetDate({
+						days: button.dataset.days,
+						months: button.dataset.months,
+						years: button.dataset.years,
+					});
+				});
+			});
+
 			document
 				.getElementById("saveShareCardBtn")
 				.addEventListener("click", saveShareCard);
