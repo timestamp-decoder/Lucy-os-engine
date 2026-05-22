@@ -213,6 +213,71 @@
       word-break: break-word;
     }
 
+    .forecast-card {
+      border: 1px solid rgba(120, 231, 255, 0.24);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(120, 231, 255, 0.11), transparent 34%),
+        radial-gradient(circle at 88% 0%, rgba(248, 217, 138, 0.10), transparent 36%),
+        rgba(8, 13, 28, 0.82);
+      border-radius: 18px;
+      padding: 16px;
+      margin: 0 0 14px;
+    }
+
+    .forecast-card h3 {
+      margin: 0 0 12px;
+      font-size: 16px;
+      letter-spacing: 0.02em;
+    }
+
+    .forecast-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .summary-tile {
+      border: 1px solid rgba(148, 163, 184, 0.20);
+      background: rgba(20, 31, 56, 0.72);
+      border-radius: 14px;
+      padding: 12px;
+      min-height: 74px;
+    }
+
+    .summary-tile .k {
+      color: var(--muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 7px;
+    }
+
+    .summary-tile .v {
+      font-weight: 800;
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    .forecast-text-box {
+      border: 1px solid rgba(248, 217, 138, 0.20);
+      background: rgba(248, 217, 138, 0.06);
+      border-radius: 14px;
+      padding: 13px;
+      line-height: 1.5;
+      color: #eef6ff;
+      overflow-wrap: anywhere;
+    }
+
+    .forecast-text-box .k {
+      color: var(--gold);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 7px;
+      font-weight: 800;
+    }
+
     details {
       border: 1px solid var(--border);
       background: rgba(8, 13, 28, 0.72);
@@ -277,6 +342,10 @@
       }
 
       .summary {
+        grid-template-columns: 1fr;
+      }
+
+      .forecast-summary-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -353,6 +422,52 @@
           <div class="mini">
             <div class="k">Contract Check</div>
             <div class="v" id="contractCheck">—</div>
+          </div>
+        </div>
+
+        <div class="forecast-card" id="forecastSummaryCard">
+          <h3>Forecast Summary</h3>
+
+          <div class="forecast-summary-grid">
+            <div class="summary-tile">
+              <div class="k">Forecast Date</div>
+              <div class="v" id="summaryForecastDate">—</div>
+            </div>
+
+            <div class="summary-tile">
+              <div class="k">Used UTC</div>
+              <div class="v" id="summaryUsedUtc">—</div>
+            </div>
+
+            <div class="summary-tile">
+              <div class="k">Field State / Mode</div>
+              <div class="v" id="summaryFieldState">—</div>
+            </div>
+
+            <div class="summary-tile">
+              <div class="k">Primary Driver</div>
+              <div class="v" id="summaryPrimaryDriver">—</div>
+            </div>
+
+            <div class="summary-tile">
+              <div class="k">Top Regulator</div>
+              <div class="v" id="summaryTopRegulator">—</div>
+            </div>
+
+            <div class="summary-tile">
+              <div class="k">Moonstamp</div>
+              <div class="v" id="summaryMoonstamp">—</div>
+            </div>
+
+            <div class="summary-tile">
+              <div class="k">Live Field Modifier</div>
+              <div class="v" id="summaryLiveField">—</div>
+            </div>
+          </div>
+
+          <div class="forecast-text-box">
+            <div class="k">Forecast Text</div>
+            <div id="summaryForecastText">Run diagnostic first.</div>
           </div>
         </div>
 
@@ -435,6 +550,20 @@
       return JSON.stringify(value, null, 2);
     }
 
+    function cleanValue(value, fallback = "—") {
+      if (value === undefined || value === null || value === "") {
+        return fallback;
+      }
+
+      return String(value);
+    }
+
+    function setText(id, value, fallback = "—") {
+      const el = $(id);
+      if (!el) return;
+      el.textContent = cleanValue(value, fallback);
+    }
+
     function setStatus(message, type) {
       const el = $("status");
       el.className = "status" + (type ? " " + type : "");
@@ -453,6 +582,51 @@
       };
     }
 
+    function getUsedUtc(data) {
+      return (
+        data?.forecastDiagnostic?.usedUtcDatetime ||
+        data?.ephemeris?.transitUtcDatetime ||
+        data?.dailyFieldBackendDebug?.transitUtcDatetime ||
+        "—"
+      );
+    }
+
+    function renderForecastSummary(data) {
+      const forecastDiagnostic = data?.forecastDiagnostic || {};
+      const requestedDate = forecastDiagnostic.requestedTransitDate;
+      const requestedTime = forecastDiagnostic.requestedTransitTime;
+      const usedUtc = getUsedUtc(data);
+
+      const mode = data?.state?.mode;
+      const forecastNowState = data?.forecast?.now?.state;
+      const fieldState = [
+        cleanValue(mode),
+        forecastNowState ? "(" + forecastNowState + ")" : ""
+      ].filter(Boolean).join(" ");
+
+      const moonstamp = data?.moonstamp || {};
+      const moonstampSummary = [
+        moonstamp.state,
+        moonstamp.phase,
+        moonstamp.illumination !== undefined ? moonstamp.illumination + "% illum." : "",
+        moonstamp.moonAge !== undefined ? moonstamp.moonAge + "d age" : ""
+      ].filter(Boolean).join(" · ");
+
+      const forecastDate = [
+        requestedDate,
+        requestedTime ? requestedTime + " UTC" : ""
+      ].filter(Boolean).join(" · ");
+
+      setText("summaryForecastDate", forecastDate);
+      setText("summaryUsedUtc", usedUtc);
+      setText("summaryFieldState", fieldState);
+      setText("summaryPrimaryDriver", data?.telemetry?.primaryDriver);
+      setText("summaryTopRegulator", data?.telemetry?.topRegulator);
+      setText("summaryMoonstamp", moonstampSummary);
+      setText("summaryLiveField", data?.liveFieldModifier?.displayTitle, "Unavailable");
+      setText("summaryForecastText", data?.forecast?.now?.text, "—");
+    }
+
     function renderResult(statusCode, data) {
       lastResponse = data;
 
@@ -460,11 +634,9 @@
       const hasForecastDiagnostic = Boolean(data.forecastDiagnostic && data.forecastDiagnostic.enabled);
 
       $("statusCode").textContent = String(statusCode);
-      $("usedUtc").textContent =
-        data?.forecastDiagnostic?.usedUtcDatetime ||
-        data?.ephemeris?.transitUtcDatetime ||
-        data?.dailyFieldBackendDebug?.transitUtcDatetime ||
-        "—";
+      $("usedUtc").textContent = getUsedUtc(data);
+
+      renderForecastSummary(data);
 
       if (missing.length) {
         $("contractCheck").innerHTML = '<span class="missing">Missing fields</span>';
