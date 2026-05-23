@@ -95,6 +95,7 @@
 <!-- Pass 1S update: polished final user-facing 7-Day Forecast card scan hierarchy only. Main Field now reads as the primary card result, Moonstamp/Live read as quieter support layers, and Forecast Read is compact explanatory copy. Diagnostic shell, backend/API, request loop, extraction, engine/scoring, saved profiles, and share export unchanged. -->
 <!-- Pass 1T update: tightened final user-facing 7-Day Forecast card density only. Reduced card/header/support/read visual weight while preserving existing normalized forecast data, diagnostic shell, backend/API, forecast requests, extraction, engine/scoring, saved profiles, tabs, and share export unchanged. -->
 <!-- Pass 1U update: collapsed final user-facing 7-Day Forecast Day 4-7 cards behind one native details toggle only. First three forecast cards remain visible by default; diagnostic shell, backend/API, request loop, extraction, normalized forecast rows, engine/scoring, saved profiles, tabs, and share export unchanged. -->
+<!-- Pass 1V update: made final user-facing 7-Day Forecast collapse responsive only. Day 1-3 remain visible everywhere, Day 4 is visible in the main grid on desktop and inside the collapsed section on mobile, and Day 5-7 remain collapsed. Diagnostic shell, backend/API, forecast requests, extraction, normalized forecast rows, engine/scoring, saved profiles, tabs, and share export unchanged. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -1956,6 +1957,14 @@
 				max-width: 100%;
 			}
 
+			.forecastWeatherMobileOnly {
+				display: none;
+			}
+
+			.forecastWeatherDesktopOnly {
+				display: grid;
+			}
+
 			.forecastWeatherDay {
 				display: flex;
 				align-items: center;
@@ -2085,6 +2094,14 @@
 				.forecastWeatherBadge {
 					justify-self: start;
 					white-space: normal;
+				}
+
+				.forecastWeatherDesktopOnly {
+					display: none;
+				}
+
+				.forecastWeatherMobileOnly {
+					display: grid;
 				}
 			}
 
@@ -20511,14 +20528,15 @@ ${bodyLine}${loadLine}`,
 				`;
 			}
 
-			function renderForecastWeatherCard(day) {
+			function renderForecastWeatherCard(day, visibilityClass = "") {
 				const field = forecastString(day.field || "—");
 				const moonstamp = forecastString(day.moonstamp || "—");
 				const liveModifier = forecastString(day.liveModifier || "—");
+				const safeVisibilityClass = visibilityClass ? ` ${visibilityClass}` : "";
 				const forecastRead = `${field} sets the main system weather. ${moonstamp} shapes the process layer. ${liveModifier} colors the signal environment.`;
 
 				return `
-					<article class="forecastWeatherCard">
+					<article class="forecastWeatherCard${safeVisibilityClass}">
 						<div class="forecastWeatherDay">${escapeForecastShellHtml(day.label || "Forecast day")}</div>
 						<div class="forecastWeatherGrid">
 							${renderForecastWeatherItem("Main Field", field, "forecastWeatherMainField")}
@@ -20538,16 +20556,25 @@ ${bodyLine}${loadLine}`,
 				if (!rowsEl) return;
 
 				const safeDays = Array.isArray(days) ? days : [];
-				const visibleDays = safeDays.slice(0, 3);
-				const collapsedDays = safeDays.slice(3);
-				const visibleMarkup = visibleDays.map(renderForecastWeatherCard).join("");
-				const collapsedMarkup = collapsedDays.map(renderForecastWeatherCard).join("");
+				const alwaysVisibleDays = safeDays.slice(0, 3);
+				const desktopVisibleDays = safeDays.slice(3, 4);
+				const mobileCollapsedDays = safeDays.slice(3, 4);
+				const sharedCollapsedDays = safeDays.slice(4);
+				const visibleMarkup = [
+					...alwaysVisibleDays.map((day) => renderForecastWeatherCard(day)),
+					...desktopVisibleDays.map((day) => renderForecastWeatherCard(day, "forecastWeatherDesktopOnly")),
+				].join("");
+				const collapsedMarkup = [
+					...mobileCollapsedDays.map((day) => renderForecastWeatherCard(day, "forecastWeatherMobileOnly")),
+					...sharedCollapsedDays.map((day) => renderForecastWeatherCard(day)),
+				].join("");
+				const hasCollapsedDays = mobileCollapsedDays.length || sharedCollapsedDays.length;
 
 				rowsEl.innerHTML = `
 					${visibleMarkup}
-					${collapsedDays.length ? `
+					${hasCollapsedDays ? `
 						<details class="forecastWeatherMore">
-							<summary>Show full 7-day forecast</summary>
+							<summary>Show remaining forecast days</summary>
 							<div class="forecastWeatherMoreRows">
 								${collapsedMarkup}
 							</div>
