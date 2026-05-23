@@ -20787,71 +20787,97 @@ ${bodyLine}${loadLine}`,
 
 			function getForecastPersonalLandingLine(row, index = 0) {
 				const safeText = (value) => forecastString(value || "").toLowerCase();
-				const haystack = [
+				const textFrom = (values) => values.map(safeText).join(" ").replace(/\s+/g, " ").trim();
+				const safeIndex = Math.abs(Number(index) || 0);
+
+				const weatherText = textFrom([
 					row?.field,
 					row?.mainField,
 					row?.fieldLabel,
+					row?.weatherLabel,
+					row?.internalWeatherLabel,
+					row?.condition,
+					row?.conditionText,
+					row?.forecastRead,
 					row?.load,
 					row?.regulation,
-					row?.moonstamp,
-					row?.moonstampText,
-					row?.live,
-					row?.liveModifier,
-					row?.liveFieldModifier,
-					row?.forecastRead,
-					row?.label,
-					row?.dayLabel,
-					row?.dateLabel,
 					getForecastWeatherLabel(row, index),
 					getForecastConditionLabel(row, index),
-				]
-					.map(safeText)
-					.join(" ");
+				]);
+
+				const liveText = textFrom([
+					row?.live,
+					row?.liveFieldModifier,
+					row?.liveText,
+					row?.liveLabel,
+					row?.liveModifier,
+				]);
+
+				const moonText = textFrom([
+					row?.moonstamp,
+					row?.moonstampText,
+					row?.moonstampLabel,
+					row?.moonstampState,
+				]);
+
 				const activatedTitle = safeText(document.getElementById("activatedArchitectureTitle")?.textContent);
 				const activatedText = safeText(document.getElementById("activatedArchitectureText")?.textContent);
 				const architectureText = `${activatedTitle} ${activatedText}`;
-				const hasAny = (terms, source = haystack) => terms.some((term) => source.includes(term));
 
-				if (hasAny(["interface", "ascendant"], architectureText)) {
-					return "This may land through your interface first. Orient before responding.";
-				}
-				if (hasAny(["signal processor", "mercury"], architectureText)) {
-					return "This may land through signal processing first. Clarify the message before acting.";
-				}
-				if (hasAny(["emotional processor", "moon", "body-state", "body state"], architectureText)) {
-					return "This may land through body-state first. Regulate before deciding.";
-				}
-				if (hasAny(["action vector", "mars"], architectureText)) {
-					return "This may land through your action channel first. Slow the impulse before committing.";
-				}
-				if (hasAny(["relational tone", "venus"], architectureText)) {
-					return "This may land through relational tone first. Separate contact from absorption.";
-				}
-				if (hasAny(["structure governor", "saturn"], architectureText)) {
-					return "This may land through structure and responsibility first. Use one clear container.";
-				}
+				const hasAny = (terms, source) => terms.some((term) => source.includes(term));
+				const rotate = (lines, offset = 0) => lines[(safeIndex + offset) % lines.length];
 
-				if (hasAny(["relational", "venus", "contact", "tone"])) {
-					return "This may land through contact first. Separate signal from absorption.";
-				}
-				if (hasAny(["structured", "contained", "saturn", "responsibility", "order"])) {
-					return "This may land through structure first. Use one clear container.";
-				}
-				if (hasAny(["reconstructive", "threshold", "pluto", "first quarter", "crossing", "repair"])) {
-					return "This may land as pressure to change form. Move one gate at a time.";
-				}
-				if (hasAny(["integrative", "regulated", "clearing", "stabil", "support available"])) {
-					return "This may land as scattered signals asking to integrate. Let the pattern settle.";
-				}
-				if (hasAny(["mobilized", "mars", "action", "movement", "pressure", "high voltage", "rising pressure", "pressure front"])) {
-					return "This may land through your action channel first. Slow the response before committing.";
-				}
-				if (hasAny(["diffused", "neptune", "unclear", "low visibility", "fog"])) {
-					return "Give the signal enough time to separate from the noise.";
-				}
-				if (hasAny(["reset", "new moon", "release", "reduce", "calm window"])) {
-					return "Let this field land before you act on it.";
-				}
+				const architectureBias = (() => {
+					if (hasAny(["signal processor", "mercury"], architectureText)) return 1;
+					if (hasAny(["emotional processor", "moon", "body-state", "body state"], architectureText)) return 2;
+					if (hasAny(["interface", "ascendant"], architectureText)) return 1;
+					if (hasAny(["action vector", "mars"], architectureText)) return 2;
+					if (hasAny(["relational tone", "venus"], architectureText)) return 1;
+					if (hasAny(["structure governor", "saturn"], architectureText)) return 2;
+					return 0;
+				})();
+
+				const thresholdLines = [
+					"This may land as a threshold before the next structure is clear. Move one gate at a time.",
+					"This pressure may ask for change before the full plan is ready. Let the old pattern loosen first.",
+					"The field may register as a crossing point. Pause before forcing the next form.",
+				];
+
+				const mobilizedLines = [
+					"This may land through the action channel first. Slow the response before committing.",
+					"Your system may feel the push before the plan is clear. Ground first, then move.",
+					"The field may arrive as momentum. Choose the cleanest move, not the fastest one.",
+				];
+
+				const relationalLines = [
+					"This may land through contact, tone, or relational signal first. Separate signal from absorption.",
+					"The field may register through relationship before action. Name the signal before responding.",
+					"Your system may notice contact pressure first. Clarify what is yours before moving.",
+				];
+
+				const structuredLines = [
+					"This may land through structure, timing, or responsibility first. Use one clear container.",
+					"The field may ask for order before movement. Simplify the next step.",
+					"Your system may look for structure first. Reduce the field to one usable action.",
+				];
+
+				const integrativeLines = [
+					"This may land as a need to gather scattered signals. Let the pattern come together before acting.",
+					"Your system may stabilize by integrating first. Give the read time to settle.",
+					"The field may ask for coherence before movement. Let the signal organize.",
+				];
+
+				const signalLines = [
+					"This may land through signal processing first. Clarify the message before acting.",
+					"The field may move through language or timing. Let the signal slow into form.",
+					"Your system may need cleaner signal before action. Separate message from noise.",
+				];
+
+				const bodyLines = [
+					"This may land through body-state first. Regulate before deciding.",
+					"The field may register in rhythm before thought. Let the body settle first.",
+					"Your system may need regulation before clarity. Slow the field down.",
+				];
 
 				const fallbackLines = [
 					"Let this field land before you act on it.",
@@ -20862,7 +20888,84 @@ ${bodyLine}${loadLine}`,
 					"Reduce input until the cleanest move becomes visible.",
 					"Return to center before carrying the field forward.",
 				];
-				return fallbackLines[Math.abs(Number(index) || 0) % fallbackLines.length];
+
+				if (hasAny(["threshold strain", "reconstructive", "threshold", "crossing", "repair", "pressure front", "rupture"], weatherText)) {
+					return rotate(thresholdLines, architectureBias);
+				}
+				if (hasAny(["mobilized state", "mobilized", "action", "movement", "mars", "high voltage", "rising pressure", "building weather"], weatherText)) {
+					return rotate(mobilizedLines, architectureBias);
+				}
+				if (hasAny(["relational", "venus", "contact", "tone", "crosswinds"], weatherText)) {
+					return rotate(relationalLines, architectureBias);
+				}
+				if (hasAny(["structured", "contained", "saturn", "responsibility", "order", "clearing pattern"], weatherText)) {
+					return rotate(structuredLines, architectureBias);
+				}
+				if (hasAny(["integrative", "regulated", "stabil", "coherence", "clearing", "support available"], weatherText)) {
+					return rotate(integrativeLines, architectureBias);
+				}
+				if (hasAny(["diffused", "neptune", "unclear", "low visibility", "fog", "noise", "mixed signal"], weatherText)) {
+					return rotate(signalLines, architectureBias);
+				}
+				if (hasAny(["reset weather", "reset", "release", "reduce", "calm window", "low load"], weatherText)) {
+					return rotate(bodyLines, architectureBias);
+				}
+
+				if (hasAny(["mercury", "signal", "language", "message", "processor", "gemini"], liveText)) {
+					return rotate(signalLines, architectureBias);
+				}
+				if (hasAny(["mars", "action", "mobilized", "movement", "drive"], liveText)) {
+					return rotate(mobilizedLines, architectureBias);
+				}
+				if (hasAny(["venus", "relational", "contact", "tone"], liveText)) {
+					return rotate(relationalLines, architectureBias);
+				}
+				if (hasAny(["saturn", "structure", "responsibility", "container"], liveText)) {
+					return rotate(structuredLines, architectureBias);
+				}
+				if (hasAny(["pluto", "reconstructive", "threshold", "pressure", "repair"], liveText)) {
+					return rotate(thresholdLines, architectureBias);
+				}
+				if (hasAny(["moon", "body", "rhythm", "somatic"], liveText)) {
+					return rotate(bodyLines, architectureBias);
+				}
+
+				if (hasAny(["threshold", "first quarter", "crossing", "commitment"], moonText)) {
+					return rotate(thresholdLines, architectureBias);
+				}
+				if (hasAny(["build", "waxing gibbous", "follow-through", "structured growth"], moonText)) {
+					return rotate(structuredLines, architectureBias);
+				}
+				if (hasAny(["show", "culminate", "full moon", "visibility", "peak"], moonText)) {
+					return rotate(relationalLines, architectureBias);
+				}
+				if (hasAny(["emerge", "re-enter", "waxing crescent", "gentle progress"], moonText)) {
+					return rotate(integrativeLines, architectureBias);
+				}
+				if (hasAny(["reset", "new moon", "release", "reduce", "balsamic", "rest", "recover"], moonText)) {
+					return rotate(bodyLines, architectureBias);
+				}
+
+				if (hasAny(["signal processor", "mercury"], architectureText)) {
+					return rotate(signalLines);
+				}
+				if (hasAny(["emotional processor", "moon", "body-state", "body state"], architectureText)) {
+					return rotate(bodyLines);
+				}
+				if (hasAny(["action vector", "mars"], architectureText)) {
+					return rotate(mobilizedLines);
+				}
+				if (hasAny(["relational tone", "venus"], architectureText)) {
+					return rotate(relationalLines);
+				}
+				if (hasAny(["structure governor", "saturn"], architectureText)) {
+					return rotate(structuredLines);
+				}
+				if (hasAny(["interface", "ascendant"], architectureText)) {
+					return rotate(fallbackLines, 1);
+				}
+
+				return fallbackLines[safeIndex % fallbackLines.length];
 			}
 
 			function renderForecastWeatherItem(label, value, modifierClass = "") {
