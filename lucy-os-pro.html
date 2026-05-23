@@ -20609,35 +20609,107 @@ ${bodyLine}${loadLine}`,
 			}
 
 			function getForecastWeatherLabel(row, index) {
-				const text = getForecastWeatherRowText(row);
-				const field = forecastString(row?.field || "");
+				const fd = row?.forecastDiagnostic && typeof row.forecastDiagnostic === "object"
+					? row.forecastDiagnostic
+					: {};
+				const collectForecastWeatherText = (value) => {
+					if (value === null || value === undefined) return "";
+					if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+						return String(value);
+					}
+					if (Array.isArray(value)) {
+						return value.map(collectForecastWeatherText).join(" ");
+					}
+					if (typeof value === "object") {
+						return Object.values(value).map(collectForecastWeatherText).join(" ");
+					}
+					return "";
+				};
+				const text = [
+					row?.field,
+					row?.mainField,
+					row?.fieldLabel,
+					row?.moonstamp,
+					row?.moonstampText,
+					row?.live,
+					row?.liveModifier,
+					row?.liveFieldModifier,
+					row?.forecastRead,
+					row?.load,
+					row?.regulation,
+					row?.dayLabel,
+					row?.dateLabel,
+					fd.fieldState,
+					fd.fieldMode,
+					fd.mode,
+					fd.primaryDriver,
+					fd.fieldToneDriver,
+					fd.pressureDriver,
+					fd.topDriver,
+					fd.topRegulator,
+					fd.regulator,
+					fd.summary,
+					fd.read,
+					fd.text,
+				]
+					.map(collectForecastWeatherText)
+					.join(" ")
+					.toLowerCase();
 				const condition = getForecastWeatherCondition(row).toLowerCase();
+				const hasAny = (terms) => terms.some((term) => text.includes(term));
+				const rotate = (labels) => labels[Math.abs(Number(index) || 0) % labels.length];
+				const pressureRotation = [
+					"Mobilized Field",
+					"Rising Pressure",
+					"Building Weather",
+					"High Voltage",
+					"Momentum Field",
+					"Pressure Shift",
+					"Clearing Pattern",
+				];
+				const unclearRotation = [
+					"Today’s Weather",
+					"Rising Pattern",
+					"Building Weather",
+					"Pressure Shift",
+					"Clearing Pattern",
+					"Low Visibility",
+					"Reset Weather",
+				];
 				const highLoad = condition.includes("high load");
 				const veryHighLoad = condition.includes("very high load");
+				const lowLoad = condition.includes("low load");
 				const lowRegulation = condition.includes("low regulation");
 				const strongRegulation = condition.includes("strong regulation");
 
-				if ((veryHighLoad && lowRegulation) || (text.includes("reconstructive") && (highLoad || lowRegulation))) {
-					return "Storm Field";
+				if (hasAny(["reconstructive", "pluto", "storm", "repair", "rupture", "intense", "heavy"])) {
+					return veryHighLoad || lowRegulation || hasAny(["storm", "rupture", "intense", "heavy"])
+						? "Storm Field"
+						: "Repair Weather";
 				}
-				if (text.includes("reconstructive") || text.includes("pluto")) return "Repair Weather";
-				if (text.includes("diffused") || text.includes("neptune")) return "Low Visibility";
-				if (text.includes("relational") && (text.includes("/") || text.includes("mars") || text.includes("moon") || text.includes("pluto"))) {
+				if (hasAny(["threshold", "mars", "edge", "crossing", "first quarter"]) || (highLoad && lowRegulation)) {
+					return "Pressure Front";
+				}
+				if (hasAny(["mobilized", "action", "movement", "build", "waxing gibbous"])) {
+					return rotate(pressureRotation);
+				}
+				if (hasAny(["relational", "venus", "moon", "mixed"])) {
 					return "Crosswinds";
 				}
-				if (highLoad && lowRegulation) return "Pressure Front";
-				if (text.includes("mobilized") || text.includes("threshold") || text.includes("mars") || text.includes("action")) {
-					return highLoad ? "Pressure Front" : "Mobilized Field";
-				}
-				if (text.includes("reset") || text.includes("reduce")) return "Reset Weather";
-				if (condition.includes("low load") && strongRegulation) return "Calm Window";
-				if (text.includes("integrative") || text.includes("regulated") || text.includes("structured") || strongRegulation) {
+				if (hasAny(["integrative", "regulated", "structured", "saturn", "clearing"])) {
 					return "Clearing Pattern";
 				}
-				if (highLoad) return "Heavy Weather";
+				if (hasAny(["reset", "new moon", "balsamic", "release", "reduce"])) {
+					return "Reset Weather";
+				}
+				if (hasAny(["calm", "low load", "strong regulation"]) || (lowLoad && strongRegulation)) {
+					return "Calm Window";
+				}
+				if (hasAny(["diffused", "neptune", "unclear", "fog", "foggy"])) {
+					return "Low Visibility";
+				}
 
-				const cleanField = field.split("/")[0].replace(/field/gi, "").trim();
-				return cleanField && cleanField !== "—" ? cleanField : "Field Weather";
+				return rotate(unclearRotation);
 			}
 
 			function getForecastWeatherTitle(row, index) {
