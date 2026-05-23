@@ -99,6 +99,7 @@
 <!-- Pass 1W update: added internal-weather display labels to the final user-facing 7-Day Forecast cards only. Uses existing normalized forecast row/card values for display labels; diagnostic shell, backend/API, request payloads, forecast loop, extraction, normalized row shape, engine/scoring, responsive collapse, saved profiles, tabs, and share export unchanged. -->
 <!-- Pass 1Y update: polished final user-facing 7-Day Forecast condition copy only. Translates unclear load/regulation condition text into short internal-weather language while preserving diagnostic shell, forecast requests, normalized row shape, engine/scoring, responsive collapse, saved profiles, tabs, and share export unchanged. -->
 <!-- Pass 2A update: added compact Personal Landing line to final user-facing 7-Day Forecast cards only. Uses existing row/DOM architecture values defensively for display copy; diagnostic shell, backend/API, forecast requests, date loop, normalized row shape, engine/scoring, responsive collapse, saved profiles, tabs, and share export unchanged. -->
+<!-- Field Move Human-Language Copy Polish Stage 2A update: completed plain-human move copy set for major fields/base states and routed visible move helpers to prefer those lines. Frontend copy/display only; backend/API, payloads, scoring, field selection, Moonstamp, forecast behavior, saved profiles, share export, diagnostics, layout, CSS, and object shapes unchanged. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -8461,7 +8462,7 @@
 </section>
 <section aria-live="polite" class="fieldPingCard" id="fieldPingCard">
 <div class="fieldPingKicker">Today’s Field Ping</div>
-<div class="fieldPingSignal" id="fieldPingSignal">Calculate to see today’s short field signal.</div>
+<div class="fieldPingSignal" id="fieldPingSignal">Calculate to see today’s short field read.</div>
 <div class="fieldPingInstruction" id="fieldPingInstruction">One clean instruction will appear here after the read.</div>
 <div class="fieldPingMeta" id="fieldPingMeta">In-app card only. Notification-ready later.</div>
 </section>
@@ -10522,7 +10523,7 @@
 					Structured: "Signal-to-Structure Builder",
 					Contained: "Contained Signal Mover",
 					Chaotic: "Core Signal Catalyst",
-					Relational: "Relational Signal Mover",
+					Relational: "Relational Contact Mover",
 					Threshold: "Threshold Signal Mover",
 					Reconstructive: "Repair Signal Catalyst",
 					Integrative: "Integrative Signal Catalyst",
@@ -13214,7 +13215,7 @@
 				} else if (intensityLabel === "Mobilized") {
 					items.push("Use movement, but keep it to one channel.");
 				} else if (intensityLabel === "Threshold") {
-					items.push("Let timing matter more than intensity.");
+					items.push(getPlainHumanFieldMove("Threshold"));
 				}
 
 				if (motionHas(motionStyle, "Chaotic")) {
@@ -13722,7 +13723,7 @@
 					"Chaotic|Relational":
 						"When today’s field is Relational, contact, tone, or feedback may register as a signal spike. That does not mean you need to respond immediately. It means your system is noticing movement in the atmosphere.",
 					"Relational|Relational":
-						"When today’s field is Relational, your system may notice contact and tone more directly. The move is not to absorb the whole room; it is to name one signal and keep responsibility proportional.",
+						"When today’s field is Relational, your system may notice contact and tone more directly. Say what feels off clearly, then keep your response calm and not bigger than the moment.",
 					"Reconstructive|Relational":
 						"When today’s field is Relational, your system may notice what feels strained, misaligned, or ready for repair inside contact. The move is to repair one true weak point, not the whole relationship field.",
 				};
@@ -13973,6 +13974,46 @@
 				return avoids[base] || "Do not make the whole field bigger than the next clean move.";
 			}
 
+
+			function getPlainHumanFieldMove(fieldOrState) {
+				const raw = String(fieldOrState || "").trim();
+				const base = getHarmonicBaseName(raw || "");
+				const key = raw.toLowerCase().replace(/[^a-z]/g, "");
+				const moves = {
+					Relational:
+						"Say what feels off clearly. Keep your response calm and not bigger than the moment.",
+					Structured:
+						"Choose one next step and make it simple enough to actually do.",
+					Contained:
+						"Lower the pressure. Do the smallest stabilizing thing first.",
+					Chaotic:
+						"Reduce the noise. Pick one thing to finish before opening another.",
+					Threshold:
+						"Make the decision smaller. Cross one clear edge instead of forcing the whole change.",
+					Reconstructive:
+						"Fix the part that is actually breaking. Do not rebuild the whole system at once.",
+					Integrative:
+						"Let the pieces come together before you force a conclusion.",
+					Diffused:
+						"Come back to one thread. Choose the clearest signal and follow that first.",
+					Regulated:
+						"Keep the rhythm simple. Stay consistent instead of adding more.",
+					Steady:
+						"Keep the rhythm simple. Stay consistent instead of adding more.",
+					Mobilized:
+						"Use the energy, but do not let it run the whole day. Choose one clean action.",
+					HighVoltage:
+						"Slow the charge down before you act. Move from clarity, not pressure.",
+				};
+
+				if (key === "highvoltage") return moves.HighVoltage;
+				if (key === "mobilized") return moves.Mobilized;
+				if (key === "steady") return moves.Steady;
+				if (moves[base]) return moves[base];
+
+				return "Pause, simplify, and choose the next move that lowers pressure instead of adding more.";
+			}
+
 			function getPlainReturn(field, primary) {
 				const baseField = getHarmonicBaseName(field || "");
 				const baseRoot = getHarmonicBaseName(primary || "");
@@ -14020,7 +14061,7 @@
 				return applyElectricalLanguageToPlainReadTop(
 					{
 						read,
-						move: guidance?.move || "Make one clear move before trying to solve everything.",
+						move: guidance?.move || getPlainHumanFieldMove(field),
 						avoid: getPlainAvoid(field, distortionState),
 						returnPath: guidance?.ret || getPlainReturn(field, primary),
 					},
@@ -14069,7 +14110,7 @@
 					{
 						headline: fieldLanding.first || "Today’s field is active.",
 						support: supportLines.join(" ") || "Keep the next move simple and readable.",
-						move: guidance?.move || "Make one clear move before trying to solve everything.",
+						move: guidance?.move || getPlainHumanFieldMove(field),
 						avoid: getPlainAvoid(field, distortionState),
 					},
 					getCurrentElectricalProfile()
@@ -14161,7 +14202,7 @@
 
 				setText(
 					"mobileSnapshotMove",
-					snapshotRead?.move || guidance?.move || "Choose one clear next move."
+					snapshotRead?.move || guidance?.move || getPlainHumanFieldMove(field)
 				);
 				setText(
 					"mobileSnapshotAvoid",
@@ -14306,7 +14347,7 @@
 			function getShareSafeMove(primaryMove, fallbackMove) {
 				return cleanShareSentence(
 					primaryMove || fallbackMove,
-					"Choose one clear next move."
+					getPlainHumanFieldMove(field)
 				);
 			}
 
@@ -15541,12 +15582,12 @@
 				const root = getHarmonicBaseName(harmonics?.primary || "");
 				const state = stateLabelFromMode(data?.state?.mode || "");
 				const loadBand = loadBandFromValue(data?.state?.amplifiedLoad);
-				const move = guidance?.move || "Choose one clean move and keep it proportional.";
+				const move = guidance?.move || getPlainHumanFieldMove(field);
 
 				if (state === "Overloaded" || loadBand === "High") {
 					return {
 						signal: "The field is already carrying enough input.",
-						instruction: "Lower the noise before adding another thread.",
+						instruction: getPlainHumanFieldMove(loadBand === "High" ? "High Voltage" : field),
 						meta: `${state || "Active"} state · ${loadBand || "—"} load`,
 					};
 				}
@@ -15554,7 +15595,7 @@
 				if (field === "Relational") {
 					return {
 						signal: "The field is asking for cleaner contact, not more interpretation.",
-						instruction: "Stabilize yourself first, then communicate simply.",
+						instruction: getPlainHumanFieldMove("Relational"),
 						meta: `${getPublicFieldLabel(field)} field · ${state || "Regulated"}`,
 					};
 				}
@@ -15562,7 +15603,7 @@
 				if (field === "Chaotic" || root === "Chaotic") {
 					return {
 						signal: "Signal is moving fast today.",
-						instruction: "Give the charge one safe channel before you respond.",
+						instruction: getPlainHumanFieldMove("Chaotic"),
 						meta: `${getPublicFieldLabel(field)} field · ${state || "Regulated"}`,
 					};
 				}
@@ -15570,7 +15611,7 @@
 				if (field === "Threshold") {
 					return {
 						signal: "The field is near a crossing point.",
-						instruction: "Let timing matter more than intensity.",
+						instruction: getPlainHumanFieldMove("Threshold"),
 						meta: `${getPublicFieldLabel(field)} field · ${state || "Regulated"}`,
 					};
 				}
@@ -15578,7 +15619,7 @@
 				if (field === "Reconstructive") {
 					return {
 						signal: "Repair pressure is active, but the whole field does not need a rebuild.",
-						instruction: "Fix one weak point, then stop.",
+						instruction: getPlainHumanFieldMove("Reconstructive"),
 						meta: `${getPublicFieldLabel(field)} field · ${state || "Regulated"}`,
 					};
 				}
@@ -15586,7 +15627,7 @@
 				if (field === "Diffused" || field === "Integrative") {
 					return {
 						signal: "The field is wide enough to blur the main thread.",
-						instruction: "Choose one anchor and let the useful signal stand out.",
+						instruction: getPlainHumanFieldMove(field),
 						meta: `${getPublicFieldLabel(field)} field · ${state || "Regulated"}`,
 					};
 				}
@@ -16653,7 +16694,7 @@
 				let watch =
 					"Watch for turning the whole field into something you have to solve at once.";
 				let move =
-					"Pick one pressure point and give it a clean next step.";
+					getPlainHumanFieldMove(field);
 				let ret =
 					"Name what is actually active, then stop before you expand the task.";
 
@@ -16663,7 +16704,7 @@
 					watch =
 						"Over-reading tone, absorbing the shared field, or trying to fix the whole room.";
 					move =
-						"Say what feels off clearly. Keep your response calm and not bigger than the moment.";
+						getPlainHumanFieldMove("Relational");
 					ret =
 						"Return to your own center before trying to repair the field.";
 				} else if (field === "Reconstructive") {
@@ -16672,7 +16713,7 @@
 					watch =
 						"Treating every weak point like it means the whole structure has failed.";
 					move =
-						"Choose one honest adjustment and give it a clean container.";
+						getPlainHumanFieldMove("Reconstructive");
 					ret =
 						"Remind yourself that one repair is not the same as rebuilding the whole system.";
 				} else if (field === "Contained") {
@@ -16681,7 +16722,7 @@
 					watch =
 						"Holding everything inside until the pressure becomes harder to name.";
 					move =
-						"Let one small piece of the inner field become visible or workable.";
+						getPlainHumanFieldMove("Contained");
 					ret =
 						"Return to privacy as a container, not a hiding place.";
 				} else if (field === "Diffused") {
@@ -16689,14 +16730,14 @@
 					watch =
 						"Over-explaining fog or forcing definition before the signal forms.";
 					move =
-						"Give the atmosphere one sentence and let that be enough.";
+						getPlainHumanFieldMove("Diffused");
 					ret = "Come back to the simplest true line.";
 				} else if (field === "Integrative") {
 					lean =
 						"Synthesis, pattern-linking, and choosing the one connection that actually helps.";
 					watch = "Trying to integrate every loose end today.";
 					move =
-						"Name the larger pattern, then reduce it to one workable step.";
+						getPlainHumanFieldMove("Integrative");
 					ret =
 						"Come back to the structure that makes the meaning usable.";
 				} else if (field === "Chaotic") {
@@ -16705,7 +16746,7 @@
 					watch =
 						"Following every spark until the whole day loses continuity.";
 					move =
-						"Pick one channel for the energy and let the rest pass through.";
+						getPlainHumanFieldMove("Chaotic");
 					ret = "Return to rhythm before chasing another signal.";
 				} else if (field === "Threshold") {
 					lean =
@@ -16713,7 +16754,7 @@
 					watch =
 						"Treating every feeling of pressure like it means act now.";
 					move =
-						"Choose the one threshold that is real enough to cross today.";
+						getPlainHumanFieldMove("Threshold");
 					ret =
 						"Return to the edge slowly and do not force the opening.";
 				} else if (field === "Structured") {
@@ -16722,7 +16763,7 @@
 					watch =
 						"Over-refining the structure after it is already strong enough.";
 					move =
-						"Improve one useful container and stop before polish becomes strain.";
+						getPlainHumanFieldMove("Structured");
 					ret =
 						"Return to the structure that helps, not the structure that controls.";
 				} else if (field === "Regulated") {
@@ -16731,7 +16772,7 @@
 					watch =
 						"Tightening the system after the pressure is already manageable.";
 					move =
-						"Choose one useful rhythm and let it carry the next step.";
+						getPlainHumanFieldMove("Regulated");
 					ret = "Return to enough regulation, not total control.";
 				}
 
@@ -16743,7 +16784,7 @@
 					watch =
 						"Creating a bigger break than the situation actually needs.";
 					move =
-						"Use the charge to fix one weak point, not to rebuild the whole field.";
+						getPlainHumanFieldMove("Reconstructive");
 					ret =
 						"Let movement serve repair. Stop once the first usable structure appears.";
 				} else if (
@@ -16762,9 +16803,8 @@
 
 				if (stateLabel === "Overloaded") {
 					watch = `${watch} Also watch for stacking more input when your system is already carrying enough.`;
-					move = `Reduce scope first. ${move}`;
 				} else if (stateLabel === "Threshold") {
-					move = `Pause at the edge, then choose cleanly. ${move}`;
+					lean = `${lean} Keep the next move small enough to choose clearly.`;
 				} else if (stateLabel === "Mobilized") {
 					lean = `${lean} Use the available movement, but keep it paced.`;
 				}
@@ -16853,7 +16893,7 @@
 					fieldPressures[field] || "the current field is active"
 				}. ${
 					fieldBestInterpretations[field] ||
-					"Choose one clear next move."
+					getPlainHumanFieldMove(field)
 				}`;
 				let realLife = `When this shows up in normal life, keep the response to one clear move and do not let the field become bigger than the action.`;
 				let shareRead = todayRead;
@@ -17015,7 +17055,7 @@
 					label,
 					useGift,
 					watchDistortion,
-					makeMove: guidance?.move || "Choose one clear next move.",
+					makeMove: guidance?.move || getPlainHumanFieldMove(field),
 				};
 			}
 
@@ -17430,7 +17470,7 @@
 				}
 
 				const loadLine = loadBand && loadBand !== "—"
-					? ` Current system load reads ${loadBand.toLowerCase()}; keep the move scaled to what the field can actually hold.`
+					? ` Current pressure reads ${loadBand.toLowerCase()}; keep the move small enough to actually hold.`
 					: "";
 
 				return {
@@ -19082,22 +19122,22 @@ ${bodyLine}${loadLine}`,
 				const field = getObservedElectricalField(profile);
 				const key = profile?.primaryElectricalReadKey || "";
 				const cleanBase = String(baseMove || "").trim();
+				const fieldMove = getPlainHumanFieldMove(field);
+				const electricalMoveByKey = {
+					shortCircuitRisk: getPlainHumanFieldMove("High Voltage"),
+					compressionRepair: getPlainHumanFieldMove("Reconstructive"),
+					overConductiveRelational: getPlainHumanFieldMove("Relational"),
+					wideBandwidthStatic: getPlainHumanFieldMove("Diffused"),
+					highVoltageCleanCurrent: getPlainHumanFieldMove("High Voltage"),
+					highVoltageLowGrounding: getPlainHumanFieldMove("High Voltage"),
+					resistanceUsefulForm: getPlainHumanFieldMove("Structured"),
+					cleanChannelSteadyCurrent: getPlainHumanFieldMove("Regulated"),
+					lowSignalStableField: getPlainHumanFieldMove("Steady"),
+				};
 
-				if (field === "Relational") {
-					if (
-						key === "lowSignalStableField" ||
-						key === "overConductiveRelational"
-					) {
-						return "Say what feels off clearly. Keep your response calm and not bigger than the moment.";
-					}
-					return cleanBase || helper?.move || "Say what feels off clearly. Keep your response calm and not bigger than the moment.";
-				}
-
-				if (key === "lowSignalStableField") {
-					return cleanBase || helper?.move || "Choose one small stable action.";
-				}
-
-				return helper?.move || cleanBase;
+				if (fieldMove) return fieldMove;
+				if (electricalMoveByKey[key]) return electricalMoveByKey[key];
+				return cleanBase || helper?.move || getPlainHumanFieldMove("");
 			}
 
 			function appendElectricalSentence(base, sentence) {
@@ -19118,7 +19158,7 @@ ${bodyLine}${loadLine}`,
 						plain:
 							"Too much input can make the next step harder to route, so narrow the signal before adding anything else.",
 						move:
-							"Lower input first, then route one small clean action.",
+							getPlainHumanFieldMove("High Voltage"),
 						avoid:
 							"Do not add more stimulation, more decisions, or more relational pressure while the field is already carrying enough.",
 						returnPath:
@@ -19143,7 +19183,7 @@ ${bodyLine}${loadLine}`,
 						plain:
 							"Pressure is concentrating around one weak point; treat it as one repair, not a whole-system rebuild.",
 						move:
-							"Choose one repair that is real enough to act on and leave the rest out of scope.",
+							getPlainHumanFieldMove("Reconstructive"),
 						avoid:
 							"Do not let concentrated pressure convince you everything has to be fixed at once.",
 						returnPath:
@@ -19168,7 +19208,7 @@ ${bodyLine}${loadLine}`,
 						plain:
 							"The field may be coming through contact, tone, or shared atmosphere; sort mine from not-mine before responding.",
 						move:
-							"Say what feels off clearly. Keep your response calm and not bigger than the moment.",
+							getPlainHumanFieldMove("Relational"),
 						avoid:
 							"Do not absorb the whole room or answer pressure that does not belong to you.",
 						returnPath:
@@ -19193,7 +19233,7 @@ ${bodyLine}${loadLine}`,
 						plain:
 							"Too many channels may be open at once; reduce static by choosing the strongest thread.",
 						move:
-							"Narrow the signal to one priority and let the rest stay in the background.",
+							getPlainHumanFieldMove("Diffused"),
 						avoid:
 							"Do not treat every open thread as equally urgent.",
 						returnPath:
