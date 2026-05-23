@@ -417,7 +417,7 @@ def compute_chart_inputs(
     return result
 
 
-def build_forecast_diagnostic(payload: dict, used_transit_utc: str | None = None) -> dict:
+def parse_forecast_transit_datetime_local(payload: dict) -> tuple[bool, str | None, str | None, str | None, datetime | None, str | None]:
     raw_transit_date = payload.get("transitDate")
     raw_transit_time = payload.get("transitTime")
 
@@ -433,58 +433,187 @@ def build_forecast_diagnostic(payload: dict, used_transit_utc: str | None = None
     )
 
     forecast_mode_requested = received_transit_date is not None
-    parsed_transit_datetime_local = None
 
-    if forecast_mode_requested:
-        diagnostic_time = received_transit_time or "12:00"
+    if not forecast_mode_requested:
+        return False, None, None, None, None, None
 
-        try:
-            date_part = datetime.strptime(received_transit_date, "%Y-%m-%d")
-            time_part = parse_time_flexible(diagnostic_time)
-            parsed_local = datetime(
-                date_part.year,
-                date_part.month,
-                date_part.day,
-                time_part.hour,
-                time_part.minute,
-                0,
-                0,
-            )
-            parsed_transit_datetime_local = parsed_local.isoformat()
-        except Exception:
-            return {
-                "receivedTransitDate": received_transit_date,
-                "receivedTransitTime": received_transit_time,
-                "forecastModeRequested": True,
-                "parsedTransitDateTimeLocal": None,
-                "usedTransitUTC": None,
-                "usedTransitDateSource": "unavailable",
-                "calculationPath": "forecast_payload_parse_failed",
-                "warning": "transitDate could not be parsed.",
-            }
+    diagnostic_time = received_transit_time or "12:00"
 
+    try:
+        date_part = datetime.strptime(received_transit_date, "%Y-%m-%d")
+        time_part = parse_time_flexible(diagnostic_time)
+        parsed_local = datetime(
+            date_part.year,
+            date_part.month,
+            date_part.day,
+            time_part.hour,
+            time_part.minute,
+            0,
+            0,
+        )
+        return (
+            True,
+            received_transit_date,
+            received_transit_time,
+            parsed_local.isoformat(),
+            parsed_local,
+            None,
+        )
+    except Exception:
+        return (
+            True,
+            received_transit_date,
+            received_transit_time,
+            None,
+            None,
+            "transitDate could not be parsed.",
+        )
+
+
+def resolve_forecast_transit_utc(
+    payload: dict,
+    location_text: str = "",
+    utc_offset_override: float | None = None,
+    natal_meta: dict | None = None,
+) -> dict:
+    (
+        forecast_mode_requested,
+        received_transit_date,
+        received_transit_time,
+        parsed_transit_datetime_local,
+        parsed_local,
+        parse_warning,
+    ) = parse_forecast_transit_datetime_local(payload)
+
+    if not forecast_mode_requested:
         return {
-            "receivedTransitDate": received_transit_date,
-            "receivedTransitTime": received_transit_time,
-            "forecastModeRequested": True,
-            "parsedTransitDateTimeLocal": parsed_transit_datetime_local,
+            "forecastModeRequested": False,
+            "receivedTransitDate": None,
+            "receivedTransitTime": None,
+            "parsedTransitDateTimeLocal": None,
             "usedTransitUTC": None,
-            "usedTransitDateSource": "ignored_forecast_payload",
-            "calculationPath": "forecast_payload_received_but_not_used",
-            "warning": "transitDate was received but this backend route does not currently route it into transit calculations.",
+            "usedTransitDateSource": "server_today",
+            "calculationPath": "no_forecast_payload_today_mode",
+            "warning": None,
+            "transitUtc": None,
         }
 
-    return {
-        "receivedTransitDate": None,
-        "receivedTransitTime": None,
-        "forecastModeRequested": False,
-        "parsedTransitDateTimeLocal": None,
-        "usedTransitUTC": used_transit_utc,
-        "usedTransitDateSource": "server_today",
-        "calculationPath": "no_forecast_payload_today_mode",
-        "warning": None,
-    }
+    if parse_warning or parsed_local is None:
+        return {
+            "forecastModeRequested": True,
+            "receivedTransitDate": received_transit_date,
+            "receivedTransitTime": received_transit_time,
+            "parsedTransitDateTimeLocal": None,
+            "usedTransitUTC": None,
+            "usedTransitDateSource": "unavailable",
+            "calculationPath": "forecast_payload_parse_failed",
+            "warning": parse_warning or "transitDate could not be parsed.",
+            "transitUtc": None,
+        }
 
+    warning = None
+    natal_meta = natal_meta or {}
+
+    try:
+        if utc_offset_override is not None:
+            local_dt = parsed_local.replace(
+                tzinfo=timezone(timedelta(hours=float(utc_offset_override)))
+            )
+        else:
+            timezone_name = str(natal_meta.get("timezone_name") or "").strip()
+
+            if timezone_name and timezone_name != "Manual/Override":
+                try:
+                    local_dt = parsed_local.replace(tzinfo=ZoneInfo(timezone_name))
+                except Exception:
+                    utc_offset = natal_meta.get("utc_offset")
+                    if utc_offset is None:
+                        utc_offset = natal_meta.get("utc_offset_at_birth")
+                    local_dt = parsed_local.replace(
+                        tzinfo=timezone(timedelta(hours=float(utc_offset)))
+                    )
+                    warning = "Forecast timezone name was unavailable to ZoneInfo; used the resolved UTC offset fallback."
+            elif natal_meta.get("utc_offset") is not None or natal_meta.get("utc_offset_at_birth") is not None:
+                utc_offset = natal_meta.get("utc_offset")
+                if utc_offset is None:
+                    utc_offset = natal_meta.get("utc_offset_at_birth")
+                local_dt = parsed_local.replace(
+                    tzinfo=timezone(timedelta(hours=float(utc_offset)))
+                )
+                warning = "Forecast used the resolved UTC offset fallback."
+            elif location_text:
+                geo = geocode_birth_place(location_text)
+                rough_utc = parsed_local.replace(tzinfo=timezone.utc)
+                timezone_info = get_historical_timezone(
+                    geo["lat"],
+                    geo["lon"],
+                    int(rough_utc.timestamp()),
+                )
+                try:
+                    local_dt = parsed_local.replace(tzinfo=ZoneInfo(timezone_info["timezone_name"]))
+                except Exception:
+                    local_dt = parsed_local.replace(
+                        tzinfo=timezone(timedelta(hours=float(timezone_info["utc_offset_at_birth"])))
+                    )
+                    warning = "Forecast timezone lookup succeeded but ZoneInfo fallback offset was used."
+            else:
+                local_dt = parsed_local.replace(tzinfo=timezone.utc)
+                warning = "Forecast payload was used, but no location/timezone context was available; interpreted transit time as UTC."
+
+        transit_utc = local_dt.astimezone(timezone.utc)
+
+        return {
+            "forecastModeRequested": True,
+            "receivedTransitDate": received_transit_date,
+            "receivedTransitTime": received_transit_time,
+            "parsedTransitDateTimeLocal": parsed_transit_datetime_local,
+            "usedTransitUTC": transit_utc.isoformat(),
+            "usedTransitDateSource": "forecast_payload",
+            "calculationPath": "forecast_payload_used_for_transit_calculations",
+            "warning": warning,
+            "transitUtc": transit_utc,
+        }
+    except Exception as e:
+        return {
+            "forecastModeRequested": True,
+            "receivedTransitDate": received_transit_date,
+            "receivedTransitTime": received_transit_time,
+            "parsedTransitDateTimeLocal": parsed_transit_datetime_local,
+            "usedTransitUTC": None,
+            "usedTransitDateSource": "server_today",
+            "calculationPath": "forecast_payload_resolution_failed_fallback_to_today",
+            "warning": f"Forecast transit date was received but could not be resolved safely; fell back to current transit calculations. {e}",
+            "transitUtc": None,
+        }
+
+
+def build_forecast_diagnostic(
+    payload: dict,
+    used_transit_utc: str | None = None,
+    forecast_resolution: dict | None = None,
+) -> dict:
+    if forecast_resolution is not None:
+        return {
+            "receivedTransitDate": forecast_resolution.get("receivedTransitDate"),
+            "receivedTransitTime": forecast_resolution.get("receivedTransitTime"),
+            "forecastModeRequested": bool(forecast_resolution.get("forecastModeRequested")),
+            "parsedTransitDateTimeLocal": forecast_resolution.get("parsedTransitDateTimeLocal"),
+            "usedTransitUTC": forecast_resolution.get("usedTransitUTC") or used_transit_utc,
+            "usedTransitDateSource": forecast_resolution.get("usedTransitDateSource"),
+            "calculationPath": forecast_resolution.get("calculationPath"),
+            "warning": forecast_resolution.get("warning"),
+        }
+
+    forecast_resolution = resolve_forecast_transit_utc(payload)
+
+    if not forecast_resolution.get("forecastModeRequested"):
+        forecast_resolution["usedTransitUTC"] = used_transit_utc
+
+    return build_forecast_diagnostic(
+        payload,
+        used_transit_utc=used_transit_utc,
+        forecast_resolution=forecast_resolution,
+    )
 
 def compute_transit_inputs(now_utc: datetime | None = None):
     if now_utc is None:
@@ -716,8 +845,14 @@ def build_moonstamp_modifier_from_transit(transit: dict) -> dict:
     }
 
 
-def build_projected_moonstamp_modifier(hours_ahead: int) -> dict:
-    projected_utc = datetime.now(timezone.utc) + timedelta(hours=hours_ahead)
+def build_projected_moonstamp_modifier(hours_ahead: int, base_utc: datetime | None = None) -> dict:
+    if base_utc is None:
+        base_utc = datetime.now(timezone.utc)
+    if base_utc.tzinfo is None:
+        base_utc = base_utc.replace(tzinfo=timezone.utc)
+    else:
+        base_utc = base_utc.astimezone(timezone.utc)
+    projected_utc = base_utc + timedelta(hours=hours_ahead)
     projected_transit = compute_transit_inputs(projected_utc)
     projected = build_moonstamp_modifier_from_transit(projected_transit)
     projected["projectionHours"] = hours_ahead
@@ -816,7 +951,7 @@ def infer_mode(strain: float) -> str:
     return "Regulated Baseline"
 
 
-def build_lucy_response(chart: dict) -> dict:
+def build_lucy_response(chart: dict, transit_utc: datetime | None = None) -> dict:
     server_calculation_timestamp = datetime.now(timezone.utc).isoformat()
 
     sun = float(chart.get("sun", 0.0))
@@ -872,11 +1007,14 @@ def build_lucy_response(chart: dict) -> dict:
     natal_effective_load *= (0.96 + (asc_norm * 0.20))
     natal_strain = natal_effective_load / natal_capacity if natal_capacity > 0 else 0.0
 
-    transit = compute_transit_inputs()
+    transit = compute_transit_inputs(transit_utc)
+    transit_base_utc = transit_utc
+    if transit_base_utc is None:
+        transit_base_utc = datetime.now(timezone.utc)
     live_field_modifier = build_live_field_modifier(transit)
     moonstamp = build_moonstamp_modifier_from_transit(transit)
-    moonstamp_plus6 = build_projected_moonstamp_modifier(6)
-    moonstamp_plus24 = build_projected_moonstamp_modifier(24)
+    moonstamp_plus6 = build_projected_moonstamp_modifier(6, transit_base_utc)
+    moonstamp_plus24 = build_projected_moonstamp_modifier(24, transit_base_utc)
 
     t_moon = float(transit.get("moon", 0.0))
     t_mercury = float(transit.get("mercury", 0.0))
@@ -1273,10 +1411,8 @@ class handler(BaseHTTPRequestHandler):
             mode = str(payload.get("mode", "natal")).strip().lower()
 
             if mode == "transit":
-                chart = compute_transit_inputs()
-                # Forecast diagnostic is response-contract proof only.
-                # It reports whether transitDate/transitTime were received, parsed, and actually used.
-                # It must not change normal Today behavior.
+                forecast_resolution = resolve_forecast_transit_utc(payload)
+                chart = compute_transit_inputs(forecast_resolution.get("transitUtc"))
                 response = {
                     "ok": True,
                     "transitOnly": True,
@@ -1285,6 +1421,7 @@ class handler(BaseHTTPRequestHandler):
                     "forecastDiagnostic": build_forecast_diagnostic(
                         payload,
                         used_transit_utc=(chart.get("_meta", {}) or {}).get("utc_datetime"),
+                        forecast_resolution=forecast_resolution,
                     ),
                 }
                 self._write_json(200, response)
@@ -1343,14 +1480,22 @@ class handler(BaseHTTPRequestHandler):
                 location=location,
             )
 
-            response = build_lucy_response(chart)
+            forecast_resolution = resolve_forecast_transit_utc(
+                payload,
+                location_text=location,
+                utc_offset_override=utc_override,
+                natal_meta=chart.get("_meta", {}) or {},
+            )
 
-            # Forecast diagnostic is response-contract proof only.
-            # It reports whether transitDate/transitTime were received, parsed, and actually used.
-            # It must not change normal Today behavior.
+            response = build_lucy_response(
+                chart,
+                transit_utc=forecast_resolution.get("transitUtc"),
+            )
+
             response["forecastDiagnostic"] = build_forecast_diagnostic(
                 payload,
                 used_transit_utc=(response.get("ephemeris", {}) or {}).get("transitUtcDatetime"),
+                forecast_resolution=forecast_resolution,
             )
 
             self._write_json(200, response)
