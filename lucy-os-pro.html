@@ -83,6 +83,7 @@
 <!-- Forecast Preview dev-only update: added isolated Pro forecastDiagnostic panel using current input values and /api/chart_inputs. Normal Pro calculate/updateUI flow, backend/API contract, scoring, Pro engine, Lite, saved profiles, share behavior, and existing result rendering unchanged. -->
 <!-- Pass 1F update: moved the existing 7-Day Forecast Data Shell after the full Today’s System Weather card only. DOM order only; forecast request logic, forecast generation logic, normal Today calculation, engine, scoring, Moonstamp, Live Field Modifier, saved profiles, and share export unchanged. -->
 <!-- Pass 1G update: bound the existing 7-Day Forecast Data Shell to run after successful normal Pro Calculate using the existing forecastDiagnostic request path. Shell placement, normal Today calculation, engine/scoring, saved profiles, and share export unchanged. -->
+<!-- Pass 1H update: each 7-Day Forecast Data Shell row now sends its own isolated forecastDiagnostic request using the existing transitDate/transitTime contract, and shell rows read forecastDiagnostic data only. Shell placement, normal Today calculation, engine/scoring, saved profiles, and share export unchanged. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -19592,6 +19593,40 @@ ${bodyLine}${loadLine}`,
 				return parts.length ? parts.join(" · ") : "—";
 			}
 
+			function getForecastDiagnosticMoonObject(data) {
+				const fd = data?.forecastDiagnostic || {};
+				return safeForecastValue(
+					fd.moonstamp,
+					fd.moonstampData,
+					fd.moonStamp,
+					fd.moon,
+					fd.moonData
+				);
+			}
+
+			function buildForecastDiagnosticMoonstampSummary(data) {
+				const moon = getForecastDiagnosticMoonObject(data);
+				if (moon === "—") return "—";
+
+				const state = forecastString(
+					moon.state || moon.moonstampState || moon.label || moon.name
+				);
+				const phase = forecastString(moon.phase || moon.phaseName || moon.moonPhase);
+				const illumination = forecastPercentLike(
+					moon.illumination ?? moon.illuminationPct ?? moon.illuminationPercent
+				);
+				const moonAge = forecastString(
+					moon.moonAge ?? moon.age ?? moon.ageDays ?? moon.phaseAge
+				);
+
+				const parts = [];
+				if (state !== "—") parts.push(state);
+				if (phase !== "—") parts.push(phase);
+				if (illumination !== "—") parts.push(`Illumination: ${illumination}`);
+				if (moonAge !== "—") parts.push(`Moon age: ${moonAge}`);
+				return parts.length ? parts.join(" · ") : "—";
+			}
+
 
 			let forecastShellRunToken = 0;
 
@@ -19632,19 +19667,56 @@ ${bodyLine}${loadLine}`,
 				);
 			}
 
+			function buildForecastDiagnosticPayload(basePayload, transitDate, transitTime = "12:00") {
+				return {
+					dob: basePayload?.dob || "",
+					tobRaw: basePayload?.tobRaw || "",
+					ampm: basePayload?.ampm || "",
+					locationText: basePayload?.locationText || "",
+					forecastDiagnostic: true,
+					transitDate,
+					transitTime,
+				};
+			}
+
+			async function requestForecastDiagnostic(payload) {
+				const response = await fetch(API_URL, {
+					method: "POST",
+					cache: "no-store",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(payload),
+				});
+
+				let data = {};
+				try {
+					data = await response.json();
+				} catch (jsonErr) {
+					data = { forecastDiagnostic: { error: "Non-JSON response" } };
+				}
+
+				return { response, data };
+			}
+
+			function extractForecastDiagnosticUsedUtc(data) {
+				const fd = data?.forecastDiagnostic || {};
+				return forecastString(
+					fd.usedTransitUTC ||
+						fd.usedTransitUtc ||
+						fd.usedUTC ||
+						fd.usedUtc ||
+						fd.transitUTC ||
+						fd.transitUtc
+				);
+			}
+
 			function extractForecastShellField(data) {
 				const fd = data?.forecastDiagnostic || {};
 				const fieldState = forecastString(
-					fd.fieldState ||
-						fd.state ||
-						data?.state?.label ||
-						data?.state?.mode ||
-						data?.forecast?.now?.state ||
-						data?.fieldState
+					fd.fieldState || fd.state || fd.selectedField || fd.field
 				);
-				const fieldMode = forecastString(
-					fd.fieldMode || fd.mode || data?.mode || data?.fieldMode
-				);
+				const fieldMode = forecastString(fd.fieldMode || fd.mode);
 				if (fieldState !== "—" && fieldMode !== "—") return `${fieldState} / ${fieldMode}`;
 				return forecastString(safeForecastValue(fieldState, fieldMode));
 			}
@@ -19655,9 +19727,9 @@ ${bodyLine}${loadLine}`,
 					fd.liveFieldModifier?.displayTitle ||
 						fd.liveFieldModifier?.title ||
 						fd.liveFieldModifier ||
-						data?.liveFieldModifier?.displayTitle ||
-						data?.liveFieldModifier?.title ||
-						data?.liveFieldModifier
+						fd.liveModifier?.displayTitle ||
+						fd.liveModifier?.title ||
+						fd.liveModifier
 				);
 			}
 
@@ -19669,9 +19741,10 @@ ${bodyLine}${loadLine}`,
 						const field = forecastString(day.field || "—");
 						const moonstamp = forecastString(day.moonstamp || "—");
 						const liveModifier = forecastString(day.liveModifier || "—");
+						const usedUtc = forecastString(day.usedUtc || "—");
 						const status = day.ok
-							? `Field: ${field} · Moonstamp: ${moonstamp} · Live: ${liveModifier}`
-							: `Forecast unavailable · ${forecastString(day.error || "Unknown shell-only error")}`;
+							? `Date: ${day.date || "—"} · Used UTC: ${usedUtc} · Field: ${field} · Moonstamp: ${moonstamp} · Live: ${liveModifier}`
+							: `Date: ${day.date || "—"} · Forecast unavailable · ${forecastString(day.error || "Unknown shell-only error")}`;
 						return `
 							<div class="devForecastRow">
 								<span>${day.label || "Forecast day"}</span>
@@ -19684,40 +19757,36 @@ ${bodyLine}${loadLine}`,
 
 			async function fetchForecastShellDay(basePayload, date, index) {
 				const transitDate = formatForecastDateInput(date);
-				const payload = {
-					...basePayload,
-					forecastDiagnostic: true,
-					transitDate,
-					transitTime: "12:00",
-				};
+				const payload = buildForecastDiagnosticPayload(basePayload, transitDate, "12:00");
+
+				console.log("[LUCY FORECAST SHELL] requesting row date", transitDate);
 
 				try {
-					const response = await fetch(API_URL, {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify(payload),
-					});
-
-					let data = {};
-					try {
-						data = await response.json();
-					} catch (jsonErr) {
-						data = { forecastDiagnostic: { error: "Non-JSON response" } };
-					}
+					const { response, data } = await requestForecastDiagnostic(payload);
 
 					if (!response.ok) {
 						throw new Error(data?.error || data?.forecastDiagnostic?.error || `Forecast API error ${response.status}`);
 					}
 
+					const moonstamp = buildForecastDiagnosticMoonstampSummary(data);
+					const liveModifier = extractForecastShellLiveModifier(data);
+					const usedUtc = extractForecastDiagnosticUsedUtc(data);
+
+					console.log("[LUCY FORECAST SHELL] row success", {
+						transitDate,
+						usedUtc,
+						moonstamp,
+						liveModifier,
+					});
+
 					return {
 						ok: true,
 						label: formatForecastShellDayLabel(date, index),
 						date: transitDate,
+						usedUtc,
 						field: extractForecastShellField(data),
-						moonstamp: buildForecastMoonstampSummary(data),
-						liveModifier: extractForecastShellLiveModifier(data),
+						moonstamp,
+						liveModifier,
 					};
 				} catch (err) {
 					console.warn("[LUCY FORECAST SHELL] day failed", transitDate, err);
@@ -19874,15 +19943,11 @@ ${bodyLine}${loadLine}`,
 					return;
 				}
 
-				const payload = {
-					dob,
-					tobRaw,
-					ampm,
-					locationText: location,
-					forecastDiagnostic: true,
+				const payload = buildForecastDiagnosticPayload(
+					{ dob, tobRaw, ampm, locationText: location },
 					transitDate,
-					transitTime,
-				};
+					transitTime
+				);
 
 				const btn = document.getElementById("runForecastPreviewBtn");
 				const statusEl = document.getElementById("forecastPreviewStatus");
@@ -19894,20 +19959,7 @@ ${bodyLine}${loadLine}`,
 					if (statusEl) statusEl.className = "devForecastStatus";
 					setText("forecastPreviewStatus", "Running forecast preview...");
 
-					const response = await fetch(API_URL, {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify(payload),
-					});
-
-					let data = {};
-					try {
-						data = await response.json();
-					} catch (jsonErr) {
-						data = { forecastDiagnostic: { error: "Non-JSON response" } };
-					}
+					const { response, data } = await requestForecastDiagnostic(payload);
 
 					renderForecastPreviewResult(data, response.status);
 
