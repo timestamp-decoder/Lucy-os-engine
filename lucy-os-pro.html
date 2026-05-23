@@ -89,6 +89,7 @@
 <!-- Pass 1K update: added payload-comparison and raw-response proof to the existing 7-Day Forecast Data Shell only. The shell now mirrors the working single-date Forecast Preview payload construction path explicitly, compares payload date fields per row, and displays compact response-key/date-like proof. Shell placement, normal Today payload, engine/scoring, saved profiles, and share export unchanged. -->
 <!-- Pass 1M update: bound the visible 7-Day Forecast Data Shell rows directly to response.forecastDiagnostic values only. Backend files, request payloads, date generation, normal Today calculation, engine/scoring, Moonstamp, Live Field Modifier, saved profiles, and share export unchanged. -->
 <!-- Pass 1O update: cleaned the visible 7-Day Forecast Data Shell row display only. Rows now show compact diagnostic fields by default while raw proof remains available inside collapsed details. Backend files, request payloads, date loop, normal Today calculation, engine/scoring, Moonstamp, Live Field Modifier, saved profiles, and share export unchanged. -->
+<!-- Pass 1P update: compressed the 7-Day Forecast Data Shell rows into scannable diagnostic day cards only. Main rows now emphasize Field, Moonstamp, and Live while transit proof and raw proof remain collapsed. Backend files, request payloads, forecast request logic, date loop, response binding, normal Today calculation, engine/scoring, Moonstamp, Live Field Modifier, saved profiles, and share export unchanged. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -1709,6 +1710,31 @@
 				grid-column: 1 / -1;
 			}
 
+			.forecastShellPrimaryGrid {
+				display: grid;
+				grid-template-columns: repeat(3, minmax(0, 1fr));
+				gap: 8px;
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.forecastShellPrimaryGrid .forecastShellCompactItem {
+				padding: 9px 10px;
+				background: rgba(4, 10, 24, 0.3);
+			}
+
+			.forecastShellPrimaryGrid .forecastShellCompactItem strong {
+				font-size: 12.5px;
+				line-height: 1.4;
+			}
+
+			.forecastShellDetailsStack {
+				display: grid;
+				gap: 6px;
+				min-width: 0;
+				max-width: 100%;
+			}
+
 			.forecastShellRawDetails {
 				border: 1px solid rgba(255, 255, 255, 0.065);
 				border-radius: 10px;
@@ -1765,7 +1791,8 @@
 					white-space: normal;
 				}
 
-				.forecastShellCompactGrid {
+				.forecastShellCompactGrid,
+				.forecastShellPrimaryGrid {
 					grid-template-columns: minmax(0, 1fr);
 				}
 			}
@@ -20112,6 +20139,15 @@ ${bodyLine}${loadLine}`,
 						const field = forecastString(day.field || "—");
 						const moonstamp = forecastString(day.moonstamp || "—");
 						const liveModifier = forecastString(day.liveModifier || "—");
+						const diagnosticStatus = day.ok && Object.keys(fd).length ? "YES" : "FALLBACK";
+						const transitProofText = [
+							`Requested Date: ${day.date || "—"}`,
+							`Used Transit UTC: ${usedUtc}`,
+							`Used Transit Date Source: ${source}`,
+							`Calculation Path: ${calculationPath}`,
+							`Forecast Mode Requested: ${forecastModeRequested}`,
+							warning ? `Warning: ${warning}` : "",
+						].filter(Boolean).join("\n");
 						const rawProofText = [
 							`Requested Date: ${day.date || "—"}`,
 							`7-Day Payload Date Fields: ${sevenDayPayloadDateFields}`,
@@ -20130,23 +20166,23 @@ ${bodyLine}${loadLine}`,
 							<div class="forecastShellCompactRow">
 								<div class="forecastShellCompactHeader">
 									<strong>${escapeForecastShellHtml(day.label || "Forecast day")}</strong>
-									<span>${day.ok ? "forecastDiagnostic: yes" : "forecastDiagnostic: fallback"}</span>
+									<span>ForecastDiagnostic: ${escapeForecastShellHtml(diagnosticStatus)}</span>
 								</div>
-								<div class="forecastShellCompactGrid">
-									${renderForecastShellCompactItem("Requested Date", day.date || "—")}
-									${renderForecastShellCompactItem("Used Transit UTC", usedUtc)}
-									${renderForecastShellCompactItem("Used Transit Date Source", source)}
-									${renderForecastShellCompactItem("Forecast Mode Requested", forecastModeRequested)}
-									${renderForecastShellCompactItem("Calculation Path", calculationPath, true)}
+								<div class="forecastShellPrimaryGrid">
 									${renderForecastShellCompactItem("Field", field)}
 									${renderForecastShellCompactItem("Moonstamp", moonstamp)}
 									${renderForecastShellCompactItem("Live", liveModifier)}
-									${warning ? renderForecastShellCompactItem("Warning", warning, true) : ""}
 								</div>
-								<details class="forecastShellRawDetails">
-									<summary>Raw proof</summary>
-									<pre class="forecastShellRawProof">${escapeForecastShellHtml(rawProofText)}</pre>
-								</details>
+								<div class="forecastShellDetailsStack">
+									<details class="forecastShellRawDetails">
+										<summary>Transit proof</summary>
+										<pre class="forecastShellRawProof">${escapeForecastShellHtml(transitProofText)}</pre>
+									</details>
+									<details class="forecastShellRawDetails">
+										<summary>Raw proof</summary>
+										<pre class="forecastShellRawProof">${escapeForecastShellHtml(rawProofText)}</pre>
+									</details>
+								</div>
 							</div>
 						`;
 					})
