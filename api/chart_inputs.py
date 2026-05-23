@@ -417,6 +417,75 @@ def compute_chart_inputs(
     return result
 
 
+def build_forecast_diagnostic(payload: dict, used_transit_utc: str | None = None) -> dict:
+    raw_transit_date = payload.get("transitDate")
+    raw_transit_time = payload.get("transitTime")
+
+    received_transit_date = (
+        str(raw_transit_date).strip()
+        if raw_transit_date not in (None, "", "null")
+        else None
+    )
+    received_transit_time = (
+        str(raw_transit_time).strip()
+        if raw_transit_time not in (None, "", "null")
+        else None
+    )
+
+    forecast_mode_requested = received_transit_date is not None
+    parsed_transit_datetime_local = None
+
+    if forecast_mode_requested:
+        diagnostic_time = received_transit_time or "12:00"
+
+        try:
+            date_part = datetime.strptime(received_transit_date, "%Y-%m-%d")
+            time_part = parse_time_flexible(diagnostic_time)
+            parsed_local = datetime(
+                date_part.year,
+                date_part.month,
+                date_part.day,
+                time_part.hour,
+                time_part.minute,
+                0,
+                0,
+            )
+            parsed_transit_datetime_local = parsed_local.isoformat()
+        except Exception:
+            return {
+                "receivedTransitDate": received_transit_date,
+                "receivedTransitTime": received_transit_time,
+                "forecastModeRequested": True,
+                "parsedTransitDateTimeLocal": None,
+                "usedTransitUTC": None,
+                "usedTransitDateSource": "unavailable",
+                "calculationPath": "forecast_payload_parse_failed",
+                "warning": "transitDate could not be parsed.",
+            }
+
+        return {
+            "receivedTransitDate": received_transit_date,
+            "receivedTransitTime": received_transit_time,
+            "forecastModeRequested": True,
+            "parsedTransitDateTimeLocal": parsed_transit_datetime_local,
+            "usedTransitUTC": None,
+            "usedTransitDateSource": "ignored_forecast_payload",
+            "calculationPath": "forecast_payload_received_but_not_used",
+            "warning": "transitDate was received but this backend route does not currently route it into transit calculations.",
+        }
+
+    return {
+        "receivedTransitDate": None,
+        "receivedTransitTime": None,
+        "forecastModeRequested": False,
+        "parsedTransitDateTimeLocal": None,
+        "usedTransitUTC": used_transit_utc,
+        "usedTransitDateSource": "server_today",
+        "calculationPath": "no_forecast_payload_today_mode",
+        "warning": None,
+    }
+
+
 def compute_transit_inputs(now_utc: datetime | None = None):
     if now_utc is None:
         now_utc = datetime.now(timezone.utc)
@@ -1205,11 +1274,18 @@ class handler(BaseHTTPRequestHandler):
 
             if mode == "transit":
                 chart = compute_transit_inputs()
+                # Forecast diagnostic is response-contract proof only.
+                # It reports whether transitDate/transitTime were received, parsed, and actually used.
+                # It must not change normal Today behavior.
                 response = {
                     "ok": True,
                     "transitOnly": True,
                     "chart": chart,
                     "moonstamp": build_moonstamp_modifier_from_transit(chart),
+                    "forecastDiagnostic": build_forecast_diagnostic(
+                        payload,
+                        used_transit_utc=(chart.get("_meta", {}) or {}).get("utc_datetime"),
+                    ),
                 }
                 self._write_json(200, response)
                 return
@@ -1268,6 +1344,15 @@ class handler(BaseHTTPRequestHandler):
             )
 
             response = build_lucy_response(chart)
+
+            # Forecast diagnostic is response-contract proof only.
+            # It reports whether transitDate/transitTime were received, parsed, and actually used.
+            # It must not change normal Today behavior.
+            response["forecastDiagnostic"] = build_forecast_diagnostic(
+                payload,
+                used_transit_utc=(response.get("ephemeris", {}) or {}).get("transitUtcDatetime"),
+            )
+
             self._write_json(200, response)
 
         except ValueError as e:
