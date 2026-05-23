@@ -96,6 +96,7 @@
 <!-- Pass 1T update: tightened final user-facing 7-Day Forecast card density only. Reduced card/header/support/read visual weight while preserving existing normalized forecast data, diagnostic shell, backend/API, forecast requests, extraction, engine/scoring, saved profiles, tabs, and share export unchanged. -->
 <!-- Pass 1U update: collapsed final user-facing 7-Day Forecast Day 4-7 cards behind one native details toggle only. First three forecast cards remain visible by default; diagnostic shell, backend/API, request loop, extraction, normalized forecast rows, engine/scoring, saved profiles, tabs, and share export unchanged. -->
 <!-- Pass 1V update: made final user-facing 7-Day Forecast collapse responsive only. Day 1-3 remain visible everywhere, Day 4 is visible in the main grid on desktop and inside the collapsed section on mobile, and Day 5-7 remain collapsed. Diagnostic shell, backend/API, forecast requests, extraction, normalized forecast rows, engine/scoring, saved profiles, tabs, and share export unchanged. -->
+<!-- Pass 1W update: added internal-weather display labels to the final user-facing 7-Day Forecast cards only. Uses existing normalized forecast row/card values for display labels; diagnostic shell, backend/API, request payloads, forecast loop, extraction, normalized row shape, engine/scoring, responsive collapse, saved profiles, tabs, and share export unchanged. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -20518,6 +20519,132 @@ ${bodyLine}${loadLine}`,
 			}
 
 
+			function getForecastWeatherRowText(row) {
+				const fd = row?.forecastDiagnostic && typeof row.forecastDiagnostic === "object"
+					? row.forecastDiagnostic
+					: {};
+				return [
+					row?.field,
+					row?.moonstamp,
+					row?.liveModifier,
+					fd.fieldState,
+					fd.fieldMode,
+					fd.mode,
+					fd.primaryDriver,
+					fd.fieldToneDriver,
+					fd.pressureDriver,
+					fd.topDriver,
+					fd.topRegulator,
+					fd.regulator,
+					fd.summary,
+					fd.read,
+					fd.text,
+				]
+					.map((value) => forecastString(value))
+					.join(" ")
+					.toLowerCase();
+			}
+
+			function getForecastWeatherMetric(row, keys) {
+				const fd = row?.forecastDiagnostic && typeof row.forecastDiagnostic === "object"
+					? row.forecastDiagnostic
+					: {};
+				for (const key of keys) {
+					const raw = row?.[key] ?? fd?.[key];
+					const num = Number(raw);
+					if (!Number.isFinite(num)) continue;
+					if (num > 10) return Math.max(0, Math.min(1, num / 100));
+					if (num > 1) return Math.max(0, Math.min(1, num / 10));
+					return Math.max(0, Math.min(1, num));
+				}
+				return null;
+			}
+
+			function getForecastWeatherCondition(row) {
+				const text = getForecastWeatherRowText(row);
+				const load = getForecastWeatherMetric(row, [
+					"systemLoad",
+					"systemLoadScore",
+					"load",
+					"loadScore",
+					"pressure",
+					"pressureScore",
+					"amplifiedLoad",
+					"strain",
+				]);
+				const regulation = getForecastWeatherMetric(row, [
+					"regulation",
+					"regulationScore",
+					"regulatorAverage",
+					"support",
+					"supportScore",
+				]);
+				const loadLabel = load !== null
+					? load >= 0.82
+						? "Very high load"
+						: load >= 0.64
+							? "High load"
+							: load <= 0.34
+								? "Low load"
+								: "Moderate load"
+					: text.includes("very high")
+						? "Very high load"
+						: text.includes("high load") || text.includes("heavy") || text.includes("pressure")
+							? "High load"
+							: text.includes("low load") || text.includes("calm")
+								? "Low load"
+								: "Load unclear";
+				const regulationLabel = regulation !== null
+					? regulation <= 0.36
+						? "Low regulation"
+						: regulation >= 0.68
+							? "Strong regulation"
+							: "Moderate regulation"
+					: text.includes("low regulation")
+						? "Low regulation"
+						: text.includes("strong regulation") || text.includes("regulated")
+							? "Strong regulation"
+							: "Regulation unclear";
+				return `${loadLabel} · ${regulationLabel}`;
+			}
+
+			function getForecastWeatherLabel(row, index) {
+				const text = getForecastWeatherRowText(row);
+				const field = forecastString(row?.field || "");
+				const condition = getForecastWeatherCondition(row).toLowerCase();
+				const highLoad = condition.includes("high load");
+				const veryHighLoad = condition.includes("very high load");
+				const lowRegulation = condition.includes("low regulation");
+				const strongRegulation = condition.includes("strong regulation");
+
+				if ((veryHighLoad && lowRegulation) || (text.includes("reconstructive") && (highLoad || lowRegulation))) {
+					return "Storm Field";
+				}
+				if (text.includes("reconstructive") || text.includes("pluto")) return "Repair Weather";
+				if (text.includes("diffused") || text.includes("neptune")) return "Low Visibility";
+				if (text.includes("relational") && (text.includes("/") || text.includes("mars") || text.includes("moon") || text.includes("pluto"))) {
+					return "Crosswinds";
+				}
+				if (highLoad && lowRegulation) return "Pressure Front";
+				if (text.includes("mobilized") || text.includes("threshold") || text.includes("mars") || text.includes("action")) {
+					return highLoad ? "Pressure Front" : "Mobilized Field";
+				}
+				if (text.includes("reset") || text.includes("reduce")) return "Reset Weather";
+				if (condition.includes("low load") && strongRegulation) return "Calm Window";
+				if (text.includes("integrative") || text.includes("regulated") || text.includes("structured") || strongRegulation) {
+					return "Clearing Pattern";
+				}
+				if (highLoad) return "Heavy Weather";
+
+				const cleanField = field.split("/")[0].replace(/field/gi, "").trim();
+				return cleanField && cleanField !== "—" ? cleanField : "Field Weather";
+			}
+
+			function getForecastWeatherTitle(row, index) {
+				const dayPrefix = forecastString(row?.label || "Forecast day").split("·")[0].trim();
+				return `${dayPrefix || `Day ${index + 1}`} — ${getForecastWeatherLabel(row, index)}`.toUpperCase();
+			}
+
 			function renderForecastWeatherItem(label, value, modifierClass = "") {
 				const className = `forecastWeatherItem${modifierClass ? ` ${modifierClass}` : ""}`;
 				return `
@@ -20528,22 +20655,25 @@ ${bodyLine}${loadLine}`,
 				`;
 			}
 
-			function renderForecastWeatherCard(day, visibilityClass = "") {
+			function renderForecastWeatherCard(day, visibilityClass = "", index = 0) {
 				const field = forecastString(day.field || "—");
 				const moonstamp = forecastString(day.moonstamp || "—");
 				const liveModifier = forecastString(day.liveModifier || "—");
 				const safeVisibilityClass = visibilityClass ? ` ${visibilityClass}` : "";
+				const weatherTitle = getForecastWeatherTitle(day, index);
+				const weatherCondition = getForecastWeatherCondition(day);
 				const forecastRead = `${field} sets the main system weather. ${moonstamp} shapes the process layer. ${liveModifier} colors the signal environment.`;
 
 				return `
 					<article class="forecastWeatherCard${safeVisibilityClass}">
-						<div class="forecastWeatherDay">${escapeForecastShellHtml(day.label || "Forecast day")}</div>
+						<div class="forecastWeatherDay">${escapeForecastShellHtml(weatherTitle)}</div>
 						<div class="forecastWeatherGrid">
-							${renderForecastWeatherItem("Main Field", field, "forecastWeatherMainField")}
+							${renderForecastWeatherItem("Underlying Field", field, "forecastWeatherMainField")}
 							<div class="forecastWeatherSupportGrid">
 								${renderForecastWeatherItem("Moonstamp", moonstamp, "forecastWeatherSupportItem")}
 								${renderForecastWeatherItem("Live Field Modifier", liveModifier, "forecastWeatherSupportItem")}
 							</div>
+							${renderForecastWeatherItem("Condition", weatherCondition, "forecastWeatherSupportItem")}
 						</div>
 						<p class="forecastWeatherRead">${escapeForecastShellHtml(forecastRead)}</p>
 					</article>
@@ -20561,12 +20691,12 @@ ${bodyLine}${loadLine}`,
 				const mobileCollapsedDays = safeDays.slice(3, 4);
 				const sharedCollapsedDays = safeDays.slice(4);
 				const visibleMarkup = [
-					...alwaysVisibleDays.map((day) => renderForecastWeatherCard(day)),
-					...desktopVisibleDays.map((day) => renderForecastWeatherCard(day, "forecastWeatherDesktopOnly")),
+					...alwaysVisibleDays.map((day, index) => renderForecastWeatherCard(day, "", index)),
+					...desktopVisibleDays.map((day, index) => renderForecastWeatherCard(day, "forecastWeatherDesktopOnly", index + 3)),
 				].join("");
 				const collapsedMarkup = [
-					...mobileCollapsedDays.map((day) => renderForecastWeatherCard(day, "forecastWeatherMobileOnly")),
-					...sharedCollapsedDays.map((day) => renderForecastWeatherCard(day)),
+					...mobileCollapsedDays.map((day, index) => renderForecastWeatherCard(day, "forecastWeatherMobileOnly", index + 3)),
+					...sharedCollapsedDays.map((day, index) => renderForecastWeatherCard(day, "", index + 4)),
 				].join("");
 				const hasCollapsedDays = mobileCollapsedDays.length || sharedCollapsedDays.length;
 
