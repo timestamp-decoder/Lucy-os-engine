@@ -88,6 +88,7 @@
 <!-- Pass 1J update: added 7-Day Forecast Data Shell request-date / Used Transit UTC proof display only. Rows now show requested date, payload date key/value, Used Transit UTC, and the response source path used. Shell placement, normal Today payload, engine/scoring, saved profiles, and share export unchanged. -->
 <!-- Pass 1K update: added payload-comparison and raw-response proof to the existing 7-Day Forecast Data Shell only. The shell now mirrors the working single-date Forecast Preview payload construction path explicitly, compares payload date fields per row, and displays compact response-key/date-like proof. Shell placement, normal Today payload, engine/scoring, saved profiles, and share export unchanged. -->
 <!-- Pass 1M update: bound the visible 7-Day Forecast Data Shell rows directly to response.forecastDiagnostic values only. Backend files, request payloads, date generation, normal Today calculation, engine/scoring, Moonstamp, Live Field Modifier, saved profiles, and share export unchanged. -->
+<!-- Pass 1O update: cleaned the visible 7-Day Forecast Data Shell row display only. Rows now show compact diagnostic fields by default while raw proof remains available inside collapsed details. Backend files, request payloads, date loop, normal Today calculation, engine/scoring, Moonstamp, Live Field Modifier, saved profiles, and share export unchanged. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -1632,6 +1633,141 @@
 				margin-top: 10px;
 				min-width: 0;
 				max-width: 100%;
+			}
+
+			.forecastShellCompactRow {
+				display: grid;
+				gap: 9px;
+				padding: 10px;
+				border-radius: 13px;
+				border: 1px solid rgba(255, 255, 255, 0.075);
+				background: rgba(255, 255, 255, 0.03);
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.forecastShellCompactHeader {
+				display: flex;
+				align-items: baseline;
+				justify-content: space-between;
+				gap: 10px;
+				min-width: 0;
+			}
+
+			.forecastShellCompactHeader strong {
+				color: var(--text);
+				font-size: 13px;
+				font-weight: 950;
+				line-height: 1.25;
+				overflow-wrap: anywhere;
+			}
+
+			.forecastShellCompactHeader span {
+				color: var(--muted);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				white-space: nowrap;
+			}
+
+			.forecastShellCompactGrid {
+				display: grid;
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				gap: 7px;
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.forecastShellCompactItem {
+				display: grid;
+				gap: 3px;
+				padding: 7px 8px;
+				border-radius: 10px;
+				border: 1px solid rgba(255, 255, 255, 0.065);
+				background: rgba(4, 10, 24, 0.24);
+				min-width: 0;
+			}
+
+			.forecastShellCompactItem span {
+				color: var(--muted);
+				font-size: 9px;
+				font-weight: 950;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+			}
+
+			.forecastShellCompactItem strong {
+				color: var(--text);
+				font-size: 11.5px;
+				line-height: 1.35;
+				font-weight: 850;
+				overflow-wrap: anywhere;
+			}
+
+			.forecastShellCompactItem.forecastShellWide {
+				grid-column: 1 / -1;
+			}
+
+			.forecastShellRawDetails {
+				border: 1px solid rgba(255, 255, 255, 0.065);
+				border-radius: 10px;
+				background: rgba(255, 255, 255, 0.02);
+				overflow: hidden;
+			}
+
+			.forecastShellRawDetails summary {
+				cursor: pointer;
+				list-style: none;
+				padding: 8px 9px;
+				color: var(--muted);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+			}
+
+			.forecastShellRawDetails summary::-webkit-details-marker {
+				display: none;
+			}
+
+			.forecastShellRawDetails summary::after {
+				content: " +";
+				color: var(--muted2);
+			}
+
+			.forecastShellRawDetails[open] summary::after {
+				content: " -";
+			}
+
+			.forecastShellRawProof {
+				margin: 0 8px 8px;
+				padding: 9px;
+				max-height: 180px;
+				overflow: auto;
+				border-radius: 9px;
+				border: 1px solid rgba(255, 255, 255, 0.065);
+				background: rgba(4, 10, 24, 0.64);
+				color: #d9e0f4;
+				font-size: 10px;
+				line-height: 1.45;
+				white-space: pre-wrap;
+				overflow-wrap: anywhere;
+			}
+
+			@media (max-width: 640px) {
+				.forecastShellCompactHeader {
+					display: grid;
+					gap: 4px;
+				}
+
+				.forecastShellCompactHeader span {
+					white-space: normal;
+				}
+
+				.forecastShellCompactGrid {
+					grid-template-columns: minmax(0, 1fr);
+				}
 			}
 
 			.fieldCompassLabel {
@@ -19938,6 +20074,24 @@ ${bodyLine}${loadLine}`,
 					: String(value);
 			}
 
+						function escapeForecastShellHtml(value) {
+				return forecastString(value)
+					.replace(/&/g, "&amp;")
+					.replace(/</g, "&lt;")
+					.replace(/>/g, "&gt;")
+					.replace(/"/g, "&quot;")
+					.replace(/'/g, "&#39;");
+			}
+
+			function renderForecastShellCompactItem(label, value, wide = false) {
+				return `
+					<div class="forecastShellCompactItem${wide ? " forecastShellWide" : ""}">
+						<span>${escapeForecastShellHtml(label)}</span>
+						<strong>${escapeForecastShellHtml(value)}</strong>
+					</div>
+				`;
+			}
+
 			function renderForecastShellRows(days) {
 				const rowsEl = document.getElementById("forecastShellProofRows");
 				if (!rowsEl) return;
@@ -19950,36 +20104,49 @@ ${bodyLine}${loadLine}`,
 						const previewPayloadDateFields = forecastString(day.previewPayloadDateFields || "unable to compare");
 						const payloadMatch = forecastString(day.payloadMatch || "unable to compare");
 						const rawProof = formatForecastRawResponseProof(day.rawProof);
-						const receivedTransitDate = readForecastDiagnosticShellValue(fd, "receivedTransitDate");
-						const receivedTransitTime = readForecastDiagnosticShellValue(fd, "receivedTransitTime");
 						const forecastModeRequested = fd.forecastModeRequested === true ? "true" : "false";
-						const parsedLocal = readForecastDiagnosticShellValue(fd, "parsedTransitDateTimeLocal");
-						const usedUtc = readForecastDiagnosticShellValue(fd, "usedTransitUTC");
-						const source = readForecastDiagnosticShellValue(fd, "usedTransitDateSource");
+						const usedUtc = readForecastDiagnosticShellValue(fd, "usedTransitUTC", day.usedUtc || "—");
+						const source = readForecastDiagnosticShellValue(fd, "usedTransitDateSource", day.usedUtcSource || "unavailable");
 						const calculationPath = readForecastDiagnosticShellValue(fd, "calculationPath");
-						const warning = readForecastDiagnosticShellValue(fd, "warning");
-						const proof =
-							`Requested Date: ${day.date || "—"}` +
-							` · 7-Day Payload Date Fields: ${sevenDayPayloadDateFields}` +
-							` · Single-Date Preview Payload Date Fields: ${previewPayloadDateFields}` +
-							` · Payload Match: ${payloadMatch}` +
-							` · forecastDiagnostic: ${Object.keys(fd).length ? "yes" : "no"}` +
-							` · Received Transit Date: ${receivedTransitDate}` +
-							` · Received Transit Time: ${receivedTransitTime}` +
-							` · Forecast Mode Requested: ${forecastModeRequested}` +
-							` · Parsed Local: ${parsedLocal}` +
-							` · Used Transit UTC: ${usedUtc}` +
-							` · Used Transit Date Source: ${source}` +
-							` · Calculation Path: ${calculationPath}` +
-							` · Warning: ${warning}` +
-							` · ${rawProof}`;
-						const values = day.ok
-							? "Visible diagnostic values are bound directly from response.forecastDiagnostic."
-							: `Forecast unavailable · ${forecastString(day.error || "Unknown shell-only error")}`;
+						const warning = readForecastDiagnosticShellValue(fd, "warning", "");
+						const field = forecastString(day.field || "—");
+						const moonstamp = forecastString(day.moonstamp || "—");
+						const liveModifier = forecastString(day.liveModifier || "—");
+						const rawProofText = [
+							`Requested Date: ${day.date || "—"}`,
+							`7-Day Payload Date Fields: ${sevenDayPayloadDateFields}`,
+							`Single-Date Preview Payload Date Fields: ${previewPayloadDateFields}`,
+							`Payload Match: ${payloadMatch}`,
+							`forecastDiagnostic: ${Object.keys(fd).length ? "yes" : "no"}`,
+							`Received Transit Date: ${readForecastDiagnosticShellValue(fd, "receivedTransitDate")}`,
+							`Received Transit Time: ${readForecastDiagnosticShellValue(fd, "receivedTransitTime")}`,
+							`Parsed Local: ${readForecastDiagnosticShellValue(fd, "parsedTransitDateTimeLocal")}`,
+							`Warning: ${readForecastDiagnosticShellValue(fd, "warning")}`,
+							rawProof,
+							day.ok ? "Visible diagnostic values are bound directly from response.forecastDiagnostic." : `Forecast unavailable: ${forecastString(day.error || "Unknown shell-only error")}`,
+						].join("\n");
+
 						return `
-							<div class="devForecastRow">
-								<span>${day.label || "Forecast day"}</span>
-								<strong>${proof} · ${values}</strong>
+							<div class="forecastShellCompactRow">
+								<div class="forecastShellCompactHeader">
+									<strong>${escapeForecastShellHtml(day.label || "Forecast day")}</strong>
+									<span>${day.ok ? "forecastDiagnostic: yes" : "forecastDiagnostic: fallback"}</span>
+								</div>
+								<div class="forecastShellCompactGrid">
+									${renderForecastShellCompactItem("Requested Date", day.date || "—")}
+									${renderForecastShellCompactItem("Used Transit UTC", usedUtc)}
+									${renderForecastShellCompactItem("Used Transit Date Source", source)}
+									${renderForecastShellCompactItem("Forecast Mode Requested", forecastModeRequested)}
+									${renderForecastShellCompactItem("Calculation Path", calculationPath, true)}
+									${renderForecastShellCompactItem("Field", field)}
+									${renderForecastShellCompactItem("Moonstamp", moonstamp)}
+									${renderForecastShellCompactItem("Live", liveModifier)}
+									${warning ? renderForecastShellCompactItem("Warning", warning, true) : ""}
+								</div>
+								<details class="forecastShellRawDetails">
+									<summary>Raw proof</summary>
+									<pre class="forecastShellRawProof">${escapeForecastShellHtml(rawProofText)}</pre>
+								</details>
 							</div>
 						`;
 					})
