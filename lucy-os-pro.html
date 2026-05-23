@@ -97,6 +97,7 @@
 <!-- Pass 1U update: collapsed final user-facing 7-Day Forecast Day 4-7 cards behind one native details toggle only. First three forecast cards remain visible by default; diagnostic shell, backend/API, request loop, extraction, normalized forecast rows, engine/scoring, saved profiles, tabs, and share export unchanged. -->
 <!-- Pass 1V update: made final user-facing 7-Day Forecast collapse responsive only. Day 1-3 remain visible everywhere, Day 4 is visible in the main grid on desktop and inside the collapsed section on mobile, and Day 5-7 remain collapsed. Diagnostic shell, backend/API, forecast requests, extraction, normalized forecast rows, engine/scoring, saved profiles, tabs, and share export unchanged. -->
 <!-- Pass 1W update: added internal-weather display labels to the final user-facing 7-Day Forecast cards only. Uses existing normalized forecast row/card values for display labels; diagnostic shell, backend/API, request payloads, forecast loop, extraction, normalized row shape, engine/scoring, responsive collapse, saved profiles, tabs, and share export unchanged. -->
+<!-- Pass 1Y update: polished final user-facing 7-Day Forecast condition copy only. Translates unclear load/regulation condition text into short internal-weather language while preserving diagnostic shell, forecast requests, normalized row shape, engine/scoring, responsive collapse, saved profiles, tabs, and share export unchanged. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -20608,6 +20609,58 @@ ${bodyLine}${loadLine}`,
 				return `${loadLabel} · ${regulationLabel}`;
 			}
 
+			function getForecastConditionLabel(row, index = 0) {
+				const rawCondition = forecastString(getForecastWeatherCondition(row) || "").trim();
+				const lower = rawCondition.toLowerCase();
+				const fallbackConditions = [
+					"Pressure pattern developing",
+					"Signal still forming",
+					"Conditions clarifying",
+					"Mixed signal environment",
+					"Pressure pattern shifting",
+					"Low visibility window",
+					"Reset pattern forming",
+				];
+				const fallback = fallbackConditions[Math.abs(Number(index) || 0) % fallbackConditions.length];
+
+				if (!rawCondition || lower === "—") return fallback;
+				if (lower.includes("load unclear") && lower.includes("regulation unclear")) {
+					return fallback;
+				}
+
+				const normalizeConditionPart = (part) => {
+					let clean = forecastString(part || "").trim();
+					if (!clean) return "";
+					clean = clean
+						.replace(/very high load/gi, "Very high pressure")
+						.replace(/heavy load/gi, "Heavy pressure")
+						.replace(/high load/gi, "High pressure")
+						.replace(/active load/gi, "Active pressure")
+						.replace(/moderate load/gi, "Moderate pressure")
+						.replace(/low load/gi, "Low pressure")
+						.replace(/load unclear/gi, "Pressure unclear")
+						.replace(/regulation available/gi, "Support available")
+						.replace(/moderate regulation/gi, "Regulation steady");
+					return clean;
+				};
+
+				const parts = rawCondition
+					.split("·")
+					.map((part) => normalizeConditionPart(part))
+					.filter(Boolean);
+				const normalized = parts.join(" · ");
+				const normalizedLower = normalized.toLowerCase();
+
+				if (normalizedLower === "low pressure · strong regulation") {
+					return "Calm window · Strong regulation";
+				}
+				if (normalizedLower === "heavy pressure · support available") {
+					return "Heavy pressure · Support available";
+				}
+
+				return normalized || fallback;
+			}
+
 			function getForecastWeatherLabel(row, index) {
 				const fd = row?.forecastDiagnostic && typeof row.forecastDiagnostic === "object"
 					? row.forecastDiagnostic
@@ -20733,7 +20786,7 @@ ${bodyLine}${loadLine}`,
 				const liveModifier = forecastString(day.liveModifier || "—");
 				const safeVisibilityClass = visibilityClass ? ` ${visibilityClass}` : "";
 				const weatherTitle = getForecastWeatherTitle(day, index);
-				const weatherCondition = getForecastWeatherCondition(day);
+				const weatherCondition = getForecastConditionLabel(day, index);
 				const forecastRead = `${field} sets the main system weather. ${moonstamp} shapes the process layer. ${liveModifier} colors the signal environment.`;
 
 				return `
