@@ -91,6 +91,7 @@
 <!-- Pass 1O update: cleaned the visible 7-Day Forecast Data Shell row display only. Rows now show compact diagnostic fields by default while raw proof remains available inside collapsed details. Backend files, request payloads, date loop, normal Today calculation, engine/scoring, Moonstamp, Live Field Modifier, saved profiles, and share export unchanged. -->
 <!-- Pass 1P update: compressed the 7-Day Forecast Data Shell rows into scannable diagnostic day cards only. Main rows now emphasize Field, Moonstamp, and Live while transit proof and raw proof remain collapsed. Backend files, request payloads, forecast request logic, date loop, response binding, normal Today calculation, engine/scoring, Moonstamp, Live Field Modifier, saved profiles, and share export unchanged. -->
 <!-- Pass 1Q update: polished 7-Day Forecast Data Shell compact card scan hierarchy only. Day/date headers, diagnostic badge, main Field/Moonstamp/Live blocks, and collapsed proof rows were visually tightened. Backend files, request payloads, forecast request logic, date loop, response binding, extraction logic, engine/scoring, Moonstamp, Live Field Modifier, saved profiles, and share export unchanged. -->
+<!-- Pass 1R update: added clean user-facing 7-Day Forecast cards below the diagnostic shell only. Reuses the same normalized forecast day objects that feed the diagnostic proof shell; no backend, request payload, forecast loop, extraction, engine/scoring, Moonstamp, Live Field Modifier, saved profiles, or share export behavior changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -1803,6 +1804,164 @@
 				overflow-wrap: anywhere;
 			}
 
+
+			.forecastWeatherCards {
+				margin-top: 13px;
+				width: 100%;
+				max-width: 100%;
+				min-width: 0;
+				border: 1px solid rgba(103, 193, 255, 0.18);
+				border-radius: 18px;
+				padding: 14px;
+				background: radial-gradient(
+						circle at 10% 0%,
+						rgba(103, 193, 255, 0.11),
+						transparent 36%
+					),
+					radial-gradient(
+						circle at 92% 0%,
+						rgba(111, 224, 211, 0.075),
+						transparent 34%
+					),
+					linear-gradient(
+						180deg,
+						rgba(255, 255, 255, 0.038),
+						rgba(255, 255, 255, 0.018)
+					);
+				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.018),
+					0 10px 26px rgba(0, 0, 0, 0.12);
+			}
+
+			.forecastWeatherHeader {
+				display: flex;
+				align-items: flex-start;
+				justify-content: space-between;
+				gap: 12px;
+				margin-bottom: 11px;
+				min-width: 0;
+			}
+
+			.forecastWeatherHeader h2 {
+				margin: 0;
+				color: var(--text);
+				font-size: 18px;
+				line-height: 1.18;
+				font-weight: 950;
+				letter-spacing: -0.025em;
+			}
+
+			.forecastWeatherHeader p {
+				margin: 5px 0 0;
+				color: var(--muted);
+				font-size: 12px;
+				line-height: 1.45;
+				font-weight: 750;
+				overflow-wrap: break-word;
+			}
+
+			.forecastWeatherBadge {
+				display: inline-flex;
+				align-items: center;
+				min-height: 24px;
+				padding: 5px 8px;
+				border-radius: 999px;
+				border: 1px solid rgba(111, 224, 211, 0.2);
+				background: rgba(111, 224, 211, 0.075);
+				color: #aaf6ee;
+				font-size: 9px;
+				font-weight: 950;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				white-space: nowrap;
+			}
+
+			.forecastWeatherStatus {
+				min-height: 18px;
+				color: var(--muted);
+				font-size: 12px;
+				font-weight: 850;
+				line-height: 1.45;
+				overflow-wrap: break-word;
+			}
+
+			.forecastWeatherRows {
+				display: grid;
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				gap: 9px;
+				margin-top: 10px;
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.forecastWeatherCard {
+				display: grid;
+				gap: 9px;
+				padding: 12px;
+				border-radius: 15px;
+				border: 1px solid rgba(255, 255, 255, 0.085);
+				background: radial-gradient(
+						circle at 12% 0%,
+						rgba(103, 193, 255, 0.085),
+						transparent 32%
+					),
+					rgba(4, 10, 24, 0.28);
+				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.014);
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.forecastWeatherDay {
+				color: var(--text);
+				font-size: 14px;
+				line-height: 1.2;
+				font-weight: 950;
+				letter-spacing: -0.012em;
+				overflow-wrap: anywhere;
+			}
+
+			.forecastWeatherGrid {
+				display: grid;
+				gap: 6px;
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.forecastWeatherItem {
+				display: grid;
+				gap: 3px;
+				padding: 8px 9px;
+				border-radius: 11px;
+				border: 1px solid rgba(255, 255, 255, 0.065);
+				background: rgba(255, 255, 255, 0.03);
+				min-width: 0;
+			}
+
+			.forecastWeatherItem span {
+				color: var(--muted2);
+				font-size: 8.5px;
+				font-weight: 950;
+				letter-spacing: 0.105em;
+				text-transform: uppercase;
+			}
+
+			.forecastWeatherItem strong {
+				color: var(--text);
+				font-size: 12.5px;
+				line-height: 1.35;
+				font-weight: 900;
+				overflow-wrap: anywhere;
+			}
+
+			.forecastWeatherRead {
+				margin: 0;
+				padding-top: 2px;
+				color: #d9e0f4;
+				font-size: 12px;
+				line-height: 1.48;
+				font-weight: 720;
+				overflow-wrap: break-word;
+			}
+
 			@media (max-width: 640px) {
 				.forecastShellCompactHeader {
 					display: grid;
@@ -1816,8 +1975,19 @@
 				}
 
 				.forecastShellCompactGrid,
-				.forecastShellPrimaryGrid {
+				.forecastShellPrimaryGrid,
+				.forecastWeatherRows {
 					grid-template-columns: minmax(0, 1fr);
+				}
+
+				.forecastWeatherHeader {
+					display: grid;
+					gap: 7px;
+				}
+
+				.forecastWeatherBadge {
+					justify-self: start;
+					white-space: normal;
 				}
 			}
 
@@ -8396,6 +8566,19 @@
 								</div>
 <div class="forecastShellProofRows" id="forecastShellProofRows"></div>
 </div>
+<section class="forecastWeatherCards" id="forecastWeatherCards">
+<div class="forecastWeatherHeader">
+<div>
+<h2>7-Day Forecast</h2>
+<p>A clean read of the next seven forecast objects after the diagnostic proof.</p>
+</div>
+<span class="forecastWeatherBadge">Product UI</span>
+</div>
+<div class="forecastWeatherStatus" id="forecastWeatherStatus">
+									Waiting for successful Pro calculation.
+								</div>
+<div class="forecastWeatherRows" id="forecastWeatherRows"></div>
+</section>
 
 
 <section class="liveFieldDashboardCard">
@@ -19831,6 +20014,13 @@ ${bodyLine}${loadLine}`,
 			function clearForecastShellRows() {
 				const rowsEl = document.getElementById("forecastShellProofRows");
 				if (rowsEl) rowsEl.innerHTML = "";
+				const weatherRowsEl = document.getElementById("forecastWeatherRows");
+				if (weatherRowsEl) weatherRowsEl.innerHTML = "";
+				const weatherStatusEl = document.getElementById("forecastWeatherStatus");
+				if (weatherStatusEl) {
+					weatherStatusEl.textContent = "Waiting for forecast proof rows.";
+					weatherStatusEl.className = "forecastWeatherStatus";
+				}
 			}
 
 			function formatForecastShellDayLabel(date, index) {
@@ -20213,6 +20403,54 @@ ${bodyLine}${loadLine}`,
 					.join("");
 			}
 
+
+			function renderForecastWeatherItem(label, value) {
+				return `
+					<div class="forecastWeatherItem">
+						<span>${escapeForecastShellHtml(label)}</span>
+						<strong>${escapeForecastShellHtml(value)}</strong>
+					</div>
+				`;
+			}
+
+			function renderForecastWeatherCards(days) {
+				const rowsEl = document.getElementById("forecastWeatherRows");
+				const statusEl = document.getElementById("forecastWeatherStatus");
+				if (!rowsEl) return;
+
+				const safeDays = Array.isArray(days) ? days : [];
+				rowsEl.innerHTML = safeDays
+					.map((day) => {
+						const field = forecastString(day.field || "—");
+						const moonstamp = forecastString(day.moonstamp || "—");
+						const liveModifier = forecastString(day.liveModifier || "—");
+						const forecastRead = `${field} sets the main system weather. ${moonstamp} shapes the process layer. ${liveModifier} colors the signal environment.`;
+
+						return `
+							<article class="forecastWeatherCard">
+								<div class="forecastWeatherDay">${escapeForecastShellHtml(day.label || "Forecast day")}</div>
+								<div class="forecastWeatherGrid">
+									${renderForecastWeatherItem("Main Field", field)}
+									${renderForecastWeatherItem("Moonstamp", moonstamp)}
+									${renderForecastWeatherItem("Live Field Modifier", liveModifier)}
+								</div>
+								<p class="forecastWeatherRead">${escapeForecastShellHtml(forecastRead)}</p>
+							</article>
+						`;
+					})
+					.join("");
+
+				if (statusEl) {
+					const failed = safeDays.filter((day) => !day.ok).length;
+					statusEl.textContent = safeDays.length
+						? failed
+							? `Forecast cards populated from the diagnostic shell objects with ${failed} shell-only fallback day(s).`
+							: "Forecast cards populated from the same proven diagnostic shell objects."
+						: "Waiting for successful Pro calculation.";
+					statusEl.className = failed ? "forecastWeatherStatus err" : "forecastWeatherStatus ok";
+				}
+			}
+
 			async function fetchForecastShellDay(basePayload, date, index) {
 				const transitDate = formatForecastDateInput(date);
 				const transitTime = "12:00";
@@ -20296,6 +20534,11 @@ ${bodyLine}${loadLine}`,
 				const runToken = ++forecastShellRunToken;
 				clearForecastShellRows();
 				setForecastShellStatus("Running 7-day forecast shell...");
+				const weatherStatusEl = document.getElementById("forecastWeatherStatus");
+				if (weatherStatusEl) {
+					weatherStatusEl.textContent = "Building forecast cards from diagnostic shell objects...";
+					weatherStatusEl.className = "forecastWeatherStatus";
+				}
 				console.log("[LUCY FORECAST SHELL] run started");
 
 				try {
@@ -20312,6 +20555,7 @@ ${bodyLine}${loadLine}`,
 
 					if (runToken !== forecastShellRunToken) return;
 					renderForecastShellRows(days);
+					renderForecastWeatherCards(days);
 
 					const failed = days.filter((day) => !day.ok).length;
 					if (failed) {
