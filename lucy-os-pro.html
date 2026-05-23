@@ -92,6 +92,7 @@
 <!-- Pass 1P update: compressed the 7-Day Forecast Data Shell rows into scannable diagnostic day cards only. Main rows now emphasize Field, Moonstamp, and Live while transit proof and raw proof remain collapsed. Backend files, request payloads, forecast request logic, date loop, response binding, normal Today calculation, engine/scoring, Moonstamp, Live Field Modifier, saved profiles, and share export unchanged. -->
 <!-- Pass 1Q update: polished 7-Day Forecast Data Shell compact card scan hierarchy only. Day/date headers, diagnostic badge, main Field/Moonstamp/Live blocks, and collapsed proof rows were visually tightened. Backend files, request payloads, forecast request logic, date loop, response binding, extraction logic, engine/scoring, Moonstamp, Live Field Modifier, saved profiles, and share export unchanged. -->
 <!-- Pass 1R update: added clean user-facing 7-Day Forecast cards below the diagnostic shell only. Reuses the same normalized forecast day objects that feed the diagnostic proof shell; no backend, request payload, forecast loop, extraction, engine/scoring, Moonstamp, Live Field Modifier, saved profiles, or share export behavior changed. -->
+<!-- Pass 1S update: polished final user-facing 7-Day Forecast card scan hierarchy only. Main Field now reads as the primary card result, Moonstamp/Live read as quieter support layers, and Forecast Read is compact explanatory copy. Diagnostic shell, backend/API, request loop, extraction, engine/scoring, saved profiles, and share export unchanged. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -1806,30 +1807,30 @@
 
 
 			.forecastWeatherCards {
-				margin-top: 13px;
+				margin-top: 16px;
 				width: 100%;
 				max-width: 100%;
 				min-width: 0;
-				border: 1px solid rgba(103, 193, 255, 0.18);
-				border-radius: 18px;
-				padding: 14px;
+				border: 1px solid rgba(103, 193, 255, 0.2);
+				border-radius: 20px;
+				padding: 15px;
 				background: radial-gradient(
 						circle at 10% 0%,
-						rgba(103, 193, 255, 0.11),
+						rgba(103, 193, 255, 0.12),
 						transparent 36%
 					),
 					radial-gradient(
 						circle at 92% 0%,
-						rgba(111, 224, 211, 0.075),
+						rgba(111, 224, 211, 0.08),
 						transparent 34%
 					),
 					linear-gradient(
 						180deg,
-						rgba(255, 255, 255, 0.038),
+						rgba(255, 255, 255, 0.043),
 						rgba(255, 255, 255, 0.018)
 					);
 				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.018),
-					0 10px 26px rgba(0, 0, 0, 0.12);
+					0 12px 30px rgba(0, 0, 0, 0.14);
 			}
 
 			.forecastWeatherHeader {
@@ -1837,24 +1838,24 @@
 				align-items: flex-start;
 				justify-content: space-between;
 				gap: 12px;
-				margin-bottom: 11px;
+				margin-bottom: 10px;
 				min-width: 0;
 			}
 
 			.forecastWeatherHeader h2 {
 				margin: 0;
 				color: var(--text);
-				font-size: 18px;
-				line-height: 1.18;
+				font-size: 19px;
+				line-height: 1.14;
 				font-weight: 950;
-				letter-spacing: -0.025em;
+				letter-spacing: -0.03em;
 			}
 
 			.forecastWeatherHeader p {
 				margin: 5px 0 0;
 				color: var(--muted);
 				font-size: 12px;
-				line-height: 1.45;
+				line-height: 1.42;
 				font-weight: 750;
 				overflow-wrap: break-word;
 			}
@@ -1865,8 +1866,8 @@
 				min-height: 24px;
 				padding: 5px 8px;
 				border-radius: 999px;
-				border: 1px solid rgba(111, 224, 211, 0.2);
-				background: rgba(111, 224, 211, 0.075);
+				border: 1px solid rgba(111, 224, 211, 0.22);
+				background: rgba(111, 224, 211, 0.08);
 				color: #aaf6ee;
 				font-size: 9px;
 				font-weight: 950;
@@ -1876,43 +1877,50 @@
 			}
 
 			.forecastWeatherStatus {
-				min-height: 18px;
+				min-height: 17px;
 				color: var(--muted);
-				font-size: 12px;
-				font-weight: 850;
-				line-height: 1.45;
+				font-size: 11.5px;
+				font-weight: 800;
+				line-height: 1.42;
 				overflow-wrap: break-word;
 			}
 
 			.forecastWeatherRows {
 				display: grid;
 				grid-template-columns: repeat(2, minmax(0, 1fr));
-				gap: 9px;
-				margin-top: 10px;
+				gap: 10px;
+				margin-top: 11px;
 				min-width: 0;
 				max-width: 100%;
 			}
 
 			.forecastWeatherCard {
 				display: grid;
-				gap: 9px;
-				padding: 12px;
-				border-radius: 15px;
-				border: 1px solid rgba(255, 255, 255, 0.085);
+				gap: 8px;
+				padding: 11px;
+				border-radius: 16px;
+				border: 1px solid rgba(255, 255, 255, 0.09);
 				background: radial-gradient(
 						circle at 12% 0%,
-						rgba(103, 193, 255, 0.085),
+						rgba(103, 193, 255, 0.09),
 						transparent 32%
 					),
-					rgba(4, 10, 24, 0.28);
+					rgba(4, 10, 24, 0.3);
 				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.014);
 				min-width: 0;
 				max-width: 100%;
 			}
 
 			.forecastWeatherDay {
+				display: flex;
+				align-items: center;
+				min-height: 28px;
+				padding: 7px 9px;
+				border-radius: 12px;
+				border: 1px solid rgba(103, 193, 255, 0.12);
+				background: rgba(103, 193, 255, 0.055);
 				color: var(--text);
-				font-size: 14px;
+				font-size: 13px;
 				line-height: 1.2;
 				font-weight: 950;
 				letter-spacing: -0.012em;
@@ -1932,7 +1940,7 @@
 				padding: 8px 9px;
 				border-radius: 11px;
 				border: 1px solid rgba(255, 255, 255, 0.065);
-				background: rgba(255, 255, 255, 0.03);
+				background: rgba(255, 255, 255, 0.028);
 				min-width: 0;
 			}
 
@@ -1946,19 +1954,60 @@
 
 			.forecastWeatherItem strong {
 				color: var(--text);
-				font-size: 12.5px;
-				line-height: 1.35;
-				font-weight: 900;
+				font-size: 12px;
+				line-height: 1.34;
+				font-weight: 850;
 				overflow-wrap: anywhere;
+			}
+
+			.forecastWeatherMainField {
+				padding: 10px 11px;
+				border-color: rgba(111, 224, 211, 0.22);
+				background: radial-gradient(
+						circle at 10% 0%,
+						rgba(111, 224, 211, 0.12),
+						transparent 40%
+					),
+					rgba(255, 255, 255, 0.04);
+			}
+
+			.forecastWeatherMainField span {
+				color: #aaf6ee;
+			}
+
+			.forecastWeatherMainField strong {
+				font-size: 17px;
+				line-height: 1.18;
+				font-weight: 950;
+				letter-spacing: -0.025em;
+			}
+
+			.forecastWeatherSupportGrid {
+				display: grid;
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				gap: 6px;
+				min-width: 0;
+			}
+
+			.forecastWeatherSupportItem {
+				padding: 7px 8px;
+				background: rgba(255, 255, 255, 0.023);
+			}
+
+			.forecastWeatherSupportItem strong {
+				color: #d9e0f4;
+				font-size: 11.5px;
+				font-weight: 800;
 			}
 
 			.forecastWeatherRead {
 				margin: 0;
-				padding-top: 2px;
-				color: #d9e0f4;
-				font-size: 12px;
-				line-height: 1.48;
-				font-weight: 720;
+				padding: 8px 9px 0;
+				border-top: 1px solid rgba(255, 255, 255, 0.055);
+				color: rgba(217, 224, 244, 0.82);
+				font-size: 11.5px;
+				line-height: 1.45;
+				font-weight: 680;
 				overflow-wrap: break-word;
 			}
 
@@ -1976,7 +2025,8 @@
 
 				.forecastShellCompactGrid,
 				.forecastShellPrimaryGrid,
-				.forecastWeatherRows {
+				.forecastWeatherRows,
+				.forecastWeatherSupportGrid {
 					grid-template-columns: minmax(0, 1fr);
 				}
 
@@ -20404,9 +20454,10 @@ ${bodyLine}${loadLine}`,
 			}
 
 
-			function renderForecastWeatherItem(label, value) {
+			function renderForecastWeatherItem(label, value, modifierClass = "") {
+				const className = `forecastWeatherItem${modifierClass ? ` ${modifierClass}` : ""}`;
 				return `
-					<div class="forecastWeatherItem">
+					<div class="${className}">
 						<span>${escapeForecastShellHtml(label)}</span>
 						<strong>${escapeForecastShellHtml(value)}</strong>
 					</div>
@@ -20430,9 +20481,11 @@ ${bodyLine}${loadLine}`,
 							<article class="forecastWeatherCard">
 								<div class="forecastWeatherDay">${escapeForecastShellHtml(day.label || "Forecast day")}</div>
 								<div class="forecastWeatherGrid">
-									${renderForecastWeatherItem("Main Field", field)}
-									${renderForecastWeatherItem("Moonstamp", moonstamp)}
-									${renderForecastWeatherItem("Live Field Modifier", liveModifier)}
+									${renderForecastWeatherItem("Main Field", field, "forecastWeatherMainField")}
+									<div class="forecastWeatherSupportGrid">
+										${renderForecastWeatherItem("Moonstamp", moonstamp, "forecastWeatherSupportItem")}
+										${renderForecastWeatherItem("Live Field Modifier", liveModifier, "forecastWeatherSupportItem")}
+									</div>
 								</div>
 								<p class="forecastWeatherRead">${escapeForecastShellHtml(forecastRead)}</p>
 							</article>
