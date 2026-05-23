@@ -93,6 +93,7 @@
 <!-- Pass 1Q update: polished 7-Day Forecast Data Shell compact card scan hierarchy only. Day/date headers, diagnostic badge, main Field/Moonstamp/Live blocks, and collapsed proof rows were visually tightened. Backend files, request payloads, forecast request logic, date loop, response binding, extraction logic, engine/scoring, Moonstamp, Live Field Modifier, saved profiles, and share export unchanged. -->
 <!-- Pass 1R update: added clean user-facing 7-Day Forecast cards below the diagnostic shell only. Reuses the same normalized forecast day objects that feed the diagnostic proof shell; no backend, request payload, forecast loop, extraction, engine/scoring, Moonstamp, Live Field Modifier, saved profiles, or share export behavior changed. -->
 <!-- Pass 1S update: polished final user-facing 7-Day Forecast card scan hierarchy only. Main Field now reads as the primary card result, Moonstamp/Live read as quieter support layers, and Forecast Read is compact explanatory copy. Diagnostic shell, backend/API, request loop, extraction, engine/scoring, saved profiles, and share export unchanged. -->
+<!-- Pass 1T update: tightened final user-facing 7-Day Forecast card density only. Reduced card/header/support/read visual weight while preserving existing normalized forecast data, diagnostic shell, backend/API, forecast requests, extraction, engine/scoring, saved profiles, tabs, and share export unchanged. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -1807,13 +1808,13 @@
 
 
 			.forecastWeatherCards {
-				margin-top: 16px;
+				margin-top: 14px;
 				width: 100%;
 				max-width: 100%;
 				min-width: 0;
-				border: 1px solid rgba(103, 193, 255, 0.2);
-				border-radius: 20px;
-				padding: 15px;
+				border: 1px solid rgba(103, 193, 255, 0.18);
+				border-radius: 19px;
+				padding: 13px;
 				background: radial-gradient(
 						circle at 10% 0%,
 						rgba(103, 193, 255, 0.12),
@@ -1837,26 +1838,26 @@
 				display: flex;
 				align-items: flex-start;
 				justify-content: space-between;
-				gap: 12px;
-				margin-bottom: 10px;
+				gap: 10px;
+				margin-bottom: 8px;
 				min-width: 0;
 			}
 
 			.forecastWeatherHeader h2 {
 				margin: 0;
 				color: var(--text);
-				font-size: 19px;
-				line-height: 1.14;
+				font-size: 18px;
+				line-height: 1.12;
 				font-weight: 950;
 				letter-spacing: -0.03em;
 			}
 
 			.forecastWeatherHeader p {
-				margin: 5px 0 0;
+				margin: 4px 0 0;
 				color: var(--muted);
-				font-size: 12px;
-				line-height: 1.42;
-				font-weight: 750;
+				font-size: 11.5px;
+				line-height: 1.38;
+				font-weight: 720;
 				overflow-wrap: break-word;
 			}
 
@@ -1888,18 +1889,18 @@
 			.forecastWeatherRows {
 				display: grid;
 				grid-template-columns: repeat(2, minmax(0, 1fr));
-				gap: 10px;
-				margin-top: 11px;
+				gap: 9px;
+				margin-top: 9px;
 				min-width: 0;
 				max-width: 100%;
 			}
 
 			.forecastWeatherCard {
 				display: grid;
-				gap: 8px;
-				padding: 11px;
-				border-radius: 16px;
-				border: 1px solid rgba(255, 255, 255, 0.09);
+				gap: 7px;
+				padding: 9px;
+				border-radius: 15px;
+				border: 1px solid rgba(255, 255, 255, 0.08);
 				background: radial-gradient(
 						circle at 12% 0%,
 						rgba(103, 193, 255, 0.09),
@@ -1914,14 +1915,14 @@
 			.forecastWeatherDay {
 				display: flex;
 				align-items: center;
-				min-height: 28px;
-				padding: 7px 9px;
-				border-radius: 12px;
-				border: 1px solid rgba(103, 193, 255, 0.12);
-				background: rgba(103, 193, 255, 0.055);
+				min-height: 25px;
+				padding: 6px 8px;
+				border-radius: 11px;
+				border: 1px solid rgba(103, 193, 255, 0.105);
+				background: rgba(103, 193, 255, 0.048);
 				color: var(--text);
-				font-size: 13px;
-				line-height: 1.2;
+				font-size: 12.5px;
+				line-height: 1.18;
 				font-weight: 950;
 				letter-spacing: -0.012em;
 				overflow-wrap: anywhere;
@@ -1929,40 +1930,40 @@
 
 			.forecastWeatherGrid {
 				display: grid;
-				gap: 6px;
+				gap: 5px;
 				min-width: 0;
 				max-width: 100%;
 			}
 
 			.forecastWeatherItem {
 				display: grid;
-				gap: 3px;
-				padding: 8px 9px;
-				border-radius: 11px;
-				border: 1px solid rgba(255, 255, 255, 0.065);
-				background: rgba(255, 255, 255, 0.028);
+				gap: 2px;
+				padding: 7px 8px;
+				border-radius: 10px;
+				border: 1px solid rgba(255, 255, 255, 0.058);
+				background: rgba(255, 255, 255, 0.024);
 				min-width: 0;
 			}
 
 			.forecastWeatherItem span {
 				color: var(--muted2);
-				font-size: 8.5px;
+				font-size: 8px;
 				font-weight: 950;
-				letter-spacing: 0.105em;
+				letter-spacing: 0.1em;
 				text-transform: uppercase;
 			}
 
 			.forecastWeatherItem strong {
 				color: var(--text);
-				font-size: 12px;
-				line-height: 1.34;
-				font-weight: 850;
+				font-size: 11.5px;
+				line-height: 1.3;
+				font-weight: 820;
 				overflow-wrap: anywhere;
 			}
 
 			.forecastWeatherMainField {
-				padding: 10px 11px;
-				border-color: rgba(111, 224, 211, 0.22);
+				padding: 9px 10px;
+				border-color: rgba(111, 224, 211, 0.2);
 				background: radial-gradient(
 						circle at 10% 0%,
 						rgba(111, 224, 211, 0.12),
@@ -1976,8 +1977,8 @@
 			}
 
 			.forecastWeatherMainField strong {
-				font-size: 17px;
-				line-height: 1.18;
+				font-size: 16px;
+				line-height: 1.16;
 				font-weight: 950;
 				letter-spacing: -0.025em;
 			}
@@ -1985,29 +1986,30 @@
 			.forecastWeatherSupportGrid {
 				display: grid;
 				grid-template-columns: repeat(2, minmax(0, 1fr));
-				gap: 6px;
+				gap: 5px;
 				min-width: 0;
 			}
 
 			.forecastWeatherSupportItem {
-				padding: 7px 8px;
-				background: rgba(255, 255, 255, 0.023);
+				padding: 6px 7px;
+				background: rgba(255, 255, 255, 0.019);
+				border-color: rgba(255, 255, 255, 0.05);
 			}
 
 			.forecastWeatherSupportItem strong {
-				color: #d9e0f4;
-				font-size: 11.5px;
-				font-weight: 800;
+				color: rgba(217, 224, 244, 0.9);
+				font-size: 11px;
+				font-weight: 760;
 			}
 
 			.forecastWeatherRead {
 				margin: 0;
-				padding: 8px 9px 0;
-				border-top: 1px solid rgba(255, 255, 255, 0.055);
-				color: rgba(217, 224, 244, 0.82);
-				font-size: 11.5px;
-				line-height: 1.45;
-				font-weight: 680;
+				padding: 7px 8px 0;
+				border-top: 1px solid rgba(255, 255, 255, 0.045);
+				color: rgba(217, 224, 244, 0.72);
+				font-size: 11px;
+				line-height: 1.4;
+				font-weight: 620;
 				overflow-wrap: break-word;
 			}
 
