@@ -13477,7 +13477,7 @@
 				} else if (intensityLabel === "Threshold") {
 					intensityQuality.push("pause", "clean timing");
 				} else if (intensityLabel === "Mobilized") {
-					intensityQuality.push("clean routing", "paced movement");
+					intensityQuality.push("clean routing", "steady expression", "paced movement");
 				}
 
 				if (regulation < 0.4) {
@@ -14199,6 +14199,8 @@
 					"softer input",
 					"centered contact",
 					"proportional response",
+					"clean routing",
+					"steady expression",
 					"smaller scope",
 					"clear structure",
 					"grounding",
@@ -14221,7 +14223,7 @@
 					}
 				});
 
-				return unique.slice(0, 5).join(", ") || raw;
+				return unique.slice(0, 6).join(", ") || raw;
 			}
 
 			function buildShortSupportWhy(supports) {
