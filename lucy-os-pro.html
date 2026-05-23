@@ -84,6 +84,7 @@
 <!-- Pass 1F update: moved the existing 7-Day Forecast Data Shell after the full Today’s System Weather card only. DOM order only; forecast request logic, forecast generation logic, normal Today calculation, engine, scoring, Moonstamp, Live Field Modifier, saved profiles, and share export unchanged. -->
 <!-- Pass 1G update: bound the existing 7-Day Forecast Data Shell to run after successful normal Pro Calculate using the existing forecastDiagnostic request path. Shell placement, normal Today calculation, engine/scoring, saved profiles, and share export unchanged. -->
 <!-- Pass 1H update: each 7-Day Forecast Data Shell row now sends its own isolated forecastDiagnostic request using the existing transitDate/transitTime contract, and shell rows read forecastDiagnostic data only. Shell placement, normal Today calculation, engine/scoring, saved profiles, and share export unchanged. -->
+<!-- Pass 1I update: rebound 7-Day Forecast Data Shell row extraction to the same forecastDiagnostic/top-level response paths used by the working single-date Forecast Preview panel. Shell placement, date loop, normal Today payload, engine/scoring, saved profiles, and share export unchanged. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -19699,38 +19700,116 @@ ${bodyLine}${loadLine}`,
 				return { response, data };
 			}
 
-			function extractForecastDiagnosticUsedUtc(data) {
-				const fd = data?.forecastDiagnostic || {};
+			function getForecastDiagnosticObject(data) {
+				return data?.forecastDiagnostic && typeof data.forecastDiagnostic === "object"
+					? data.forecastDiagnostic
+					: {};
+			}
+
+			function extractForecastUsedUtc(data) {
+				const fd = getForecastDiagnosticObject(data);
 				return forecastString(
 					fd.usedTransitUTC ||
 						fd.usedTransitUtc ||
 						fd.usedUTC ||
 						fd.usedUtc ||
 						fd.transitUTC ||
-						fd.transitUtc
+						fd.transitUtc ||
+						data?.usedTransitUTC ||
+						data?.usedTransitUtc ||
+						data?.transitUTC ||
+						data?.transitUtc
 				);
 			}
 
-			function extractForecastShellField(data) {
-				const fd = data?.forecastDiagnostic || {};
+			function extractForecastFieldStateMode(data) {
+				const fd = getForecastDiagnosticObject(data);
 				const fieldState = forecastString(
-					fd.fieldState || fd.state || fd.selectedField || fd.field
+					fd.fieldState ||
+						fd.state ||
+						data?.state?.label ||
+						data?.state?.mode ||
+						data?.fieldState
 				);
-				const fieldMode = forecastString(fd.fieldMode || fd.mode);
-				if (fieldState !== "—" && fieldMode !== "—") return `${fieldState} / ${fieldMode}`;
-				return forecastString(safeForecastValue(fieldState, fieldMode));
+				const fieldMode = forecastString(
+					fd.fieldMode || fd.mode || data?.mode || data?.fieldMode
+				);
+				return fieldState !== "—" && fieldMode !== "—"
+					? `${fieldState} / ${fieldMode}`
+					: forecastString(safeForecastValue(fieldState, fieldMode));
 			}
 
-			function extractForecastShellLiveModifier(data) {
-				const fd = data?.forecastDiagnostic || {};
+			function extractForecastLiveFieldModifier(data) {
+				const fd = getForecastDiagnosticObject(data);
 				return forecastString(
 					fd.liveFieldModifier?.displayTitle ||
 						fd.liveFieldModifier?.title ||
 						fd.liveFieldModifier ||
-						fd.liveModifier?.displayTitle ||
-						fd.liveModifier?.title ||
-						fd.liveModifier
+						data?.liveFieldModifier?.displayTitle ||
+						data?.liveFieldModifier?.title ||
+						data?.liveFieldModifier
 				);
+			}
+
+			function extractForecastPrimaryDriver(data) {
+				const fd = getForecastDiagnosticObject(data);
+				return forecastString(
+					fd.primaryDriver ||
+						fd.fieldToneDriver ||
+						fd.topDriver ||
+						data?.primaryDriver ||
+						data?.fieldToneDriver ||
+						data?.topDriver ||
+						data?.liveFieldModifier?.driver ||
+						data?.liveFieldModifier?.planet
+				);
+			}
+
+			function extractForecastTopRegulator(data) {
+				const fd = getForecastDiagnosticObject(data);
+				return forecastString(
+					fd.topRegulator ||
+						fd.regulator ||
+						data?.topRegulator ||
+						data?.regulator ||
+						data?.regulationSupport ||
+						data?.support?.topRegulator
+				);
+			}
+
+			function extractForecastTextSummary(data) {
+				const fd = getForecastDiagnosticObject(data);
+				return forecastString(
+					fd.forecastText ||
+						fd.text ||
+						fd.summary ||
+						fd.read ||
+						data?.forecastText ||
+						data?.forecastSummary ||
+						data?.summary
+				);
+			}
+
+			function logForecastShellExtraction(transitDate, data, extracted) {
+				const fd = getForecastDiagnosticObject(data);
+				console.log("[LUCY FORECAST SHELL] extraction", {
+					transitDate,
+					responseKeys: data && typeof data === "object" ? Object.keys(data) : [],
+					forecastDiagnosticKeys: Object.keys(fd),
+					extracted,
+				});
+			}
+
+			function extractForecastDiagnosticUsedUtc(data) {
+				return extractForecastUsedUtc(data);
+			}
+
+			function extractForecastShellField(data) {
+				return extractForecastFieldStateMode(data);
+			}
+
+			function extractForecastShellLiveModifier(data) {
+				return extractForecastLiveFieldModifier(data);
 			}
 
 			function renderForecastShellRows(days) {
@@ -19768,23 +19847,20 @@ ${bodyLine}${loadLine}`,
 						throw new Error(data?.error || data?.forecastDiagnostic?.error || `Forecast API error ${response.status}`);
 					}
 
-					const moonstamp = buildForecastDiagnosticMoonstampSummary(data);
-					const liveModifier = extractForecastShellLiveModifier(data);
-					const usedUtc = extractForecastDiagnosticUsedUtc(data);
+					const usedUtc = extractForecastUsedUtc(data);
+					const field = extractForecastFieldStateMode(data);
+					const moonstamp = buildForecastMoonstampSummary(data);
+					const liveModifier = extractForecastLiveFieldModifier(data);
+					const extracted = { usedUtc, field, moonstamp, liveModifier };
 
-					console.log("[LUCY FORECAST SHELL] row success", {
-						transitDate,
-						usedUtc,
-						moonstamp,
-						liveModifier,
-					});
+					logForecastShellExtraction(transitDate, data, extracted);
 
 					return {
 						ok: true,
 						label: formatForecastShellDayLabel(date, index),
 						date: transitDate,
 						usedUtc,
-						field: extractForecastShellField(data),
+						field,
 						moonstamp,
 						liveModifier,
 					};
@@ -19846,77 +19922,16 @@ ${bodyLine}${loadLine}`,
 			}
 
 			function renderForecastPreviewResult(data, httpStatus) {
-				const fd = data?.forecastDiagnostic || {};
-				const fieldState = forecastString(
-					fd.fieldState ||
-						fd.state ||
-						data?.state?.label ||
-						data?.state?.mode ||
-						data?.fieldState
-				);
-				const fieldMode = forecastString(
-					fd.fieldMode || fd.mode || data?.mode || data?.fieldMode
-				);
-				const stateMode =
-					fieldState !== "—" && fieldMode !== "—"
-						? `${fieldState} / ${fieldMode}`
-						: safeForecastValue(fieldState, fieldMode);
+				const fd = getForecastDiagnosticObject(data);
 
 				setForecastResultText("forecastHttpStatus", httpStatus || "—");
-				setForecastResultText(
-					"forecastUsedUtc",
-					fd.usedTransitUTC ||
-						fd.usedTransitUtc ||
-						fd.usedUTC ||
-						fd.usedUtc ||
-						fd.transitUTC ||
-						fd.transitUtc ||
-						data?.usedTransitUTC ||
-						data?.usedTransitUtc ||
-						data?.transitUTC ||
-						data?.transitUtc
-				);
-				setForecastResultText("forecastFieldStateMode", stateMode);
-				setForecastResultText(
-					"forecastPrimaryDriver",
-					fd.primaryDriver ||
-						fd.fieldToneDriver ||
-						fd.topDriver ||
-						data?.primaryDriver ||
-						data?.fieldToneDriver ||
-						data?.topDriver ||
-						data?.liveFieldModifier?.driver ||
-						data?.liveFieldModifier?.planet
-				);
-				setForecastResultText(
-					"forecastTopRegulator",
-					fd.topRegulator ||
-						fd.regulator ||
-						data?.topRegulator ||
-						data?.regulator ||
-						data?.regulationSupport ||
-						data?.support?.topRegulator
-				);
+				setForecastResultText("forecastUsedUtc", extractForecastUsedUtc(data));
+				setForecastResultText("forecastFieldStateMode", extractForecastFieldStateMode(data));
+				setForecastResultText("forecastPrimaryDriver", extractForecastPrimaryDriver(data));
+				setForecastResultText("forecastTopRegulator", extractForecastTopRegulator(data));
 				setForecastResultText("forecastMoonstampSummary", buildForecastMoonstampSummary(data));
-				setForecastResultText(
-					"forecastLiveFieldModifier",
-					fd.liveFieldModifier?.displayTitle ||
-						fd.liveFieldModifier?.title ||
-						fd.liveFieldModifier ||
-						data?.liveFieldModifier?.displayTitle ||
-						data?.liveFieldModifier?.title ||
-						data?.liveFieldModifier
-				);
-				setForecastResultText(
-					"forecastTextSummary",
-					fd.forecastText ||
-						fd.text ||
-						fd.summary ||
-						fd.read ||
-						data?.forecastText ||
-						data?.forecastSummary ||
-						data?.summary
-				);
+				setForecastResultText("forecastLiveFieldModifier", extractForecastLiveFieldModifier(data));
+				setForecastResultText("forecastTextSummary", extractForecastTextSummary(data));
 
 				const raw = document.getElementById("forecastRawJson");
 				if (raw) raw.textContent = JSON.stringify(fd || {}, null, 2);
