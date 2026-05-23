@@ -94,6 +94,7 @@
 <!-- Pass 1R update: added clean user-facing 7-Day Forecast cards below the diagnostic shell only. Reuses the same normalized forecast day objects that feed the diagnostic proof shell; no backend, request payload, forecast loop, extraction, engine/scoring, Moonstamp, Live Field Modifier, saved profiles, or share export behavior changed. -->
 <!-- Pass 1S update: polished final user-facing 7-Day Forecast card scan hierarchy only. Main Field now reads as the primary card result, Moonstamp/Live read as quieter support layers, and Forecast Read is compact explanatory copy. Diagnostic shell, backend/API, request loop, extraction, engine/scoring, saved profiles, and share export unchanged. -->
 <!-- Pass 1T update: tightened final user-facing 7-Day Forecast card density only. Reduced card/header/support/read visual weight while preserving existing normalized forecast data, diagnostic shell, backend/API, forecast requests, extraction, engine/scoring, saved profiles, tabs, and share export unchanged. -->
+<!-- Pass 1U update: collapsed final user-facing 7-Day Forecast Day 4-7 cards behind one native details toggle only. First three forecast cards remain visible by default; diagnostic shell, backend/API, request loop, extraction, normalized forecast rows, engine/scoring, saved profiles, tabs, and share export unchanged. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -1895,6 +1896,49 @@
 				max-width: 100%;
 			}
 
+			.forecastWeatherMore {
+				grid-column: 1 / -1;
+				min-width: 0;
+				max-width: 100%;
+				border: 1px solid rgba(111, 224, 211, 0.14);
+				border-radius: 15px;
+				background: rgba(255, 255, 255, 0.024);
+				overflow: hidden;
+			}
+
+			.forecastWeatherMore summary {
+				cursor: pointer;
+				list-style: none;
+				padding: 10px 11px;
+				color: #aaf6ee;
+				font-size: 11px;
+				font-weight: 950;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+			}
+
+			.forecastWeatherMore summary::-webkit-details-marker {
+				display: none;
+			}
+
+			.forecastWeatherMore summary::after {
+				content: " +";
+				color: var(--muted2);
+			}
+
+			.forecastWeatherMore[open] summary::after {
+				content: " -";
+			}
+
+			.forecastWeatherMoreRows {
+				display: grid;
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				gap: 9px;
+				padding: 0 9px 9px;
+				min-width: 0;
+				max-width: 100%;
+			}
+
 			.forecastWeatherCard {
 				display: grid;
 				gap: 7px;
@@ -2028,6 +2072,7 @@
 				.forecastShellCompactGrid,
 				.forecastShellPrimaryGrid,
 				.forecastWeatherRows,
+				.forecastWeatherMoreRows,
 				.forecastWeatherSupportGrid {
 					grid-template-columns: minmax(0, 1fr);
 				}
@@ -20466,34 +20511,49 @@ ${bodyLine}${loadLine}`,
 				`;
 			}
 
+			function renderForecastWeatherCard(day) {
+				const field = forecastString(day.field || "—");
+				const moonstamp = forecastString(day.moonstamp || "—");
+				const liveModifier = forecastString(day.liveModifier || "—");
+				const forecastRead = `${field} sets the main system weather. ${moonstamp} shapes the process layer. ${liveModifier} colors the signal environment.`;
+
+				return `
+					<article class="forecastWeatherCard">
+						<div class="forecastWeatherDay">${escapeForecastShellHtml(day.label || "Forecast day")}</div>
+						<div class="forecastWeatherGrid">
+							${renderForecastWeatherItem("Main Field", field, "forecastWeatherMainField")}
+							<div class="forecastWeatherSupportGrid">
+								${renderForecastWeatherItem("Moonstamp", moonstamp, "forecastWeatherSupportItem")}
+								${renderForecastWeatherItem("Live Field Modifier", liveModifier, "forecastWeatherSupportItem")}
+							</div>
+						</div>
+						<p class="forecastWeatherRead">${escapeForecastShellHtml(forecastRead)}</p>
+					</article>
+				`;
+			}
+
 			function renderForecastWeatherCards(days) {
 				const rowsEl = document.getElementById("forecastWeatherRows");
 				const statusEl = document.getElementById("forecastWeatherStatus");
 				if (!rowsEl) return;
 
 				const safeDays = Array.isArray(days) ? days : [];
-				rowsEl.innerHTML = safeDays
-					.map((day) => {
-						const field = forecastString(day.field || "—");
-						const moonstamp = forecastString(day.moonstamp || "—");
-						const liveModifier = forecastString(day.liveModifier || "—");
-						const forecastRead = `${field} sets the main system weather. ${moonstamp} shapes the process layer. ${liveModifier} colors the signal environment.`;
+				const visibleDays = safeDays.slice(0, 3);
+				const collapsedDays = safeDays.slice(3);
+				const visibleMarkup = visibleDays.map(renderForecastWeatherCard).join("");
+				const collapsedMarkup = collapsedDays.map(renderForecastWeatherCard).join("");
 
-						return `
-							<article class="forecastWeatherCard">
-								<div class="forecastWeatherDay">${escapeForecastShellHtml(day.label || "Forecast day")}</div>
-								<div class="forecastWeatherGrid">
-									${renderForecastWeatherItem("Main Field", field, "forecastWeatherMainField")}
-									<div class="forecastWeatherSupportGrid">
-										${renderForecastWeatherItem("Moonstamp", moonstamp, "forecastWeatherSupportItem")}
-										${renderForecastWeatherItem("Live Field Modifier", liveModifier, "forecastWeatherSupportItem")}
-									</div>
-								</div>
-								<p class="forecastWeatherRead">${escapeForecastShellHtml(forecastRead)}</p>
-							</article>
-						`;
-					})
-					.join("");
+				rowsEl.innerHTML = `
+					${visibleMarkup}
+					${collapsedDays.length ? `
+						<details class="forecastWeatherMore">
+							<summary>Show full 7-day forecast</summary>
+							<div class="forecastWeatherMoreRows">
+								${collapsedMarkup}
+							</div>
+						</details>
+					` : ""}
+				`;
 
 				if (statusEl) {
 					const failed = safeDays.filter((day) => !day.ok).length;
