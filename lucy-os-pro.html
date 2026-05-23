@@ -85,6 +85,7 @@
 <!-- Pass 1G update: bound the existing 7-Day Forecast Data Shell to run after successful normal Pro Calculate using the existing forecastDiagnostic request path. Shell placement, normal Today calculation, engine/scoring, saved profiles, and share export unchanged. -->
 <!-- Pass 1H update: each 7-Day Forecast Data Shell row now sends its own isolated forecastDiagnostic request using the existing transitDate/transitTime contract, and shell rows read forecastDiagnostic data only. Shell placement, normal Today calculation, engine/scoring, saved profiles, and share export unchanged. -->
 <!-- Pass 1I update: rebound 7-Day Forecast Data Shell row extraction to the same forecastDiagnostic/top-level response paths used by the working single-date Forecast Preview panel. Shell placement, date loop, normal Today payload, engine/scoring, saved profiles, and share export unchanged. -->
+<!-- Pass 1J update: added 7-Day Forecast Data Shell request-date / Used Transit UTC proof display only. Rows now show requested date, payload date key/value, Used Transit UTC, and the response source path used. Shell placement, normal Today payload, engine/scoring, saved profiles, and share export unchanged. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -19706,20 +19707,55 @@ ${bodyLine}${loadLine}`,
 					: {};
 			}
 
+			function readForecastPath(source, path) {
+				if (!source || !path) return undefined;
+				return path.split(".").reduce((current, key) => {
+					if (current === null || current === undefined) return undefined;
+					return current[key];
+				}, source);
+			}
+
+			function extractForecastUsedUtcProof(data) {
+				const candidates = [
+					"forecastDiagnostic.usedTransitUTC",
+					"forecastDiagnostic.usedTransitUtc",
+					"forecastDiagnostic.usedUTC",
+					"forecastDiagnostic.usedUtc",
+					"forecastDiagnostic.transitUTC",
+					"forecastDiagnostic.transitUtc",
+					"forecastDiagnostic.metadata.usedTransitUTC",
+					"forecastDiagnostic.metadata.usedTransitUtc",
+					"forecastDiagnostic.metadata.usedUTC",
+					"forecastDiagnostic.metadata.usedUtc",
+					"forecastDiagnostic.debug.usedTransitUTC",
+					"forecastDiagnostic.debug.usedTransitUtc",
+					"forecastDiagnostic.diagnostics.usedTransitUTC",
+					"forecastDiagnostic.diagnostics.usedTransitUtc",
+					"metadata.usedTransitUTC",
+					"metadata.usedTransitUtc",
+					"debug.usedTransitUTC",
+					"debug.usedTransitUtc",
+					"diagnostics.usedTransitUTC",
+					"diagnostics.usedTransitUtc",
+					"usedTransitUTC",
+					"usedTransitUtc",
+					"transitUTC",
+					"transitUtc",
+				];
+
+				for (const path of candidates) {
+					const value = readForecastPath(data, path);
+					const safe = forecastString(value);
+					if (safe !== "—") {
+						return { value: safe, source: path };
+					}
+				}
+
+				return { value: "missing from response", source: "unavailable" };
+			}
+
 			function extractForecastUsedUtc(data) {
-				const fd = getForecastDiagnosticObject(data);
-				return forecastString(
-					fd.usedTransitUTC ||
-						fd.usedTransitUtc ||
-						fd.usedUTC ||
-						fd.usedUtc ||
-						fd.transitUTC ||
-						fd.transitUtc ||
-						data?.usedTransitUTC ||
-						data?.usedTransitUtc ||
-						data?.transitUTC ||
-						data?.transitUtc
-				);
+				return extractForecastUsedUtcProof(data).value;
 			}
 
 			function extractForecastFieldStateMode(data) {
@@ -19790,12 +19826,25 @@ ${bodyLine}${loadLine}`,
 				);
 			}
 
-			function logForecastShellExtraction(transitDate, data, extracted) {
+			function getForecastPayloadDateProof(payload) {
+				const fields = [];
+				if (payload?.transitDate) fields.push(`transitDate=${payload.transitDate}`);
+				if (payload?.transitTime) fields.push(`transitTime=${payload.transitTime}`);
+				if (payload?.forecastDate) fields.push(`forecastDate=${payload.forecastDate}`);
+				if (payload?.forecastTime) fields.push(`forecastTime=${payload.forecastTime}`);
+				return fields.length ? fields.join("; ") : "unavailable";
+			}
+
+			function logForecastShellExtraction(index, transitDate, payload, data, extracted) {
 				const fd = getForecastDiagnosticObject(data);
 				console.log("[LUCY FORECAST SHELL] extraction", {
-					transitDate,
+					rowIndex: index,
+					requestedForecastDate: transitDate,
+					payloadDateFields: getForecastPayloadDateProof(payload),
 					responseKeys: data && typeof data === "object" ? Object.keys(data) : [],
 					forecastDiagnosticKeys: Object.keys(fd),
+					usedTransitUTC: extracted?.usedUtc,
+					usedTransitUtcSource: extracted?.usedUtcSource,
 					extracted,
 				});
 			}
@@ -19820,10 +19869,12 @@ ${bodyLine}${loadLine}`,
 						const field = forecastString(day.field || "—");
 						const moonstamp = forecastString(day.moonstamp || "—");
 						const liveModifier = forecastString(day.liveModifier || "—");
-						const usedUtc = forecastString(day.usedUtc || "—");
+						const usedUtc = forecastString(day.usedUtc || "missing from response");
+						const source = forecastString(day.usedUtcSource || "unavailable");
+						const payloadDateKey = forecastString(day.payloadDateKey || "unavailable");
 						const status = day.ok
-							? `Date: ${day.date || "—"} · Used UTC: ${usedUtc} · Field: ${field} · Moonstamp: ${moonstamp} · Live: ${liveModifier}`
-							: `Date: ${day.date || "—"} · Forecast unavailable · ${forecastString(day.error || "Unknown shell-only error")}`;
+							? `Requested Date: ${day.date || "—"} · Payload Date Key: ${payloadDateKey} · Used Transit UTC: ${usedUtc} · Used Transit Date Source: ${source} · Field: ${field} · Moonstamp: ${moonstamp} · Live: ${liveModifier}`
+							: `Requested Date: ${day.date || "—"} · Payload Date Key: ${payloadDateKey} · Used Transit UTC: ${usedUtc} · Used Transit Date Source: ${source} · Forecast unavailable · ${forecastString(day.error || "Unknown shell-only error")}`;
 						return `
 							<div class="devForecastRow">
 								<span>${day.label || "Forecast day"}</span>
@@ -19837,8 +19888,13 @@ ${bodyLine}${loadLine}`,
 			async function fetchForecastShellDay(basePayload, date, index) {
 				const transitDate = formatForecastDateInput(date);
 				const payload = buildForecastDiagnosticPayload(basePayload, transitDate, "12:00");
+				const payloadDateKey = getForecastPayloadDateProof(payload);
 
-				console.log("[LUCY FORECAST SHELL] requesting row date", transitDate);
+				console.log("[LUCY FORECAST SHELL] requesting row date", {
+					rowIndex: index,
+					requestedForecastDate: transitDate,
+					payloadDateFields: payloadDateKey,
+				});
 
 				try {
 					const { response, data } = await requestForecastDiagnostic(payload);
@@ -19847,19 +19903,23 @@ ${bodyLine}${loadLine}`,
 						throw new Error(data?.error || data?.forecastDiagnostic?.error || `Forecast API error ${response.status}`);
 					}
 
-					const usedUtc = extractForecastUsedUtc(data);
+					const usedUtcProof = extractForecastUsedUtcProof(data);
+					const usedUtc = usedUtcProof.value;
+					const usedUtcSource = usedUtcProof.source;
 					const field = extractForecastFieldStateMode(data);
 					const moonstamp = buildForecastMoonstampSummary(data);
 					const liveModifier = extractForecastLiveFieldModifier(data);
-					const extracted = { usedUtc, field, moonstamp, liveModifier };
+					const extracted = { usedUtc, usedUtcSource, field, moonstamp, liveModifier };
 
-					logForecastShellExtraction(transitDate, data, extracted);
+					logForecastShellExtraction(index, transitDate, payload, data, extracted);
 
 					return {
 						ok: true,
 						label: formatForecastShellDayLabel(date, index),
 						date: transitDate,
+						payloadDateKey,
 						usedUtc,
+						usedUtcSource,
 						field,
 						moonstamp,
 						liveModifier,
@@ -19870,6 +19930,9 @@ ${bodyLine}${loadLine}`,
 						ok: false,
 						label: formatForecastShellDayLabel(date, index),
 						date: transitDate,
+						payloadDateKey,
+						usedUtc: "missing from response",
+						usedUtcSource: "unavailable",
 						error: err.message,
 					};
 				}
