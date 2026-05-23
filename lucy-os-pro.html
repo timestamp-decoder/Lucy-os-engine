@@ -98,6 +98,7 @@
 <!-- Pass 1V update: made final user-facing 7-Day Forecast collapse responsive only. Day 1-3 remain visible everywhere, Day 4 is visible in the main grid on desktop and inside the collapsed section on mobile, and Day 5-7 remain collapsed. Diagnostic shell, backend/API, forecast requests, extraction, normalized forecast rows, engine/scoring, saved profiles, tabs, and share export unchanged. -->
 <!-- Pass 1W update: added internal-weather display labels to the final user-facing 7-Day Forecast cards only. Uses existing normalized forecast row/card values for display labels; diagnostic shell, backend/API, request payloads, forecast loop, extraction, normalized row shape, engine/scoring, responsive collapse, saved profiles, tabs, and share export unchanged. -->
 <!-- Pass 1Y update: polished final user-facing 7-Day Forecast condition copy only. Translates unclear load/regulation condition text into short internal-weather language while preserving diagnostic shell, forecast requests, normalized row shape, engine/scoring, responsive collapse, saved profiles, tabs, and share export unchanged. -->
+<!-- Pass 2A update: added compact Personal Landing line to final user-facing 7-Day Forecast cards only. Uses existing row/DOM architecture values defensively for display copy; diagnostic shell, backend/API, forecast requests, date loop, normalized row shape, engine/scoring, responsive collapse, saved profiles, tabs, and share export unchanged. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -2055,6 +2056,20 @@
 				color: rgba(217, 224, 244, 0.9);
 				font-size: 11px;
 				font-weight: 760;
+			}
+
+			.forecastWeatherPersonalLanding {
+				border-color: rgba(216, 184, 76, 0.12);
+				background: rgba(216, 184, 76, 0.035);
+			}
+
+			.forecastWeatherPersonalLanding span {
+				color: rgba(216, 184, 76, 0.9);
+			}
+
+			.forecastWeatherPersonalLanding strong {
+				color: rgba(244, 247, 255, 0.93);
+				font-weight: 790;
 			}
 
 			.forecastWeatherRead {
@@ -20770,6 +20785,86 @@ ${bodyLine}${loadLine}`,
 				return `${dayPrefix || `Day ${index + 1}`} — ${getForecastWeatherLabel(row, index)}`.toUpperCase();
 			}
 
+			function getForecastPersonalLandingLine(row, index = 0) {
+				const safeText = (value) => forecastString(value || "").toLowerCase();
+				const haystack = [
+					row?.field,
+					row?.mainField,
+					row?.fieldLabel,
+					row?.load,
+					row?.regulation,
+					row?.moonstamp,
+					row?.moonstampText,
+					row?.live,
+					row?.liveModifier,
+					row?.liveFieldModifier,
+					row?.forecastRead,
+					row?.label,
+					row?.dayLabel,
+					row?.dateLabel,
+					getForecastWeatherLabel(row, index),
+					getForecastConditionLabel(row, index),
+				]
+					.map(safeText)
+					.join(" ");
+				const activatedTitle = safeText(document.getElementById("activatedArchitectureTitle")?.textContent);
+				const activatedText = safeText(document.getElementById("activatedArchitectureText")?.textContent);
+				const architectureText = `${activatedTitle} ${activatedText}`;
+				const hasAny = (terms, source = haystack) => terms.some((term) => source.includes(term));
+
+				if (hasAny(["interface", "ascendant"], architectureText)) {
+					return "This may land through your interface first. Orient before responding.";
+				}
+				if (hasAny(["signal processor", "mercury"], architectureText)) {
+					return "This may land through signal processing first. Clarify the message before acting.";
+				}
+				if (hasAny(["emotional processor", "moon", "body-state", "body state"], architectureText)) {
+					return "This may land through body-state first. Regulate before deciding.";
+				}
+				if (hasAny(["action vector", "mars"], architectureText)) {
+					return "This may land through your action channel first. Slow the impulse before committing.";
+				}
+				if (hasAny(["relational tone", "venus"], architectureText)) {
+					return "This may land through relational tone first. Separate contact from absorption.";
+				}
+				if (hasAny(["structure governor", "saturn"], architectureText)) {
+					return "This may land through structure and responsibility first. Use one clear container.";
+				}
+
+				if (hasAny(["relational", "venus", "contact", "tone"])) {
+					return "This may land through contact first. Separate signal from absorption.";
+				}
+				if (hasAny(["structured", "contained", "saturn", "responsibility", "order"])) {
+					return "This may land through structure first. Use one clear container.";
+				}
+				if (hasAny(["reconstructive", "threshold", "pluto", "first quarter", "crossing", "repair"])) {
+					return "This may land as pressure to change form. Move one gate at a time.";
+				}
+				if (hasAny(["integrative", "regulated", "clearing", "stabil", "support available"])) {
+					return "This may land as scattered signals asking to integrate. Let the pattern settle.";
+				}
+				if (hasAny(["mobilized", "mars", "action", "movement", "pressure", "high voltage", "rising pressure", "pressure front"])) {
+					return "This may land through your action channel first. Slow the response before committing.";
+				}
+				if (hasAny(["diffused", "neptune", "unclear", "low visibility", "fog"])) {
+					return "Give the signal enough time to separate from the noise.";
+				}
+				if (hasAny(["reset", "new moon", "release", "reduce", "calm window"])) {
+					return "Let this field land before you act on it.";
+				}
+
+				const fallbackLines = [
+					"Let this field land before you act on it.",
+					"Notice where the pressure enters first, then choose the cleanest move.",
+					"Give the signal enough time to separate from the noise.",
+					"Use one clear next step instead of responding to the whole field.",
+					"Let the pattern clarify before forcing a decision.",
+					"Reduce input until the cleanest move becomes visible.",
+					"Return to center before carrying the field forward.",
+				];
+				return fallbackLines[Math.abs(Number(index) || 0) % fallbackLines.length];
+			}
+
 			function renderForecastWeatherItem(label, value, modifierClass = "") {
 				const className = `forecastWeatherItem${modifierClass ? ` ${modifierClass}` : ""}`;
 				return `
@@ -20787,6 +20882,7 @@ ${bodyLine}${loadLine}`,
 				const safeVisibilityClass = visibilityClass ? ` ${visibilityClass}` : "";
 				const weatherTitle = getForecastWeatherTitle(day, index);
 				const weatherCondition = getForecastConditionLabel(day, index);
+				const personalLanding = getForecastPersonalLandingLine(day, index);
 				const forecastRead = `${field} sets the main system weather. ${moonstamp} shapes the process layer. ${liveModifier} colors the signal environment.`;
 
 				return `
@@ -20799,6 +20895,7 @@ ${bodyLine}${loadLine}`,
 								${renderForecastWeatherItem("Live Field Modifier", liveModifier, "forecastWeatherSupportItem")}
 							</div>
 							${renderForecastWeatherItem("Condition", weatherCondition, "forecastWeatherSupportItem")}
+							${renderForecastWeatherItem("Personal Landing", personalLanding, "forecastWeatherSupportItem forecastWeatherPersonalLanding")}
 						</div>
 						<p class="forecastWeatherRead">${escapeForecastShellHtml(forecastRead)}</p>
 					</article>
