@@ -82,6 +82,7 @@
 <!-- Pass 47 update: copied share text Moonstamp de-duplication only. Removes a leading duplicate Moonstamp title prefix from the copied-share Moonstamp body while preserving in-app Moonstamp display, visual share card/export body, share mechanics, Profile Name share titles, engine/API, scoring, field selection, chartKernel, saved profiles, Live Field Modifier, interaction copy, proof panel, and Deeper Read behavior. -->
 <!-- Forecast Preview dev-only update: added isolated Pro forecastDiagnostic panel using current input values and /api/chart_inputs. Normal Pro calculate/updateUI flow, backend/API contract, scoring, Pro engine, Lite, saved profiles, share behavior, and existing result rendering unchanged. -->
 <!-- Pass 1F update: moved the existing 7-Day Forecast Data Shell after the full Today’s System Weather card only. DOM order only; forecast request logic, forecast generation logic, normal Today calculation, engine, scoring, Moonstamp, Live Field Modifier, saved profiles, and share export unchanged. -->
+<!-- Pass 1G update: bound the existing 7-Day Forecast Data Shell to run after successful normal Pro Calculate using the existing forecastDiagnostic request path. Shell placement, normal Today calculation, engine/scoring, saved profiles, and share export unchanged. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -19461,6 +19462,7 @@ ${bodyLine}${loadLine}`,
 					updateUI(data);
 					renderChartKernelDataInspection(data);
 					renderPersonalArchitectureBetaCard(data);
+					runForecastShellAfterSuccessfulCalculate(payload);
 
 					if (shouldAutoScroll) {
 						scrollToMobileReadSnapshot();
@@ -19588,6 +19590,185 @@ ${bodyLine}${loadLine}`,
 				if (illumination !== "—") parts.push(`Illumination: ${illumination}`);
 				if (moonAge !== "—") parts.push(`Moon age: ${moonAge}`);
 				return parts.length ? parts.join(" · ") : "—";
+			}
+
+
+			let forecastShellRunToken = 0;
+
+			function setForecastShellStatus(message, className = "forecastShellProofStatus") {
+				const statusEl = document.getElementById("forecastShellProofStatus");
+				if (!statusEl) return;
+				statusEl.textContent = message;
+				statusEl.className = className;
+			}
+
+			function clearForecastShellRows() {
+				const rowsEl = document.getElementById("forecastShellProofRows");
+				if (rowsEl) rowsEl.innerHTML = "";
+			}
+
+			function formatForecastShellDayLabel(date, index) {
+				const label = index === 0 ? "Today" : index === 1 ? "Tomorrow" : `Day ${index + 1}`;
+				const text = date.toLocaleDateString(undefined, {
+					weekday: "short",
+					month: "short",
+					day: "numeric",
+					timeZone: "UTC",
+				});
+				return `${label} · ${text}`;
+			}
+
+			function getForecastShellStartDate() {
+				const now = new Date();
+				return new Date(
+					Date.UTC(
+						now.getUTCFullYear(),
+						now.getUTCMonth(),
+						now.getUTCDate(),
+						12,
+						0,
+						0
+					)
+				);
+			}
+
+			function extractForecastShellField(data) {
+				const fd = data?.forecastDiagnostic || {};
+				const fieldState = forecastString(
+					fd.fieldState ||
+						fd.state ||
+						data?.state?.label ||
+						data?.state?.mode ||
+						data?.forecast?.now?.state ||
+						data?.fieldState
+				);
+				const fieldMode = forecastString(
+					fd.fieldMode || fd.mode || data?.mode || data?.fieldMode
+				);
+				if (fieldState !== "—" && fieldMode !== "—") return `${fieldState} / ${fieldMode}`;
+				return forecastString(safeForecastValue(fieldState, fieldMode));
+			}
+
+			function extractForecastShellLiveModifier(data) {
+				const fd = data?.forecastDiagnostic || {};
+				return forecastString(
+					fd.liveFieldModifier?.displayTitle ||
+						fd.liveFieldModifier?.title ||
+						fd.liveFieldModifier ||
+						data?.liveFieldModifier?.displayTitle ||
+						data?.liveFieldModifier?.title ||
+						data?.liveFieldModifier
+				);
+			}
+
+			function renderForecastShellRows(days) {
+				const rowsEl = document.getElementById("forecastShellProofRows");
+				if (!rowsEl) return;
+				rowsEl.innerHTML = days
+					.map((day) => {
+						const field = forecastString(day.field || "—");
+						const moonstamp = forecastString(day.moonstamp || "—");
+						const liveModifier = forecastString(day.liveModifier || "—");
+						const status = day.ok
+							? `Field: ${field} · Moonstamp: ${moonstamp} · Live: ${liveModifier}`
+							: `Forecast unavailable · ${forecastString(day.error || "Unknown shell-only error")}`;
+						return `
+							<div class="devForecastRow">
+								<span>${day.label || "Forecast day"}</span>
+								<strong>${status}</strong>
+							</div>
+						`;
+					})
+					.join("");
+			}
+
+			async function fetchForecastShellDay(basePayload, date, index) {
+				const transitDate = formatForecastDateInput(date);
+				const payload = {
+					...basePayload,
+					forecastDiagnostic: true,
+					transitDate,
+					transitTime: "12:00",
+				};
+
+				try {
+					const response = await fetch(API_URL, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify(payload),
+					});
+
+					let data = {};
+					try {
+						data = await response.json();
+					} catch (jsonErr) {
+						data = { forecastDiagnostic: { error: "Non-JSON response" } };
+					}
+
+					if (!response.ok) {
+						throw new Error(data?.error || data?.forecastDiagnostic?.error || `Forecast API error ${response.status}`);
+					}
+
+					return {
+						ok: true,
+						label: formatForecastShellDayLabel(date, index),
+						date: transitDate,
+						field: extractForecastShellField(data),
+						moonstamp: buildForecastMoonstampSummary(data),
+						liveModifier: extractForecastShellLiveModifier(data),
+					};
+				} catch (err) {
+					console.warn("[LUCY FORECAST SHELL] day failed", transitDate, err);
+					return {
+						ok: false,
+						label: formatForecastShellDayLabel(date, index),
+						date: transitDate,
+						error: err.message,
+					};
+				}
+			}
+
+			async function runForecastShellAfterSuccessfulCalculate(basePayload) {
+				const shell = document.getElementById("forecastShellProof");
+				if (!shell || !basePayload) return;
+
+				const runToken = ++forecastShellRunToken;
+				clearForecastShellRows();
+				setForecastShellStatus("Running 7-day forecast shell...");
+				console.log("[LUCY FORECAST SHELL] run started");
+
+				try {
+					const start = getForecastShellStartDate();
+					const dates = Array.from({ length: 7 }, (_, index) => {
+						const next = new Date(start.getTime());
+						next.setUTCDate(start.getUTCDate() + index);
+						return next;
+					});
+
+					const days = await Promise.all(
+						dates.map((date, index) => fetchForecastShellDay(basePayload, date, index))
+					);
+
+					if (runToken !== forecastShellRunToken) return;
+					renderForecastShellRows(days);
+
+					const failed = days.filter((day) => !day.ok).length;
+					if (failed) {
+						setForecastShellStatus(
+							`Forecast shell populated with ${days.length - failed} successful day(s); ${failed} day(s) returned shell-only fallbacks.`,
+							"forecastShellProofStatus err"
+						);
+					} else {
+						setForecastShellStatus("7-day forecast shell populated.", "forecastShellProofStatus ok");
+					}
+				} catch (err) {
+					console.warn("[LUCY FORECAST SHELL] run failed", err);
+					if (runToken !== forecastShellRunToken) return;
+					clearForecastShellRows();
+					setForecastShellStatus(`Forecast shell error • ${err.message}`, "forecastShellProofStatus err");
+				}
 			}
 
 			function setForecastResultText(id, value) {
