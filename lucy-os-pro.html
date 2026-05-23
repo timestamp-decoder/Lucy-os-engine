@@ -87,6 +87,7 @@
 <!-- Pass 1I update: rebound 7-Day Forecast Data Shell row extraction to the same forecastDiagnostic/top-level response paths used by the working single-date Forecast Preview panel. Shell placement, date loop, normal Today payload, engine/scoring, saved profiles, and share export unchanged. -->
 <!-- Pass 1J update: added 7-Day Forecast Data Shell request-date / Used Transit UTC proof display only. Rows now show requested date, payload date key/value, Used Transit UTC, and the response source path used. Shell placement, normal Today payload, engine/scoring, saved profiles, and share export unchanged. -->
 <!-- Pass 1K update: added payload-comparison and raw-response proof to the existing 7-Day Forecast Data Shell only. The shell now mirrors the working single-date Forecast Preview payload construction path explicitly, compares payload date fields per row, and displays compact response-key/date-like proof. Shell placement, normal Today payload, engine/scoring, saved profiles, and share export unchanged. -->
+<!-- Pass 1M update: bound the visible 7-Day Forecast Data Shell rows directly to response.forecastDiagnostic values only. Backend files, request payloads, date generation, normal Today calculation, engine/scoring, Moonstamp, Live Field Modifier, saved profiles, and share export unchanged. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -19929,30 +19930,51 @@ ${bodyLine}${loadLine}`,
 				return extractForecastLiveFieldModifier(data);
 			}
 
+			function readForecastDiagnosticShellValue(fd, key, fallback = "—") {
+				if (!fd || typeof fd !== "object") return fallback;
+				const value = fd[key];
+				return value === undefined || value === null || String(value).trim() === ""
+					? fallback
+					: String(value);
+			}
+
 			function renderForecastShellRows(days) {
 				const rowsEl = document.getElementById("forecastShellProofRows");
 				if (!rowsEl) return;
 				rowsEl.innerHTML = days
 					.map((day) => {
-						const field = forecastString(day.field || "—");
-						const moonstamp = forecastString(day.moonstamp || "—");
-						const liveModifier = forecastString(day.liveModifier || "—");
-						const usedUtc = forecastString(day.usedUtc || "missing from response");
-						const source = forecastString(day.usedUtcSource || "unavailable");
+						const fd = day.forecastDiagnostic && typeof day.forecastDiagnostic === "object"
+							? day.forecastDiagnostic
+							: {};
 						const sevenDayPayloadDateFields = forecastString(day.sevenDayPayloadDateFields || day.payloadDateKey || "unavailable");
 						const previewPayloadDateFields = forecastString(day.previewPayloadDateFields || "unable to compare");
 						const payloadMatch = forecastString(day.payloadMatch || "unable to compare");
 						const rawProof = formatForecastRawResponseProof(day.rawProof);
+						const receivedTransitDate = readForecastDiagnosticShellValue(fd, "receivedTransitDate");
+						const receivedTransitTime = readForecastDiagnosticShellValue(fd, "receivedTransitTime");
+						const forecastModeRequested = fd.forecastModeRequested === true ? "true" : "false";
+						const parsedLocal = readForecastDiagnosticShellValue(fd, "parsedTransitDateTimeLocal");
+						const usedUtc = readForecastDiagnosticShellValue(fd, "usedTransitUTC");
+						const source = readForecastDiagnosticShellValue(fd, "usedTransitDateSource");
+						const calculationPath = readForecastDiagnosticShellValue(fd, "calculationPath");
+						const warning = readForecastDiagnosticShellValue(fd, "warning");
 						const proof =
 							`Requested Date: ${day.date || "—"}` +
 							` · 7-Day Payload Date Fields: ${sevenDayPayloadDateFields}` +
 							` · Single-Date Preview Payload Date Fields: ${previewPayloadDateFields}` +
 							` · Payload Match: ${payloadMatch}` +
+							` · forecastDiagnostic: ${Object.keys(fd).length ? "yes" : "no"}` +
+							` · Received Transit Date: ${receivedTransitDate}` +
+							` · Received Transit Time: ${receivedTransitTime}` +
+							` · Forecast Mode Requested: ${forecastModeRequested}` +
+							` · Parsed Local: ${parsedLocal}` +
 							` · Used Transit UTC: ${usedUtc}` +
 							` · Used Transit Date Source: ${source}` +
+							` · Calculation Path: ${calculationPath}` +
+							` · Warning: ${warning}` +
 							` · ${rawProof}`;
 						const values = day.ok
-							? `Field: ${field} · Moonstamp: ${moonstamp} · Live: ${liveModifier}`
+							? "Visible diagnostic values are bound directly from response.forecastDiagnostic."
 							: `Forecast unavailable · ${forecastString(day.error || "Unknown shell-only error")}`;
 						return `
 							<div class="devForecastRow">
@@ -19983,6 +20005,7 @@ ${bodyLine}${loadLine}`,
 
 				try {
 					const { response, data } = await requestForecastDiagnostic(payload);
+					const fd = getForecastDiagnosticObject(data);
 					const rawProof = buildForecastRawResponseProof(data);
 
 					if (!response.ok) {
@@ -19990,8 +20013,8 @@ ${bodyLine}${loadLine}`,
 					}
 
 					const usedUtcProof = extractForecastUsedUtcProof(data);
-					const usedUtc = usedUtcProof.value;
-					const usedUtcSource = usedUtcProof.source;
+					const usedUtc = readForecastDiagnosticShellValue(fd, "usedTransitUTC");
+					const usedUtcSource = readForecastDiagnosticShellValue(fd, "usedTransitDateSource", "unavailable");
 					const field = extractForecastFieldStateMode(data);
 					const moonstamp = buildForecastMoonstampSummary(data);
 					const liveModifier = extractForecastLiveFieldModifier(data);
@@ -20008,6 +20031,7 @@ ${bodyLine}${loadLine}`,
 						previewPayloadDateFields,
 						payloadMatch,
 						rawProof,
+						forecastDiagnostic: fd,
 						usedUtc,
 						usedUtcSource,
 						field,
