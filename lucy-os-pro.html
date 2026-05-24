@@ -100,6 +100,7 @@
 <!-- Pass 1Y update: polished final user-facing 7-Day Forecast condition copy only. Translates unclear load/regulation condition text into short internal-weather language while preserving diagnostic shell, forecast requests, normalized row shape, engine/scoring, responsive collapse, saved profiles, tabs, and share export unchanged. -->
 <!-- Pass 2A update: added compact Personal Landing line to final user-facing 7-Day Forecast cards only. Uses existing row/DOM architecture values defensively for display copy; diagnostic shell, backend/API, forecast requests, date loop, normalized row shape, engine/scoring, responsive collapse, saved profiles, tabs, and share export unchanged. -->
 <!-- K1 update: added Kernel Architecture compact index inside the You tab directly above Personal Architecture Beta. Display-only; no backend/API, scoring, Forecast, Landing, Support, saved profiles, share export, or Personal Architecture Beta internals changed. -->
+<!-- K2 update: bound Kernel Architecture compact index source rows to existing safe chart/sign and harmonic labels only. Display-only; no backend/API, scoring, Forecast, Landing, Support, saved profiles, share export, or Personal Architecture Beta internals changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -12330,12 +12331,20 @@
 				el.textContent = value || "Source: Available after chart calculation";
 			}
 
-			function kernelArchitectureBuildPlacementSource(label, placement, degree) {
-				const sign =
+			function kernelArchitectureBuildPlacementSource(label, placement, degree, chartKernel) {
+				const safeSign =
+					personalArchitectureGetSafeExistingSignLabel(
+						placement,
+						placement?.raw,
+						placement?.source,
+						placement?.data,
+						placement?.meta
+					) ||
+					personalArchitectureGetNestedSafeExistingSignLabel(placement) ||
+					getExistingPlacementSignFromChartKernel(label, placement, chartKernel) ||
 					personalArchitectureGetPlacementSign(placement) ||
 					degreeToZodiacSignDisplay(degree);
-				if (sign) return `Source: ${label} in ${sign}`;
-				if (chartKernelHasValue(placement) || chartKernelHasValue(degree)) return `Source: ${label}`;
+				if (safeSign) return `Source: ${label} in ${safeSign}`;
 				return "Source: Available after chart calculation";
 			}
 
@@ -12364,7 +12373,8 @@
 					kernelArchitectureBuildPlacementSource(
 						"Ascendant",
 						ascPlacement,
-						data?.angles?.asc ?? chartKernel?.geometry?.asc
+						data?.angles?.asc ?? chartKernel?.angles?.asc ?? chartKernel?.geometry?.asc,
+						chartKernel
 					)
 				);
 				kernelArchitectureSetSource(
@@ -12372,7 +12382,8 @@
 					kernelArchitectureBuildPlacementSource(
 						"Sun",
 						sunPlacement,
-						data?._longitudesDeg?.sun ?? chartKernel?.tropicalLongitudesDeg?.sun
+						data?._longitudesDeg?.sun ?? chartKernel?.tropicalLongitudesDeg?.sun,
+						chartKernel
 					)
 				);
 				kernelArchitectureSetSource(
@@ -12380,7 +12391,8 @@
 					kernelArchitectureBuildPlacementSource(
 						"Moon",
 						moonPlacement,
-						data?._longitudesDeg?.moon ?? chartKernel?.tropicalLongitudesDeg?.moon
+						data?._longitudesDeg?.moon ?? chartKernel?.tropicalLongitudesDeg?.moon,
+						chartKernel
 					)
 				);
 				kernelArchitectureSetSource(
@@ -12388,7 +12400,8 @@
 					kernelArchitectureBuildPlacementSource(
 						"Mercury",
 						mercuryPlacement,
-						data?._longitudesDeg?.mercury ?? chartKernel?.tropicalLongitudesDeg?.mercury
+						data?._longitudesDeg?.mercury ?? chartKernel?.tropicalLongitudesDeg?.mercury,
+						chartKernel
 					)
 				);
 				kernelArchitectureSetSource(
@@ -12396,7 +12409,8 @@
 					kernelArchitectureBuildPlacementSource(
 						"Venus",
 						venusPlacement,
-						data?._longitudesDeg?.venus ?? chartKernel?.tropicalLongitudesDeg?.venus
+						data?._longitudesDeg?.venus ?? chartKernel?.tropicalLongitudesDeg?.venus,
+						chartKernel
 					)
 				);
 				kernelArchitectureSetSource(
@@ -12404,7 +12418,8 @@
 					kernelArchitectureBuildPlacementSource(
 						"Mars",
 						marsPlacement,
-						data?._longitudesDeg?.mars ?? chartKernel?.tropicalLongitudesDeg?.mars
+						data?._longitudesDeg?.mars ?? chartKernel?.tropicalLongitudesDeg?.mars,
+						chartKernel
 					)
 				);
 				kernelArchitectureSetSource(
@@ -12412,47 +12427,51 @@
 					kernelArchitectureBuildPlacementSource(
 						"Saturn",
 						saturnPlacement,
-						data?._longitudesDeg?.saturn ?? chartKernel?.tropicalLongitudesDeg?.saturn
+						data?._longitudesDeg?.saturn ?? chartKernel?.tropicalLongitudesDeg?.saturn,
+						chartKernel
 					)
 				);
 
+				const nodeDegreePatterns = [
+					/^longitude(deg|degree|degrees)?$/,
+					/^longitude_?deg(rees)?$/,
+					/^lon(gitude)?_?deg(rees)?$/,
+					/^deg(rees)?$/,
+				];
 				const rahuSource = kernelArchitectureBuildPlacementSource(
-					"North Node",
+					"Rahu",
 					rahu,
-					chartKernelPickFirstValue(rahu, [
-						/^longitude(deg|degree|degrees)?$/,
-						/^longitude_?deg(rees)?$/,
-						/^lon(gitude)?_?deg(rees)?$/,
-						/^deg(rees)?$/,
-					])
+					chartKernelPickFirstValue(rahu, nodeDegreePatterns),
+					chartKernel
 				);
 				const ketuSource = kernelArchitectureBuildPlacementSource(
-					"South Node",
+					"Ketu",
 					ketu,
-					chartKernelPickFirstValue(ketu, [
-						/^longitude(deg|degree|degrees)?$/,
-						/^longitude_?deg(rees)?$/,
-						/^lon(gitude)?_?deg(rees)?$/,
-						/^deg(rees)?$/,
-					])
+					chartKernelPickFirstValue(ketu, nodeDegreePatterns),
+					chartKernel
 				);
-				const nodeSource =
-					rahuSource !== "Source: Available after chart calculation" ||
-					ketuSource !== "Source: Available after chart calculation"
-						? `${rahuSource.replace(/^Source:\s*/, "Source: ")} · ${ketuSource.replace(/^Source:\s*/, "")}`
-						: "Source: Available after chart calculation";
-				kernelArchitectureSetSource("rahuKetuVector", nodeSource);
+				const nodeParts = [rahuSource, ketuSource]
+					.filter((source) => source !== "Source: Available after chart calculation")
+					.map((source) => source.replace(/^Source:\s*/, ""));
+				kernelArchitectureSetSource(
+					"rahuKetuVector",
+					nodeParts.length ? `Source: ${nodeParts.join(" · ")}` : "Source: Available after chart calculation"
+				);
 
-				const rootLabel = harmonics?.rootHarmonic ? publicFieldText(harmonics.rootHarmonic) : "";
+				const primaryLabel = harmonics?.primary ? publicFieldText(harmonics.primary) : "";
+				const rootLabel = harmonics?.rootHarmonic ? publicFieldText(harmonics.rootHarmonic) : primaryLabel;
 				const supportLabel = harmonics?.supportHarmonic ? publicFieldText(harmonics.supportHarmonic) : "";
-				const profileLabel = chartKernelHasValue(rootLabel) && chartKernelHasValue(supportLabel)
-					? `Source: ${rootLabel} root / ${supportLabel} support`
-					: "Source: Existing harmonic profile";
-				kernelArchitectureSetSource("harmonicProfile", profileLabel);
+				const profileTranslation = getStableProfileLabel(harmonics?.primary, harmonics?.support);
+				const profileSource = chartKernelHasValue(profileTranslation)
+					? `Source: ${profileTranslation}`
+					: chartKernelHasValue(rootLabel) && chartKernelHasValue(supportLabel)
+						? `Source: ${rootLabel} root / ${supportLabel} support`
+						: "Source: Available after chart calculation";
+				kernelArchitectureSetSource("harmonicProfile", profileSource);
 
 				const supportSource = supportLabel
 					? `Source: ${supportLabel} support harmonic`
-					: "Source: Existing support field";
+					: "Source: Available after chart calculation";
 				kernelArchitectureSetSource("supportField", supportSource);
 			}
 
