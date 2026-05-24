@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 from urllib.parse import urlencode
 from urllib.request import urlopen, Request
+from math import cos, radians
 
 import swisseph as swe
 
@@ -25,6 +26,27 @@ PLANETS = {
 
 FLAGS = swe.FLG_SWIEPH | swe.FLG_SPEED
 HOUSE_SYSTEM = b"P"
+SYNODIC_MONTH_DAYS = 29.53
+
+ZODIAC_SIGNS = [
+    "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
+    "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
+]
+
+MERCURY_SIGNAL_PROCESSOR_BY_SIGN = {
+    "Aries": "Initiating Signal Processor",
+    "Taurus": "Grounded Signal Processor",
+    "Gemini": "Fast Signal Processor",
+    "Cancer": "Protective Signal Processor",
+    "Leo": "Expressive Signal Processor",
+    "Virgo": "Precise Signal Processor",
+    "Libra": "Relational Signal Processor",
+    "Scorpio": "Deep Signal Processor",
+    "Sagittarius": "Expansive Signal Processor",
+    "Capricorn": "Structured Signal Processor",
+    "Aquarius": "Pattern Signal Processor",
+    "Pisces": "Diffused Signal Processor",
+}
 
 GOOGLE_GEOCODE_API_KEY = os.getenv("GOOGLE_GEOCODE_API_KEY", "")
 GOOGLE_TIMEZONE_API_KEY = os.getenv("GOOGLE_TIMEZONE_API_KEY", "")
@@ -32,6 +54,22 @@ GOOGLE_TIMEZONE_API_KEY = os.getenv("GOOGLE_TIMEZONE_API_KEY", "")
 
 def normalize_longitude(lon: float) -> float:
     return (lon % 360.0) / 360.0
+
+
+def normalize_degrees(deg: float) -> float:
+    return float(deg % 360.0)
+
+
+def zodiac_sign_from_longitude(deg: float) -> str:
+    lon = normalize_degrees(float(deg))
+    index = int(lon // 30) % 12
+    return ZODIAC_SIGNS[index]
+
+
+def sidereal_lahiri_longitude_from_tropical(tropical_deg: float, jd_ut: float) -> float:
+    swe.set_sid_mode(getattr(swe, "SIDM_LAHIRI", 1), 0, 0)
+    ayanamsa = float(swe.get_ayanamsa_ut(float(jd_ut)))
+    return normalize_degrees(float(tropical_deg) - ayanamsa)
 
 
 def normalize_tob_with_ampm(tob: str, ampm: str | None = None) -> str:
@@ -262,6 +300,67 @@ def compute_angles_and_houses(jd_ut: float, lat: float, lon: float):
     }, houses
 
 
+def unavailable_lunar_nodes(note: str) -> dict:
+    return {
+        "available": False,
+        "calculation": None,
+        "zodiacMode": "tropical",
+        "rahu": None,
+        "ketu": None,
+        "note": note,
+    }
+
+
+def compute_lunar_nodes(jd_ut: float) -> dict:
+    """Compute tropical Rahu/Ketu node data for diagnostics-only Chart Kernel use."""
+    try:
+        node_body = getattr(swe, "TRUE_NODE", None)
+        calculation = "true-node"
+
+        if node_body is None:
+            node_body = getattr(swe, "MEAN_NODE", None)
+            calculation = "mean-node"
+
+        if node_body is None:
+            return unavailable_lunar_nodes(
+                "Rahu/Ketu node calculation unavailable: Swiss Ephemeris node constants are missing."
+            )
+
+        try:
+            xx, _ = swe.calc_ut(jd_ut, node_body, FLAGS)
+        except Exception as true_node_error:
+            mean_node_body = getattr(swe, "MEAN_NODE", None)
+            if calculation == "true-node" and mean_node_body is not None:
+                xx, _ = swe.calc_ut(jd_ut, mean_node_body, FLAGS)
+                calculation = "mean-node"
+            else:
+                return unavailable_lunar_nodes(
+                    f"Rahu/Ketu node calculation failed: {true_node_error}"
+                )
+
+        rahu_deg = normalize_degrees(float(xx[0]))
+        ketu_deg = normalize_degrees(rahu_deg + 180.0)
+
+        return {
+            "available": True,
+            "calculation": calculation,
+            "zodiacMode": "tropical",
+            "rahu": {
+                "role": "Growth Vector / Directional Trajectory",
+                "longitudeDeg": round(rahu_deg, 4),
+                "normalized": round(normalize_longitude(rahu_deg), 6),
+            },
+            "ketu": {
+                "role": "Release Vector / Mastery Pattern",
+                "longitudeDeg": round(ketu_deg, 4),
+                "normalized": round(normalize_longitude(ketu_deg), 6),
+            },
+            "note": "Rahu/Ketu calculated as tropical lunar node vectors for diagnostics-only Chart Kernel inspection. They do not affect Lucy.OS scoring or public output.",
+        }
+    except Exception as e:
+        return unavailable_lunar_nodes(f"Rahu/Ketu node calculation failed safely: {e}")
+
+
 def compute_chart_inputs(
     dob: str,
     tob: str,
@@ -296,6 +395,7 @@ def compute_chart_inputs(
     result["_longitudesDeg"] = longitudes_deg
     result["angles"] = angles
     result["houses"] = houses
+    result["_nodes"] = compute_lunar_nodes(jd_ut)
 
     result["_meta"] = {
         "source": "Swiss Ephemeris",
@@ -317,8 +417,213 @@ def compute_chart_inputs(
     return result
 
 
-def compute_transit_inputs():
-    now_utc = datetime.now(timezone.utc)
+def parse_forecast_transit_datetime_local(payload: dict) -> tuple[bool, str | None, str | None, str | None, datetime | None, str | None]:
+    raw_transit_date = payload.get("transitDate")
+    raw_transit_time = payload.get("transitTime")
+
+    received_transit_date = (
+        str(raw_transit_date).strip()
+        if raw_transit_date not in (None, "", "null")
+        else None
+    )
+    received_transit_time = (
+        str(raw_transit_time).strip()
+        if raw_transit_time not in (None, "", "null")
+        else None
+    )
+
+    forecast_mode_requested = received_transit_date is not None
+
+    if not forecast_mode_requested:
+        return False, None, None, None, None, None
+
+    diagnostic_time = received_transit_time or "12:00"
+
+    try:
+        date_part = datetime.strptime(received_transit_date, "%Y-%m-%d")
+        time_part = parse_time_flexible(diagnostic_time)
+        parsed_local = datetime(
+            date_part.year,
+            date_part.month,
+            date_part.day,
+            time_part.hour,
+            time_part.minute,
+            0,
+            0,
+        )
+        return (
+            True,
+            received_transit_date,
+            received_transit_time,
+            parsed_local.isoformat(),
+            parsed_local,
+            None,
+        )
+    except Exception:
+        return (
+            True,
+            received_transit_date,
+            received_transit_time,
+            None,
+            None,
+            "transitDate could not be parsed.",
+        )
+
+
+def resolve_forecast_transit_utc(
+    payload: dict,
+    location_text: str = "",
+    utc_offset_override: float | None = None,
+    natal_meta: dict | None = None,
+) -> dict:
+    (
+        forecast_mode_requested,
+        received_transit_date,
+        received_transit_time,
+        parsed_transit_datetime_local,
+        parsed_local,
+        parse_warning,
+    ) = parse_forecast_transit_datetime_local(payload)
+
+    if not forecast_mode_requested:
+        return {
+            "forecastModeRequested": False,
+            "receivedTransitDate": None,
+            "receivedTransitTime": None,
+            "parsedTransitDateTimeLocal": None,
+            "usedTransitUTC": None,
+            "usedTransitDateSource": "server_today",
+            "calculationPath": "no_forecast_payload_today_mode",
+            "warning": None,
+            "transitUtc": None,
+        }
+
+    if parse_warning or parsed_local is None:
+        return {
+            "forecastModeRequested": True,
+            "receivedTransitDate": received_transit_date,
+            "receivedTransitTime": received_transit_time,
+            "parsedTransitDateTimeLocal": None,
+            "usedTransitUTC": None,
+            "usedTransitDateSource": "unavailable",
+            "calculationPath": "forecast_payload_parse_failed",
+            "warning": parse_warning or "transitDate could not be parsed.",
+            "transitUtc": None,
+        }
+
+    warning = None
+    natal_meta = natal_meta or {}
+
+    try:
+        if utc_offset_override is not None:
+            local_dt = parsed_local.replace(
+                tzinfo=timezone(timedelta(hours=float(utc_offset_override)))
+            )
+        else:
+            timezone_name = str(natal_meta.get("timezone_name") or "").strip()
+
+            if timezone_name and timezone_name != "Manual/Override":
+                try:
+                    local_dt = parsed_local.replace(tzinfo=ZoneInfo(timezone_name))
+                except Exception:
+                    utc_offset = natal_meta.get("utc_offset")
+                    if utc_offset is None:
+                        utc_offset = natal_meta.get("utc_offset_at_birth")
+                    local_dt = parsed_local.replace(
+                        tzinfo=timezone(timedelta(hours=float(utc_offset)))
+                    )
+                    warning = "Forecast timezone name was unavailable to ZoneInfo; used the resolved UTC offset fallback."
+            elif natal_meta.get("utc_offset") is not None or natal_meta.get("utc_offset_at_birth") is not None:
+                utc_offset = natal_meta.get("utc_offset")
+                if utc_offset is None:
+                    utc_offset = natal_meta.get("utc_offset_at_birth")
+                local_dt = parsed_local.replace(
+                    tzinfo=timezone(timedelta(hours=float(utc_offset)))
+                )
+                warning = "Forecast used the resolved UTC offset fallback."
+            elif location_text:
+                geo = geocode_birth_place(location_text)
+                rough_utc = parsed_local.replace(tzinfo=timezone.utc)
+                timezone_info = get_historical_timezone(
+                    geo["lat"],
+                    geo["lon"],
+                    int(rough_utc.timestamp()),
+                )
+                try:
+                    local_dt = parsed_local.replace(tzinfo=ZoneInfo(timezone_info["timezone_name"]))
+                except Exception:
+                    local_dt = parsed_local.replace(
+                        tzinfo=timezone(timedelta(hours=float(timezone_info["utc_offset_at_birth"])))
+                    )
+                    warning = "Forecast timezone lookup succeeded but ZoneInfo fallback offset was used."
+            else:
+                local_dt = parsed_local.replace(tzinfo=timezone.utc)
+                warning = "Forecast payload was used, but no location/timezone context was available; interpreted transit time as UTC."
+
+        transit_utc = local_dt.astimezone(timezone.utc)
+
+        return {
+            "forecastModeRequested": True,
+            "receivedTransitDate": received_transit_date,
+            "receivedTransitTime": received_transit_time,
+            "parsedTransitDateTimeLocal": parsed_transit_datetime_local,
+            "usedTransitUTC": transit_utc.isoformat(),
+            "usedTransitDateSource": "forecast_payload",
+            "calculationPath": "forecast_payload_used_for_transit_calculations",
+            "warning": warning,
+            "transitUtc": transit_utc,
+        }
+    except Exception as e:
+        return {
+            "forecastModeRequested": True,
+            "receivedTransitDate": received_transit_date,
+            "receivedTransitTime": received_transit_time,
+            "parsedTransitDateTimeLocal": parsed_transit_datetime_local,
+            "usedTransitUTC": None,
+            "usedTransitDateSource": "server_today",
+            "calculationPath": "forecast_payload_resolution_failed_fallback_to_today",
+            "warning": f"Forecast transit date was received but could not be resolved safely; fell back to current transit calculations. {e}",
+            "transitUtc": None,
+        }
+
+
+def build_forecast_diagnostic(
+    payload: dict,
+    used_transit_utc: str | None = None,
+    forecast_resolution: dict | None = None,
+) -> dict:
+    if forecast_resolution is not None:
+        return {
+            "receivedTransitDate": forecast_resolution.get("receivedTransitDate"),
+            "receivedTransitTime": forecast_resolution.get("receivedTransitTime"),
+            "forecastModeRequested": bool(forecast_resolution.get("forecastModeRequested")),
+            "parsedTransitDateTimeLocal": forecast_resolution.get("parsedTransitDateTimeLocal"),
+            "usedTransitUTC": forecast_resolution.get("usedTransitUTC") or used_transit_utc,
+            "usedTransitDateSource": forecast_resolution.get("usedTransitDateSource"),
+            "calculationPath": forecast_resolution.get("calculationPath"),
+            "warning": forecast_resolution.get("warning"),
+        }
+
+    forecast_resolution = resolve_forecast_transit_utc(payload)
+
+    if not forecast_resolution.get("forecastModeRequested"):
+        forecast_resolution["usedTransitUTC"] = used_transit_utc
+
+    return build_forecast_diagnostic(
+        payload,
+        used_transit_utc=used_transit_utc,
+        forecast_resolution=forecast_resolution,
+    )
+
+def compute_transit_inputs(now_utc: datetime | None = None):
+    if now_utc is None:
+        now_utc = datetime.now(timezone.utc)
+
+    if now_utc.tzinfo is None:
+        now_utc = now_utc.replace(tzinfo=timezone.utc)
+    else:
+        now_utc = now_utc.astimezone(timezone.utc)
+
     jd_ut = to_julian_day_utc(now_utc)
 
     result = {}
@@ -344,6 +649,291 @@ def compute_transit_inputs():
     return result
 
 
+def build_live_field_modifier(transit: dict) -> dict:
+    transit_longitudes_deg = transit.get("_longitudesDeg", {}) or {}
+    transit_meta = transit.get("_meta", {}) or {}
+
+    mercury_tropical_deg = transit_longitudes_deg.get("mercury")
+    jd_ut = transit_meta.get("jd_ut")
+
+    if mercury_tropical_deg is None or jd_ut is None:
+        return {
+            "source": "Swiss Ephemeris",
+            "planet": "mercury",
+            "role": "Signal Processor",
+            "available": False,
+            "displayZodiacMode": "sidereal-lahiri",
+            "displayTitle": None,
+            "note": "Live transit Mercury display modifier unavailable because longitude or Julian day was missing.",
+        }
+
+    tropical_sign = zodiac_sign_from_longitude(mercury_tropical_deg)
+    sidereal_lahiri_deg = sidereal_lahiri_longitude_from_tropical(
+        mercury_tropical_deg,
+        jd_ut,
+    )
+    sidereal_lahiri_sign = zodiac_sign_from_longitude(sidereal_lahiri_deg)
+
+    signal_label = MERCURY_SIGNAL_PROCESSOR_BY_SIGN.get(
+        sidereal_lahiri_sign,
+        "Signal Processor",
+    )
+
+    return {
+        "source": "Swiss Ephemeris",
+        "planet": "mercury",
+        "role": "Signal Processor",
+        "available": True,
+        "tropicalLongitudeDeg": round(float(mercury_tropical_deg), 6),
+        "tropicalSign": tropical_sign,
+        "siderealLahiriLongitudeDeg": round(float(sidereal_lahiri_deg), 6),
+        "siderealLahiriSign": sidereal_lahiri_sign,
+        "displayZodiacMode": "sidereal-lahiri",
+        "displayTitle": f"Mercury in {sidereal_lahiri_sign} — {signal_label}",
+        "note": "Display-only live transit modifier. Does not affect scoring or field selection.",
+    }
+
+
+def calculate_lunar_phase_fraction(sun_lon_deg: float, moon_lon_deg: float) -> float:
+    phase_angle = normalize_degrees(moon_lon_deg - sun_lon_deg)
+    return phase_angle / 360.0
+
+
+def estimate_lunar_illumination(phase_fraction: float) -> float:
+    phase_angle = radians(float(phase_fraction) * 360.0)
+    illumination = ((1.0 - cos(phase_angle)) / 2.0) * 100.0
+    return round(max(0.0, min(100.0, illumination)), 1)
+
+
+def estimate_moon_age(phase_fraction: float) -> float:
+    return round(max(0.0, min(1.0, float(phase_fraction))) * SYNODIC_MONTH_DAYS, 1)
+
+
+def map_lunar_phase_name(phase_fraction: float) -> str:
+    fraction = max(0.0, min(1.0, float(phase_fraction)))
+
+    if fraction < 0.03 or fraction >= 0.97:
+        return "New Moon"
+    if fraction < 0.22:
+        return "Waxing Crescent"
+    if fraction < 0.28:
+        return "First Quarter"
+    if fraction < 0.47:
+        return "Waxing Gibbous"
+    if fraction < 0.53:
+        return "Full Moon"
+    if fraction < 0.72:
+        return "Waning Gibbous"
+    if fraction < 0.78:
+        return "Last Quarter"
+    return "Waning Crescent"
+
+
+def map_moonstamp_state(phase_fraction: float) -> str:
+    fraction = max(0.0, min(1.0, float(phase_fraction)))
+    illumination = estimate_lunar_illumination(fraction)
+
+    if illumination >= 97.0:
+        return "Culminate"
+
+    if fraction < 0.03 or fraction >= 0.97:
+        return "Reset"
+    if fraction < 0.10:
+        return "Re-enter"
+    if fraction < 0.20:
+        return "Emerge"
+    if fraction < 0.28:
+        return "Threshold"
+    if fraction < 0.38:
+        return "Build"
+    if fraction < 0.47:
+        return "Show"
+    if fraction < 0.53:
+        return "Culminate"
+    if fraction < 0.66:
+        return "Release"
+    return "Reduce"
+
+
+def build_moonstamp_language(state: str, phase: str) -> dict:
+    language = {
+        "Reduce": {
+            "modifier": "Lower-load lunar field",
+            "read": "The wider lunar field is reducing and can support simplification, narrowing, and lower demand.",
+            "forecastModifier": "Use this lunar field to simplify the move and avoid adding unnecessary pressure."
+        },
+        "Reset": {
+            "modifier": "Low-visibility reset field",
+            "read": "The wider lunar field is near reset and may support clearing, recovery, and a quieter baseline.",
+            "forecastModifier": "Use this lunar field to return to baseline before forcing new momentum."
+        },
+        "Re-enter": {
+            "modifier": "Soft return field",
+            "read": "The wider lunar field is beginning to return and can support light contact, small restarts, and gentle re-entry.",
+            "forecastModifier": "Use this lunar field for one soft step back in, not premature intensity."
+        },
+        "Emerge": {
+            "modifier": "Early formation field",
+            "read": "The wider lunar field is emerging and may support shaping, early form, and protected growth.",
+            "forecastModifier": "Use this lunar field to shape the next step carefully before exposing it too much."
+        },
+        "Threshold": {
+            "modifier": "Commitment threshold field",
+            "read": "The wider lunar field is near a structural turn and may support decisions, commitment, and crossing a clear edge.",
+            "forecastModifier": "Use this lunar field to choose one clean commitment instead of hovering at the edge."
+        },
+        "Build": {
+            "modifier": "Accumulating field",
+            "read": "The wider lunar field is building and may support reinforcement, continuation, and steady strengthening.",
+            "forecastModifier": "Use this lunar field to reinforce what already has shape instead of scattering into new pivots."
+        },
+        "Show": {
+            "modifier": "Rising visibility field",
+            "read": "The wider lunar field is highly visible and may support presentation, contact, and bringing formed work into view.",
+            "forecastModifier": "Use this lunar field to make one formed thing more visible without over-editing."
+        },
+        "Culminate": {
+            "modifier": "Peak visibility / high field charge",
+            "read": "The wider lunar field is near peak visibility and can amplify exposure, delivery, and emotional charge.",
+            "forecastModifier": "Use this lunar field for one visible completion or delivery, not needless escalation."
+        },
+        "Release": {
+            "modifier": "Post-peak release field",
+            "read": "The wider lunar field is moving out of peak charge and may support release, distribution, and decompression.",
+            "forecastModifier": "Use this lunar field to let pressure move out instead of clinging to the peak."
+        },
+    }
+
+    fallback = {
+        "modifier": f"{phase} lunar field",
+        "read": "The wider lunar field may add a timing modifier to the current system weather.",
+        "forecastModifier": "Use the lunar field as context, not as the main driver."
+    }
+
+    return language.get(state, fallback)
+
+
+def build_moonstamp_modifier_from_transit(transit: dict) -> dict:
+    longitudes = transit.get("_longitudesDeg", {}) or {}
+
+    sun_lon_deg = float(longitudes.get("sun", float(transit.get("sun", 0.0)) * 360.0))
+    moon_lon_deg = float(longitudes.get("moon", float(transit.get("moon", 0.0)) * 360.0))
+
+    phase_fraction = calculate_lunar_phase_fraction(sun_lon_deg, moon_lon_deg)
+    illumination = estimate_lunar_illumination(phase_fraction)
+    moon_age = estimate_moon_age(phase_fraction)
+    phase = map_lunar_phase_name(phase_fraction)
+    state = map_moonstamp_state(phase_fraction)
+    language = build_moonstamp_language(state, phase)
+
+    meta = transit.get("_meta", {}) or {}
+
+    return {
+        "source": "Swiss Ephemeris",
+        "phase": phase,
+        "illumination": illumination,
+        "moonAge": moon_age,
+        "state": state,
+        "modifier": language["modifier"],
+        "read": language["read"],
+        "forecastModifier": language["forecastModifier"],
+        "phaseFraction": round(phase_fraction, 4),
+        "sunLongitudeDeg": round(sun_lon_deg, 4),
+        "moonLongitudeDeg": round(moon_lon_deg, 4),
+        "utcDatetime": meta.get("utc_datetime"),
+        "note": "Wider lunar phase/state modifier only. Local moonrise and moonset remain in Moonstamp."
+    }
+
+
+def build_projected_moonstamp_modifier(hours_ahead: int, base_utc: datetime | None = None) -> dict:
+    if base_utc is None:
+        base_utc = datetime.now(timezone.utc)
+    if base_utc.tzinfo is None:
+        base_utc = base_utc.replace(tzinfo=timezone.utc)
+    else:
+        base_utc = base_utc.astimezone(timezone.utc)
+    projected_utc = base_utc + timedelta(hours=hours_ahead)
+    projected_transit = compute_transit_inputs(projected_utc)
+    projected = build_moonstamp_modifier_from_transit(projected_transit)
+    projected["projectionHours"] = hours_ahead
+    return projected
+
+
+def build_chart_kernel_inspection(chart: dict) -> dict:
+    angles = chart.get("angles", {}) or {}
+    houses = chart.get("houses", []) or []
+    tropical_longitudes_deg = chart.get("_longitudesDeg", {}) or {}
+    nodes = chart.get("_nodes") or unavailable_lunar_nodes(
+        "Rahu/Ketu node data was not attached to this chart response."
+    )
+
+    nodes_available = bool(
+        nodes.get("available")
+        and isinstance(nodes.get("rahu"), dict)
+        and isinstance(nodes.get("ketu"), dict)
+    )
+
+    ascendant_deg = angles.get("asc")
+    mc_deg = angles.get("mc")
+
+    return {
+        "version": "v1-inspection",
+        "status": "inspection-only",
+        "architecture": {
+            "engineType": "field-engine",
+            "coreGeometry": "tropical",
+            "signGeometry": "tropical",
+            "siderealUse": "not-active-yet",
+            "siderealIntendedUse": "future lunar/node micro-texture only",
+            "placementMeaning": "system-component-not-personality-trait",
+        },
+        "geometry": {
+            "zodiacMode": "tropical",
+            "houseSystem": "Placidus",
+            "ascendantDeg": ascendant_deg,
+            "mcDeg": mc_deg,
+            "houses": houses,
+        },
+        "tropicalLongitudesDeg": tropical_longitudes_deg,
+        "placementRoles": {
+            "ascendant": "Interface Kernel",
+            "sun": "Core Voltage / CPU",
+            "moon": "Emotional Processor / GPU",
+            "mercury": "Signal Processor",
+            "venus": "Relational Tone / Harmonic Codec",
+            "mars": "Action Vector",
+            "jupiter": "Meaning Amplifier",
+            "saturn": "Structure Governor",
+            "rahu": "Growth Vector / Directional Trajectory",
+            "ketu": "Release Vector / Mastery Pattern",
+        },
+        "availableNow": {
+            "tropicalPlanets": True,
+            "ascendant": ascendant_deg is not None,
+            "mc": mc_deg is not None,
+            "houses": len(houses) > 0,
+            "rahu": nodes_available,
+            "ketu": nodes_available,
+            "siderealLahiri": False,
+            "nakshatras": False,
+        },
+        "nodes": nodes,
+        "siderealLahiri": {
+            "available": False,
+            "ayanamsa": None,
+            "nakshatraSupport": False,
+            "note": "Sidereal Lahiri is not active yet. Future use is limited to lunar/node micro-texture.",
+        },
+        "safety": {
+            "publicInterpretationAdded": False,
+            "scoringChanged": False,
+            "fieldSelectionChanged": False,
+            "moonstampChanged": False,
+            "existingPayloadChanged": False,
+        },
+    }
+
+
 def fmt_value(n: float) -> str:
     try:
         return f"{float(n):.2f}"
@@ -360,7 +950,10 @@ def infer_mode(strain: float) -> str:
         return "Mobilized State"
     return "Regulated Baseline"
 
-def build_lucy_response(chart: dict) -> dict:
+
+def build_lucy_response(chart: dict, transit_utc: datetime | None = None) -> dict:
+    server_calculation_timestamp = datetime.now(timezone.utc).isoformat()
+
     sun = float(chart.get("sun", 0.0))
     moon = float(chart.get("moon", 0.0))
     mercury = float(chart.get("mercury", 0.0))
@@ -379,35 +972,91 @@ def build_lucy_response(chart: dict) -> dict:
     asc_norm = normalize_longitude(asc_deg)
     mc_norm = normalize_longitude(mc_deg)
 
-    capacity = 0.55 + (sun * 0.45)
+    natal_capacity = 0.50 + (sun * 0.40)
 
-    amplified_load = (
-        moon * 0.28 +
-        mars * 0.18 +
-        jupiter * 0.14 +
-        uranus * 0.14 +
-        neptune * 0.12 +
-        pluto * 0.10 +
-        asc_norm * 0.16
+    natal_load = (
+        moon * 0.32 +
+        mars * 0.22 +
+        jupiter * 0.16 +
+        uranus * 0.18 +
+        neptune * 0.14 +
+        pluto * 0.12 +
+        asc_norm * 0.10 +
+        mc_norm * 0.12
     )
 
-    raw_regulation = (
-        saturn * 0.32 +
-        venus * 0.24 +
-        mercury * 0.14
+    natal_raw_regulation = (
+        saturn * 0.26 +
+        venus * 0.20 +
+        mercury * 0.12
     )
 
-    regulation_cap = amplified_load * 0.82
+    natal_regulation_cap = natal_load * 0.68
+    natal_regulation = min(natal_raw_regulation, natal_regulation_cap)
+
+    natal_overload_delta = max(natal_load - natal_capacity, 0.0)
+    natal_saturn_constraint = min(
+        natal_overload_delta * (0.14 + (saturn * 0.10)),
+        natal_load * 0.18
+    )
+
+    natal_effective_load = max(
+        natal_load - natal_regulation - natal_saturn_constraint,
+        0.0
+    )
+    natal_effective_load *= (0.96 + (asc_norm * 0.20))
+    natal_strain = natal_effective_load / natal_capacity if natal_capacity > 0 else 0.0
+
+    transit = compute_transit_inputs(transit_utc)
+    transit_base_utc = transit_utc
+    if transit_base_utc is None:
+        transit_base_utc = datetime.now(timezone.utc)
+    live_field_modifier = build_live_field_modifier(transit)
+    moonstamp = build_moonstamp_modifier_from_transit(transit)
+    moonstamp_plus6 = build_projected_moonstamp_modifier(6, transit_base_utc)
+    moonstamp_plus24 = build_projected_moonstamp_modifier(24, transit_base_utc)
+
+    t_moon = float(transit.get("moon", 0.0))
+    t_mercury = float(transit.get("mercury", 0.0))
+    t_venus = float(transit.get("venus", 0.0))
+    t_mars = float(transit.get("mars", 0.0))
+    t_jupiter = float(transit.get("jupiter", 0.0))
+    t_saturn = float(transit.get("saturn", 0.0))
+    t_uranus = float(transit.get("uranus", 0.0))
+    t_neptune = float(transit.get("neptune", 0.0))
+    t_pluto = float(transit.get("pluto", 0.0))
+
+    transit_meta = transit.get("_meta", {}) or {}
+    transit_longitudes_deg = transit.get("_longitudesDeg", {}) or {}
+
+    transit_load = (
+        t_moon * 0.18 +
+        t_mars * 0.14 +
+        t_jupiter * 0.10 +
+        t_uranus * 0.12 +
+        t_neptune * 0.10 +
+        t_pluto * 0.08
+    )
+
+    transit_regulation = (
+        t_saturn * 0.12 +
+        t_venus * 0.10 +
+        t_mercury * 0.06
+    )
+
+    capacity = natal_capacity
+    amplified_load = natal_load + transit_load
+    raw_regulation = natal_regulation + transit_regulation
+    regulation_cap = amplified_load * 0.72
     regulation = min(raw_regulation, regulation_cap)
 
     overload_delta = max(amplified_load - capacity, 0.0)
     saturn_constraint = min(
-        overload_delta * (0.20 + (saturn * 0.15)),
-        amplified_load * 0.25
+        overload_delta * (0.10 + (t_saturn * 0.08)),
+        amplified_load * 0.12
     )
 
     effective_load = max(amplified_load - regulation - saturn_constraint, 0.0)
-    effective_load *= (0.92 + (asc_norm * 0.16))
     strain = effective_load / capacity if capacity > 0 else 0.0
 
     mode = infer_mode(strain)
@@ -420,6 +1069,13 @@ def build_lucy_response(chart: dict) -> dict:
         ("Neptune", neptune),
         ("Pluto", pluto),
         ("ASC", asc_norm),
+        ("MC", mc_norm),
+        ("Transit Moon", t_moon),
+        ("Transit Mars", t_mars),
+        ("Transit Jupiter", t_jupiter),
+        ("Transit Uranus", t_uranus),
+        ("Transit Neptune", t_neptune),
+        ("Transit Pluto", t_pluto),
     ]
     load_drivers.sort(key=lambda x: x[1], reverse=True)
 
@@ -427,13 +1083,21 @@ def build_lucy_response(chart: dict) -> dict:
         ("Saturn", saturn),
         ("Venus", venus),
         ("Mercury", mercury),
+        ("Transit Saturn", t_saturn),
+        ("Transit Venus", t_venus),
+        ("Transit Mercury", t_mercury),
     ]
     regulators.sort(key=lambda x: x[1], reverse=True)
 
     primary_driver = load_drivers[0][0]
     top_regulator = regulators[0][0]
 
-    environment_load = (uranus * 0.45) + (neptune * 0.45) + (asc_norm * 0.10)
+    environment_load = (
+        (uranus * 0.25) +
+        (neptune * 0.25) +
+        (t_uranus * 0.25) +
+        (t_neptune * 0.25)
+    )
     environment_mode = (
         "Clear / Stable" if environment_load < 0.33 else
         "Mixed / Variable" if environment_load < 0.66 else
@@ -441,9 +1105,12 @@ def build_lucy_response(chart: dict) -> dict:
     )
 
     timing_pressure = (
-        mars * 0.35 +
-        jupiter * 0.30 +
-        mc_norm * 0.35
+        mars * 0.10 +
+        jupiter * 0.08 +
+        t_mars * 0.34 +
+        t_jupiter * 0.18 +
+        t_moon * 0.12 +
+        mc_norm * 0.18
     )
     timing_mode = (
         "Stable Window" if timing_pressure < 0.33 else
@@ -451,7 +1118,7 @@ def build_lucy_response(chart: dict) -> dict:
         "Pushed Window"
     )
 
-    pluto_rewrite = pluto > 0.85 and strain > 0.95
+    pluto_rewrite = (t_pluto > 0.85 and strain > 0.95) or (pluto > 0.90 and strain > 0.95)
     saturn_shutdown = saturn_constraint > 0.20
 
     interpretation = {
@@ -481,11 +1148,20 @@ def build_lucy_response(chart: dict) -> dict:
             f"{top_regulator} leads the regulation layer "
             f"({fmt_value(regulation)} active regulation; raw {fmt_value(raw_regulation)})."
         ),
-        "volatilityNote": f"Uranus volatility proxy: {fmt_value(uranus)}.",
-        "fogNote": f"Neptune fog proxy: {fmt_value(neptune)}.",
-        "activationNote": f"Mars activation proxy: {fmt_value(mars)}.",
+        "volatilityNote": (
+            f"Transit Uranus {fmt_value(t_uranus)} + natal Uranus {fmt_value(uranus)} "
+            f"set volatility conditions."
+        ),
+        "fogNote": (
+            f"Transit Neptune {fmt_value(t_neptune)} + natal Neptune {fmt_value(neptune)} "
+            f"set diffusion conditions."
+        ),
+        "activationNote": (
+            f"Transit Mars {fmt_value(t_mars)} with natal Mars {fmt_value(mars)} "
+            f"drives activation."
+        ),
         "constraintNote": (
-            f"Saturn constraint applied: {fmt_value(saturn_constraint)} "
+            f"Transit Saturn constraint applied: {fmt_value(saturn_constraint)} "
             f"(overload delta {fmt_value(overload_delta)})."
         ),
     }
@@ -500,15 +1176,24 @@ def build_lucy_response(chart: dict) -> dict:
     forecast = {
         "now": {
             "state": forecast_now_state,
-            "text": interpretation["stateSummary"],
+            "text": (
+                f"{interpretation['stateSummary']} "
+                f"Moonstamp: {moonstamp['forecastModifier']}"
+            ),
         },
         "plus6": {
             "state": forecast_now_state,
-            "text": "Short-horizon forecast is currently using the same natal-state proxy layer.",
+            "text": (
+                f"+6h lunar field: {moonstamp_plus6['state']} / {moonstamp_plus6['phase']}. "
+                f"{moonstamp_plus6['forecastModifier']}"
+            ),
         },
         "plus24": {
             "state": forecast_now_state,
-            "text": "Longer-horizon forecast is currently using the same natal-state proxy layer.",
+            "text": (
+                f"+24h lunar field: {moonstamp_plus24['state']} / {moonstamp_plus24['phase']}. "
+                f"{moonstamp_plus24['forecastModifier']}"
+            ),
         },
     }
 
@@ -535,6 +1220,8 @@ def build_lucy_response(chart: dict) -> dict:
         "utc_datetime": meta.get("utc_datetime"),
         "jdUt": meta.get("jd_ut"),
         "jd_ut": meta.get("jd_ut"),
+        "transitUtcDatetime": transit_meta.get("utc_datetime"),
+        "transitMode": transit_meta.get("mode", "transit"),
     }
 
     planetary = {
@@ -550,6 +1237,63 @@ def build_lucy_response(chart: dict) -> dict:
         "pluto": pluto,
         "asc": asc_norm,
         "mc": mc_norm,
+        "transitMoon": t_moon,
+        "transitMercury": t_mercury,
+        "transitVenus": t_venus,
+        "transitMars": t_mars,
+        "transitJupiter": t_jupiter,
+        "transitSaturn": t_saturn,
+        "transitUranus": t_uranus,
+        "transitNeptune": t_neptune,
+        "transitPluto": t_pluto,
+    }
+
+    daily_field_backend_debug = {
+        "serverCalculationTimestamp": server_calculation_timestamp,
+        "transitUtcDatetime": transit_meta.get("utc_datetime"),
+        "transitJulianDay": transit_meta.get("jd_ut"),
+        "transitFreshlyCalculated": True,
+        "normalizedTransitValues": {
+            "transitMoon": t_moon,
+            "transitMercury": t_mercury,
+            "transitVenus": t_venus,
+            "transitMars": t_mars,
+            "transitJupiter": t_jupiter,
+            "transitSaturn": t_saturn,
+            "transitUranus": t_uranus,
+            "transitNeptune": t_neptune,
+            "transitPluto": t_pluto,
+        },
+        "transitLongitudesDeg": {
+            "moon": transit_longitudes_deg.get("moon"),
+            "mercury": transit_longitudes_deg.get("mercury"),
+            "venus": transit_longitudes_deg.get("venus"),
+            "mars": transit_longitudes_deg.get("mars"),
+            "jupiter": transit_longitudes_deg.get("jupiter"),
+            "saturn": transit_longitudes_deg.get("saturn"),
+            "uranus": transit_longitudes_deg.get("uranus"),
+            "neptune": transit_longitudes_deg.get("neptune"),
+            "pluto": transit_longitudes_deg.get("pluto"),
+        },
+        "liveFieldModifier": live_field_modifier,
+        "timing": {
+            "timingPressure": timing_pressure,
+            "timingMode": timing_mode,
+        },
+        "environment": {
+            "environmentalLoad": environment_load,
+            "environmentMode": environment_mode,
+        },
+        "forecastNowState": forecast_now_state,
+        "moonstamp": {
+            "state": moonstamp.get("state"),
+            "phase": moonstamp.get("phase"),
+            "phaseFraction": moonstamp.get("phaseFraction"),
+            "illumination": moonstamp.get("illumination"),
+            "moonAge": moonstamp.get("moonAge"),
+            "forecastModifier": moonstamp.get("forecastModifier"),
+        },
+        "note": "Transit planet values are normalized zodiac positions from 0–1, not direct strength scores.",
     }
 
     return {
@@ -562,17 +1306,28 @@ def build_lucy_response(chart: dict) -> dict:
             "effectiveLoad": effective_load,
             "mode": mode,
         },
+        "baselineState": {
+            "capacity": natal_capacity,
+            "strain": natal_strain,
+            "amplifiedLoad": natal_load,
+            "regulation": natal_regulation,
+            "saturnConstraint": natal_saturn_constraint,
+            "effectiveLoad": natal_effective_load,
+            "mode": infer_mode(natal_strain),
+        },
         "telemetry": {
             "primaryDriver": primary_driver,
             "topRegulator": top_regulator,
-            "topDrivers": [f"{name} ({fmt_value(val)})" for name, val in load_drivers[:3]],
-            "topRegulators": [f"{name} ({fmt_value(val)})" for name, val in regulators[:3]],
+            "topDrivers": [f"{name} ({fmt_value(val)})" for name, val in load_drivers[:4]],
+            "topRegulators": [f"{name} ({fmt_value(val)})" for name, val in regulators[:4]],
             "capacity": capacity,
             "strain": strain,
             "amplifiedLoad": amplified_load,
             "regulation": regulation,
             "saturnConstraint": saturn_constraint,
             "effectiveLoad": effective_load,
+            "transitLoad": transit_load,
+            "transitRegulation": transit_regulation,
         },
         "environment": {
             "environmentalLoad": environment_load,
@@ -588,17 +1343,34 @@ def build_lucy_response(chart: dict) -> dict:
         },
         "interpretation": interpretation,
         "forecast": forecast,
+        "moonstamp": moonstamp,
+        "moonstampForecast": {
+            "plus6": moonstamp_plus6,
+            "plus24": moonstamp_plus24,
+        },
         "ephemeris": ephemeris,
         "inputResolved": input_resolved,
         "planetary": planetary,
         "angles": chart.get("angles", {}),
         "houses": chart.get("houses", []),
         "_longitudesDeg": chart.get("_longitudesDeg", {}),
+        "transitLongitudesDeg": transit_longitudes_deg,
+        "liveFieldModifier": live_field_modifier,
+        "dailyFieldBackendDebug": daily_field_backend_debug,
+        "chartKernel": build_chart_kernel_inspection(chart),
         "debugEcho": {
             "ascNorm": asc_norm,
             "mcNorm": mc_norm,
             "rawRegulation": raw_regulation,
             "regulationCap": regulation_cap,
+            "natalLoad": natal_load,
+            "natalRegulation": natal_regulation,
+            "transitLoad": transit_load,
+            "transitRegulation": transit_regulation,
+            "transitMode": transit_meta.get("mode", "transit"),
+            "moonstampPhaseFraction": moonstamp.get("phaseFraction"),
+            "moonstampState": moonstamp.get("state"),
+            "moonstampPhase": moonstamp.get("phase"),
         }
     }
 
@@ -639,8 +1411,19 @@ class handler(BaseHTTPRequestHandler):
             mode = str(payload.get("mode", "natal")).strip().lower()
 
             if mode == "transit":
-                chart = compute_transit_inputs()
-                response = build_lucy_response(chart)
+                forecast_resolution = resolve_forecast_transit_utc(payload)
+                chart = compute_transit_inputs(forecast_resolution.get("transitUtc"))
+                response = {
+                    "ok": True,
+                    "transitOnly": True,
+                    "chart": chart,
+                    "moonstamp": build_moonstamp_modifier_from_transit(chart),
+                    "forecastDiagnostic": build_forecast_diagnostic(
+                        payload,
+                        used_transit_utc=(chart.get("_meta", {}) or {}).get("utc_datetime"),
+                        forecast_resolution=forecast_resolution,
+                    ),
+                }
                 self._write_json(200, response)
                 return
 
@@ -697,7 +1480,24 @@ class handler(BaseHTTPRequestHandler):
                 location=location,
             )
 
-            response = build_lucy_response(chart)
+            forecast_resolution = resolve_forecast_transit_utc(
+                payload,
+                location_text=location,
+                utc_offset_override=utc_override,
+                natal_meta=chart.get("_meta", {}) or {},
+            )
+
+            response = build_lucy_response(
+                chart,
+                transit_utc=forecast_resolution.get("transitUtc"),
+            )
+
+            response["forecastDiagnostic"] = build_forecast_diagnostic(
+                payload,
+                used_transit_utc=(response.get("ephemeris", {}) or {}).get("transitUtcDatetime"),
+                forecast_resolution=forecast_resolution,
+            )
+
             self._write_json(200, response)
 
         except ValueError as e:
