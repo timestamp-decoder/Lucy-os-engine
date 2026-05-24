@@ -4406,9 +4406,9 @@
 				width: 100%;
 				max-width: 100%;
 				min-width: 0;
-				margin-top: 14px;
-				margin-bottom: 14px;
-				padding: 16px;
+				margin-top: 12px;
+				margin-bottom: 12px;
+				padding: 15px;
 				border: 1px solid rgba(216, 184, 76, 0.18);
 				border-radius: 18px;
 				background: rgba(255, 255, 255, 0.026);
@@ -4420,37 +4420,38 @@
 				display: flex;
 				justify-content: space-between;
 				align-items: flex-start;
-				gap: 12px;
-				margin-bottom: 10px;
+				gap: 10px;
+				margin-bottom: 9px;
 				min-width: 0;
 			}
 
 			.kernelArchitectureHeader h3 {
 				margin: 0;
 				color: var(--text);
-				font-size: 17px;
-				line-height: 1.2;
+				font-size: 16.5px;
+				line-height: 1.18;
+				letter-spacing: -0.01em;
 			}
 
 			.kernelArchitectureHeader p {
-				margin: 5px 0 0;
+				margin: 4px 0 0;
 				color: var(--muted);
-				font-size: 12px;
-				line-height: 1.45;
-				font-weight: 750;
+				font-size: 11.8px;
+				line-height: 1.42;
+				font-weight: 740;
 				overflow-wrap: break-word;
 			}
 
 			.kernelArchitectureBadge {
 				display: inline-flex;
 				align-items: center;
-				min-height: 26px;
-				padding: 5px 9px;
+				min-height: 24px;
+				padding: 4px 8px;
 				border-radius: 999px;
-				border: 1px solid rgba(216, 184, 76, 0.25);
-				background: rgba(216, 184, 76, 0.075);
+				border: 1px solid rgba(216, 184, 76, 0.22);
+				background: rgba(216, 184, 76, 0.065);
 				color: var(--gold);
-				font-size: 10px;
+				font-size: 9.5px;
 				font-weight: 950;
 				letter-spacing: 0.08em;
 				text-transform: uppercase;
@@ -4458,86 +4459,144 @@
 			}
 
 			.kernelArchitectureIntro {
-				margin: 0 0 10px;
-				padding: 10px 12px;
+				margin: 0 0 9px;
+				padding: 9px 11px;
 				border: 1px solid rgba(216, 184, 76, 0.12);
-				border-radius: 14px;
+				border-radius: 13px;
 				background: rgba(216, 184, 76, 0.04);
 				color: #d9e0f4;
-				font-size: 12px;
-				line-height: 1.45;
-				font-weight: 760;
+				font-size: 11.7px;
+				line-height: 1.42;
+				font-weight: 750;
 				overflow-wrap: break-word;
 			}
 
 			.kernelArchitectureGrid {
 				display: grid;
 				grid-template-columns: repeat(2, minmax(0, 1fr));
-				gap: 10px;
+				gap: 9px;
 				min-width: 0;
 				max-width: 100%;
 			}
 
 			.kernelArchitectureItem {
 				display: grid;
-				gap: 6px;
+				gap: 5px;
 				min-width: 0;
 				max-width: 100%;
-				padding: 12px;
-				border: 1px solid rgba(255, 255, 255, 0.075);
-				border-radius: 14px;
-				background: rgba(255, 255, 255, 0.03);
+				padding: 11px;
+				border: 1px solid rgba(255, 255, 255, 0.07);
+				border-radius: 13px;
+				background: rgba(255, 255, 255, 0.028);
 				overflow: hidden;
 			}
 
 			.kernelArchitectureItemTitle {
 				color: var(--text);
-				font-size: 13px;
-				line-height: 1.25;
+				font-size: 13.2px;
+				line-height: 1.22;
 				font-weight: 950;
 				overflow-wrap: break-word;
 			}
 
 			.kernelArchitectureItemSubtext {
-				color: var(--gold);
-				font-size: 10px;
-				line-height: 1.25;
+				color: rgba(216, 184, 76, 0.88);
+				font-size: 9.8px;
+				line-height: 1.22;
 				font-weight: 950;
-				letter-spacing: 0.07em;
+				letter-spacing: 0.075em;
 				text-transform: uppercase;
 				overflow-wrap: break-word;
 			}
 
 			.kernelArchitectureItemBody {
 				color: #d9e0f4;
-				font-size: 11.5px;
-				line-height: 1.42;
-				font-weight: 740;
+				font-size: 11.7px;
+				line-height: 1.4;
+				font-weight: 735;
 				overflow-wrap: break-word;
 			}
 
 			.kernelArchitectureItemSource {
-				margin-top: 2px;
-				padding-top: 7px;
-				border-top: 1px solid rgba(255, 255, 255, 0.065);
+				margin-top: 1px;
+				padding-top: 6px;
+				border-top: 1px solid rgba(255, 255, 255, 0.058);
 				color: var(--muted2);
-				font-size: 10.5px;
-				line-height: 1.35;
-				font-weight: 850;
-				overflow-wrap: break-word;
+				font-size: 10.2px;
+				line-height: 1.32;
+				font-weight: 800;
+				overflow-wrap: anywhere;
+				word-break: normal;
 			}
 
 			@media (max-width: 760px) {
+				.kernelArchitectureCard {
+					margin-top: 12px;
+					margin-bottom: 12px;
+					padding: 13px;
+					border-radius: 16px;
+				}
+
 				.kernelArchitectureGrid {
 					grid-template-columns: minmax(0, 1fr);
+					gap: 8px;
 				}
 
 				.kernelArchitectureHeader {
 					display: grid;
+					gap: 8px;
+					margin-bottom: 8px;
+				}
+
+				.kernelArchitectureHeader h3 {
+					font-size: 16px;
+					line-height: 1.18;
+				}
+
+				.kernelArchitectureHeader p {
+					font-size: 11.5px;
+					line-height: 1.4;
 				}
 
 				.kernelArchitectureBadge {
 					justify-self: start;
+					min-height: 23px;
+					padding: 4px 8px;
+					font-size: 9.2px;
+				}
+
+				.kernelArchitectureIntro {
+					margin-bottom: 8px;
+					padding: 8px 10px;
+					font-size: 11.4px;
+					line-height: 1.38;
+				}
+
+				.kernelArchitectureItem {
+					gap: 5px;
+					padding: 10px;
+					border-radius: 12px;
+				}
+
+				.kernelArchitectureItemTitle {
+					font-size: 13px;
+					line-height: 1.2;
+				}
+
+				.kernelArchitectureItemSubtext {
+					font-size: 9.5px;
+					line-height: 1.2;
+				}
+
+				.kernelArchitectureItemBody {
+					font-size: 11.4px;
+					line-height: 1.38;
+				}
+
+				.kernelArchitectureItemSource {
+					padding-top: 5px;
+					font-size: 10px;
+					line-height: 1.3;
 				}
 			}
 
