@@ -99,6 +99,7 @@
 <!-- Pass 1W update: added internal-weather display labels to the final user-facing 7-Day Forecast cards only. Uses existing normalized forecast row/card values for display labels; diagnostic shell, backend/API, request payloads, forecast loop, extraction, normalized row shape, engine/scoring, responsive collapse, saved profiles, tabs, and share export unchanged. -->
 <!-- Pass 1Y update: polished final user-facing 7-Day Forecast condition copy only. Translates unclear load/regulation condition text into short internal-weather language while preserving diagnostic shell, forecast requests, normalized row shape, engine/scoring, responsive collapse, saved profiles, tabs, and share export unchanged. -->
 <!-- Pass 2A update: added compact Personal Landing line to final user-facing 7-Day Forecast cards only. Uses existing row/DOM architecture values defensively for display copy; diagnostic shell, backend/API, forecast requests, date loop, normalized row shape, engine/scoring, responsive collapse, saved profiles, tabs, and share export unchanged. -->
+<!-- K1 update: added Kernel Architecture compact index inside the You tab directly above Personal Architecture Beta. Display-only; no backend/API, scoring, Forecast, Landing, Support, saved profiles, share export, or Personal Architecture Beta internals changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -4397,6 +4398,146 @@
 			.youArchitectureMeaning strong {
 				color: var(--text);
 				font-weight: 900;
+			}
+
+
+			.kernelArchitectureCard {
+				width: 100%;
+				max-width: 100%;
+				min-width: 0;
+				margin-top: 14px;
+				margin-bottom: 14px;
+				padding: 16px;
+				border: 1px solid rgba(216, 184, 76, 0.18);
+				border-radius: 18px;
+				background: rgba(255, 255, 255, 0.026);
+				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.018);
+				overflow: hidden;
+			}
+
+			.kernelArchitectureHeader {
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-start;
+				gap: 12px;
+				margin-bottom: 10px;
+				min-width: 0;
+			}
+
+			.kernelArchitectureHeader h3 {
+				margin: 0;
+				color: var(--text);
+				font-size: 17px;
+				line-height: 1.2;
+			}
+
+			.kernelArchitectureHeader p {
+				margin: 5px 0 0;
+				color: var(--muted);
+				font-size: 12px;
+				line-height: 1.45;
+				font-weight: 750;
+				overflow-wrap: break-word;
+			}
+
+			.kernelArchitectureBadge {
+				display: inline-flex;
+				align-items: center;
+				min-height: 26px;
+				padding: 5px 9px;
+				border-radius: 999px;
+				border: 1px solid rgba(216, 184, 76, 0.25);
+				background: rgba(216, 184, 76, 0.075);
+				color: var(--gold);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				white-space: nowrap;
+			}
+
+			.kernelArchitectureIntro {
+				margin: 0 0 10px;
+				padding: 10px 12px;
+				border: 1px solid rgba(216, 184, 76, 0.12);
+				border-radius: 14px;
+				background: rgba(216, 184, 76, 0.04);
+				color: #d9e0f4;
+				font-size: 12px;
+				line-height: 1.45;
+				font-weight: 760;
+				overflow-wrap: break-word;
+			}
+
+			.kernelArchitectureGrid {
+				display: grid;
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				gap: 10px;
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.kernelArchitectureItem {
+				display: grid;
+				gap: 6px;
+				min-width: 0;
+				max-width: 100%;
+				padding: 12px;
+				border: 1px solid rgba(255, 255, 255, 0.075);
+				border-radius: 14px;
+				background: rgba(255, 255, 255, 0.03);
+				overflow: hidden;
+			}
+
+			.kernelArchitectureItemTitle {
+				color: var(--text);
+				font-size: 13px;
+				line-height: 1.25;
+				font-weight: 950;
+				overflow-wrap: break-word;
+			}
+
+			.kernelArchitectureItemSubtext {
+				color: var(--gold);
+				font-size: 10px;
+				line-height: 1.25;
+				font-weight: 950;
+				letter-spacing: 0.07em;
+				text-transform: uppercase;
+				overflow-wrap: break-word;
+			}
+
+			.kernelArchitectureItemBody {
+				color: #d9e0f4;
+				font-size: 11.5px;
+				line-height: 1.42;
+				font-weight: 740;
+				overflow-wrap: break-word;
+			}
+
+			.kernelArchitectureItemSource {
+				margin-top: 2px;
+				padding-top: 7px;
+				border-top: 1px solid rgba(255, 255, 255, 0.065);
+				color: var(--muted2);
+				font-size: 10.5px;
+				line-height: 1.35;
+				font-weight: 850;
+				overflow-wrap: break-word;
+			}
+
+			@media (max-width: 760px) {
+				.kernelArchitectureGrid {
+					grid-template-columns: minmax(0, 1fr);
+				}
+
+				.kernelArchitectureHeader {
+					display: grid;
+				}
+
+				.kernelArchitectureBadge {
+					justify-self: start;
+				}
 			}
 
 			.personalArchitectureBetaCard {
@@ -9445,6 +9586,78 @@
 								</div>
 </div>
 </div>
+<div class="kernelArchitectureCard" id="kernelArchitectureCard">
+<div class="kernelArchitectureHeader">
+<div>
+<h3>Kernel Architecture</h3>
+<p>Stable identity OS layer. Does not move with daily weather.</p>
+</div>
+<div class="kernelArchitectureBadge">Stable</div>
+</div>
+<div class="kernelArchitectureIntro">This index shows the core components that define how your system receives pressure, holds shape, and returns to baseline.</div>
+<div class="kernelArchitectureGrid" id="kernelArchitectureGrid">
+<div class="kernelArchitectureItem" data-kernel-component="identityKernel">
+<div class="kernelArchitectureItemTitle">Identity Kernel</div>
+<div class="kernelArchitectureItemSubtext">Stable architecture.</div>
+<div class="kernelArchitectureItemBody">The core pattern that keeps the system coherent across changing field conditions.</div>
+<div class="kernelArchitectureItemSource" data-kernel-source="identityKernel">Source: Available after chart calculation</div>
+</div>
+<div class="kernelArchitectureItem" data-kernel-component="coreVoltage">
+<div class="kernelArchitectureItemTitle">Core Voltage</div>
+<div class="kernelArchitectureItemSubtext">Baseline output capacity.</div>
+<div class="kernelArchitectureItemBody">The steady identity current underneath daily activation.</div>
+<div class="kernelArchitectureItemSource" data-kernel-source="coreVoltage">Source: Available after chart calculation</div>
+</div>
+<div class="kernelArchitectureItem" data-kernel-component="emotionalProcessor">
+<div class="kernelArchitectureItemTitle">Emotional Processor</div>
+<div class="kernelArchitectureItemSubtext">Body-state and internal signal.</div>
+<div class="kernelArchitectureItemBody">How the system metabolizes feeling, safety, comfort, and instinct before action.</div>
+<div class="kernelArchitectureItemSource" data-kernel-source="emotionalProcessor">Source: Available after chart calculation</div>
+</div>
+<div class="kernelArchitectureItem" data-kernel-component="signalProcessor">
+<div class="kernelArchitectureItemTitle">Signal Processor</div>
+<div class="kernelArchitectureItemSubtext">Language, perception, and translation.</div>
+<div class="kernelArchitectureItemBody">How the system receives, sorts, names, and routes information.</div>
+<div class="kernelArchitectureItemSource" data-kernel-source="signalProcessor">Source: Available after chart calculation</div>
+</div>
+<div class="kernelArchitectureItem" data-kernel-component="relationalTone">
+<div class="kernelArchitectureItemTitle">Relational Tone</div>
+<div class="kernelArchitectureItemSubtext">Contact and feedback style.</div>
+<div class="kernelArchitectureItemBody">How the system reads connection, tone, value, attraction, and shared atmosphere.</div>
+<div class="kernelArchitectureItemSource" data-kernel-source="relationalTone">Source: Available after chart calculation</div>
+</div>
+<div class="kernelArchitectureItem" data-kernel-component="actionVector">
+<div class="kernelArchitectureItemTitle">Action Vector</div>
+<div class="kernelArchitectureItemSubtext">Direction of movement.</div>
+<div class="kernelArchitectureItemBody">How the system initiates, responds, defends, and applies force.</div>
+<div class="kernelArchitectureItemSource" data-kernel-source="actionVector">Source: Available after chart calculation</div>
+</div>
+<div class="kernelArchitectureItem" data-kernel-component="structureGovernor">
+<div class="kernelArchitectureItemTitle">Structure Governor</div>
+<div class="kernelArchitectureItemSubtext">Constraint and timing.</div>
+<div class="kernelArchitectureItemBody">How the system handles pressure, limits, responsibility, pacing, and long-term shape.</div>
+<div class="kernelArchitectureItemSource" data-kernel-source="structureGovernor">Source: Available after chart calculation</div>
+</div>
+<div class="kernelArchitectureItem" data-kernel-component="rahuKetuVector">
+<div class="kernelArchitectureItemTitle">Rahu/Ketu Vector</div>
+<div class="kernelArchitectureItemSubtext">Direction and release pattern.</div>
+<div class="kernelArchitectureItemBody">The growth-and-release axis that describes where the system stretches and what it must not over-identify with.</div>
+<div class="kernelArchitectureItemSource" data-kernel-source="rahuKetuVector">Source: Available after chart calculation</div>
+</div>
+<div class="kernelArchitectureItem" data-kernel-component="harmonicProfile">
+<div class="kernelArchitectureItemTitle">Harmonic Profile</div>
+<div class="kernelArchitectureItemSubtext">Primary operating tone.</div>
+<div class="kernelArchitectureItemBody">The stable harmonic pattern already shown in this You tab.</div>
+<div class="kernelArchitectureItemSource" data-kernel-source="harmonicProfile">Source: Available after chart calculation</div>
+</div>
+<div class="kernelArchitectureItem" data-kernel-component="supportField">
+<div class="kernelArchitectureItemTitle">Support Field</div>
+<div class="kernelArchitectureItemSubtext">Return-to-baseline support.</div>
+<div class="kernelArchitectureItemBody">The kind of support that helps the system regulate cleanly.</div>
+<div class="kernelArchitectureItemSource" data-kernel-source="supportField">Source: Available after chart calculation</div>
+</div>
+</div>
+</div>
 <div class="personalArchitectureBetaCard" id="personalArchitectureBetaCard">
 <div class="personalArchitectureBetaHeader">
 <div>
@@ -12110,6 +12323,139 @@
 				renderPersonalArchitectureSignSourceProof(rows);
 				gridEl.innerHTML = rows.map(renderPersonalArchitectureBetaItem).join("");
 			}
+
+			function kernelArchitectureSetSource(key, value) {
+				const el = document.querySelector(`[data-kernel-source="${key}"]`);
+				if (!el) return;
+				el.textContent = value || "Source: Available after chart calculation";
+			}
+
+			function kernelArchitectureBuildPlacementSource(label, placement, degree) {
+				const sign =
+					personalArchitectureGetPlacementSign(placement) ||
+					degreeToZodiacSignDisplay(degree);
+				if (sign) return `Source: ${label} in ${sign}`;
+				if (chartKernelHasValue(placement) || chartKernelHasValue(degree)) return `Source: ${label}`;
+				return "Source: Available after chart calculation";
+			}
+
+			function renderKernelArchitectureIndex(data) {
+				const cardEl = document.getElementById("kernelArchitectureCard");
+				if (!cardEl) return;
+
+				const chartKernel = data?.chartKernel || {};
+				const harmonics = calculateHarmonics(data);
+
+				const ascPlacement = personalArchitectureFindPlacementObject(data, [
+					/^asc(endant)?$/,
+					/interface/,
+				]);
+				const sunPlacement = personalArchitectureFindPlacementObject(data, [/^sun$/]);
+				const moonPlacement = personalArchitectureFindPlacementObject(data, [/^moon$/]);
+				const mercuryPlacement = personalArchitectureFindPlacementObject(data, [/^mercury$/]);
+				const venusPlacement = personalArchitectureFindPlacementObject(data, [/^venus$/]);
+				const marsPlacement = personalArchitectureFindPlacementObject(data, [/^mars$/]);
+				const saturnPlacement = personalArchitectureFindPlacementObject(data, [/^saturn$/]);
+				const rahu = chartKernelFindNodeObject(data, "rahu");
+				const ketu = chartKernelFindNodeObject(data, "ketu");
+
+				kernelArchitectureSetSource(
+					"identityKernel",
+					kernelArchitectureBuildPlacementSource(
+						"Ascendant",
+						ascPlacement,
+						data?.angles?.asc ?? chartKernel?.geometry?.asc
+					)
+				);
+				kernelArchitectureSetSource(
+					"coreVoltage",
+					kernelArchitectureBuildPlacementSource(
+						"Sun",
+						sunPlacement,
+						data?._longitudesDeg?.sun ?? chartKernel?.tropicalLongitudesDeg?.sun
+					)
+				);
+				kernelArchitectureSetSource(
+					"emotionalProcessor",
+					kernelArchitectureBuildPlacementSource(
+						"Moon",
+						moonPlacement,
+						data?._longitudesDeg?.moon ?? chartKernel?.tropicalLongitudesDeg?.moon
+					)
+				);
+				kernelArchitectureSetSource(
+					"signalProcessor",
+					kernelArchitectureBuildPlacementSource(
+						"Mercury",
+						mercuryPlacement,
+						data?._longitudesDeg?.mercury ?? chartKernel?.tropicalLongitudesDeg?.mercury
+					)
+				);
+				kernelArchitectureSetSource(
+					"relationalTone",
+					kernelArchitectureBuildPlacementSource(
+						"Venus",
+						venusPlacement,
+						data?._longitudesDeg?.venus ?? chartKernel?.tropicalLongitudesDeg?.venus
+					)
+				);
+				kernelArchitectureSetSource(
+					"actionVector",
+					kernelArchitectureBuildPlacementSource(
+						"Mars",
+						marsPlacement,
+						data?._longitudesDeg?.mars ?? chartKernel?.tropicalLongitudesDeg?.mars
+					)
+				);
+				kernelArchitectureSetSource(
+					"structureGovernor",
+					kernelArchitectureBuildPlacementSource(
+						"Saturn",
+						saturnPlacement,
+						data?._longitudesDeg?.saturn ?? chartKernel?.tropicalLongitudesDeg?.saturn
+					)
+				);
+
+				const rahuSource = kernelArchitectureBuildPlacementSource(
+					"North Node",
+					rahu,
+					chartKernelPickFirstValue(rahu, [
+						/^longitude(deg|degree|degrees)?$/,
+						/^longitude_?deg(rees)?$/,
+						/^lon(gitude)?_?deg(rees)?$/,
+						/^deg(rees)?$/,
+					])
+				);
+				const ketuSource = kernelArchitectureBuildPlacementSource(
+					"South Node",
+					ketu,
+					chartKernelPickFirstValue(ketu, [
+						/^longitude(deg|degree|degrees)?$/,
+						/^longitude_?deg(rees)?$/,
+						/^lon(gitude)?_?deg(rees)?$/,
+						/^deg(rees)?$/,
+					])
+				);
+				const nodeSource =
+					rahuSource !== "Source: Available after chart calculation" ||
+					ketuSource !== "Source: Available after chart calculation"
+						? `${rahuSource.replace(/^Source:\s*/, "Source: ")} · ${ketuSource.replace(/^Source:\s*/, "")}`
+						: "Source: Available after chart calculation";
+				kernelArchitectureSetSource("rahuKetuVector", nodeSource);
+
+				const rootLabel = harmonics?.rootHarmonic ? publicFieldText(harmonics.rootHarmonic) : "";
+				const supportLabel = harmonics?.supportHarmonic ? publicFieldText(harmonics.supportHarmonic) : "";
+				const profileLabel = chartKernelHasValue(rootLabel) && chartKernelHasValue(supportLabel)
+					? `Source: ${rootLabel} root / ${supportLabel} support`
+					: "Source: Existing harmonic profile";
+				kernelArchitectureSetSource("harmonicProfile", profileLabel);
+
+				const supportSource = supportLabel
+					? `Source: ${supportLabel} support harmonic`
+					: "Source: Existing support field";
+				kernelArchitectureSetSource("supportField", supportSource);
+			}
+
 
 			function chartKernelRenderNodeVectors(data, hasCalculatedNodes) {
 				const sectionEl = document.getElementById("chartKernelNodeVectorSection");
@@ -19968,6 +20314,7 @@ ${bodyLine}${loadLine}`,
 					updateUI(data);
 					renderChartKernelDataInspection(data);
 					renderPersonalArchitectureBetaCard(data);
+					renderKernelArchitectureIndex(data);
 					runForecastShellAfterSuccessfulCalculate(payload);
 
 					if (shouldAutoScroll) {
