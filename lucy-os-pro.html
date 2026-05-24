@@ -104,6 +104,7 @@
 <!-- K4B update: added collapsed Kernel Astrology Lens panels inside each Kernel Architecture card only. Static role-based copy and Kernel-only CSS; no backend/API, scoring, Forecast, Landing, Support, saved profiles, share export, Personal Architecture Beta internals, source binding logic, or calculations changed. -->
 <!-- K4C update: polished Kernel Astrology Lens panel styling only. CSS-only; no JavaScript, helper functions, source binding, Lens copy, Personal Architecture Beta, backend/API, scoring, Forecast, Landing, Support, saved profiles, share export, or calculations changed. -->
 <!-- K5 update: collapsed Personal Architecture Beta into Placement Detail Beta below Kernel Architecture only. Markup/minimal CSS; no JavaScript, backend/API, scoring, Forecast, Landing, Support, saved profiles, share export, Kernel Architecture, Astrology Lens, or Beta internals changed. -->
+<!-- K6 update: added compact Layer Hierarchy orientation card between Kernel Architecture and Placement Detail Beta only. Static display markup/minimal CSS; no JavaScript, backend/API, scoring, Forecast, Landing, Support, saved profiles, share export, Kernel Architecture cards, Astrology Lens panels, or Beta internals changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -4842,6 +4843,77 @@
 			.placementDetailBetaDetails > summary.personalArchitectureBetaHeader:focus-visible {
 				outline: 1px solid rgba(216, 184, 76, 0.28);
 				outline-offset: 4px;
+			}
+
+			.layerHierarchyCard {
+				width: 100%;
+				max-width: 100%;
+				min-width: 0;
+				margin: 12px 0 14px;
+				padding: 13px 14px;
+				border: 1px solid rgba(216, 184, 76, 0.14);
+				border-radius: 16px;
+				background: rgba(255, 255, 255, 0.022);
+				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.014);
+				overflow: hidden;
+			}
+
+			.layerHierarchyHeader {
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-start;
+				gap: 10px;
+				margin-bottom: 9px;
+				min-width: 0;
+			}
+
+			.layerHierarchyHeader h3 {
+				margin: 0;
+				color: var(--text);
+				font-size: 15px;
+				line-height: 1.2;
+			}
+
+			.layerHierarchyBadge {
+				display: inline-flex;
+				align-items: center;
+				min-height: 22px;
+				padding: 4px 8px;
+				border-radius: 999px;
+				border: 1px solid rgba(216, 184, 76, 0.18);
+				background: rgba(216, 184, 76, 0.055);
+				color: var(--gold);
+				font-size: 9px;
+				font-weight: 950;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				white-space: nowrap;
+			}
+
+			.layerHierarchyList {
+				display: grid;
+				gap: 7px;
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+
+			.layerHierarchyList li {
+				margin: 0;
+				padding: 8px 9px;
+				border: 1px solid rgba(255, 255, 255, 0.06);
+				border-radius: 11px;
+				background: rgba(255, 255, 255, 0.024);
+				color: var(--muted);
+				font-size: 11.5px;
+				line-height: 1.42;
+				font-weight: 760;
+				overflow-wrap: break-word;
+			}
+
+			.layerHierarchyList strong {
+				color: var(--text);
+				font-weight: 900;
 			}
 
 			.personalArchitectureBetaBadge {
@@ -10098,6 +10170,18 @@
 </details>
 </div>
 </div>
+</div>
+<div class="layerHierarchyCard" aria-label="Layer Hierarchy">
+<div class="layerHierarchyHeader">
+<h3>Layer Hierarchy</h3>
+<div class="layerHierarchyBadge">Orientation</div>
+</div>
+<ul class="layerHierarchyList">
+<li><strong>Kernel Architecture</strong> is the stable identity OS layer.</li>
+<li><strong>Astrology Lens inside Kernel</strong> = mechanical context, not interpretive content.</li>
+<li><strong>Placement Detail — Beta</strong> is a deeper reference view kept available for testing.</li>
+<li><strong>Forecast, Field, Landing, and Support</strong> handle interpretation, timing, and guidance.</li>
+</ul>
 </div>
 <details class="personalArchitectureBetaCard placementDetailBetaDetails" id="personalArchitectureBetaCard">
 <summary class="personalArchitectureBetaHeader">
