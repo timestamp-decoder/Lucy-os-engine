@@ -103,6 +103,7 @@
 <!-- K2 update: bound Kernel Architecture compact index source rows to existing safe chart/sign and harmonic labels only. Display-only; no backend/API, scoring, Forecast, Landing, Support, saved profiles, share export, or Personal Architecture Beta internals changed. -->
 <!-- K4B update: added collapsed Kernel Astrology Lens panels inside each Kernel Architecture card only. Static role-based copy and Kernel-only CSS; no backend/API, scoring, Forecast, Landing, Support, saved profiles, share export, Personal Architecture Beta internals, source binding logic, or calculations changed. -->
 <!-- K4C update: polished Kernel Astrology Lens panel styling only. CSS-only; no JavaScript, helper functions, source binding, Lens copy, Personal Architecture Beta, backend/API, scoring, Forecast, Landing, Support, saved profiles, share export, or calculations changed. -->
+<!-- K5 update: collapsed Personal Architecture Beta into Placement Detail Beta below Kernel Architecture only. Markup/minimal CSS; no JavaScript, backend/API, scoring, Forecast, Landing, Support, saved profiles, share export, Kernel Architecture, Astrology Lens, or Beta internals changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -4799,6 +4800,48 @@
 				line-height: 1.45;
 				font-weight: 750;
 				overflow-wrap: break-word;
+			}
+
+
+			.placementDetailBetaDetails > summary.personalArchitectureBetaHeader {
+				cursor: pointer;
+				list-style: none;
+				user-select: none;
+			}
+
+			.placementDetailBetaDetails > summary.personalArchitectureBetaHeader::-webkit-details-marker {
+				display: none;
+			}
+
+			.placementDetailBetaDetails > summary.personalArchitectureBetaHeader::after {
+				content: "+";
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				flex: 0 0 auto;
+				width: 24px;
+				height: 24px;
+				border-radius: 999px;
+				border: 1px solid rgba(216, 184, 76, 0.22);
+				background: rgba(216, 184, 76, 0.07);
+				color: var(--gold);
+				font-size: 15px;
+				font-weight: 950;
+				line-height: 1;
+			}
+
+			.placementDetailBetaDetails[open] > summary.personalArchitectureBetaHeader::after {
+				content: "−";
+			}
+
+			.placementDetailBetaDetails > summary.personalArchitectureBetaHeader:hover h3,
+			.placementDetailBetaDetails > summary.personalArchitectureBetaHeader:focus-visible h3 {
+				color: var(--gold);
+			}
+
+			.placementDetailBetaDetails > summary.personalArchitectureBetaHeader:focus-visible {
+				outline: 1px solid rgba(216, 184, 76, 0.28);
+				outline-offset: 4px;
 			}
 
 			.personalArchitectureBetaBadge {
@@ -10056,14 +10099,14 @@
 </div>
 </div>
 </div>
-<div class="personalArchitectureBetaCard" id="personalArchitectureBetaCard">
-<div class="personalArchitectureBetaHeader">
+<details class="personalArchitectureBetaCard placementDetailBetaDetails" id="personalArchitectureBetaCard">
+<summary class="personalArchitectureBetaHeader">
 <div>
-<h3>Personal Architecture — Beta</h3>
-<p>Your architecture shows where today’s field may land first.</p>
+<h3>Placement Detail — Beta</h3>
+<p>A deeper reference view of the same architecture, kept available for testing.</p>
 </div>
 <div class="personalArchitectureBetaBadge">Display Only</div>
-</div>
+</summary>
 <div class="personalArchitectureFramingStrip">
 <div class="personalArchitectureFramingTitle">How your architecture works</div>
 <p class="personalArchitectureFramingText">The field changes daily. Your architecture explains how it lands.</p>
@@ -10144,7 +10187,7 @@
 </div>
 </div>
 <p class="personalArchitectureBetaHelper">Display-only: these values help explain the read but do not change today’s field calculation. Labels are not predictions or fixed personality traits.</p>
-</div>
+</details>
 </section>
 <section class="profileCard">
 <div class="profileHeader">
