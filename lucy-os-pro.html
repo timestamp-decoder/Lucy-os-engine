@@ -105,6 +105,7 @@
 <!-- K4C update: polished Kernel Astrology Lens panel styling only. CSS-only; no JavaScript, helper functions, source binding, Lens copy, Personal Architecture Beta, backend/API, scoring, Forecast, Landing, Support, saved profiles, share export, or calculations changed. -->
 <!-- K5 update: collapsed Personal Architecture Beta into Placement Detail Beta below Kernel Architecture only. Markup/minimal CSS; no JavaScript, backend/API, scoring, Forecast, Landing, Support, saved profiles, share export, Kernel Architecture, Astrology Lens, or Beta internals changed. -->
 <!-- K6 update: added compact Layer Hierarchy orientation card between Kernel Architecture and Placement Detail Beta only. Static display markup/minimal CSS; no JavaScript, backend/API, scoring, Forecast, Landing, Support, saved profiles, share export, Kernel Architecture cards, Astrology Lens panels, or Beta internals changed. -->
+<!-- S1B update: added collapsed fuller-read details inside the existing Today’s Read Snapshot card only. Display-only markup, scoped CSS, and snapshot helper text; no engine, scoring, backend/API, Forecast, Landing, Support, You tab, saved profiles, share export, calibration tests, or dashboard/debug scoring changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -479,6 +480,59 @@
 				line-height: 1.4;
 				font-weight: 800;
 				overflow-wrap: break-word;
+			}
+
+			.mobileSnapshotFuller {
+				display: grid;
+				gap: 7px;
+				margin-top: 12px;
+				padding-top: 10px;
+				border-top: 1px solid rgba(255, 255, 255, 0.075);
+			}
+
+			.mobileSnapshotDetails {
+				border: 1px solid rgba(255, 255, 255, 0.075);
+				border-radius: 12px;
+				background: rgba(255, 255, 255, 0.028);
+				overflow: hidden;
+			}
+
+			.mobileSnapshotDetails summary {
+				cursor: pointer;
+				list-style: none;
+				padding: 9px 10px;
+				color: #d9e0f4;
+				font-size: 11px;
+				font-weight: 950;
+				letter-spacing: 0.055em;
+				text-transform: uppercase;
+			}
+
+			.mobileSnapshotDetails summary::-webkit-details-marker {
+				display: none;
+			}
+
+			.mobileSnapshotDetails summary::after {
+				content: " +";
+				color: var(--muted2);
+			}
+
+			.mobileSnapshotDetails[open] summary::after {
+				content: " -";
+			}
+
+			.mobileSnapshotDetailsBody {
+				padding: 0 10px 10px;
+				color: var(--muted);
+				font-size: 12px;
+				line-height: 1.48;
+				font-weight: 750;
+				overflow-wrap: break-word;
+			}
+
+			.mobileSnapshotDetailsStack {
+				display: grid;
+				gap: 6px;
 			}
 
 			.grid {
@@ -8916,6 +8970,32 @@
 <div class="mobileSnapshotMeta" id="mobileSnapshotMeta">
 						State: — · Field: — · Load: —
 					</div>
+<div class="mobileSnapshotFuller" id="mobileSnapshotFuller" aria-label="Optional fuller read">
+<details class="mobileSnapshotDetails">
+<summary>Why this field is active</summary>
+<div class="mobileSnapshotDetailsBody" id="mobileSnapshotFullerWhy">
+							Calculate to see what is shaping today’s field.
+						</div>
+</details>
+<details class="mobileSnapshotDetails">
+<summary>How this may land for you</summary>
+<div class="mobileSnapshotDetailsBody" id="mobileSnapshotFullerLanding">
+							Calculate to see how the current field may register in the system.
+						</div>
+</details>
+<details class="mobileSnapshotDetails">
+<summary>What helps regulation</summary>
+<div class="mobileSnapshotDetailsBody" id="mobileSnapshotFullerRegulation">
+							Calculate to see the smallest stabilizing support.
+						</div>
+</details>
+<details class="mobileSnapshotDetails" id="mobileSnapshotArchitectureDetails">
+<summary>Architecture note</summary>
+<div class="mobileSnapshotDetailsBody" id="mobileSnapshotFullerArchitecture">
+							Your stable architecture gives the daily field a place to land.
+						</div>
+</details>
+</div>
 </section>
 <div class="mainStack">
 <div class="fieldDestinationZone" id="fieldSection">
@@ -15040,6 +15120,87 @@
 				setText("personalNotYou", personal.notYou);
 			}
 
+			function compactSnapshotSentence(value, fallback) {
+				const text = String(value || "").trim();
+				if (!text || text === "—") return fallback || "";
+				return text.replace(/\s+/g, " ");
+			}
+
+			function setSnapshotDetailsVisible(id, isVisible) {
+				const el = document.getElementById(id);
+				if (!el) return;
+				el.style.display = isVisible ? "" : "none";
+			}
+
+			function buildSnapshotFullerRead({
+				snapshotRead,
+				guidance,
+				regulationSupports,
+				state,
+				field,
+				loadBand,
+				fieldUndertone,
+				profileAwareRead,
+				moonstampModifier,
+				data,
+				harmonics,
+			}) {
+				const fieldText = String(field || "current field").trim();
+				const stateText = String(state || "current state").trim();
+				const loadText = String(loadBand || "current load").trim();
+				const undertoneText = fieldUndertone?.active
+					? `${getPublicFieldLabel(fieldUndertone.field)} is running underneath as the secondary pressure.`
+					: "No strong secondary undertone needs to lead the read.";
+				const liveTitle = compactSnapshotSentence(
+					data?.liveFieldModifier?.displayTitle || data?.liveFieldModifier?.title,
+					""
+				);
+				const moonTitle = compactSnapshotSentence(
+					moonstampModifier?.title || moonstampModifier?.state || moonstampModifier?.phase,
+					""
+				);
+				const modifierBits = [liveTitle, moonTitle]
+					.filter(Boolean)
+					.slice(0, 2);
+				const modifierText = modifierBits.length
+					? ` ${modifierBits.join(" · ")} is acting as context, not a replacement for the main field.`
+					: "";
+				const landingText = compactSnapshotSentence(
+					profileAwareRead?.todayRead || snapshotRead?.support,
+					"This may register through your stable pattern first, then ask for one clean next move."
+				);
+				const moveText = compactSnapshotSentence(
+					snapshotRead?.move || guidance?.move,
+					"Start with the smallest stabilizing move already named above."
+				);
+				const supportText = compactSnapshotSentence(
+					regulationSupports?.snapshotSupport || regulationSupports?.quality,
+					"Regulation improves when the system has fewer competing inputs."
+				);
+				const hasArchitecture =
+					(typeof activatedArchitectureHasUsefulKernelData === "function" &&
+						activatedArchitectureHasUsefulKernelData(data)) ||
+					!!(harmonics?.primary || harmonics?.support);
+				const primaryText = getHarmonicBaseName(harmonics?.primary || "");
+				const supportBase = getHarmonicBaseName(harmonics?.support || "");
+				const architectureText = hasArchitecture
+					? `Your stable architecture gives the ${fieldText} field a place to land. ${[
+						primaryText ? `${primaryText} root` : "",
+						supportBase ? `${supportBase} support` : "",
+					]
+						.filter(Boolean)
+						.join(" · ") || "The deeper You tab holds the stable OS layer."}`
+					: "";
+
+				return {
+					why: `Today’s ${fieldText} field is being read through ${stateText.toLowerCase()} state and ${loadText.toLowerCase()} load. ${undertoneText}${modifierText}`,
+					landing: landingText,
+					regulation: `${moveText} ${supportText}`,
+					architecture: architectureText,
+					hasArchitecture,
+				};
+			}
+
 			function updateMobileReadSnapshot({
 				snapshotRead,
 				guidance,
@@ -15047,6 +15208,11 @@
 				state,
 				field,
 				loadBand,
+				fieldUndertone,
+				profileAwareRead,
+				moonstampModifier,
+				data,
+				harmonics,
 			}) {
 				setText(
 					"mobileSnapshotWeather",
@@ -15075,6 +15241,28 @@
 					`State: ${state || "—"} · Field: ${field || "—"} · Load: ${
 						loadBand || "—"
 					}`
+				);
+
+				const fullerRead = buildSnapshotFullerRead({
+					snapshotRead,
+					guidance,
+					regulationSupports,
+					state,
+					field,
+					loadBand,
+					fieldUndertone,
+					profileAwareRead,
+					moonstampModifier,
+					data,
+					harmonics,
+				});
+				setText("mobileSnapshotFullerWhy", fullerRead.why);
+				setText("mobileSnapshotFullerLanding", fullerRead.landing);
+				setText("mobileSnapshotFullerRegulation", fullerRead.regulation);
+				setText("mobileSnapshotFullerArchitecture", fullerRead.architecture);
+				setSnapshotDetailsVisible(
+					"mobileSnapshotArchitectureDetails",
+					!!fullerRead.hasArchitecture
 				);
 			}
 
@@ -20427,6 +20615,11 @@ ${bodyLine}${loadLine}`,
 					state: currentState,
 					field: getPublicFieldLabel(fieldMeta.label),
 					loadBand: loadBandFromValue(data?.state?.amplifiedLoad),
+					fieldUndertone,
+					profileAwareRead,
+					moonstampModifier,
+					data,
+					harmonics,
 				});
 
 				updateTopLiveFieldStrip(data, harmonics, guidance);
