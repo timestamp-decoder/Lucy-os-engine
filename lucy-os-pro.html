@@ -107,6 +107,7 @@
 <!-- K6 update: added compact Layer Hierarchy orientation card between Kernel Architecture and Placement Detail Beta only. Static display markup/minimal CSS; no JavaScript, backend/API, scoring, Forecast, Landing, Support, saved profiles, share export, Kernel Architecture cards, Astrology Lens panels, or Beta internals changed. -->
 <!-- S1B update: added collapsed fuller-read details inside the existing Today’s Read Snapshot card only. Display-only markup, scoped CSS, and snapshot helper text; no engine, scoring, backend/API, Forecast, Landing, Support, You tab, saved profiles, share export, calibration tests, or dashboard/debug scoring changed. -->
 <!-- R1B update: reordered Support hierarchy so Suggested Sound Support follows Why This Helps, and refined Support helper copy only. Markup-only/display-only; no CSS, JavaScript, engine, scoring, backend/API, snapshot, Forecast, Field, Landing, You tab, saved profiles, share export, calibration tests, or dashboard/debug scoring changed. -->
+<!-- L1B update: collapsed forecast/debug/proof density surfaces only. Forecast Diagnostic Proof and Developer Forecast Preview are closed by default, Personal Architecture Sign Source Proof is no longer open by default, and user-facing forecast/product layers remain visible. No engine, API, scoring, forecast request/generation/extraction, Moonstamp, Live Field Modifier, saved profiles, share export, calibration, or dashboard/debug scoring logic changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -838,6 +839,59 @@
 				line-height: 1.45;
 				white-space: pre-wrap;
 				overflow-wrap: anywhere;
+			}
+
+
+			.forecastDebugCollapse summary,
+			.devForecastPanel summary.devForecastPanelSummary {
+				cursor: pointer;
+				list-style: none;
+			}
+
+			.forecastDebugCollapse summary::-webkit-details-marker,
+			.devForecastPanel summary.devForecastPanelSummary::-webkit-details-marker {
+				display: none;
+			}
+
+			.forecastDebugCollapse summary::after,
+			.devForecastPanel summary.devForecastPanelSummary::after {
+				content: " +";
+				color: var(--muted2);
+			}
+
+			.forecastDebugCollapse[open] summary::after,
+			.devForecastPanel[open] summary.devForecastPanelSummary::after {
+				content: " -";
+			}
+
+			.forecastDebugSummaryTitle,
+			.devForecastSummaryTitle {
+				display: block;
+				color: var(--amber);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				line-height: 1.25;
+			}
+
+			.forecastDebugSummaryHelper,
+			.devForecastSummaryHelper {
+				display: block;
+				margin-top: 5px;
+				padding-right: 18px;
+				color: var(--muted);
+				font-size: 11px;
+				line-height: 1.42;
+				font-weight: 750;
+				overflow-wrap: break-word;
+			}
+
+			.forecastDebugCollapseBody,
+			.devForecastPanelBody {
+				margin-top: 12px;
+				padding-top: 12px;
+				border-top: 1px solid rgba(255, 255, 255, 0.075);
 			}
 
 			@media (max-width: 640px) {
@@ -8846,7 +8900,12 @@
 <div class="profileSaveStatus" id="profileSaveStatus"></div>
 </div>
 
-<div class="devForecastPanel" id="devForecastPanel">
+<details class="devForecastPanel" id="devForecastPanel">
+<summary class="devForecastPanelSummary">
+<span class="devForecastSummaryTitle">Developer Forecast Preview</span>
+<span class="devForecastSummaryHelper">Isolated forecast testing tool. Normal reads do not require this.</span>
+</summary>
+<div class="devForecastPanelBody">
 <div class="devForecastHeader">
 <div>
 <div class="devForecastTitle">DEV ONLY · Forecast Preview</div>
@@ -8892,6 +8951,7 @@
 </details>
 </div>
 </div>
+</details>
 
 <div class="tiny">
 						Birth location resolves timezone, angles, and houses for
@@ -9240,7 +9300,12 @@
 </div>
 </div>
 </section>
-<div class="forecastShellProof" id="forecastShellProof">
+<details class="forecastShellProof forecastDebugCollapse" id="forecastShellProof">
+<summary>
+<span class="forecastDebugSummaryTitle">Forecast Diagnostic Proof</span>
+<span class="forecastDebugSummaryHelper">Technical proof for forecast-date validation. Not needed for the normal read.</span>
+</summary>
+<div class="forecastDebugCollapseBody">
 <div class="forecastShellProofTitle">
 									7-Day Forecast Data Shell
 								</div>
@@ -9252,6 +9317,7 @@
 								</div>
 <div class="forecastShellProofRows" id="forecastShellProofRows"></div>
 </div>
+</details>
 <section class="forecastWeatherCards" id="forecastWeatherCards">
 <div class="forecastWeatherHeader">
 <div>
@@ -10874,7 +10940,7 @@
 </div>
 </details>
 
-<details class="chartKernelInspection personalArchitectureSignSourceProof" id="personalArchitectureSignSourceProofPanel" open>
+<details class="chartKernelInspection personalArchitectureSignSourceProof" id="personalArchitectureSignSourceProofPanel">
 <summary>Personal Architecture Sign Source Proof</summary>
 <div class="chartKernelInspectionBody">
 <div class="chartKernelInspectionHelper">
