@@ -109,6 +109,7 @@
 <!-- R1B update: reordered Support hierarchy so Suggested Sound Support follows Why This Helps, and refined Support helper copy only. Markup-only/display-only; no CSS, JavaScript, engine, scoring, backend/API, snapshot, Forecast, Field, Landing, You tab, saved profiles, share export, calibration tests, or dashboard/debug scoring changed. -->
 <!-- L1B update: collapsed forecast/debug/proof density surfaces only. Forecast Diagnostic Proof and Developer Forecast Preview are closed by default, Personal Architecture Sign Source Proof is no longer open by default, and user-facing forecast/product layers remain visible. No engine, API, scoring, forecast request/generation/extraction, Moonstamp, Live Field Modifier, saved profiles, share export, calibration, or dashboard/debug scoring logic changed. -->
 <!-- L1D update: collapsed Live Field Dashboard guide/explanation material only. Dashboard title, chips, Today’s Field Type, metric grid, score note, dashboard values, scoring logic, Forecast, Snapshot, Support, Kernel, saved profiles, share export, and navigation remain unchanged. -->
+<!-- K8 update: added compact Core Mechanic and Stability Role attribute blocks inside the existing Kernel Architecture cards only. Display-only markup/minimal CSS; no Distortion Pattern, Placement Lens behavior, Layer Hierarchy, Placement Detail Beta, Field, Landing, Support, Forecast, saved profiles, share export, backend/API, scoring, calculations, Moonstamp, Live Field Modifier, dashboard, or navigation changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -4683,6 +4684,44 @@
 				overflow-wrap: break-word;
 			}
 
+			.kernelArchitectureAttributes {
+				display: grid;
+				gap: 4px;
+				margin-top: 2px;
+				padding: 7px 8px;
+				border: 1px solid rgba(255, 255, 255, 0.06);
+				border-radius: 10px;
+				background: rgba(255, 255, 255, 0.022);
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.kernelArchitectureAttributeRow {
+				display: grid;
+				grid-template-columns: minmax(92px, 0.42fr) minmax(0, 1fr);
+				gap: 7px;
+				align-items: start;
+				min-width: 0;
+			}
+
+			.kernelArchitectureAttributeLabel {
+				color: rgba(216, 184, 76, 0.78);
+				font-size: 8.8px;
+				line-height: 1.25;
+				font-weight: 950;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				overflow-wrap: break-word;
+			}
+
+			.kernelArchitectureAttributeText {
+				color: var(--muted);
+				font-size: 10.8px;
+				line-height: 1.34;
+				font-weight: 760;
+				overflow-wrap: break-word;
+			}
+
 			.kernelArchitectureItemSource {
 				margin-top: 1px;
 				padding-top: 6px;
@@ -4875,6 +4914,26 @@
 				.kernelArchitectureItemBody {
 					font-size: 11.4px;
 					line-height: 1.38;
+				}
+
+				.kernelArchitectureAttributes {
+					gap: 4px;
+					padding: 6px 7px;
+					border-radius: 9px;
+				}
+
+				.kernelArchitectureAttributeRow {
+					grid-template-columns: minmax(0, 1fr);
+					gap: 2px;
+				}
+
+				.kernelArchitectureAttributeLabel {
+					font-size: 8.4px;
+				}
+
+				.kernelArchitectureAttributeText {
+					font-size: 10.5px;
+					line-height: 1.34;
 				}
 
 				.kernelArchitectureItemSource {
@@ -10141,6 +10200,16 @@
 <div class="kernelArchitectureItemTitle">Identity Kernel</div>
 <div class="kernelArchitectureItemSubtext">Stable architecture.</div>
 <div class="kernelArchitectureItemBody">The core pattern that keeps the system coherent across changing field conditions.</div>
+<div class="kernelArchitectureAttributes">
+<div class="kernelArchitectureAttributeRow">
+<div class="kernelArchitectureAttributeLabel">Core Mechanic</div>
+<div class="kernelArchitectureAttributeText">Defines the system’s outer operating interface.</div>
+</div>
+<div class="kernelArchitectureAttributeRow">
+<div class="kernelArchitectureAttributeLabel">Stability Role</div>
+<div class="kernelArchitectureAttributeText">Gives the system a consistent way to meet the field.</div>
+</div>
+</div>
 <div class="kernelArchitectureItemSource" data-kernel-source="identityKernel">Source: Available after chart calculation</div>
 <details class="kernelAstrologyLens">
 <summary class="kernelAstrologyLensSummary">Placement Lens <span>+</span></summary>
@@ -10166,6 +10235,16 @@
 <div class="kernelArchitectureItemTitle">Core Voltage</div>
 <div class="kernelArchitectureItemSubtext">Baseline output capacity.</div>
 <div class="kernelArchitectureItemBody">The steady identity current underneath daily activation.</div>
+<div class="kernelArchitectureAttributes">
+<div class="kernelArchitectureAttributeRow">
+<div class="kernelArchitectureAttributeLabel">Core Mechanic</div>
+<div class="kernelArchitectureAttributeText">Supplies central drive, coherence, and identity charge.</div>
+</div>
+<div class="kernelArchitectureAttributeRow">
+<div class="kernelArchitectureAttributeLabel">Stability Role</div>
+<div class="kernelArchitectureAttributeText">Keeps the system oriented around its main power source.</div>
+</div>
+</div>
 <div class="kernelArchitectureItemSource" data-kernel-source="coreVoltage">Source: Available after chart calculation</div>
 <details class="kernelAstrologyLens">
 <summary class="kernelAstrologyLensSummary">Placement Lens <span>+</span></summary>
@@ -10191,6 +10270,16 @@
 <div class="kernelArchitectureItemTitle">Emotional Processor</div>
 <div class="kernelArchitectureItemSubtext">Body-state and internal signal.</div>
 <div class="kernelArchitectureItemBody">How the system metabolizes feeling, safety, comfort, and instinct before action.</div>
+<div class="kernelArchitectureAttributes">
+<div class="kernelArchitectureAttributeRow">
+<div class="kernelArchitectureAttributeLabel">Core Mechanic</div>
+<div class="kernelArchitectureAttributeText">Processes internal state, mood, memory, and body-signal.</div>
+</div>
+<div class="kernelArchitectureAttributeRow">
+<div class="kernelArchitectureAttributeLabel">Stability Role</div>
+<div class="kernelArchitectureAttributeText">Helps the system register what is safe, charged, or unresolved.</div>
+</div>
+</div>
 <div class="kernelArchitectureItemSource" data-kernel-source="emotionalProcessor">Source: Available after chart calculation</div>
 <details class="kernelAstrologyLens">
 <summary class="kernelAstrologyLensSummary">Placement Lens <span>+</span></summary>
@@ -10216,6 +10305,16 @@
 <div class="kernelArchitectureItemTitle">Signal Processor</div>
 <div class="kernelArchitectureItemSubtext">Language, perception, and translation.</div>
 <div class="kernelArchitectureItemBody">How the system receives, sorts, names, and routes information.</div>
+<div class="kernelArchitectureAttributes">
+<div class="kernelArchitectureAttributeRow">
+<div class="kernelArchitectureAttributeLabel">Core Mechanic</div>
+<div class="kernelArchitectureAttributeText">Handles perception, language, timing, and signal translation.</div>
+</div>
+<div class="kernelArchitectureAttributeRow">
+<div class="kernelArchitectureAttributeLabel">Stability Role</div>
+<div class="kernelArchitectureAttributeText">Helps pressure become readable before action is taken.</div>
+</div>
+</div>
 <div class="kernelArchitectureItemSource" data-kernel-source="signalProcessor">Source: Available after chart calculation</div>
 <details class="kernelAstrologyLens">
 <summary class="kernelAstrologyLensSummary">Placement Lens <span>+</span></summary>
@@ -10241,6 +10340,16 @@
 <div class="kernelArchitectureItemTitle">Relational Tone</div>
 <div class="kernelArchitectureItemSubtext">Contact and feedback style.</div>
 <div class="kernelArchitectureItemBody">How the system reads connection, tone, value, attraction, and shared atmosphere.</div>
+<div class="kernelArchitectureAttributes">
+<div class="kernelArchitectureAttributeRow">
+<div class="kernelArchitectureAttributeLabel">Core Mechanic</div>
+<div class="kernelArchitectureAttributeText">Regulates contact, attraction, preference, and relational texture.</div>
+</div>
+<div class="kernelArchitectureAttributeRow">
+<div class="kernelArchitectureAttributeLabel">Stability Role</div>
+<div class="kernelArchitectureAttributeText">Helps the system recognize what feels harmonious or misaligned.</div>
+</div>
+</div>
 <div class="kernelArchitectureItemSource" data-kernel-source="relationalTone">Source: Available after chart calculation</div>
 <details class="kernelAstrologyLens">
 <summary class="kernelAstrologyLensSummary">Placement Lens <span>+</span></summary>
@@ -10266,6 +10375,16 @@
 <div class="kernelArchitectureItemTitle">Action Vector</div>
 <div class="kernelArchitectureItemSubtext">Direction of movement.</div>
 <div class="kernelArchitectureItemBody">How the system initiates, responds, defends, and applies force.</div>
+<div class="kernelArchitectureAttributes">
+<div class="kernelArchitectureAttributeRow">
+<div class="kernelArchitectureAttributeLabel">Core Mechanic</div>
+<div class="kernelArchitectureAttributeText">Directs force, movement, assertion, and response speed.</div>
+</div>
+<div class="kernelArchitectureAttributeRow">
+<div class="kernelArchitectureAttributeLabel">Stability Role</div>
+<div class="kernelArchitectureAttributeText">Helps the system move pressure into clean action.</div>
+</div>
+</div>
 <div class="kernelArchitectureItemSource" data-kernel-source="actionVector">Source: Available after chart calculation</div>
 <details class="kernelAstrologyLens">
 <summary class="kernelAstrologyLensSummary">Placement Lens <span>+</span></summary>
@@ -10291,6 +10410,16 @@
 <div class="kernelArchitectureItemTitle">Structure Governor</div>
 <div class="kernelArchitectureItemSubtext">Constraint and timing.</div>
 <div class="kernelArchitectureItemBody">How the system handles pressure, limits, responsibility, pacing, and long-term shape.</div>
+<div class="kernelArchitectureAttributes">
+<div class="kernelArchitectureAttributeRow">
+<div class="kernelArchitectureAttributeLabel">Core Mechanic</div>
+<div class="kernelArchitectureAttributeText">Sets limits, weight, discipline, and structural pressure.</div>
+</div>
+<div class="kernelArchitectureAttributeRow">
+<div class="kernelArchitectureAttributeLabel">Stability Role</div>
+<div class="kernelArchitectureAttributeText">Helps the system hold form under demand.</div>
+</div>
+</div>
 <div class="kernelArchitectureItemSource" data-kernel-source="structureGovernor">Source: Available after chart calculation</div>
 <details class="kernelAstrologyLens">
 <summary class="kernelAstrologyLensSummary">Placement Lens <span>+</span></summary>
@@ -10316,6 +10445,16 @@
 <div class="kernelArchitectureItemTitle">Rahu/Ketu Vector</div>
 <div class="kernelArchitectureItemSubtext">Direction and release pattern.</div>
 <div class="kernelArchitectureItemBody">The growth-and-release axis that describes where the system stretches and what it must not over-identify with.</div>
+<div class="kernelArchitectureAttributes">
+<div class="kernelArchitectureAttributeRow">
+<div class="kernelArchitectureAttributeLabel">Core Mechanic</div>
+<div class="kernelArchitectureAttributeText">Tracks growth pull and release pattern across the system.</div>
+</div>
+<div class="kernelArchitectureAttributeRow">
+<div class="kernelArchitectureAttributeLabel">Stability Role</div>
+<div class="kernelArchitectureAttributeText">Helps distinguish forward pressure from old-pattern gravity.</div>
+</div>
+</div>
 <div class="kernelArchitectureItemSource" data-kernel-source="rahuKetuVector">Source: Available after chart calculation</div>
 <details class="kernelAstrologyLens">
 <summary class="kernelAstrologyLensSummary">Placement Lens <span>+</span></summary>
@@ -10341,6 +10480,16 @@
 <div class="kernelArchitectureItemTitle">Harmonic Profile</div>
 <div class="kernelArchitectureItemSubtext">Primary operating tone.</div>
 <div class="kernelArchitectureItemBody">The stable harmonic pattern already shown in this You tab.</div>
+<div class="kernelArchitectureAttributes">
+<div class="kernelArchitectureAttributeRow">
+<div class="kernelArchitectureAttributeLabel">Core Mechanic</div>
+<div class="kernelArchitectureAttributeText">Shows the system’s primary stability pattern and support pattern.</div>
+</div>
+<div class="kernelArchitectureAttributeRow">
+<div class="kernelArchitectureAttributeLabel">Stability Role</div>
+<div class="kernelArchitectureAttributeText">Helps identify how the system returns to coherence.</div>
+</div>
+</div>
 <div class="kernelArchitectureItemSource" data-kernel-source="harmonicProfile">Source: Available after chart calculation</div>
 <details class="kernelAstrologyLens">
 <summary class="kernelAstrologyLensSummary">Placement Lens <span>+</span></summary>
@@ -10366,6 +10515,16 @@
 <div class="kernelArchitectureItemTitle">Support Field</div>
 <div class="kernelArchitectureItemSubtext">Return-to-baseline support.</div>
 <div class="kernelArchitectureItemBody">The kind of support that helps the system regulate cleanly.</div>
+<div class="kernelArchitectureAttributes">
+<div class="kernelArchitectureAttributeRow">
+<div class="kernelArchitectureAttributeLabel">Core Mechanic</div>
+<div class="kernelArchitectureAttributeText">Identifies the support mode that helps the system regulate.</div>
+</div>
+<div class="kernelArchitectureAttributeRow">
+<div class="kernelArchitectureAttributeLabel">Stability Role</div>
+<div class="kernelArchitectureAttributeText">Helps translate pressure into the cleanest return path.</div>
+</div>
+</div>
 <div class="kernelArchitectureItemSource" data-kernel-source="supportField">Source: Available after chart calculation</div>
 <details class="kernelAstrologyLens">
 <summary class="kernelAstrologyLensSummary">Placement Lens <span>+</span></summary>
