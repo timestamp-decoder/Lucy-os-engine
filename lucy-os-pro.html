@@ -112,7 +112,6 @@
 <!-- K8 update: added compact Core Mechanic and Stability Role attribute blocks inside the existing Kernel Architecture cards only. Display-only markup/minimal CSS; no Distortion Pattern, Placement Lens behavior, Layer Hierarchy, Placement Detail Beta, Field, Landing, Support, Forecast, saved profiles, share export, backend/API, scoring, calculations, Moonstamp, Live Field Modifier, dashboard, or navigation changed. -->
 <!-- Active Planet Drivers update: added Pro-only Activated Drivers display card sourced locally from existing data.planetary values. Display-only; no backend/API payload, scoring, selected field logic, field routing, forecast, Moonstamp, Live Field Modifier, saved profiles, share export, calibration tests, or existing Pro outputs changed. -->
 <!-- Active Planet Drivers binding fix update: kept existing Field placement and updateUI render call, but hardened display-only active-driver resolution to use populated API response data from planetary plus telemetry fallback sources after Calculate. No backend/API payload, engine, scoring, selected field logic, field routing, forecast, Moonstamp, Live Field Modifier, saved profiles, share export, or calibration tests changed. -->
-<!-- Active Planet Drivers visual instrument update: added compact CSS/HTML planet instrument inside the existing Activated Drivers card, rendered from the same resolved active-driver list used by the driver cards. Display-only; no backend/API payload, engine, scoring, selected field logic, field routing, forecast, Moonstamp, Live Field Modifier, saved profiles, share export, calibration tests, placement, meanings, or post-calculation binding changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -2520,206 +2519,6 @@
 				white-space: nowrap;
 			}
 
-			.activatedDriverInstrument {
-				position: relative;
-				margin: 0 0 12px;
-				padding: 12px;
-				border-radius: 17px;
-				border: 1px solid rgba(103, 193, 255, 0.16);
-				background: radial-gradient(
-						circle at 50% 44%,
-						rgba(103, 193, 255, 0.1),
-						transparent 46%
-					),
-					rgba(4, 10, 24, 0.28);
-				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.018);
-				overflow: hidden;
-				min-width: 0;
-				max-width: 100%;
-			}
-
-			.activatedDriverInstrumentHeader {
-				display: flex;
-				justify-content: space-between;
-				align-items: flex-start;
-				gap: 10px;
-				margin-bottom: 10px;
-			}
-
-			.activatedDriverInstrumentLabel {
-				color: #9ed9ff;
-				font-size: 10px;
-				font-weight: 950;
-				letter-spacing: 0.12em;
-				text-transform: uppercase;
-			}
-
-			.activatedDriverInstrumentSubcopy {
-				margin-top: 4px;
-				color: var(--muted);
-				font-size: 11px;
-				line-height: 1.35;
-				font-weight: 750;
-			}
-
-			.activatedDriverInstrumentBadge {
-				display: inline-flex;
-				align-items: center;
-				min-height: 24px;
-				padding: 5px 8px;
-				border-radius: 999px;
-				border: 1px solid rgba(216, 184, 76, 0.24);
-				background: rgba(216, 184, 76, 0.075);
-				color: #f4d77e;
-				font-size: 10px;
-				font-weight: 950;
-				white-space: nowrap;
-			}
-
-			.activatedDriverOrbit {
-				position: relative;
-				width: min(100%, 360px);
-				height: 228px;
-				margin: 0 auto;
-			}
-
-			.activatedDriverOrbit::before,
-			.activatedDriverOrbit::after {
-				content: "";
-				position: absolute;
-				inset: 24px 42px;
-				border-radius: 50%;
-				border: 1px solid rgba(103, 193, 255, 0.16);
-				box-shadow: inset 0 0 28px rgba(103, 193, 255, 0.04);
-			}
-
-			.activatedDriverOrbit::after {
-				inset: 54px 86px;
-				border-color: rgba(255, 255, 255, 0.075);
-			}
-
-			.activatedDriverCenterNode {
-				position: absolute;
-				left: 50%;
-				top: 50%;
-				transform: translate(-50%, -50%);
-				z-index: 2;
-				display: grid;
-				place-items: center;
-				width: 104px;
-				height: 104px;
-				border-radius: 50%;
-				border: 1px solid rgba(103, 193, 255, 0.34);
-				background: radial-gradient(
-						circle at 50% 35%,
-						rgba(103, 193, 255, 0.2),
-						rgba(9, 20, 47, 0.92) 68%
-					);
-				box-shadow: 0 0 24px rgba(103, 193, 255, 0.11),
-					inset 0 0 0 1px rgba(255, 255, 255, 0.045);
-				color: var(--text);
-				font-size: 12px;
-				line-height: 1.18;
-				font-weight: 950;
-				text-align: center;
-				letter-spacing: 0.02em;
-				text-transform: uppercase;
-			}
-
-			.activatedDriverPlanetNode {
-				position: absolute;
-				left: var(--x);
-				top: var(--y);
-				transform: translate(-50%, -50%);
-				z-index: 3;
-				display: grid;
-				place-items: center;
-				min-width: 58px;
-				min-height: 42px;
-				padding: 7px 8px;
-				border-radius: 999px;
-				border: 1px solid rgba(255, 255, 255, 0.085);
-				background: rgba(255, 255, 255, 0.032);
-				color: rgba(170, 183, 214, 0.72);
-				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.012);
-				opacity: 0.58;
-			}
-
-			.activatedDriverPlanetNode.isActive {
-				min-width: 70px;
-				min-height: 48px;
-				border-color: rgba(103, 193, 255, 0.42);
-				background: radial-gradient(
-						circle at 50% 0%,
-						rgba(103, 193, 255, 0.18),
-						rgba(255, 255, 255, 0.052) 68%
-					);
-				color: var(--text);
-				opacity: 1;
-				box-shadow: 0 0 18px rgba(103, 193, 255, 0.16),
-					inset 0 0 0 1px rgba(255, 255, 255, 0.04);
-			}
-
-			.activatedDriverPlanetNode.isLead {
-				border-color: rgba(216, 184, 76, 0.5);
-				box-shadow: 0 0 22px rgba(216, 184, 76, 0.18),
-					inset 0 0 0 1px rgba(255, 255, 255, 0.045);
-			}
-
-			.activatedDriverPlanetName {
-				display: block;
-				font-size: 10px;
-				line-height: 1.1;
-				font-weight: 950;
-				letter-spacing: 0.04em;
-				text-transform: uppercase;
-			}
-
-			.activatedDriverPlanetValue {
-				display: block;
-				margin-top: 3px;
-				color: #9ed9ff;
-				font-size: 10px;
-				font-weight: 950;
-				font-variant-numeric: tabular-nums;
-			}
-
-			.activatedDriverPlanetNode.isLead .activatedDriverPlanetValue {
-				color: #f4d77e;
-			}
-
-			.activatedDriverInstrumentLegend {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 8px;
-				justify-content: center;
-				margin-top: 8px;
-				color: var(--muted2);
-				font-size: 10px;
-				font-weight: 850;
-			}
-
-			.activatedDriverLegendItem {
-				display: inline-flex;
-				align-items: center;
-				gap: 5px;
-			}
-
-			.activatedDriverLegendDot {
-				width: 8px;
-				height: 8px;
-				border-radius: 999px;
-				border: 1px solid rgba(255, 255, 255, 0.12);
-				background: rgba(255, 255, 255, 0.08);
-			}
-
-			.activatedDriverLegendDot.active {
-				border-color: rgba(103, 193, 255, 0.52);
-				background: rgba(103, 193, 255, 0.44);
-				box-shadow: 0 0 10px rgba(103, 193, 255, 0.22);
-			}
-
-
 			.activatedDriversGrid {
 				display: grid;
 				grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2837,36 +2636,6 @@
 			}
 
 			@media (max-width: 920px) {
-				.activatedDriverInstrumentHeader {
-					display: grid;
-				}
-
-				.activatedDriverInstrumentBadge {
-					justify-self: start;
-				}
-
-				.activatedDriverOrbit {
-					height: 212px;
-				}
-
-				.activatedDriverCenterNode {
-					width: 88px;
-					height: 88px;
-					font-size: 10px;
-				}
-
-				.activatedDriverPlanetNode {
-					min-width: 50px;
-					min-height: 38px;
-					padding: 6px 7px;
-				}
-
-				.activatedDriverPlanetNode.isActive {
-					min-width: 58px;
-					min-height: 42px;
-				}
-
-
 				.activatedDriversGrid {
 					grid-template-columns: minmax(0, 1fr);
 				}
@@ -10152,9 +9921,6 @@
 </p>
 </div>
 <div class="activatedDriversBadge" id="activatedDriversBadge">Awaiting calculation</div>
-</div>
-<div class="activatedDriverInstrument" id="activatedDriverInstrument">
-<div class="activatedDriversFallback">Activated driver instrument will appear after calculation.</div>
 </div>
 <div class="activatedDriversGrid" id="activatedDriversGrid">
 <div class="activatedDriversFallback">Activated driver data will appear after calculation.</div>
@@ -21636,63 +21402,6 @@ ${bodyLine}${loadLine}`,
 					: `${lead} is the strongest visible driver today. Work with that pressure first and keep the move small, clean, and proportional.`;
 			}
 
-			function renderActivatedDriverInstrument(activeDrivers) {
-				const instrument = document.getElementById("activatedDriverInstrument");
-				if (!instrument) return;
-
-				const supportedPlanets = [
-					{ planet: "Mars", x: "50%", y: "8%" },
-					{ planet: "Mercury", x: "82%", y: "24%" },
-					{ planet: "Venus", x: "88%", y: "68%" },
-					{ planet: "Moon", x: "64%", y: "92%" },
-					{ planet: "Jupiter", x: "34%", y: "92%" },
-					{ planet: "Saturn", x: "12%", y: "68%" },
-					{ planet: "Pluto", x: "18%", y: "24%" },
-				];
-
-				const activeList = Array.isArray(activeDrivers) ? activeDrivers : [];
-				const activeMap = new Map(activeList.map((item, index) => [item.planet, { ...item, rank: index + 1 }]));
-				const hasActiveDrivers = activeList.length > 0;
-				const activeCount = activeList.length;
-				const badgeText = hasActiveDrivers ? `Top ${activeCount} Active` : "Awaiting calculation";
-				const subcopy = hasActiveDrivers
-					? "Active nodes are carrying today’s pressure pattern."
-					: "Active nodes will brighten after calculation.";
-
-				const nodes = supportedPlanets
-					.map((item) => {
-						const active = activeMap.get(item.planet);
-						const classes = ["activatedDriverPlanetNode"];
-						if (active) classes.push("isActive");
-						if (active && active.rank === 1) classes.push("isLead");
-						const value = active && Number.isFinite(active.value) ? fmtMaybe(active.value) : "";
-						return `
-							<div class="${classes.join(" ")}" style="--x:${item.x};--y:${item.y};" aria-label="${chartKernelEscapeHtml(item.planet)} ${active ? "active driver" : "background node"}">
-								<span class="activatedDriverPlanetName">${chartKernelEscapeHtml(item.planet)}</span>
-								${value ? `<span class="activatedDriverPlanetValue">${chartKernelEscapeHtml(value)}</span>` : ""}
-							</div>`;
-					})
-					.join("");
-
-				instrument.innerHTML = `
-					<div class="activatedDriverInstrumentHeader">
-						<div>
-							<div class="activatedDriverInstrumentLabel">Driver Instrument</div>
-							<div class="activatedDriverInstrumentSubcopy">${chartKernelEscapeHtml(subcopy)}</div>
-						</div>
-						<div class="activatedDriverInstrumentBadge">${chartKernelEscapeHtml(badgeText)}</div>
-					</div>
-					<div class="activatedDriverOrbit" aria-label="Activated driver system-pressure map">
-						<div class="activatedDriverCenterNode">System<br>Pressure</div>
-						${nodes}
-					</div>
-					<div class="activatedDriverInstrumentLegend">
-						<span class="activatedDriverLegendItem"><span class="activatedDriverLegendDot active"></span>Bright = active driver</span>
-						<span class="activatedDriverLegendItem"><span class="activatedDriverLegendDot"></span>Muted = background node</span>
-					</div>`;
-			}
-
-
 			function renderActivatedDriversUI(data) {
 				const grid = document.getElementById("activatedDriversGrid");
 				const combined = document.getElementById("combinedDriverReadText");
@@ -21700,7 +21409,6 @@ ${bodyLine}${loadLine}`,
 				if (!grid || !combined) return;
 
 				const activeDrivers = resolveActivePlanetDrivers(data);
-				renderActivatedDriverInstrument(activeDrivers);
 				if (badge) {
 					badge.textContent = activeDrivers.length ? `Top ${activeDrivers.length}` : "Awaiting data";
 				}
