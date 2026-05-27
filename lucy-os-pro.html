@@ -110,6 +110,8 @@
 <!-- L1B update: collapsed forecast/debug/proof density surfaces only. Forecast Diagnostic Proof and Developer Forecast Preview are closed by default, Personal Architecture Sign Source Proof is no longer open by default, and user-facing forecast/product layers remain visible. No engine, API, scoring, forecast request/generation/extraction, Moonstamp, Live Field Modifier, saved profiles, share export, calibration, or dashboard/debug scoring logic changed. -->
 <!-- L1D update: collapsed Live Field Dashboard guide/explanation material only. Dashboard title, chips, Today’s Field Type, metric grid, score note, dashboard values, scoring logic, Forecast, Snapshot, Support, Kernel, saved profiles, share export, and navigation remain unchanged. -->
 <!-- K8 update: added compact Core Mechanic and Stability Role attribute blocks inside the existing Kernel Architecture cards only. Display-only markup/minimal CSS; no Distortion Pattern, Placement Lens behavior, Layer Hierarchy, Placement Detail Beta, Field, Landing, Support, Forecast, saved profiles, share export, backend/API, scoring, calculations, Moonstamp, Live Field Modifier, dashboard, or navigation changed. -->
+<!-- Active Planet Drivers update: added Pro-only Activated Drivers display card sourced locally from existing data.planetary values. Display-only; no backend/API payload, scoring, selected field logic, field routing, forecast, Moonstamp, Live Field Modifier, saved profiles, share export, calibration tests, or existing Pro outputs changed. -->
+<!-- Active Planet Drivers binding fix update: kept existing Field placement and updateUI render call, but hardened display-only active-driver resolution to use populated API response data from planetary plus telemetry fallback sources after Calculate. No backend/API payload, engine, scoring, selected field logic, field routing, forecast, Moonstamp, Live Field Modifier, saved profiles, share export, or calibration tests changed. -->
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -2438,6 +2440,215 @@
 				font-weight: 750;
 				overflow-wrap: break-word;
 			}
+
+			.activatedDriversCard {
+				margin-top: 15px;
+				width: 100%;
+				max-width: 100%;
+				min-width: 0;
+				border: 1px solid rgba(103, 193, 255, 0.22);
+				border-radius: 18px;
+				padding: 14px;
+				background: radial-gradient(
+						circle at 10% 0%,
+						rgba(103, 193, 255, 0.13),
+						transparent 34%
+					),
+					radial-gradient(
+						circle at 92% 6%,
+						rgba(176, 108, 255, 0.09),
+						transparent 36%
+					),
+					linear-gradient(
+						180deg,
+						rgba(255, 255, 255, 0.04),
+						rgba(255, 255, 255, 0.018)
+					);
+				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.022),
+					0 10px 28px rgba(0, 0, 0, 0.16);
+				overflow: hidden;
+			}
+
+			.activatedDriversHeader {
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-start;
+				gap: 12px;
+				margin-bottom: 12px;
+				min-width: 0;
+			}
+
+			.activatedDriversKicker {
+				margin: 0 0 6px;
+				color: #9ed9ff;
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.13em;
+				text-transform: uppercase;
+			}
+
+			.activatedDriversTitle {
+				margin: 0;
+				color: var(--text);
+				font-size: 17px;
+				line-height: 1.18;
+				font-weight: 950;
+				letter-spacing: -0.015em;
+			}
+
+			.activatedDriversIntro {
+				margin: 7px 0 0;
+				color: var(--muted);
+				font-size: 12px;
+				line-height: 1.5;
+				font-weight: 750;
+				overflow-wrap: break-word;
+			}
+
+			.activatedDriversBadge {
+				display: inline-flex;
+				align-items: center;
+				min-height: 26px;
+				padding: 5px 9px;
+				border-radius: 999px;
+				border: 1px solid rgba(103, 193, 255, 0.24);
+				background: rgba(103, 193, 255, 0.075);
+				color: #c8e9ff;
+				font-size: 10px;
+				font-weight: 950;
+				white-space: nowrap;
+			}
+
+			.activatedDriversGrid {
+				display: grid;
+				grid-template-columns: repeat(3, minmax(0, 1fr));
+				gap: 9px;
+				min-width: 0;
+				max-width: 100%;
+			}
+
+			.activatedDriverItem {
+				border: 1px solid rgba(255, 255, 255, 0.085);
+				border-radius: 15px;
+				padding: 11px;
+				background: linear-gradient(
+					180deg,
+					rgba(255, 255, 255, 0.045),
+					rgba(255, 255, 255, 0.025)
+				);
+				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.014);
+				min-width: 0;
+			}
+
+			.activatedDriverTop {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				gap: 8px;
+				margin-bottom: 7px;
+			}
+
+			.activatedDriverName {
+				color: var(--text);
+				font-size: 14px;
+				font-weight: 950;
+				line-height: 1.18;
+			}
+
+			.activatedDriverScore {
+				color: #9ed9ff;
+				font-size: 10px;
+				font-weight: 950;
+				white-space: nowrap;
+			}
+
+			.activatedDriverRole {
+				margin: 0 0 8px;
+				color: #dce7ff;
+				font-size: 12px;
+				line-height: 1.42;
+				font-weight: 850;
+			}
+
+			.activatedDriverRows {
+				display: grid;
+				gap: 6px;
+			}
+
+			.activatedDriverRow span {
+				display: block;
+				margin-bottom: 2px;
+				color: var(--muted2);
+				font-size: 9px;
+				font-weight: 950;
+				letter-spacing: 0.09em;
+				text-transform: uppercase;
+			}
+
+			.activatedDriverRow strong {
+				display: block;
+				color: var(--muted);
+				font-size: 11px;
+				line-height: 1.42;
+				font-weight: 750;
+				overflow-wrap: break-word;
+			}
+
+			.activatedDriversFallback {
+				padding: 11px 12px;
+				border-radius: 14px;
+				border: 1px solid rgba(255, 255, 255, 0.075);
+				background: rgba(255, 255, 255, 0.03);
+				color: var(--muted);
+				font-size: 12px;
+				font-weight: 800;
+				line-height: 1.45;
+			}
+
+			.combinedDriverRead {
+				margin-top: 10px;
+				border: 1px solid rgba(216, 184, 76, 0.2);
+				border-radius: 15px;
+				padding: 11px 12px;
+				background: radial-gradient(
+						circle at 9% 0%,
+						rgba(216, 184, 76, 0.1),
+						transparent 36%
+					),
+					rgba(255, 255, 255, 0.026);
+			}
+
+			.combinedDriverLabel {
+				color: var(--gold);
+				font-size: 10px;
+				font-weight: 950;
+				letter-spacing: 0.11em;
+				text-transform: uppercase;
+				margin-bottom: 5px;
+			}
+
+			.combinedDriverText {
+				color: #dde6fb;
+				font-size: 12px;
+				line-height: 1.5;
+				font-weight: 780;
+				overflow-wrap: break-word;
+			}
+
+			@media (max-width: 920px) {
+				.activatedDriversGrid {
+					grid-template-columns: minmax(0, 1fr);
+				}
+
+				.activatedDriversHeader {
+					display: grid;
+				}
+
+				.activatedDriversBadge {
+					justify-self: start;
+				}
+			}
+
 
 			.motionStrip {
 				display: grid;
@@ -9321,8 +9532,6 @@
 </div>
 </div>
 </div>
-
-
 <div class="motionStrip">
 <div class="motionMini">
 <div class="motionMiniLabel">
@@ -9701,6 +9910,27 @@
 							engine or field selection.
 						</div>
 </section>
+
+<div class="activatedDriversCard" id="activatedDriversCard">
+<div class="activatedDriversHeader">
+<div>
+<p class="activatedDriversKicker">Activated Drivers</p>
+<h2 class="activatedDriversTitle">What is carrying today’s pressure.</h2>
+<p class="activatedDriversIntro">
+	These are the active planetary drivers carrying today’s pressure through the field. They explain the pressure pattern, but they do not replace the selected field.
+</p>
+</div>
+<div class="activatedDriversBadge" id="activatedDriversBadge">Awaiting calculation</div>
+</div>
+<div class="activatedDriversGrid" id="activatedDriversGrid">
+<div class="activatedDriversFallback">Activated driver data will appear after calculation.</div>
+</div>
+<div class="combinedDriverRead">
+<div class="combinedDriverLabel">Combined Driver Read</div>
+<div class="combinedDriverText" id="combinedDriverReadText">Activated driver data will appear after calculation.</div>
+</div>
+</div>
+
 
 <section class="outlookCard">
 <div class="outlookHeader">
@@ -21035,6 +21265,186 @@ ${bodyLine}${loadLine}`,
 				return harmonics;
 			}
 
+
+			const ACTIVE_DRIVER_MEANINGS = {
+				Moon: {
+					role: "Body-state / emotional processor / needs / memory",
+					feel: "mood, sensitivity, memory, body-needs, emotional weather",
+					watch: "mood taking over the whole read or making the story feel bigger than it is",
+					use: "regulate the body before deciding what the story means",
+					keys: ["moon", "transitMoon", "moonTransit", "normalizedMoon", "moonScore", "lunar"],
+				},
+				Mercury: {
+					role: "Signal processor / words / messages / interpretation",
+					feel: "mental speed, messages, analysis, conversation, pattern detection",
+					watch: "overthinking, misreading tone, fast conclusions, too many tabs open",
+					use: "clarify the signal before responding",
+					keys: ["mercury", "transitMercury", "mercuryTransit", "normalizedMercury", "mercuryScore"],
+				},
+				Venus: {
+					role: "Relational tone / contact / attachment / value",
+					feel: "contact pressure, attraction, tenderness, approval-seeking, tone sensitivity",
+					watch: "emotional fusion, relational compression, losing center through another person’s field",
+					use: "name the tone without losing your center",
+					keys: ["venus", "transitVenus", "venusTransit", "normalizedVenus", "venusScore"],
+				},
+				Mars: {
+					role: "Activation pressure / urgency / action impulse",
+					feel: "heat, impatience, drive, irritation, pressure to move",
+					watch: "reacting before the field is clear, discharging pressure too fast",
+					use: "move one charge through one clean action",
+					keys: ["mars", "transitMars", "marsTransit", "normalizedMars", "marsScore", "activation"],
+				},
+				Jupiter: {
+					role: "Amplifier / meaning expander / big story / hope",
+					feel: "expansion, optimism, possibility, belief, future projection",
+					watch: "exaggeration, over-meaning, making the story too big too fast",
+					use: "widen perspective without blowing the field open",
+					keys: ["jupiter", "transitJupiter", "jupiterTransit", "normalizedJupiter", "jupiterScore"],
+				},
+				Saturn: {
+					role: "Structure governor / limits / responsibility / containment",
+					feel: "weight, duty, pressure, boundary, seriousness, slowdown",
+					watch: "heaviness, rigidity, over-control, fear of disorder",
+					use: "add one boundary or one clear structure",
+					keys: ["saturn", "transitSaturn", "saturnTransit", "normalizedSaturn", "saturnScore"],
+				},
+				Pluto: {
+					role: "Deep pressure / transformation driver / intensity / buried material",
+					feel: "compulsion, intensity, fixation, deep pressure, old material surfacing",
+					watch: "obsession, crisis framing, control loops, forcing a full rebuild",
+					use: "identify the real pressure point without turning the whole field into collapse/rebuild",
+					keys: ["pluto", "transitPluto", "plutoTransit", "normalizedPluto", "plutoScore"],
+				},
+			};
+
+			function getActiveDriverValue(planetary, planetName) {
+				const config = ACTIVE_DRIVER_MEANINGS[planetName];
+				if (!planetary || !config) return NaN;
+
+				const candidateKeys = config.keys || [];
+				for (const key of candidateKeys) {
+					const value = safeNum(planetary?.[key], NaN);
+					if (Number.isFinite(value)) return value;
+				}
+
+				const flexibleKey = Object.keys(planetary || {}).find((key) => {
+					const lower = String(key).toLowerCase();
+					const planet = String(planetName).toLowerCase();
+					if (!lower.includes(planet)) return false;
+					return lower.includes("transit") || lower.includes("score") || lower.includes("norm") || lower === planet;
+				});
+
+				return flexibleKey ? safeNum(planetary[flexibleKey], NaN) : NaN;
+			}
+
+			function getActiveDriverValueFromResponse(data, planetName) {
+				const planetaryValue = getActiveDriverValue(data?.planetary || {}, planetName);
+				if (Number.isFinite(planetaryValue)) return planetaryValue;
+
+				const driverValue = driverValueFromTaggedList(data?.telemetry?.topDrivers, planetName);
+				if (Number.isFinite(driverValue)) return driverValue;
+
+				const regulatorValue = driverValueFromTaggedList(data?.telemetry?.topRegulators, planetName);
+				if (Number.isFinite(regulatorValue)) return regulatorValue;
+
+				const primaryDriver = String(data?.telemetry?.primaryDriver || "").toLowerCase();
+				if (primaryDriver && primaryDriver.includes(String(planetName).toLowerCase())) return 0.5;
+
+				return NaN;
+			}
+
+			function resolveActivePlanetDrivers(data) {
+				const corePlanets = ["Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Pluto"];
+				const ranked = corePlanets
+					.map((planet) => ({
+						planet,
+						value: getActiveDriverValueFromResponse(data, planet),
+						meaning: ACTIVE_DRIVER_MEANINGS[planet],
+					}))
+					.filter((item) => Number.isFinite(item.value))
+					.sort((a, b) => b.value - a.value);
+
+				if (!ranked.length) return [];
+
+				const thresholdDrivers = ranked.filter((item) => item.value >= 0.38).slice(0, 3);
+				return (thresholdDrivers.length ? thresholdDrivers : ranked.slice(0, 1)).slice(0, 3);
+			}
+
+			function buildCombinedDriverRead(activeDrivers) {
+				const planets = (activeDrivers || []).map((item) => item.planet);
+				if (!planets.length) {
+					return "Activated driver data will appear after calculation.";
+				}
+
+				const has = (name) => planets.includes(name);
+
+				if (has("Jupiter") && has("Mars") && has("Moon")) {
+					return "Emotional pressure may amplify quickly and create urgency. Regulate the body first, then choose one clean action instead of acting on the whole story.";
+				}
+				if (has("Mars") && has("Mercury") && has("Venus")) {
+					return "Contact and communication may carry extra charge. Clarify tone before reacting, deciding, or escalating.";
+				}
+				if (has("Saturn") && has("Pluto") && has("Moon")) {
+					return "Old pressure may feel heavier in the body today. Create containment first, then work with the real pressure point slowly.";
+				}
+				if (has("Mercury") && has("Jupiter") && has("Mars")) {
+					return "Thoughts, meaning, and action may accelerate together. Slow the interpretation before moving on the impulse.";
+				}
+				if (has("Venus") && has("Moon") && has("Saturn")) {
+					return "Relational sensitivity may meet emotional weight. Keep contact simple, clear, and bounded.";
+				}
+
+				const lead = planets[0];
+				const context = planets.slice(1).join(" + ");
+				return context
+					? `${lead} is the strongest visible driver, with ${context} adding context. Work with the strongest driver first, then use the others as support instead of letting them stack into overload.`
+					: `${lead} is the strongest visible driver today. Work with that pressure first and keep the move small, clean, and proportional.`;
+			}
+
+			function renderActivatedDriversUI(data) {
+				const grid = document.getElementById("activatedDriversGrid");
+				const combined = document.getElementById("combinedDriverReadText");
+				const badge = document.getElementById("activatedDriversBadge");
+				if (!grid || !combined) return;
+
+				const activeDrivers = resolveActivePlanetDrivers(data);
+				if (badge) {
+					badge.textContent = activeDrivers.length ? `Top ${activeDrivers.length}` : "Awaiting data";
+				}
+
+				if (!activeDrivers.length) {
+					const hasCalculatedData = !!(data && (data.planetary || data.telemetry));
+					const fallbackText = hasCalculatedData
+						? "Driver data unavailable for this read."
+						: "Activated driver data will appear after calculation.";
+					grid.innerHTML = `<div class="activatedDriversFallback">${fallbackText}</div>`;
+					combined.textContent = fallbackText;
+					return;
+				}
+
+				grid.innerHTML = activeDrivers
+					.map((item) => {
+						const meaning = item.meaning || {};
+						return `
+							<div class="activatedDriverItem">
+								<div class="activatedDriverTop">
+									<div class="activatedDriverName">${chartKernelEscapeHtml(item.planet)}</div>
+									<div class="activatedDriverScore">${fmtMaybe(item.value)}</div>
+								</div>
+								<p class="activatedDriverRole">${chartKernelEscapeHtml(meaning.role || "Active driver")}</p>
+								<div class="activatedDriverRows">
+									<div class="activatedDriverRow"><span>May feel like</span><strong>${chartKernelEscapeHtml(meaning.feel || "pressure moving through the field")}</strong></div>
+									<div class="activatedDriverRow"><span>Watch</span><strong>${chartKernelEscapeHtml(meaning.watch || "letting the driver take over the whole read")}</strong></div>
+									<div class="activatedDriverRow"><span>Use cleanly</span><strong>${chartKernelEscapeHtml(meaning.use || "work with the pressure directly and proportionally")}</strong></div>
+								</div>
+							</div>`;
+					})
+					.join("");
+
+				combined.textContent = buildCombinedDriverRead(activeDrivers);
+			}
+
 			function updateUI(data) {
 				console.log("Lucy.OS Pro response:", data);
 				window.lastLucyData = data;
@@ -21094,6 +21504,7 @@ ${bodyLine}${loadLine}`,
 				const harmonics = updateHarmonicUI(data);
 				updateLiveFieldDashboardUI(data, harmonics);
 				updateFieldCompass(data);
+				renderActivatedDriversUI(data);
 				updateLiveFieldDebugUI(harmonics.dailyFieldDebug);
 				renderActivatedArchitectureToday(data, harmonics);
 
@@ -21323,6 +21734,7 @@ ${bodyLine}${loadLine}`,
 					const btn = document.getElementById("calcBtn");
 					btn.disabled = true;
 					btn.textContent = "Calculating...";
+					renderActivatedDriversUI(null);
 
 					setText("apiStatus", "Calculating...");
 					const apiStatusEl = document.getElementById("apiStatus");
