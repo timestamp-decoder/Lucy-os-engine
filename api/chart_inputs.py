@@ -37,7 +37,7 @@ MERCURY_SIGNAL_PROCESSOR_BY_SIGN = {
     "Aries": "Initiating Signal Processor",
     "Taurus": "Grounded Signal Processor",
     "Gemini": "Fast Signal Processor",
-    "Cancer": "Protective Signal Processor",
+    "Cancer": "Emotional Signal Processor",
     "Leo": "Expressive Signal Processor",
     "Virgo": "Precise Signal Processor",
     "Libra": "Relational Signal Processor",
@@ -662,7 +662,7 @@ def build_live_field_modifier(transit: dict) -> dict:
             "planet": "mercury",
             "role": "Signal Processor",
             "available": False,
-            "displayZodiacMode": "sidereal-lahiri",
+            "displayZodiacMode": "tropical",
             "displayTitle": None,
             "note": "Live transit Mercury display modifier unavailable because longitude or Julian day was missing.",
         }
@@ -675,7 +675,7 @@ def build_live_field_modifier(transit: dict) -> dict:
     sidereal_lahiri_sign = zodiac_sign_from_longitude(sidereal_lahiri_deg)
 
     signal_label = MERCURY_SIGNAL_PROCESSOR_BY_SIGN.get(
-        sidereal_lahiri_sign,
+        tropical_sign,
         "Signal Processor",
     )
 
@@ -688,8 +688,8 @@ def build_live_field_modifier(transit: dict) -> dict:
         "tropicalSign": tropical_sign,
         "siderealLahiriLongitudeDeg": round(float(sidereal_lahiri_deg), 6),
         "siderealLahiriSign": sidereal_lahiri_sign,
-        "displayZodiacMode": "sidereal-lahiri",
-        "displayTitle": f"Mercury in {sidereal_lahiri_sign} — {signal_label}",
+        "displayZodiacMode": "tropical",
+        "displayTitle": f"Mercury in {tropical_sign} — {signal_label}",
         "note": "Display-only live transit modifier. Does not affect scoring or field selection.",
     }
 
