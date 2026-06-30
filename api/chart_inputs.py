@@ -1375,6 +1375,67 @@ def build_lucy_response(chart: dict, transit_utc: datetime | None = None) -> dic
     }
 
 
+def is_route_data_diagnostic_request(payload: dict) -> bool:
+    return (
+        payload.get("routeDataDiagnostic") is True
+        and payload.get("routeDataVersion") == "3G-B-route-data-v1"
+        and payload.get("devOnly") is True
+    )
+
+
+def build_blocked_route_data_diagnostic(payload: dict | None = None) -> dict:
+    return {
+        "routeDataVersion": "3G-B-route-data-v1",
+        "routeDataAvailable": False,
+        "routeDataBlocked": True,
+        "blockReasons": [
+            "driverArchitectureContactMissing",
+            "fieldBoundariesMissing",
+            "routeResolverNotImplemented",
+        ],
+        "calculationTimestamp": datetime.now(timezone.utc).isoformat(),
+        "activeDrivers": [],
+        "userArchitectureMap": None,
+        "fieldBoundaries": None,
+        "driverArchitectureContacts": [],
+        "sourceStatusByInput": {
+            "activeDrivers": "not_provided_to_route_resolver",
+            "userArchitectureMap": "not_provided_to_route_resolver",
+            "fieldBoundaries": "not_provided_to_route_resolver",
+            "driverArchitectureContacts": "not_provided_to_route_resolver",
+            "routeResolver": "not_implemented",
+        },
+        "missingDataReasons": [
+            "Active driver architecture contact data is not available to this endpoint.",
+            "User architecture field boundaries are not available to this endpoint.",
+            "A route resolver has not been implemented or activated.",
+        ],
+        "conflictStatus": {
+            "hasConflict": False,
+            "conflicts": [],
+            "note": "No route conflicts were evaluated because routing is blocked.",
+        },
+        "safePublicTargetLabels": [],
+        "devOnlyProof": {
+            "diagnosticRequested": True,
+            "routeDataDiagnostic": bool((payload or {}).get("routeDataDiagnostic") is True),
+            "routeDataVersionMatched": (payload or {}).get("routeDataVersion") == "3G-B-route-data-v1",
+            "devOnly": bool((payload or {}).get("devOnly") is True),
+            "publicExposure": False,
+            "routingActivated": False,
+            "routeSimulationRun": False,
+            "routeSelected": False,
+        },
+        "publicOutputAllowed": False,
+    }
+
+
+def append_route_data_if_requested(response: dict, payload: dict) -> dict:
+    if is_route_data_diagnostic_request(payload):
+        response["routeData"] = build_blocked_route_data_diagnostic(payload)
+    return response
+
+
 class handler(BaseHTTPRequestHandler):
     def _set_headers(self, status_code=200):
         self.send_response(status_code)
@@ -1424,6 +1485,7 @@ class handler(BaseHTTPRequestHandler):
                         forecast_resolution=forecast_resolution,
                     ),
                 }
+                append_route_data_if_requested(response, payload)
                 self._write_json(200, response)
                 return
 
@@ -1498,6 +1560,7 @@ class handler(BaseHTTPRequestHandler):
                 forecast_resolution=forecast_resolution,
             )
 
+            append_route_data_if_requested(response, payload)
             self._write_json(200, response)
 
         except ValueError as e:
